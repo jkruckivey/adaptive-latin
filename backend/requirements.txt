@@ -12,7 +12,7 @@ anthropic>=0.71.0
 python-dotenv==1.0.0
 
 # Data Validation
-pydantic==2.5.3
+pydantic>=2.5.3
 
 # CORS Support
 fastapi-cors==0.0.6
