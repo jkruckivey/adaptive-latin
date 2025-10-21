@@ -1,0 +1,76 @@
+{
+  "examples": [
+    {
+      "title": "Demand Example: Coffee Market",
+      "scenario": "Consider the market for coffee. Currently, coffee sells for $5 per pound, and consumers buy 100 million pounds per month.",
+      "situations": [
+        {
+          "description": "Price of coffee increases to $7 per pound",
+          "analysis": "This is a MOVEMENT ALONG the demand curve. Quantity demanded decreases to 80 million pounds. Consumers buy less because of the substitution effect (switch to tea) and income effect (can't afford as much).",
+          "graph_description": "Same demand curve, move from point A ($5, 100M) to point B ($7, 80M)"
+        },
+        {
+          "description": "A study shows coffee reduces heart disease risk",
+          "analysis": "This is a SHIFT of the demand curve to the RIGHT. Consumer preferences change in favor of coffee. At the same $5 price, consumers now want 120 million pounds. The entire curve shifts right.",
+          "graph_description": "Demand curve shifts right (D1 to D2). At $5, quantity demanded increases from 100M to 120M"
+        },
+        {
+          "description": "Price of tea (a substitute) falls from $4 to $2",
+          "analysis": "This is a SHIFT of the demand curve to the LEFT. Tea becomes relatively cheaper, so consumers substitute away from coffee. At the same $5 price, consumers now only want 80 million pounds of coffee.",
+          "graph_description": "Demand curve shifts left (D1 to D3). At $5, quantity demanded decreases from 100M to 80M"
+        }
+      ]
+    },
+    {
+      "title": "Supply Example: Wheat Market",
+      "scenario": "Consider the market for wheat. Currently, wheat sells for $8 per bushel, and farmers supply 200 million bushels per year.",
+      "situations": [
+        {
+          "description": "Price of wheat rises to $10 per bushel",
+          "analysis": "This is a MOVEMENT ALONG the supply curve. Quantity supplied increases to 240 million bushels. Farmers increase production because it's more profitable. Some farmers who were growing other crops switch to wheat.",
+          "graph_description": "Same supply curve, move from point A ($8, 200M) to point B ($10, 240M)"
+        },
+        {
+          "description": "New drought-resistant wheat variety is developed",
+          "analysis": "This is a SHIFT of the supply curve to the RIGHT. Technology makes production more efficient and reliable. At the same $8 price, farmers can now supply 250 million bushels. The entire curve shifts right.",
+          "graph_description": "Supply curve shifts right (S1 to S2). At $8, quantity supplied increases from 200M to 250M"
+        },
+        {
+          "description": "Cost of fertilizer doubles due to oil price spike",
+          "analysis": "This is a SHIFT of the supply curve to the LEFT. Input costs increase, making wheat production more expensive and less profitable. At the same $8 price, farmers now only supply 150 million bushels.",
+          "graph_description": "Supply curve shifts left (S1 to S3). At $8, quantity supplied decreases from 200M to 150M"
+        }
+      ]
+    },
+    {
+      "title": "Identifying Shifts vs. Movements",
+      "practice_scenarios": [
+        {
+          "situation": "The price of smartphones falls from $800 to $600",
+          "answer": "Movement along the demand curve (quantity demanded increases)",
+          "explanation": "Price change = movement along curve, not shift"
+        },
+        {
+          "situation": "A recession reduces consumer incomes",
+          "answer": "Demand curve shifts LEFT for normal goods (like smartphones)",
+          "explanation": "Income is a demand shifter. Lower income = lower demand at every price"
+        },
+        {
+          "situation": "A new factory opens, increasing the number of smartphone producers",
+          "answer": "Supply curve shifts RIGHT",
+          "explanation": "Number of sellers is a supply shifter. More sellers = more supply at every price"
+        },
+        {
+          "situation": "The price of smartphone screens (input) increases",
+          "answer": "Supply curve shifts LEFT",
+          "explanation": "Input costs are a supply shifter. Higher costs = less supply at every price"
+        },
+        {
+          "situation": "Consumers expect smartphone prices to drop next month",
+          "answer": "Demand curve shifts LEFT today",
+          "explanation": "Expectations are a demand shifter. If prices will fall, consumers delay purchases"
+        }
+      ]
+    }
+  ]
+}

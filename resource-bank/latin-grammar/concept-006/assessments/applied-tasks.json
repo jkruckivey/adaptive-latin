@@ -1,0 +1,323 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-006",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-006-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. These sentences mix first, second, and third declension nouns. Make sure your translations are accurate and natural-sounding.\n\n1. Rēx puellam vocat.\n2. Mīlitēs bella nārrant.\n3. Nōmen rēgis est bonum.\n4. Virtūtem patris videō.\n5. Cum mīlitibus et amīcīs sumus.\n6. Corpora mīlitum sunt magna.\n7. Pācem terrae amāmus.",
+      "rubric": {
+        "scoring": "Each sentence worth approximately 0.143 points (7 sentences ≈ 1.00). Sentences vary in difficulty.",
+        "correct_translations": [
+          {
+            "latin": "Rēx puellam vocat.",
+            "correct_english": "The king calls the girl.",
+            "acceptable_variants": ["The king is calling the girl.", "A king calls a girl."],
+            "key_points": [
+              "Rēx = 3rd decl., nominative singular (subject)",
+              "puellam = 1st decl., accusative singular (object)",
+              "vocat = he/she calls"
+            ],
+            "common_errors": [
+              "Translating rēx as genitive (confusing with rēgis)",
+              "Making puellam the subject"
+            ]
+          },
+          {
+            "latin": "Mīlitēs bella nārrant.",
+            "correct_english": "The soldiers tell about the wars. / The soldiers narrate the wars.",
+            "acceptable_variants": ["The soldiers relate the wars.", "Soldiers tell about wars."],
+            "key_points": [
+              "Mīlitēs = 3rd decl., nominative plural (subject)",
+              "bella = 2nd decl. neuter, accusative plural (object)",
+              "nārrant = they tell/narrate"
+            ],
+            "common_errors": [
+              "Not recognizing mīlitēs as plural",
+              "Thinking bella is first declension (it's neuter 2nd decl.)"
+            ]
+          },
+          {
+            "latin": "Nōmen rēgis est bonum.",
+            "correct_english": "The name of the king is good. / The king's name is good.",
+            "acceptable_variants": ["The king's name is good."],
+            "key_points": [
+              "Nōmen = 3rd decl. neuter, nominative singular (subject)",
+              "rēgis = 3rd decl., genitive singular (possession)",
+              "est = is",
+              "bonum = neuter singular agreeing with nōmen"
+            ],
+            "common_errors": [
+              "Thinking nōmen is accusative (it could be, but est indicates it's nominative)",
+              "Not recognizing rēgis as genitive"
+            ],
+            "note": "Tests recognition of genitive and neuter nominative"
+          },
+          {
+            "latin": "Virtūtem patris videō.",
+            "correct_english": "I see the virtue of the father. / I see the father's virtue.",
+            "acceptable_variants": ["I see my father's virtue.", "I see the father's courage."],
+            "key_points": [
+              "Virtūtem = 3rd decl., accusative singular (object)",
+              "patris = 3rd decl., genitive singular (possession)",
+              "videō = I see"
+            ],
+            "common_errors": [
+              "Not recognizing virtūtem as accusative (stem virtūt- + -em)",
+              "Thinking patris is nominative plural"
+            ],
+            "note": "Two third declension nouns with different cases"
+          },
+          {
+            "latin": "Cum mīlitibus et amīcīs sumus.",
+            "correct_english": "We are with the soldiers and friends.",
+            "acceptable_variants": ["We are with soldiers and friends.", "We are with the soldiers and the friends."],
+            "key_points": [
+              "Cum = with (preposition taking ablative)",
+              "mīlitibus = 3rd decl., ablative plural",
+              "et = and",
+              "amīcīs = 2nd decl., ablative plural",
+              "sumus = we are"
+            ],
+            "common_errors": [
+              "Translating mīlitibus as dative 'to the soldiers'",
+              "Not recognizing ablative after cum"
+            ],
+            "note": "Mixing 2nd and 3rd declension ablatives"
+          },
+          {
+            "latin": "Corpora mīlitum sunt magna.",
+            "correct_english": "The bodies of the soldiers are large. / The soldiers' bodies are large.",
+            "acceptable_variants": ["The soldiers' bodies are great.", "The bodies of soldiers are large."],
+            "key_points": [
+              "Corpora = 3rd decl. neuter, nominative plural (subject)",
+              "mīlitum = 3rd decl., genitive plural (possession)",
+              "sunt = are",
+              "magna = neuter plural agreeing with corpora"
+            ],
+            "common_errors": [
+              "Thinking corpora is accusative (could be, but sunt indicates nominative)",
+              "Not recognizing neuter plural -a ending"
+            ],
+            "note": "Tests neuter plural recognition"
+          },
+          {
+            "latin": "Pācem terrae amāmus.",
+            "correct_english": "We love the peace of the land. / We love the land's peace.",
+            "acceptable_variants": ["We love the peace of the earth.", "We love peace of the land."],
+            "key_points": [
+              "Pācem = 3rd decl., accusative singular (object)",
+              "terrae = 1st decl., genitive singular (possession)",
+              "amāmus = we love"
+            ],
+            "common_errors": [
+              "Thinking terrae is nominative plural (it's genitive singular here)",
+              "Not recognizing pācem as accusative"
+            ],
+            "note": "Mixing 1st and 3rd declension"
+          }
+        ],
+        "partial_credit": "Award 0.10/0.143 for translations that capture main meaning but have minor case interpretation errors. Award 0.07/0.143 for translations showing some understanding but significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "20-25 minutes"
+    },
+    {
+      "id": "applied-006-2",
+      "difficulty": "intermediate",
+      "task_type": "form_identification",
+      "prompt": "For each Latin form below, provide: (a) Declension, (b) Case, (c) Number, (d) Gender, (e) English translation. Use the dictionary entries provided.\n\n1. rēgem (rēx, rēgis, m.)\n2. mīlitum (mīles, mīlitis, m.)\n3. corpora (corpus, corporis, n.)\n4. virtūte (virtūs, virtūtis, f.)\n5. nōminibus (nōmen, nōminis, n.) - give ALL possible cases\n6. pācēs (pāx, pācis, f.) - give ALL possible cases\n7. patris (pater, patris, m.)\n8. tempus (tempus, temporis, n.) - give ALL possible cases",
+      "rubric": {
+        "scoring": "Questions 1-4 and 7 worth 0.10 each (straightforward single answers = 0.50 total). Questions 5-6 and 8 worth 0.167 each (ambiguous forms requiring multiple answers = 0.50 total). Total = 1.00",
+        "correct_answers": [
+          {
+            "form": "rēgem",
+            "declension": "3rd",
+            "case": "Accusative",
+            "number": "Singular",
+            "gender": "Masculine",
+            "translation": "the king (as direct object)",
+            "points": 0.10,
+            "notes": "Unambiguous: stem rēg- + accusative ending -em"
+          },
+          {
+            "form": "mīlitum",
+            "declension": "3rd",
+            "case": "Genitive",
+            "number": "Plural",
+            "gender": "Masculine",
+            "translation": "of the soldiers / the soldiers'",
+            "points": 0.10,
+            "notes": "Unambiguous: stem mīlit- + genitive plural -um"
+          },
+          {
+            "form": "corpora",
+            "declension": "3rd",
+            "case": "Nominative OR Accusative",
+            "number": "Plural",
+            "gender": "Neuter",
+            "translation": "the bodies (as subject OR object)",
+            "points": 0.10,
+            "notes": "Neuter rule: nominative = accusative; plural ending -a",
+            "full_credit_requires": "Recognizing both nominative AND accusative possibilities"
+          },
+          {
+            "form": "virtūte",
+            "declension": "3rd",
+            "case": "Ablative",
+            "number": "Singular",
+            "gender": "Feminine",
+            "translation": "with/by/from the virtue",
+            "points": 0.10,
+            "notes": "Unambiguous: stem virtūt- + ablative ending -e"
+          },
+          {
+            "form": "nōminibus",
+            "declension": "3rd",
+            "case": "Dative OR Ablative",
+            "number": "Plural",
+            "gender": "Neuter",
+            "translation": "(Dative) to/for the names OR (Ablative) with/by/from the names",
+            "points": 0.167,
+            "full_credit_requires": "Both dative AND ablative listed",
+            "partial_credit": "0.10 for identifying one case only",
+            "notes": "Ending -ibus serves both dative and ablative plural"
+          },
+          {
+            "form": "pācēs",
+            "declension": "3rd",
+            "case": "Nominative OR Accusative",
+            "number": "Plural",
+            "gender": "Feminine",
+            "translation": "(Nominative) the peaces (as subject) OR (Accusative) the peaces (as object)",
+            "points": 0.167,
+            "full_credit_requires": "Both nominative AND accusative listed",
+            "partial_credit": "0.10 for identifying one case only",
+            "notes": "Ending -ēs is both nom. and acc. plural for M/F third declension"
+          },
+          {
+            "form": "patris",
+            "declension": "3rd",
+            "case": "Genitive",
+            "number": "Singular",
+            "gender": "Masculine",
+            "translation": "of the father / the father's",
+            "points": 0.10,
+            "notes": "Unambiguous: stem patr- + genitive ending -is"
+          },
+          {
+            "form": "tempus",
+            "declension": "3rd",
+            "case": "Nominative OR Accusative",
+            "number": "Singular",
+            "gender": "Neuter",
+            "translation": "(Nominative) time/the time (as subject) OR (Accusative) time/the time (as object)",
+            "points": 0.167,
+            "full_credit_requires": "Both nominative AND accusative listed; recognition that it's neuter",
+            "partial_credit": "0.10 for identifying one case only",
+            "notes": "Neuter nominative = accusative; this is the dictionary form"
+          }
+        ]
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-006-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the requested Latin forms. Use the dictionary entries provided in parentheses. For stem-finding practice, show your work for items 1-3 by writing: 'Genitive: ___ → Stem: ___ → Form: ___'\n\n1. Accusative singular of 'king' (rēx, rēgis, m.)\n2. Genitive plural of 'soldier' (mīles, mīlitis, m.)\n3. Ablative singular of 'peace' (pāx, pācis, f.)\n4. Nominative plural of 'name' (nōmen, nōminis, n.)\n5. Dative singular of 'body' (corpus, corporis, n.)\n6. Accusative plural of 'father' (pater, patris, m.)\n7. Genitive singular of 'virtue' (virtūs, virtūtis, f.)\n8. Ablative plural of 'time' (tempus, temporis, n.)\n9. Nominative plural of 'mother' (māter, mātris, f.)\n10. Accusative singular of 'name' (nōmen, nōminis, n.)",
+      "rubric": {
+        "scoring": "Each form worth 0.10 points (10 forms × 0.10 = 1.00). Items 1-3 require showing work (genitive → stem → form).",
+        "correct_answers": [
+          {
+            "prompt": "Accusative singular of 'king'",
+            "genitive": "rēgis",
+            "stem": "rēg-",
+            "correct_form": "rēgem",
+            "case": "Accusative singular (M/F ending -em)",
+            "show_work": "Genitive: rēgis → Stem: rēg- → Form: rēgem",
+            "common_errors": ["rēxem (using nominative instead of stem)", "rēgis (that's genitive)"]
+          },
+          {
+            "prompt": "Genitive plural of 'soldier'",
+            "genitive": "mīlitis",
+            "stem": "mīlit-",
+            "correct_form": "mīlitum",
+            "case": "Genitive plural (ending -um)",
+            "show_work": "Genitive: mīlitis → Stem: mīlit- → Form: mīlitum",
+            "common_errors": ["mīlitēs (that's nom/acc plural)", "mīlitārum (wrong declension ending)"]
+          },
+          {
+            "prompt": "Ablative singular of 'peace'",
+            "genitive": "pācis",
+            "stem": "pāc-",
+            "correct_form": "pāce",
+            "case": "Ablative singular (ending -e)",
+            "show_work": "Genitive: pācis → Stem: pāc- → Form: pāce",
+            "common_errors": ["pāxe (using nominative)", "pācā (wrong declension ending)"],
+            "note": "The -x in nominative pāx becomes -c in the stem"
+          },
+          {
+            "prompt": "Nominative plural of 'name'",
+            "correct_form": "nōmina",
+            "case": "Nominative plural neuter (ending -a, NOT -ēs)",
+            "notes": "Neuter plural always -a; stem nōmin- + -a",
+            "common_errors": ["nōminēs (that's M/F, not neuter)", "nōminis (that's genitive singular)"]
+          },
+          {
+            "prompt": "Dative singular of 'body'",
+            "correct_form": "corporī",
+            "case": "Dative singular (ending -ī)",
+            "notes": "Stem corpor- + -ī",
+            "common_errors": ["corpusī (using nominative instead of stem)", "corporis (that's genitive)"]
+          },
+          {
+            "prompt": "Accusative plural of 'father'",
+            "correct_form": "patrēs",
+            "case": "Accusative plural M/F (ending -ēs)",
+            "notes": "Stem patr- + -ēs; same as nominative plural",
+            "common_errors": ["patera (wrong declension)", "patris (that's genitive singular)"]
+          },
+          {
+            "prompt": "Genitive singular of 'virtue'",
+            "correct_form": "virtūtis",
+            "case": "Genitive singular (ending -is)",
+            "notes": "This is the dictionary form used to find the stem; stem virtūt- + -is",
+            "common_errors": ["virtūsis (using nominative)", "virtūtae (wrong declension)"]
+          },
+          {
+            "prompt": "Ablative plural of 'time'",
+            "correct_form": "temporibus",
+            "case": "Ablative plural (ending -ibus)",
+            "notes": "Stem tempor- + -ibus; same as dative plural",
+            "common_errors": ["temporīs (wrong ending)", "tempusibus (using nominative instead of stem)"]
+          },
+          {
+            "prompt": "Nominative plural of 'mother'",
+            "correct_form": "mātrēs",
+            "case": "Nominative plural M/F (ending -ēs)",
+            "notes": "Stem mātr- + -ēs",
+            "common_errors": ["māteris (confusion)", "mātrīs (wrong ending)"]
+          },
+          {
+            "prompt": "Accusative singular of 'name'",
+            "correct_form": "nōmen",
+            "case": "Accusative singular neuter (same as nominative)",
+            "notes": "Neuter rule: nom = acc; this is the same as the dictionary form",
+            "common_errors": ["nōminem (treating as M/F)", "nōmina (that's plural)"]
+          }
+        ],
+        "partial_credit": "Award 0.07/0.10 for forms that are close but have minor errors (e.g., missing macron but correct ending). For items 1-3, award 0.08/0.10 if form is correct but work not shown. Award 0.00 for completely incorrect forms.",
+        "note": "Production tests whether student can actively generate forms, not just recognize them. Showing work for items 1-3 ensures student understands the stem-finding process."
+      },
+      "estimated_time": "20-25 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify, and produce third declension forms. Students must demonstrate they can USE their knowledge actively, especially recognizing stems and handling ambiguous forms."
+  }
+}

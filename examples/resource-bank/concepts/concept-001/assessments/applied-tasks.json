@@ -1,0 +1,95 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-001",
+  "tasks": [
+    {
+      "id": "applied-001-1",
+      "difficulty": "intermediate",
+      "task_type": "scenario_analysis",
+      "prompt": "You are advising a local coffee shop owner. She tells you: 'I don't understand - I lowered my prices by 20% to attract more customers, but my revenue actually went down!' \n\nAnalyze this situation:\n1. What economic principle explains why lowering prices might reduce revenue?\n2. What does this tell you about the demand for her coffee?\n3. What would you advise her to do?",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Concept Application",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Correctly identifies that demand is inelastic (quantity increase from price cut was smaller than price decrease, so revenue fell). Shows understanding of price-revenue relationship.",
+              "good": "Understands basic relationship between price and revenue, may not use 'elasticity' terminology but grasps concept",
+              "developing": "Partial understanding, may confuse cause and effect",
+              "insufficient": "Does not connect to demand principles"
+            }
+          },
+          {
+            "name": "Practical Reasoning",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "Provides actionable advice (e.g., raise prices back up since demand is inelastic, or differentiate to increase demand). Reasoning is sound.",
+              "good": "Provides reasonable advice with some justification",
+              "developing": "Advice is weak or poorly justified",
+              "insufficient": "No practical advice or incorrect recommendations"
+            }
+          },
+          {
+            "name": "Completeness",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Addresses all 3 questions thoroughly",
+              "good": "Addresses all questions but some answers are brief",
+              "developing": "Misses one question or provides superficial answers",
+              "insufficient": "Incomplete or off-topic"
+            }
+          }
+        ]
+      },
+      "estimated_time": "15-20 minutes",
+      "note": "This task tests understanding of demand responsiveness (preview of elasticity concept). Students don't need to know the term 'elasticity' yet, but should understand the price-quantity-revenue relationship."
+    },
+    {
+      "id": "applied-001-2",
+      "difficulty": "advanced",
+      "task_type": "multi_scenario",
+      "prompt": "For each scenario below, identify: (a) What happens to the demand or supply curve (shift left, shift right, or no shift), and (b) The factor causing the change.\n\nScenarios:\n1. Electric vehicle market: Government announces $10,000 tax credit for EV purchases\n2. Beef market: A disease outbreak forces closure of several major cattle farms\n3. Smartphone market: Apple announces the new iPhone will be released next month\n4. Coffee market: Price of coffee rises from $5 to $7 per pound\n5. Housing market: Mortgage interest rates double from 3% to 6%",
+      "rubric": {
+        "scoring": "Each scenario worth 0.20 points (5 scenarios × 0.20 = 1.00)",
+        "correct_answers": [
+          {
+            "scenario": 1,
+            "answer": "Demand shifts RIGHT",
+            "factor": "Tax credit reduces effective price / increases consumer purchasing power",
+            "note": "Accept 'government subsidy' or 'reduced price' as factor"
+          },
+          {
+            "scenario": 2,
+            "answer": "Supply shifts LEFT",
+            "factor": "Number of sellers decreases / production capacity reduced",
+            "note": "Accept 'supply disruption' or similar"
+          },
+          {
+            "scenario": 3,
+            "answer": "Demand shifts LEFT (for current models)",
+            "factor": "Expectations of better product soon / consumers delay purchase",
+            "note": "This is tricky - some students might say 'no shift' if they think of the whole market. Accept either if well-reasoned."
+          },
+          {
+            "scenario": 4,
+            "answer": "NO SHIFT - movement along demand curve",
+            "factor": "Price change causes movement, not shift",
+            "note": "This is the key test - can they identify that price changes don't shift curves?"
+          },
+          {
+            "scenario": 5,
+            "answer": "Demand shifts LEFT",
+            "factor": "Higher borrowing costs reduce purchasing power / affordability decreases",
+            "note": "Accept 'cost of complements' since mortgages are complementary to home purchases"
+          }
+        ],
+        "partial_credit": "Award 0.10 for correct direction but weak/missing factor explanation"
+      },
+      "estimated_time": "20-30 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80
+  }
+}

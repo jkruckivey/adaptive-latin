@@ -1,0 +1,246 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-006",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-006-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a brief explanation (200-300 words) for a student who has mastered first and second declension but is just starting third declension. Explain: (1) How third declension is different from first and second, (2) Why you need to memorize both nominative and genitive forms, (3) How to find the stem and use it to decline nouns. Include at least one example to illustrate your points.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Understanding",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Clearly explains key differences: genitive -is identifier, unpredictable nominative, stem from genitive; shows solid grasp of why third declension is challenging; demonstrates understanding of declension system",
+              "good": "Explains most key differences; may lack depth on why nominative is unpredictable; generally sound understanding",
+              "developing": "Partial explanation; may confuse concepts or miss key points; shows gaps in understanding",
+              "insufficient": "Cannot explain differences; fundamental misunderstanding of third declension"
+            }
+          },
+          {
+            "name": "Clarity & Organization",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Well-organized with logical progression; uses accessible language appropriate for peer teaching; addresses all three required points; would genuinely help a student",
+              "good": "Generally clear and organized; addresses most points; minor organizational issues",
+              "developing": "Somewhat confusing organization; may not address all three points; unclear in places",
+              "insufficient": "Disorganized or incoherent; fails to address required points; would confuse rather than help"
+            }
+          },
+          {
+            "name": "Examples",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Includes clear, relevant example(s) showing stem-finding and declension process; example is well-integrated and illuminates the explanation",
+              "good": "Includes example but may not fully develop it; example is relevant but could be better integrated",
+              "developing": "Weak example or example doesn't clearly illustrate the concepts; poorly integrated",
+              "insufficient": "No example or incorrect example; doesn't support explanation"
+            }
+          },
+          {
+            "name": "Accuracy",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Completely accurate; no errors in Latin forms or grammatical explanations",
+              "good": "Mostly accurate; minor errors that don't affect overall understanding",
+              "developing": "Some significant errors that may confuse the reader",
+              "insufficient": "Major errors or misconceptions throughout"
+            }
+          }
+        ]
+      },
+      "word_count_range": [200, 300],
+      "estimated_time": "20-25 minutes",
+      "sample_excellent_response": "Third declension is different from first and second declension in several important ways. First, while first declension nouns are identified by their -a nominative ending and second declension by -us/-er (masculine) or -um (neuter), third declension nouns are identified by their genitive singular ending: -is. The nominative singular can end in many different ways (-x, -s, -er, -us, etc.), so you can't rely on it to identify the declension.\n\nThis brings us to the second major difference: you must memorize both the nominative and genitive forms together because you cannot predict one from the other. For example, the noun 'king' is rēx in the nominative, but its genitive is rēgis - you could never guess rēx from rēgis or vice versa. This is because the nominative underwent historical sound changes while the genitive preserved the original stem.\n\nThe stem is crucial for declining third declension nouns. To find it, you take the genitive singular and drop the -is ending. Using our example: rēgis → drop -is → stem is rēg-. Then you add third declension endings to this stem: rēgī (dative), rēgem (accusative), rēge (ablative), rēgēs (nom/acc plural), and so on. Never use the nominative rēx to find the stem - it won't work!\n\nThe key to mastering third declension is accepting that the nominative is unpredictable, always finding your stem from the genitive, and practicing until the paradigm becomes automatic. It's more complex than first and second declension, but once you understand the system, it follows consistent patterns."
+    },
+    {
+      "id": "written-006-2",
+      "difficulty": "advanced",
+      "prompt": "Translate the following sentences into English and provide detailed grammatical commentary. For each sentence, identify: (a) all nouns with their declension, case, number, and gender; (b) why each noun is in that particular case (what function it serves); (c) any challenges or ambiguities in the sentence.\n\nSentences:\n1. Virtūtem mīlitum rēx laudat.\n2. Nōmina rēgum et patrum sunt bona.\n3. Corpora mīlitibus aquam dant.\n4. Cum virtūte et pāce tempus bonum est.\n\nYour commentary should demonstrate deep understanding of third declension, case functions, and how all three declensions work together in sentences.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All four sentences translated correctly with natural English phrasing; captures meaning accurately; handles complex syntax (sentence 3's unusual subject)",
+              "good": "3-4 sentences correct; may have minor phrasing issues but meaning is clear",
+              "developing": "2 sentences correct; significant translation errors; struggles with complex syntax",
+              "insufficient": "0-1 sentences correct; fundamental translation failures"
+            }
+          },
+          {
+            "name": "Grammatical Analysis",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "All nouns correctly identified with full grammatical information (declension, case, number, gender); systematic and thorough analysis; demonstrates mastery of mixed declensions",
+              "good": "Most nouns correctly analyzed (80%+); minor gaps or errors; generally systematic",
+              "developing": "Some nouns correctly analyzed (50-79%); significant gaps in grammatical knowledge",
+              "insufficient": "Most nouns incorrectly analyzed; cannot reliably identify cases or declensions"
+            }
+          },
+          {
+            "name": "Case Function Explanations",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Clear, accurate explanations of WHY each noun is in its case; connects case to syntactic function; shows sophisticated understanding of Latin grammar; addresses sentence 3's unusual construction",
+              "good": "Generally explains case functions correctly; may lack depth or miss some nuances",
+              "developing": "Weak or incomplete explanations; may describe cases without explaining their function in context",
+              "insufficient": "Cannot explain case usage; guessing without understanding"
+            }
+          },
+          {
+            "name": "Identifying Challenges",
+            "weight": 0.05,
+            "criteria": {
+              "excellent": "Identifies key challenges: sentence 3's personified subject, ambiguous forms (nōmina nom vs acc), mixed declensions, multiple genitives",
+              "good": "Identifies some challenges; may miss subtler issues",
+              "developing": "Identifies few or superficial challenges",
+              "insufficient": "Doesn't recognize challenges or ambiguities"
+            }
+          }
+        ]
+      },
+      "estimated_time": "35-45 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Virtūtem mīlitum rēx laudat.",
+          "translation": "The king praises the virtue of the soldiers. / The king praises the soldiers' virtue.",
+          "analysis": {
+            "Virtūtem": {
+              "declension": "3rd",
+              "case": "Accusative singular",
+              "number": "Singular",
+              "gender": "Feminine",
+              "paradigm": "virtūs, virtūtis, f.",
+              "function": "Direct object of laudat (what is being praised)"
+            },
+            "mīlitum": {
+              "declension": "3rd",
+              "case": "Genitive plural",
+              "number": "Plural",
+              "gender": "Masculine",
+              "paradigm": "mīles, mīlitis, m.",
+              "function": "Possession (whose virtue) - modifies virtūtem"
+            },
+            "rēx": {
+              "declension": "3rd",
+              "case": "Nominative singular",
+              "number": "Singular",
+              "gender": "Masculine",
+              "paradigm": "rēx, rēgis, m.",
+              "function": "Subject (who praises)"
+            }
+          },
+          "challenges": "All three nouns are third declension with different cases; must recognize stem-based forms (virtūtem from virtūt-, mīlitum from mīlit-)"
+        },
+        "sentence_2": {
+          "latin": "Nōmina rēgum et patrum sunt bona.",
+          "translation": "The names of the kings and fathers are good. / The kings' and fathers' names are good.",
+          "analysis": {
+            "Nōmina": {
+              "declension": "3rd",
+              "case": "Nominative plural",
+              "number": "Plural",
+              "gender": "Neuter",
+              "paradigm": "nōmen, nōminis, n.",
+              "function": "Subject (what is good)",
+              "note": "Neuter nominative plural in -a (not -ēs); could also be accusative but sunt indicates nominative"
+            },
+            "rēgum": {
+              "declension": "3rd",
+              "case": "Genitive plural",
+              "number": "Plural",
+              "gender": "Masculine",
+              "paradigm": "rēx, rēgis, m.",
+              "function": "Possession (whose names) - modifies nōmina"
+            },
+            "patrum": {
+              "declension": "3rd",
+              "case": "Genitive plural",
+              "number": "Plural",
+              "gender": "Masculine",
+              "paradigm": "pater, patris, m.",
+              "function": "Possession (whose names) - modifies nōmina; conjoined with rēgum"
+            }
+          },
+          "challenges": "Neuter plural nōmina could be nom or acc (ambiguous); two conjoined genitives; recognizing that bona is neuter plural agreeing with nōmina"
+        },
+        "sentence_3": {
+          "latin": "Corpora mīlitibus aquam dant.",
+          "translation": "The bodies give water to the soldiers.",
+          "analysis": {
+            "Corpora": {
+              "declension": "3rd",
+              "case": "Nominative plural",
+              "number": "Plural",
+              "gender": "Neuter",
+              "paradigm": "corpus, corporis, n.",
+              "function": "Subject (what gives) - unusual because 'bodies' as subject is personified/metaphorical",
+              "note": "Could also be accusative, but dant (they give) requires plural subject, so must be nominative"
+            },
+            "mīlitibus": {
+              "declension": "3rd",
+              "case": "Dative plural",
+              "number": "Plural",
+              "gender": "Masculine",
+              "paradigm": "mīles, mīlitis, m.",
+              "function": "Indirect object (to whom water is given)",
+              "note": "Could also be ablative, but context (to whom) indicates dative"
+            },
+            "aquam": {
+              "declension": "1st",
+              "case": "Accusative singular",
+              "number": "Singular",
+              "gender": "Feminine",
+              "paradigm": "aqua, aquae, f.",
+              "function": "Direct object (what is given)"
+            }
+          },
+          "challenges": "Unusual personified subject (corpora); ambiguous forms (corpora could be nom/acc, mīlitibus could be dat/abl); mixing 1st and 3rd declension; recognizing dant agrees with corpora (plural neuter subject takes plural verb)"
+        },
+        "sentence_4": {
+          "latin": "Cum virtūte et pāce tempus bonum est.",
+          "translation": "With virtue and peace, time is good. / Time is good with virtue and peace.",
+          "analysis": {
+            "virtūte": {
+              "declension": "3rd",
+              "case": "Ablative singular",
+              "number": "Singular",
+              "gender": "Feminine",
+              "paradigm": "virtūs, virtūtis, f.",
+              "function": "Ablative of accompaniment with preposition cum"
+            },
+            "pāce": {
+              "declension": "3rd",
+              "case": "Ablative singular",
+              "number": "Singular",
+              "gender": "Feminine",
+              "paradigm": "pāx, pācis, f.",
+              "function": "Ablative of accompaniment with cum; conjoined with virtūte"
+            },
+            "tempus": {
+              "declension": "3rd",
+              "case": "Nominative singular",
+              "number": "Singular",
+              "gender": "Neuter",
+              "paradigm": "tempus, temporis, n.",
+              "function": "Subject (what is good)",
+              "note": "Could also be accusative (neuter rule), but est indicates it's the subject, so nominative"
+            }
+          },
+          "challenges": "Two conjoined ablatives with cum; recognizing that tempus is nominative (subject) not accusative; understanding that bonum is neuter agreeing with tempus"
+        }
+      },
+      "scoring_note": "Sentence 3 is intentionally challenging with its personified subject. Students who recognize this unusual construction demonstrate advanced understanding. Partial credit for correct grammar even if the personification seems odd in translation."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments are time-intensive. Prompt 1 tests teaching/explaining ability. Prompt 2 tests comprehensive grammatical analysis and translation with complex third declension sentences."
+  }
+}

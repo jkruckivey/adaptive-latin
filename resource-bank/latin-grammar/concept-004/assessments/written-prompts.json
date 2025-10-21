@@ -1,0 +1,229 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-004",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-004-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a clear explanation (200-300 words) that you could use to teach a fellow Latin student about adjective-noun agreement. Your explanation must address the most common misconception: students thinking that adjectives and nouns must have the same ending to agree.\n\nYour response should:\n- Explain what agreement actually means (gender, number, case)\n- Address why endings don't have to match\n- Provide at least two contrasting examples (one where endings match, one where they don't)\n- Explain why both examples show correct agreement",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Accuracy",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Clearly explains agreement = gender/number/case matching, NOT ending matching; accurately describes why endings can differ (different declension patterns); demonstrates solid understanding of the core concept",
+              "good": "Explains agreement concept correctly; mentions that endings don't need to match; may lack full depth of explanation",
+              "developing": "Partial understanding; may still conflate agreement with ending-matching; incomplete explanation",
+              "insufficient": "Fundamental misunderstanding; thinks endings must match; cannot explain agreement concept"
+            }
+          },
+          {
+            "name": "Addresses Misconception",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Directly addresses the misconception that endings must match; explains why this misconception is wrong; helps student avoid this error",
+              "good": "Mentions the misconception; provides some guidance on avoiding it",
+              "developing": "Briefly mentions misconception but doesn't fully address it",
+              "insufficient": "Does not address misconception, or reinforces the wrong idea"
+            }
+          },
+          {
+            "name": "Examples Quality",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Provides two clear, contrasting examples (matching endings vs. different endings); both examples are correct; explains WHY each shows agreement",
+              "good": "Provides examples but they may lack contrast or full explanation; generally helpful",
+              "developing": "Weak examples; may not show contrast; explanations unclear",
+              "insufficient": "No examples, or incorrect examples"
+            }
+          },
+          {
+            "name": "Clarity & Pedagogy",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Clear, well-organized writing; would genuinely help another student understand; appropriate language for peer teaching",
+              "good": "Generally clear; minor organizational issues; mostly helpful",
+              "developing": "Somewhat unclear; may confuse rather than clarify",
+              "insufficient": "Unclear, disorganized, or unhelpful"
+            }
+          }
+        ]
+      },
+      "word_count_range": [200, 300],
+      "estimated_time": "20-25 minutes",
+      "sample_excellent_response": "Adjective-noun agreement in Latin is one of the most misunderstood concepts for beginners. Here's what you need to know: agreement means the adjective must match the noun in three ways - gender (masculine, feminine, or neuter), number (singular or plural), and case (nominative, genitive, etc.). Critically, agreement does NOT mean the adjective and noun must have the same ending.\n\nWhy can endings differ? Because adjectives and nouns might follow different declension patterns. Adjectives use 2nd declension endings for masculine/neuter and 1st declension endings for feminine. But the noun might be from any declension. The adjective adapts to match the noun's gender, number, and case - not its specific ending.\n\nExample 1 - Endings match: 'bonus amicus' (good friend). Here, bonus (M nom sg) matches amicus (M nom sg). Both end in -us because both happen to use 2nd declension masculine pattern. This is correct agreement.\n\nExample 2 - Endings differ: 'bona puella' (good girl). Here, bona (F nom sg) matches puella (F nom sg). Both are feminine, singular, nominative - perfect agreement! But the endings look the same (-a) coincidentally. The key is they're both F nom sg.\n\nContrast with wrong: 'bonus puella' would be WRONG because bonus is masculine and puella is feminine - they don't agree in gender, even though you might think you're using the 'dictionary form' of the adjective.\n\nBottom line: Check that gender, number, and case match - then you have agreement, regardless of whether the endings look the same or different."
+    },
+    {
+      "id": "written-004-2",
+      "difficulty": "advanced",
+      "prompt": "Translate the following Latin sentences into English and provide detailed grammatical analysis. For EVERY adjective-noun pair, you must:\n1. Identify both the adjective and noun\n2. State the gender, number, and case of each\n3. Explain why they agree (or identify if there's an error)\n4. Note whether the adjective is attributive or predicate\n\nSentences:\n1. Magnae puellae parvum donum bonō amicō dant.\n2. Multae viae pulchrae sunt.\n3. Parva bella magnam fortunam terrīs dant.\n4. Bonī amicī magnās puellās in silvā vident.\n\nYour analysis should demonstrate that you understand agreement requires matching gender/number/case, not matching endings.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "All four sentences translated correctly; natural English; captures full meaning",
+              "good": "3-4 sentences correct; minor errors in phrasing but meaning clear",
+              "developing": "2 sentences correct; significant errors in understanding",
+              "insufficient": "Fewer than 2 correct; fundamental translation problems"
+            }
+          },
+          {
+            "name": "Adjective-Noun Identification",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "All adjective-noun pairs correctly identified across all sentences; systematic approach",
+              "good": "Most pairs identified (80%+); minor omissions",
+              "developing": "Some pairs identified (50-79%); significant gaps",
+              "insufficient": "Cannot reliably identify adjective-noun pairs"
+            }
+          },
+          {
+            "name": "Gender/Number/Case Analysis",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Correctly identifies G/N/C for all adjectives and nouns; shows systematic understanding",
+              "good": "Most G/N/C identifications correct (80%+); minor errors",
+              "developing": "Some correct (50-79%); frequent errors",
+              "insufficient": "Cannot accurately identify G/N/C"
+            }
+          },
+          {
+            "name": "Agreement Explanation",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Clearly explains agreement for each pair; demonstrates understanding that matching G/N/C (not endings) is key; distinguishes attributive vs. predicate",
+              "good": "Explains agreement; may miss some attributive/predicate distinctions; generally sound",
+              "developing": "Weak explanations; may still focus on endings rather than G/N/C; incomplete analysis",
+              "insufficient": "Cannot explain agreement; fundamental confusion"
+            }
+          }
+        ]
+      },
+      "estimated_time": "35-45 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Magnae puellae parvum donum bonō amicō dant.",
+          "translation": "The large girls give a small gift to the good friend.",
+          "adjective_noun_pairs": [
+            {
+              "adjective": "Magnae",
+              "noun": "puellae",
+              "adj_gnc": "feminine, nominative, plural",
+              "noun_gnc": "feminine, nominative, plural",
+              "agreement": "Both F nom pl - perfect agreement",
+              "type": "attributive",
+              "note": "Forms the subject phrase 'large girls'"
+            },
+            {
+              "adjective": "parvum",
+              "noun": "donum",
+              "adj_gnc": "neuter, accusative, singular",
+              "noun_gnc": "neuter, accusative, singular",
+              "agreement": "Both N acc sg - perfect agreement",
+              "type": "attributive",
+              "note": "Forms the direct object phrase 'small gift'; neuter nom = acc"
+            },
+            {
+              "adjective": "bonō",
+              "noun": "amicō",
+              "adj_gnc": "masculine, dative, singular",
+              "noun_gnc": "masculine, dative, singular",
+              "agreement": "Both M dat sg - perfect agreement",
+              "type": "attributive",
+              "note": "Forms the indirect object phrase 'good friend'; endings match because both are 2nd decl M"
+            }
+          ],
+          "key_insight": "This sentence has three different adjective-noun pairs, three different genders (F, N, M), and three different cases (nom, acc, dat) - all showing perfect agreement!"
+        },
+        "sentence_2": {
+          "latin": "Multae viae pulchrae sunt.",
+          "translation": "Many roads are beautiful.",
+          "adjective_noun_pairs": [
+            {
+              "adjective": "Multae",
+              "noun": "viae",
+              "adj_gnc": "feminine, nominative, plural",
+              "noun_gnc": "feminine, nominative, plural",
+              "agreement": "Both F nom pl - perfect agreement",
+              "type": "attributive",
+              "note": "Forms subject phrase 'many roads'"
+            },
+            {
+              "adjective": "pulchrae",
+              "noun": "viae (subject)",
+              "adj_gnc": "feminine, nominative, plural",
+              "noun_gnc": "feminine, nominative, plural",
+              "agreement": "Both F nom pl - perfect agreement",
+              "type": "predicate",
+              "note": "Predicate adjective describing subject through 'sunt' (are); means 'are beautiful' not 'beautiful roads'"
+            }
+          ],
+          "key_insight": "This sentence has BOTH attributive ('multae' directly modifying 'viae') AND predicate ('pulchrae' describing subject through 'sunt'). Both adjectives agree with 'viae' in F nom pl."
+        },
+        "sentence_3": {
+          "latin": "Parva bella magnam fortunam terrīs dant.",
+          "translation": "Small wars give great fortune to the lands.",
+          "adjective_noun_pairs": [
+            {
+              "adjective": "Parva",
+              "noun": "bella",
+              "adj_gnc": "neuter, nominative, plural",
+              "noun_gnc": "neuter, nominative, plural",
+              "agreement": "Both N nom pl - perfect agreement",
+              "type": "attributive",
+              "note": "Forms subject phrase 'small wars'; neuter plural nom/acc ends in -a"
+            },
+            {
+              "adjective": "magnam",
+              "noun": "fortunam",
+              "adj_gnc": "feminine, accusative, singular",
+              "noun_gnc": "feminine, accusative, singular",
+              "agreement": "Both F acc sg - perfect agreement",
+              "type": "attributive",
+              "note": "Forms direct object phrase 'great fortune'; endings match coincidentally"
+            }
+          ],
+          "note_on_terris": "terrīs has no adjective modifying it - it's dative plural (to the lands) but stands alone",
+          "key_insight": "Notice 'parva' looks like it might be feminine singular, but context (agreeing with bella, N pl) shows it's neuter plural. You must check the NOUN to determine the adjective's form."
+        },
+        "sentence_4": {
+          "latin": "Bonī amicī magnās puellās in silvā vident.",
+          "translation": "The good friends see the large girls in the forest.",
+          "adjective_noun_pairs": [
+            {
+              "adjective": "Bonī",
+              "noun": "amicī",
+              "adj_gnc": "masculine, nominative, plural",
+              "noun_gnc": "masculine, nominative, plural",
+              "agreement": "Both M nom pl - perfect agreement",
+              "type": "attributive",
+              "note": "Forms subject phrase 'good friends'; endings match (both -ī)"
+            },
+            {
+              "adjective": "magnās",
+              "noun": "puellās",
+              "adj_gnc": "feminine, accusative, plural",
+              "noun_gnc": "feminine, accusative, plural",
+              "agreement": "Both F acc pl - perfect agreement",
+              "type": "attributive",
+              "note": "Forms direct object phrase 'large girls'; endings match (both -ās)"
+            }
+          ],
+          "note_on_silva": "silvā is ablative singular (in the forest) with preposition 'in'; no adjective modifying it",
+          "key_insight": "Both adjective-noun pairs happen to have matching endings here, but that's because they're using the same declension patterns. The fundamental agreement is still G/N/C matching."
+        }
+      },
+      "scoring_note": "This is a comprehensive assessment. Students who correctly analyze all four sentences demonstrate mastery of agreement concept, attributive vs. predicate distinction, and ability to work with mixed genders/cases."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written-004-2 is very comprehensive and challenging. Students who complete it well demonstrate strong mastery. Written-004-1 is essential for showing conceptual understanding of the agreement misconception."
+  }
+}

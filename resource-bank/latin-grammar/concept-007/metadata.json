@@ -1,0 +1,27 @@
+{
+  "id": "concept-007",
+  "title": "Infinitives + Indirect Statement (Accusative + Infinitive)",
+  "domain": "latin-grammar",
+  "difficulty": 5,
+  "prerequisites": ["concept-001", "concept-002", "concept-003", "concept-004", "concept-005", "concept-006"],
+  "learning_objectives": [
+    "Form present, perfect, and future infinitives (active and passive)",
+    "Identify verbs of head, heart, and speech that take indirect statement",
+    "Explain accusative + infinitive construction (subject accusative + infinitive)",
+    "Distinguish between direct and indirect statement",
+    "Translate complex sentences with embedded indirect statements"
+  ],
+  "estimated_mastery_time": "120-150 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["capstone", "syntax", "infinitives", "indirect-statement", "complex-sentences"],
+  "vocabulary": [
+    {"latin": "dīcō, dīcere, dīxī, dictus", "english": "to say, tell", "type": "verb"},
+    {"latin": "narrō, narrāre, narrāvī, narrātus", "english": "to tell, relate", "type": "verb"},
+    {"latin": "putō, putāre, putāvī, putātus", "english": "to think, consider", "type": "verb"},
+    {"latin": "crēdō, crēdere, crēdidī, crēditus", "english": "to believe, trust", "type": "verb"},
+    {"latin": "videō, vidēre, vīdī, vīsus", "english": "to see", "type": "verb"},
+    {"latin": "audiō, audīre, audīvī, audītus", "english": "to hear", "type": "verb"},
+    {"latin": "sentiō, sentīre, sēnsī, sēnsus", "english": "to feel, perceive", "type": "verb"}
+  ]
+}

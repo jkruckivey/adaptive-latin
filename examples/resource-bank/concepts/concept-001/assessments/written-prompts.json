@@ -1,0 +1,103 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-001",
+  "prompts": [
+    {
+      "id": "written-001-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a short explanation (150-250 words) that you could use to teach someone who has never studied economics about supply and demand. Make sure to explain both concepts and how they differ.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Accuracy",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "Completely accurate definitions and explanations, no errors",
+              "good": "Mostly accurate with minor imprecisions",
+              "developing": "Some conceptual errors or confusion",
+              "insufficient": "Major errors or misconceptions"
+            }
+          },
+          {
+            "name": "Clarity",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Crystal clear, uses accessible language, well-organized",
+              "good": "Generally clear, minor organizational issues",
+              "developing": "Somewhat confusing or poorly structured",
+              "insufficient": "Unclear or incoherent"
+            }
+          },
+          {
+            "name": "Completeness",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Covers demand, supply, laws of each, and key differences",
+              "good": "Covers main points but may miss some details",
+              "developing": "Missing significant components",
+              "insufficient": "Incomplete or superficial"
+            }
+          },
+          {
+            "name": "Examples",
+            "weight": 0.15,
+            "criteria": {
+              "excellent": "Includes relevant, clear examples that enhance understanding",
+              "good": "Includes examples but they may be generic",
+              "developing": "Weak or confusing examples",
+              "insufficient": "No examples or incorrect examples"
+            }
+          }
+        ]
+      },
+      "word_count_range": [150, 250],
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "written-001-2",
+      "difficulty": "advanced",
+      "prompt": "Analyze the following scenario: 'During the COVID-19 pandemic, the price of hand sanitizer initially spiked dramatically, then eventually fell below pre-pandemic levels.' Write a 200-300 word analysis explaining what happened to supply and demand curves throughout this period. Be specific about shifts vs. movements and the factors driving changes.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Economic Analysis",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Correctly identifies demand spike (right shift) during panic buying, then demand decline (left shift) as pandemic continued. May note supply constraints initially (left shift) and increased production later (right shift)",
+              "good": "Identifies major demand changes correctly, may be less precise on supply dynamics",
+              "developing": "Partial understanding of curve shifts",
+              "insufficient": "Confuses shifts and movements or misidentifies changes"
+            }
+          },
+          {
+            "name": "Shift vs Movement Distinction",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Clearly distinguishes shifts from movements, explains factors driving shifts",
+              "good": "Generally correct distinction",
+              "developing": "Some confusion between shifts and movements",
+              "insufficient": "Does not understand difference"
+            }
+          },
+          {
+            "name": "Causal Reasoning",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Explains WHY curves shifted (panic buying, health concerns, production ramping up, behavior changes)",
+              "good": "Identifies some causal factors",
+              "developing": "Weak or missing causal explanations",
+              "insufficient": "No causal reasoning"
+            }
+          }
+        ]
+      },
+      "word_count_range": [200, 300],
+      "estimated_time": "20-30 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments take longer, so fewer required than dialogue"
+  }
+}

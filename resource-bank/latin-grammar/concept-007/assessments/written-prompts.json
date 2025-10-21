@@ -1,0 +1,214 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-007",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-007-1",
+      "difficulty": "advanced",
+      "prompt": "Write a comprehensive explanation (300-400 words) for a fellow Latin student who is struggling with the concept of indirect statement. Your explanation should cover:\n\n1. What indirect statement is and how it differs from direct statement\n2. The accusative + infinitive construction (why accusative? what does the infinitive do?)\n3. How infinitive tense works (relative vs. absolute time)\n4. At least two concrete examples showing the transformation from direct to indirect statement\n\nYour goal is to help your classmate truly understand this difficult construction, not just memorize rules. Use clear language and helpful examples.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Understanding - Core Construction",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "Clearly explains acc + inf construction; accurately describes why accusative is used (subject of infinitive, not object of main verb); shows solid understanding of the construction's purpose and mechanics; addresses common misconceptions",
+              "good": "Explains basic construction; covers acc + inf pattern; generally accurate but may lack depth on WHY things work this way",
+              "developing": "Partial explanation; may describe the pattern without explaining the logic; some confusion about accusative function",
+              "insufficient": "Cannot explain construction clearly; fundamental misunderstandings; confuses accusative subject with direct object"
+            }
+          },
+          {
+            "name": "Tense Relationships",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Clearly explains relative time concept; accurately describes how present/perfect/future infinitives relate to main verb; provides clear examples of tense translation (e.g., present inf with past main verb = 'was'); shows understanding that infinitive tense is relative, not absolute",
+              "good": "Explains basic tense relationships; covers main patterns (present inf = same time, perfect inf = before); may lack sophistication or complete examples",
+              "developing": "Mentions tense but explanation is unclear or incomplete; may confuse absolute and relative time; weak examples",
+              "insufficient": "Cannot explain tense relationships; major errors in understanding how infinitive tense works"
+            }
+          },
+          {
+            "name": "Examples and Application",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Provides at least two clear, accurate examples of direct → indirect transformation; examples illuminate the concepts effectively; shows transformation process step-by-step; examples vary in complexity (not just two identical patterns)",
+              "good": "Provides examples that are generally helpful; transformations mostly correct; examples support the explanation",
+              "developing": "Examples present but may be generic, incomplete, or not fully integrated with explanation; minor errors in examples",
+              "insufficient": "Weak, incorrect, or missing examples; examples don't help clarify the concept"
+            }
+          },
+          {
+            "name": "Clarity and Pedagogical Quality",
+            "weight": 0.15,
+            "criteria": {
+              "excellent": "Written in accessible, student-friendly language; well-organized logical flow; anticipates reader's confusion and addresses it; would genuinely help a struggling student; encourages understanding over memorization",
+              "good": "Generally clear and organized; mostly accessible language; would help most students",
+              "developing": "Somewhat unclear organization; may use jargon without explanation; would confuse some readers",
+              "insufficient": "Unclear, disorganized, or inaccessible; would not help a struggling student"
+            }
+          }
+        ]
+      },
+      "word_count_range": [300, 400],
+      "estimated_time": "30-40 minutes",
+      "sample_excellent_response": "Indirect statement is one of the most challenging Latin constructions, but understanding it opens up so much Latin literature. Let me break it down.\n\nFirst, the basics: DIRECT statement is when you quote someone's exact words (like 'She said, \"The girl is good\"'), while INDIRECT statement reports what someone said without quoting directly (like 'She said THAT the girl is good'). Notice the word 'that' in English? Latin doesn't use a 'that' word - instead, it uses a special construction called accusative + infinitive.\n\nHere's the key that trips everyone up: when you create indirect statement in Latin, the SUBJECT of what's being said goes into the ACCUSATIVE case, and the verb becomes an INFINITIVE. For example:\n\nDirect: 'Puella bona est.' (The girl is good.) - puella is nominative (subject), est is the verb\nIndirect: 'Dīcō puellam bonam esse.' (I say that the girl is good.) - puellam is accusative, esse is infinitive\n\nWhy accusative? This confuses people because we're used to accusative meaning 'direct object.' But puellam is NOT the object of dīcō - you can't 'say a girl'! Instead, puellam is the SUBJECT of the infinitive esse. In Latin, subjects of infinitives always use accusative case. The whole statement 'puellam bonam esse' is what you're saying.\n\nNow for tense: infinitive tense is RELATIVE to the main verb, not absolute. A present infinitive (like esse) means 'at the same time as the main verb.' So 'Dīcit puellam esse bonam' = 'He says (now) that the girl IS good (now)' - both present. But 'Dīxit puellam esse bonam' = 'He said (then) that the girl WAS good (then)' - both past. Same infinitive (esse), different translation!\n\nPerfect infinitive (like fuisse) means 'before the main verb.' So 'Dīcit puellam fuisse bonam' = 'He says (now) that the girl WAS good (earlier).' The being-good happened before the saying.\n\nHere's another example to cement this:\nDirect: 'Mīlitēs pugnāvērunt.' (The soldiers fought.)\nIndirect: 'Narrō mīlitēs pugnāvisse.' (I tell that the soldiers fought.)\n- mīlitēs became accusative (subject of infinitive)\n- pugnāvērunt became pugnāvisse (perfect infinitive)\n- Perfect infinitive shows the fighting happened before the telling\n\nThe key to mastering this: always ask yourself, 'Who's doing the action of the infinitive?' That's your accusative subject. And 'When does the infinitive's action happen relative to the main verb?' That determines your tense choice. Practice transforming sentences from direct to indirect, and it will click!"
+    },
+    {
+      "id": "written-007-2",
+      "difficulty": "advanced",
+      "prompt": "Translate and analyze the following three Latin sentences. For each sentence:\n\n(a) Provide an accurate English translation\n(b) Identify the main verb and explain what type of verb it is (saying/thinking/perceiving)\n(c) Identify the accusative subject of the indirect statement\n(d) Identify the infinitive and its tense type (present/perfect/future)\n(e) Explain the time relationship (when does the infinitive's action happen relative to the main verb?)\n(f) Note any other important grammatical features (modifiers, additional accusatives, etc.)\n\nSentences:\n1. Putō rēgem virtūtem mīlitum laudāvisse.\n2. Dīxit puellās in silvā cum patribus esse.\n3. Audīvimus mātrem fīliō pecūniam dedisse.\n\nProvide thorough analysis demonstrating your understanding of indirect statement structure.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "All three sentences translated accurately with natural English phrasing; correctly interprets all case functions and tense relationships; captures full meaning including modifiers",
+              "good": "2-3 sentences mostly correct; may have minor phrasing issues but meaning is clear; generally accurate case and tense interpretation",
+              "developing": "1-2 sentences mostly correct; significant errors in case interpretation or tense relationships; meaning partially captured",
+              "insufficient": "Most translations incorrect; fundamental misunderstanding of constructions; cannot handle the complexity"
+            }
+          },
+          {
+            "name": "Main Verb Analysis",
+            "weight": 0.15,
+            "criteria": {
+              "excellent": "Correctly identifies all three main verbs; accurately categorizes each as saying/thinking/perceiving; explains why each takes indirect statement",
+              "good": "Identifies main verbs correctly; mostly accurate categorization; generally sound reasoning",
+              "developing": "Some main verbs identified; weak categorization or explanation",
+              "insufficient": "Cannot identify main verbs or categorize them correctly"
+            }
+          },
+          {
+            "name": "Accusative Subject Identification",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Correctly identifies accusative subject in all three sentences; distinguishes accusative subjects from accusative objects where applicable; explains function clearly",
+              "good": "Identifies accusative subjects correctly; generally sound understanding of function",
+              "developing": "Some subjects identified correctly; may confuse accusative subjects with objects in complex sentences",
+              "insufficient": "Cannot reliably identify accusative subjects; confuses subjects and objects"
+            }
+          },
+          {
+            "name": "Infinitive and Tense Analysis",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Correctly identifies all infinitives and their tense types; accurately explains time relationships (relative to main verb); shows sophisticated understanding of how tense affects translation",
+              "good": "Identifies infinitives and tenses correctly; generally accurate time relationships; sound basic understanding",
+              "developing": "Some infinitives/tenses identified; weak understanding of time relationships; may confuse relative and absolute time",
+              "insufficient": "Cannot identify infinitive types; doesn't understand tense relationships"
+            }
+          },
+          {
+            "name": "Additional Grammatical Features",
+            "weight": 0.15,
+            "criteria": {
+              "excellent": "Identifies all relevant grammatical features (genitives, datives, prepositional phrases, additional accusatives); explains their functions accurately; shows comprehensive syntactic analysis",
+              "good": "Identifies most grammatical features; generally accurate explanations of function",
+              "developing": "Identifies some features but misses others; partial understanding of functions",
+              "insufficient": "Misses most grammatical features or cannot explain their functions"
+            }
+          }
+        ]
+      },
+      "estimated_time": "40-50 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Putō rēgem virtūtem mīlitum laudāvisse.",
+          "translation": "I think that the king has praised the soldiers' courage. / I think that the king praised the soldiers' courage.",
+          "analysis": {
+            "main_verb": {
+              "verb": "Putō",
+              "type": "Verb of thinking (head)",
+              "explanation": "putō means 'I think' - this is a verb of mental activity that introduces indirect statement"
+            },
+            "accusative_subject": {
+              "word": "rēgem",
+              "case": "Accusative singular",
+              "function": "Subject of the infinitive laudāvisse (the king is the one who praised)",
+              "note": "From rēx, rēgis (m.) - king"
+            },
+            "infinitive": {
+              "word": "laudāvisse",
+              "tense_type": "Perfect infinitive",
+              "formation": "From laudō - perfect stem laudāv- + -isse",
+              "translation": "to have praised",
+              "time_relationship": "The praising happened BEFORE I think about it now (perfect infinitive = prior action). Present main verb + perfect inf = 'has praised' or 'praised'"
+            },
+            "additional_features": {
+              "virtūtem": "Accusative singular - direct object of laudāvisse (what did the king praise? courage)",
+              "mīlitum": "Genitive plural - modifies virtūtem (whose courage? the soldiers' courage). From mīles, mīlitis (m.)"
+            },
+            "challenge": "Multiple accusatives (rēgem and virtūtem) with different functions; genitive modifier; perfect infinitive requiring correct tense interpretation"
+          }
+        },
+        "sentence_2": {
+          "latin": "Dīxit puellās in silvā cum patribus esse.",
+          "translation": "He/She said that the girls were in the forest with their fathers.",
+          "analysis": {
+            "main_verb": {
+              "verb": "Dīxit",
+              "type": "Verb of saying (speech)",
+              "explanation": "dīcō means 'to say/tell' - verb of saying in perfect tense (he/she said)"
+            },
+            "accusative_subject": {
+              "word": "puellās",
+              "case": "Accusative plural",
+              "function": "Subject of the infinitive esse (the girls are the ones being in the forest)"
+            },
+            "infinitive": {
+              "word": "esse",
+              "tense_type": "Present infinitive",
+              "translation": "to be",
+              "time_relationship": "Being in forest happened at SAME TIME as he said it (present infinitive = simultaneous). Past main verb + present inf = 'were'"
+            },
+            "additional_features": {
+              "in silvā": "Prepositional phrase - 'in the forest' (ablative of place where)",
+              "cum patribus": "Prepositional phrase - 'with the fathers' (ablative of accompaniment). cum + ablative = 'with'",
+              "note": "Both prepositional phrases are part of the indirect statement, modifying the location and companions of the girls"
+            },
+            "challenge": "Multiple prepositional phrases within indirect statement; requires understanding that present infinitive with past main verb = 'were' not 'are'"
+          }
+        },
+        "sentence_3": {
+          "latin": "Audīvimus mātrem fīliō pecūniam dedisse.",
+          "translation": "We heard that the mother gave/had given money to her son.",
+          "analysis": {
+            "main_verb": {
+              "verb": "Audīvimus",
+              "type": "Verb of perceiving (senses)",
+              "explanation": "audiō means 'to hear' - verb of perceiving in perfect tense (we heard)"
+            },
+            "accusative_subject": {
+              "word": "mātrem",
+              "case": "Accusative singular",
+              "function": "Subject of the infinitive dedisse (the mother is the one who gave)"
+            },
+            "infinitive": {
+              "word": "dedisse",
+              "tense_type": "Perfect infinitive",
+              "formation": "From dō, dare, dedī - perfect stem ded- + -isse",
+              "translation": "to have given",
+              "time_relationship": "The giving happened BEFORE we heard about it (perfect infinitive = prior action). Past main verb + perfect inf = pluperfect 'had given' or simple past 'gave'"
+            },
+            "additional_features": {
+              "fīliō": "Dative singular - indirect object of dedisse (to whom did she give? to her son)",
+              "pecūniam": "Accusative singular - direct object of dedisse (what did she give? money)",
+              "note": "This sentence has THREE different case functions in the indirect statement: accusative subject (mātrem), dative indirect object (fīliō), and accusative direct object (pecūniam)"
+            },
+            "challenge": "Most complex sentence - combines accusative subject, dative indirect object, accusative direct object, and perfect infinitive with past main verb (pluperfect time relationship)"
+          }
+        }
+      },
+      "scoring_note": "Sentence 3 is the most challenging. Full credit requires correctly identifying all three case functions (acc subject, dat indirect object, acc direct object) and explaining the pluperfect time relationship. Partial credit awarded for identifying most elements even if some details are missed."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments for Concept 007 are significantly more challenging than earlier concepts. Students must demonstrate they can both explain the construction conceptually (prompt 1) and analyze complex sentences systematically (prompt 2). Both prompts are advanced difficulty, reflecting the capstone nature of this concept."
+  }
+}

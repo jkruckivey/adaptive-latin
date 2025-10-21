@@ -1,0 +1,155 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-001",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-001-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a brief explanation (150-250 words) that you could use to teach someone who has never studied Latin about the Latin case system. Focus on what cases ARE, why Latin uses them, and how they differ from English. Make sure your explanation would help a beginner understand why case endings are important.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Understanding",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Clearly explains that cases show grammatical function through endings; notes that Latin uses cases where English uses word order; demonstrates solid grasp of the system's purpose",
+              "good": "Explains basic concept of cases; may lack comparison to English or full explanation of purpose",
+              "developing": "Partial or confused explanation; may describe individual cases without explaining the overall system",
+              "insufficient": "Cannot explain what cases are or why they exist; fundamental misunderstanding"
+            }
+          },
+          {
+            "name": "Clarity & Organization",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Well-organized, logical flow; uses accessible language; would actually help a beginner understand",
+              "good": "Generally clear; minor organizational issues; mostly accessible",
+              "developing": "Somewhat confusing; poor organization; may use unexplained jargon",
+              "insufficient": "Unclear or incoherent; would not help a beginner"
+            }
+          },
+          {
+            "name": "Examples",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Includes relevant examples (Latin and/or English) that illuminate the concept",
+              "good": "Includes examples but they may be generic or not fully integrated",
+              "developing": "Weak examples or examples that don't help explain",
+              "insufficient": "No examples or incorrect examples"
+            }
+          },
+          {
+            "name": "Accuracy",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "No errors; completely accurate information",
+              "good": "Minor imprecisions that don't affect overall understanding",
+              "developing": "Some errors that may confuse",
+              "insufficient": "Major errors or misconceptions"
+            }
+          }
+        ]
+      },
+      "word_count_range": [150, 250],
+      "estimated_time": "15-20 minutes",
+      "sample_excellent_response": "The Latin case system is how Latin shows what role a noun plays in a sentence. In English, we mainly use word order: 'The girl sees the boy' is different from 'The boy sees the girl' - the position tells us who's doing what. But Latin uses special endings called cases instead. For example, 'puella' (the girl) changes to 'puellam' when she's being seen rather than doing the seeing. There are five cases, each with different functions: nominative for subjects, accusative for direct objects, genitive for possession, dative for indirect objects, and ablative for various 'by/with/from' meanings. This system allows Latin to have flexible word order - you can emphasize different words by moving them around, because the endings always tell you each word's grammatical role. So 'Puella viam videt' (the girl sees the road) and 'Viam puella videt' mean exactly the same thing - the endings tell you that puella (ending in -a) is the subject and viam (ending in -am) is the object, regardless of their position in the sentence."
+    },
+    {
+      "id": "written-001-2",
+      "difficulty": "advanced",
+      "prompt": "Translate the following three sentences into English and provide grammatical commentary explaining your translation decisions. For each sentence, identify the case of every noun and explain WHY it's in that case.\n\nSentences:\n1. Puella est in viā.\n2. Vitam puellārum video.\n3. Portās terrārum puellīs narro.\n\nYour response should include: (a) English translations, (b) Case identification for each noun, (c) Explanation of why each noun is in that case based on its function in the sentence.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All three sentences translated correctly with appropriate English phrasing; captures meaning accurately",
+              "good": "2-3 sentences correct; may have minor issues with English phrasing but meaning is clear",
+              "developing": "1-2 sentences correct; significant errors in understanding",
+              "insufficient": "Most or all translations incorrect; fundamental misunderstanding"
+            }
+          },
+          {
+            "name": "Case Identification",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All nouns correctly identified by case; shows systematic understanding",
+              "good": "Most cases correct (80%+); minor errors",
+              "developing": "Some cases correct (50-79%); significant gaps",
+              "insufficient": "Most cases incorrect; cannot identify cases reliably"
+            }
+          },
+          {
+            "name": "Grammatical Explanation",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Clear, accurate explanations of WHY each noun is in its case; connects case to function in sentence; demonstrates syntactic understanding",
+              "good": "Generally correct explanations; may lack depth or miss some connections",
+              "developing": "Weak or incomplete explanations; may describe cases without explaining their function",
+              "insufficient": "Cannot explain case usage; guessing without understanding"
+            }
+          }
+        ]
+      },
+      "estimated_time": "25-35 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Puella est in viā.",
+          "translation": "The girl is in the road/street.",
+          "analysis": {
+            "Puella": {
+              "case": "Nominative singular",
+              "reason": "Subject of the sentence (who is in the road)"
+            },
+            "viā": {
+              "case": "Ablative singular",
+              "reason": "Ablative of place where with the preposition 'in' (location)"
+            }
+          }
+        },
+        "sentence_2": {
+          "latin": "Vitam puellārum video.",
+          "translation": "I see the life of the girls / I see the girls' life.",
+          "analysis": {
+            "Vitam": {
+              "case": "Accusative singular",
+              "reason": "Direct object of the verb 'video' (what is being seen)"
+            },
+            "puellārum": {
+              "case": "Genitive plural",
+              "reason": "Shows possession (whose life) - modifies 'vitam'"
+            }
+          }
+        },
+        "sentence_3": {
+          "latin": "Portās terrārum puellīs narro.",
+          "translation": "I tell about the gates of the lands to the girls / I tell the girls about the gates of the lands.",
+          "analysis": {
+            "Portās": {
+              "case": "Accusative plural",
+              "reason": "Direct object of 'narro' (what is being told about)"
+            },
+            "terrārum": {
+              "case": "Genitive plural",
+              "reason": "Shows possession (gates of what lands) - modifies 'portās'"
+            },
+            "puellīs": {
+              "case": "Dative plural",
+              "reason": "Indirect object (to whom the story is told)"
+            }
+          },
+          "note": "This sentence is complex because it combines accusative, genitive, and dative - testing all major case functions"
+        }
+      },
+      "scoring_note": "Sentence 3 is intentionally challenging. Students who correctly analyze it demonstrate strong mastery. Partial credit for identifying most cases correctly even if translation is imperfect."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments are more time-intensive, so fewer are required. However, students must demonstrate they can explain concepts in writing and analyze Latin sentences systematically."
+  }
+}

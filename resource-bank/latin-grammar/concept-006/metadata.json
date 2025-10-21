@@ -1,0 +1,29 @@
+{
+  "id": "concept-006",
+  "title": "Third Declension Nouns (Consonant Stems)",
+  "domain": "latin-grammar",
+  "difficulty": 4,
+  "prerequisites": ["concept-001", "concept-002", "concept-003", "concept-004", "concept-005"],
+  "learning_objectives": [
+    "Identify third declension nouns by their genitive singular ending (-is)",
+    "Find the stem by dropping -is from genitive singular",
+    "Decline third declension consonant-stem nouns (masculine, feminine, neuter)",
+    "Distinguish between nominative and accusative in neuter third declension",
+    "Translate sentences with all three declensions mixed"
+  ],
+  "estimated_mastery_time": "90-120 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["advanced", "declension", "noun-system", "consonant-stems"],
+  "vocabulary": [
+    {"latin": "rēx, rēgis", "english": "king", "gender": "m"},
+    {"latin": "mīles, mīlitis", "english": "soldier", "gender": "m"},
+    {"latin": "pater, patris", "english": "father", "gender": "m"},
+    {"latin": "māter, mātris", "english": "mother", "gender": "f"},
+    {"latin": "virtūs, virtūtis", "english": "virtue, courage", "gender": "f"},
+    {"latin": "pāx, pācis", "english": "peace", "gender": "f"},
+    {"latin": "nōmen, nōminis", "english": "name", "gender": "n"},
+    {"latin": "corpus, corporis", "english": "body", "gender": "n"},
+    {"latin": "tempus, temporis", "english": "time", "gender": "n"}
+  ]
+}

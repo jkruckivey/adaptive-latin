@@ -1,0 +1,17 @@
+{
+  "id": "concept-001",
+  "title": "Supply and Demand Fundamentals",
+  "domain": "microeconomics",
+  "difficulty": 1,
+  "prerequisites": [],
+  "learning_objectives": [
+    "Define supply and demand",
+    "Explain the law of supply and the law of demand",
+    "Identify factors that shift supply and demand curves",
+    "Interpret supply and demand graphs"
+  ],
+  "estimated_mastery_time": "60-90 minutes",
+  "available_resource_types": ["text", "video", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["foundational", "graphical-analysis", "market-basics"]
+}

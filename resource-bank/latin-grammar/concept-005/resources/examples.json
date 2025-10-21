@@ -1,0 +1,416 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Perfect Tense Paradigm - amō, amāre, amāvī",
+      "description": "Complete conjugation of the perfect tense with both English translations for each form.",
+      "paradigm": {
+        "verb": "amō, amāre, amāvī, amātum (to love)",
+        "perfect_stem": "amāv-",
+        "tense": "Perfect",
+        "forms": [
+          {
+            "person": "1st Singular",
+            "form": "amāvī",
+            "breakdown": "amāv- + -ī",
+            "translation_1": "I loved",
+            "translation_2": "I have loved",
+            "example_sentence": "Puellam amāvī.",
+            "example_translation": "I loved the girl / I have loved the girl."
+          },
+          {
+            "person": "2nd Singular",
+            "form": "amāvistī",
+            "breakdown": "amāv- + -istī",
+            "translation_1": "you loved",
+            "translation_2": "you have loved",
+            "example_sentence": "Patriam amāvistī.",
+            "example_translation": "You loved your country / You have loved your country."
+          },
+          {
+            "person": "3rd Singular",
+            "form": "amāvit",
+            "breakdown": "amāv- + -it",
+            "translation_1": "he/she/it loved",
+            "translation_2": "he/she/it has loved",
+            "example_sentence": "Puer puellam amāvit.",
+            "example_translation": "The boy loved the girl / The boy has loved the girl."
+          },
+          {
+            "person": "1st Plural",
+            "form": "amāvimus",
+            "breakdown": "amāv- + -imus",
+            "translation_1": "we loved",
+            "translation_2": "we have loved",
+            "example_sentence": "Magistrum amāvimus.",
+            "example_translation": "We loved the teacher / We have loved the teacher."
+          },
+          {
+            "person": "2nd Plural",
+            "form": "amāvistis",
+            "breakdown": "amāv- + -istis",
+            "translation_1": "you (pl.) loved",
+            "translation_2": "you (pl.) have loved",
+            "example_sentence": "Rēgem amāvistis.",
+            "example_translation": "You all loved the king / You all have loved the king."
+          },
+          {
+            "person": "3rd Plural",
+            "form": "amāvērunt",
+            "breakdown": "amāv- + -ērunt",
+            "translation_1": "they loved",
+            "translation_2": "they have loved",
+            "example_sentence": "Cīvēs lībertātem amāvērunt.",
+            "example_translation": "The citizens loved freedom / The citizens have loved freedom.",
+            "note": "Notice -ērunt (long ē) is PERFECT, not future"
+          }
+        ],
+        "note": "The perfect tense always has TWO valid English translations: simple past (loved) and present perfect (have loved). Context determines which sounds more natural."
+      }
+    },
+    {
+      "title": "Example 2: All Three Perfect System Tenses Compared",
+      "description": "Side-by-side comparison of perfect, pluperfect, and future perfect using the same verb.",
+      "verb": "portō, portāre, portāvī, portātum (to carry)",
+      "perfect_stem": "portāv-",
+      "comparison": [
+        {
+          "tense": "Perfect",
+          "first_singular": "portāvī",
+          "translation": "I carried / I have carried",
+          "example": "Aquam portāvī.",
+          "example_translation": "I carried the water / I have carried the water.",
+          "time": "Completed action in the past"
+        },
+        {
+          "tense": "Pluperfect",
+          "first_singular": "portāveram",
+          "translation": "I had carried",
+          "example": "Aquam portāveram antequam vēnistī.",
+          "example_translation": "I had carried the water before you came.",
+          "time": "Completed action BEFORE another past action"
+        },
+        {
+          "tense": "Future Perfect",
+          "first_singular": "portāverō",
+          "translation": "I will have carried",
+          "example": "Aquam portāverō cum veniēs.",
+          "example_translation": "I will have carried the water when you come.",
+          "time": "Action that will be completed BEFORE another future action"
+        }
+      ],
+      "third_plural_comparison": [
+        {
+          "tense": "Perfect",
+          "form": "portāvērunt",
+          "translation": "they carried / they have carried",
+          "note": "Long ē in -ērunt"
+        },
+        {
+          "tense": "Pluperfect",
+          "form": "portāverant",
+          "translation": "they had carried"
+        },
+        {
+          "tense": "Future Perfect",
+          "form": "portāverint",
+          "translation": "they will have carried",
+          "note": "Short e in -erint (distinguishes from perfect -ērunt)"
+        }
+      ]
+    },
+    {
+      "title": "Example 3: Finding Perfect Stems from Principal Parts",
+      "description": "Practice identifying perfect stems from dictionary entries across all conjugations.",
+      "verbs": [
+        {
+          "principal_parts": "amō, amāre, amāvī, amātum",
+          "english": "to love",
+          "conjugation": "1st",
+          "perfect_stem_derivation": "amāvī → remove -ī → amāv-",
+          "perfect_stem": "amāv-",
+          "sample_perfect_form": "amāvimus (we loved)"
+        },
+        {
+          "principal_parts": "vocō, vocāre, vocāvī, vocātum",
+          "english": "to call",
+          "conjugation": "1st",
+          "perfect_stem_derivation": "vocāvī → remove -ī → vocāv-",
+          "perfect_stem": "vocāv-",
+          "sample_perfect_form": "vocāvit (he/she called)"
+        },
+        {
+          "principal_parts": "dō, dāre, dedī, datum",
+          "english": "to give",
+          "conjugation": "1st (irregular)",
+          "perfect_stem_derivation": "dedī → remove -ī → ded-",
+          "perfect_stem": "ded-",
+          "sample_perfect_form": "dedērunt (they gave)",
+          "note": "IRREGULAR! Not dāvī - must memorize dedī"
+        },
+        {
+          "principal_parts": "stō, stāre, stetī, statum",
+          "english": "to stand",
+          "conjugation": "1st (irregular)",
+          "perfect_stem_derivation": "stetī → remove -ī → stet-",
+          "perfect_stem": "stet-",
+          "sample_perfect_form": "stetī (I stood)",
+          "note": "IRREGULAR! Not stāvī - must memorize stetī"
+        },
+        {
+          "principal_parts": "moneō, monēre, monuī, monitum",
+          "english": "to warn",
+          "conjugation": "2nd",
+          "perfect_stem_derivation": "monuī → remove -ī → monu-",
+          "perfect_stem": "monu-",
+          "sample_perfect_form": "monuistī (you warned)"
+        },
+        {
+          "principal_parts": "dūcō, dūcere, dūxī, ductum",
+          "english": "to lead",
+          "conjugation": "3rd",
+          "perfect_stem_derivation": "dūxī → remove -ī → dūx-",
+          "perfect_stem": "dūx-",
+          "sample_perfect_form": "dūxī (I led)"
+        },
+        {
+          "principal_parts": "audiō, audīre, audīvī, audītum",
+          "english": "to hear",
+          "conjugation": "4th",
+          "perfect_stem_derivation": "audīvī → remove -ī → audīv-",
+          "perfect_stem": "audīv-",
+          "sample_perfect_form": "audīvērunt (they heard)"
+        }
+      ],
+      "key_lesson": "The perfect stem is NOT predictable from the present stem. You must memorize the third principal part for each verb. However, once you have the perfect stem, the endings are the same for ALL conjugations!"
+    },
+    {
+      "title": "Example 4: Perfect vs. Imperfect - Recognizing the Difference",
+      "description": "Learn to distinguish perfect tense (completed action) from imperfect tense (ongoing past action).",
+      "comparisons": [
+        {
+          "perfect_form": "amāvī",
+          "perfect_translation": "I loved / I have loved",
+          "perfect_stem": "amāv- (perfect stem)",
+          "perfect_meaning": "Completed action in the past",
+          "imperfect_form": "amābam",
+          "imperfect_translation": "I was loving / I used to love",
+          "imperfect_stem": "amā- (present stem) + -ba- (imperfect marker)",
+          "imperfect_meaning": "Ongoing or habitual action in the past",
+          "example_contrast": {
+            "perfect_sentence": "Puellam amāvī.",
+            "perfect_translation": "I loved the girl. (at some point, it happened)",
+            "imperfect_sentence": "Puellam amābam.",
+            "imperfect_translation": "I was loving the girl / I used to love the girl. (ongoing)"
+          }
+        },
+        {
+          "perfect_form": "vocāvērunt",
+          "perfect_translation": "they called / they have called",
+          "perfect_stem": "vocāv- (perfect stem)",
+          "imperfect_form": "vocābant",
+          "imperfect_translation": "they were calling / they used to call",
+          "imperfect_stem": "vocā- (present stem) + -ba-",
+          "example_contrast": {
+            "perfect_sentence": "Mē vocāvērunt.",
+            "perfect_translation": "They called me. (completed action)",
+            "imperfect_sentence": "Mē vocābant.",
+            "imperfect_translation": "They were calling me / They used to call me. (ongoing/repeated)"
+          }
+        }
+      ],
+      "recognition_tips": [
+        "Perfect uses the PERFECT STEM (from 3rd principal part): amāv-, vocāv-, ded-",
+        "Imperfect uses the PRESENT STEM (from infinitive): amā-, vocā-, dā-",
+        "Perfect has distinctive endings: -ī, -istī, -it, -imus, -istis, -ērunt",
+        "Imperfect always has -ba- before the personal endings: -bam, -bās, -bat, -bāmus, -bātis, -bant"
+      ]
+    },
+    {
+      "title": "Example 5: Pluperfect Tense - Time Sequences",
+      "description": "Understanding how pluperfect shows an action completed BEFORE another past action.",
+      "verb": "narrō, narrāre, narrāvī, narrātum (to tell)",
+      "perfect_stem": "narrāv-",
+      "pluperfect_forms": [
+        {
+          "person": "1st Singular",
+          "form": "narrāveram",
+          "breakdown": "narrāv- + -eram",
+          "translation": "I had told"
+        },
+        {
+          "person": "2nd Singular",
+          "form": "narrāverās",
+          "breakdown": "narrāv- + -erās",
+          "translation": "you had told"
+        },
+        {
+          "person": "3rd Singular",
+          "form": "narrāverat",
+          "breakdown": "narrāv- + -erat",
+          "translation": "he/she/it had told"
+        },
+        {
+          "person": "1st Plural",
+          "form": "narrāverāmus",
+          "breakdown": "narrāv- + -erāmus",
+          "translation": "we had told"
+        },
+        {
+          "person": "2nd Plural",
+          "form": "narrāverātis",
+          "breakdown": "narrāv- + -erātis",
+          "translation": "you (pl.) had told"
+        },
+        {
+          "person": "3rd Plural",
+          "form": "narrāverant",
+          "breakdown": "narrāv- + -erant",
+          "translation": "they had told"
+        }
+      ],
+      "time_sequence_examples": [
+        {
+          "sentence": "Fābulam narrāveram antequam vēnistī.",
+          "translation": "I had told the story before you came.",
+          "analysis": "Two past actions: (1) I told the story [EARLIER - pluperfect], (2) you came [LATER - perfect]. The pluperfect shows which happened first."
+        },
+        {
+          "sentence": "Cēnam parāverat cum intrāvimus.",
+          "translation": "He had prepared dinner when we entered.",
+          "analysis": "He prepared dinner [EARLIER - pluperfect] before we entered [LATER - perfect]."
+        }
+      ],
+      "memory_aid": "Pluperfect = Perfect stem + endings that look like imperfect of sum (eram, erās, erat...)"
+    },
+    {
+      "title": "Example 6: Future Perfect Tense - Completion Before a Future Event",
+      "description": "Understanding how future perfect shows an action that will be completed BEFORE another future action.",
+      "verb": "parō, parāre, parāvī, parātum (to prepare)",
+      "perfect_stem": "parāv-",
+      "future_perfect_forms": [
+        {
+          "person": "1st Singular",
+          "form": "parāverō",
+          "breakdown": "parāv- + -erō",
+          "translation": "I will have prepared"
+        },
+        {
+          "person": "2nd Singular",
+          "form": "parāveris",
+          "breakdown": "parāv- + -eris",
+          "translation": "you will have prepared"
+        },
+        {
+          "person": "3rd Singular",
+          "form": "parāverit",
+          "breakdown": "parāv- + -erit",
+          "translation": "he/she/it will have prepared"
+        },
+        {
+          "person": "1st Plural",
+          "form": "parāverimus",
+          "breakdown": "parāv- + -erimus",
+          "translation": "we will have prepared"
+        },
+        {
+          "person": "2nd Plural",
+          "form": "parāveritis",
+          "breakdown": "parāv- + -eritis",
+          "translation": "you (pl.) will have prepared"
+        },
+        {
+          "person": "3rd Plural",
+          "form": "parāverint",
+          "breakdown": "parāv- + -erint",
+          "translation": "they will have prepared"
+        }
+      ],
+      "time_sequence_examples": [
+        {
+          "sentence": "Cēnam parāverō antequam veniēs.",
+          "translation": "I will have prepared dinner before you come.",
+          "analysis": "Two future actions: (1) I will prepare dinner [EARLIER - future perfect], (2) you will come [LATER - future]. The future perfect shows which will happen first."
+        },
+        {
+          "sentence": "Litterās scrīpserint cum adveniēmus.",
+          "translation": "They will have written the letters when we arrive.",
+          "analysis": "They will write letters [EARLIER - future perfect] before we arrive [LATER - future]."
+        }
+      ],
+      "memory_aid": "Future Perfect = Perfect stem + endings that look like future of sum (erō, eris, erit...)"
+    },
+    {
+      "title": "Example 7: Common Mistakes and How to Fix Them",
+      "description": "Learn from typical errors students make with the perfect system.",
+      "mistakes": [
+        {
+          "error": "Confusing perfect -ērunt with future perfect -erint",
+          "incorrect_thinking": "Seeing -ērunt and thinking it's future",
+          "why_wrong": "-ērunt (with long ē) is 3rd plural PERFECT, not future perfect",
+          "correct_approach": "Perfect: -ērunt (long ē + -runt); Future Perfect: -erint (short e + -rint)",
+          "example": {
+            "form": "amāvērunt",
+            "wrong_translation": "they will have loved (X)",
+            "correct_translation": "they loved / they have loved (✓)",
+            "comparison": "Future perfect would be: amāverint (they will have loved)"
+          }
+        },
+        {
+          "error": "Trying to predict perfect stems from present stems",
+          "incorrect_thinking": "If the verb is amō, the perfect must be amāvī",
+          "why_wrong": "Perfect stems are NOT predictable - many verbs have irregular perfect forms",
+          "correct_approach": "Always memorize the third principal part",
+          "examples": [
+            {
+              "verb": "dō, dāre",
+              "wrong_assumption": "perfect = dāvī (X)",
+              "actual_perfect": "dedī (✓)",
+              "note": "Completely irregular - must memorize"
+            },
+            {
+              "verb": "stō, stāre",
+              "wrong_assumption": "perfect = stāvī (X)",
+              "actual_perfect": "stetī (✓)",
+              "note": "Irregular reduplication - must memorize"
+            }
+          ]
+        },
+        {
+          "error": "Translating perfect only as simple past",
+          "incorrect_thinking": "amāvī = I loved (only)",
+          "why_wrong": "Perfect has TWO valid translations in English",
+          "correct_approach": "Remember both options: 'I loved' AND 'I have loved'",
+          "example": {
+            "form": "amāvī",
+            "translation_1": "I loved (✓)",
+            "translation_2": "I have loved (✓)",
+            "note": "Both are correct! Choose based on context."
+          }
+        },
+        {
+          "error": "Confusing perfect and imperfect",
+          "incorrect_thinking": "amāvī and amābam mean the same thing",
+          "why_wrong": "Different stems, different meanings, different aspects",
+          "correct_approach": "Perfect (amāv-) = completed action; Imperfect (amā- + -ba-) = ongoing/habitual action",
+          "example": {
+            "perfect": "Puellam amāvī = I loved the girl (completed action)",
+            "imperfect": "Puellam amābam = I was loving / I used to love the girl (ongoing)",
+            "key_difference": "Perfect uses perfect stem (amāv-); imperfect uses present stem (amā-) + -ba-"
+          }
+        },
+        {
+          "error": "Forgetting the time relationship in pluperfect",
+          "incorrect_thinking": "Pluperfect = past tense (just like perfect)",
+          "why_wrong": "Pluperfect specifically means 'had [verb]ed' - action completed BEFORE another past action",
+          "correct_approach": "Always translate pluperfect as 'had [verb]ed' and look for the sequence of events",
+          "example": {
+            "sentence": "Cēnam parāveram cum vēnistī.",
+            "wrong_translation": "I prepared dinner when you came. (X)",
+            "correct_translation": "I had prepared dinner when you came. (✓)",
+            "explanation": "Preparing dinner happened BEFORE you came - pluperfect shows this sequence"
+          }
+        }
+      ]
+    }
+  ]
+}

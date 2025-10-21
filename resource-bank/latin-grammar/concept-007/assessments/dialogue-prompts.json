@@ -1,0 +1,384 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-007",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-007-1",
+      "difficulty": "basic",
+      "prompt": "In the sentence 'Dīcō puellam bonam esse' (I say that the girl is good), why is 'puellam' in the accusative case? Isn't it the direct object of 'dīcō'?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that puellam is the SUBJECT of the infinitive esse, not object of dīcō",
+            "Notes that subjects of infinitives go into accusative case in Latin",
+            "May mention that the entire acc + inf construction is what you're 'saying'",
+            "Shows clear understanding of the distinction"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Puellam is NOT the direct object of dīcō. It's the subject of the infinitive 'esse' - the girl is the one 'being good.' In Latin, the subject of an infinitive is always in the accusative case. The whole statement 'puellam bonam esse' is what I'm saying - that's the object of dīcō, not just puellam by itself."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies puellam as subject of infinitive",
+            "Understands it's accusative because it's subject of infinitive",
+            "May lack full explanation of why"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It's the subject of the infinitive esse, not the object of dīcō. Subjects of infinitives are accusative."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May know it's related to infinitive but unclear on details",
+            "Uncertain about subject vs. object distinction"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it has something to do with the infinitive?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain or gives incorrect explanation",
+            "Still thinks puellam is object of dīcō",
+            "Doesn't understand indirect statement construction"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's accusative because it's the direct object of dīcō."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So in that same sentence, why is 'bonam' also accusative?",
+        "Excellent. How would you translate 'Dīcō puellās bonās esse'?"
+      ],
+      "follow_up_if_developing": [
+        "Let me help: In 'puellam esse bonam,' who is 'being good'? The girl (puellam). So is puellam the subject or object of esse?",
+        "Think of it this way: Can you 'say a girl'? Or do you 'say a statement about a girl'?"
+      ]
+    },
+    {
+      "id": "dialogue-007-2",
+      "difficulty": "intermediate",
+      "prompt": "What's the difference between 'Dīcit puellam esse bonam' and 'Dīxit puellam esse bonam'? They both have the same infinitive (esse), so why do they translate differently?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that infinitive tense is RELATIVE to the main verb",
+            "First sentence: present main verb + present inf = same time = 'is'",
+            "Second sentence: past main verb + present inf = same time (in past) = 'was'",
+            "Shows understanding that esse translates differently based on when the main verb happens",
+            "May reference the concept of relative vs. absolute time"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The infinitive tense is relative to the main verb's time. In 'Dīcit puellam esse bonam,' the present infinitive (esse) shows the same time as the present main verb (dīcit), so it translates as 'is' - 'He says that the girl IS good.' In 'Dīxit puellam esse bonam,' the same present infinitive shows the same time as the PAST main verb (dīxit), so it translates as 'was' - 'He said that the girl WAS good.' The infinitive's tense shows relationship to the main verb, not absolute time."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes that main verb tense affects translation",
+            "Correctly translates both sentences",
+            "May not fully articulate the 'relative time' concept"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Dīcit is present so it's 'he says that the girl IS good.' Dīxit is past so it's 'he said that the girl WAS good.' The main verb changes the translation."
+        },
+        "developing": {
+          "criteria": [
+            "Recognizes they translate differently",
+            "Uncertain why or how",
+            "May give one correct translation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "One is present and one is past, so they're different?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain difference",
+            "Translates both the same way",
+            "Doesn't understand tense relationships"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They both mean 'he says that the girl is good.'"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So how would 'Dīxit puellam fuisse bonam' translate? What infinitive is that?",
+        "Perfect understanding! What if the sentence were 'Dīcit puellam fuisse bonam' - how would that change things?"
+      ],
+      "follow_up_if_developing": [
+        "When does the main action happen in 'Dīcit'? (now - present) When does the girl 'being good' happen relative to that? (also now - same time)",
+        "When does the main action happen in 'Dīxit'? (then - past) When does the girl 'being good' happen relative to that? (also then - same time)"
+      ]
+    },
+    {
+      "id": "dialogue-007-3",
+      "difficulty": "intermediate",
+      "prompt": "Look at this sentence: 'Putō rēgem mīlitēs vidēre.' There are two accusatives here - 'rēgem' and 'mīlitēs'. How do you know which one is the subject of the indirect statement and which one is the object?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies rēgem as subject of infinitive (accusative subject)",
+            "Identifies mīlitēs as object of infinitive (accusative object)",
+            "Explains how to determine: syntax and meaning (who does the action of the infinitive?)",
+            "Translates correctly: 'I think that the king sees the soldiers'",
+            "Shows understanding that both can be accusative with different functions"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Both are accusative, but they have different functions. rēgem is the subject of the infinitive vidēre - the king is the one doing the seeing. mīlitēs is the object of vidēre - the soldiers are what's being seen. You figure it out by asking: who does the action of the infinitive? (rēgem = subject) What receives the action? (mīlitēs = object). The translation is 'I think that the king sees the soldiers.'"
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies which is subject and which is object",
+            "Provides reasonable explanation",
+            "Translates correctly or mostly correctly"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "rēgem is the subject and mīlitēs is the object. The king is doing the seeing, so he's the subject. It means 'I think that the king sees the soldiers.'"
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain which is which",
+            "May guess correctly but without solid reasoning",
+            "Confused about how to distinguish"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think rēgem is the subject because it comes first?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot distinguish or gets them backwards",
+            "Doesn't understand that both can be accusative",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They're both accusative so they're both subjects? I don't know."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! How would the meaning change if the sentence were 'Putō mīlitēs rēgem vidēre'?",
+        "Excellent reasoning! What if I add a third word: 'Putō rēgem bonum mīlitēs vidēre' - what case would 'bonum' be and why?"
+      ],
+      "follow_up_if_developing": [
+        "Let's think about the infinitive 'vidēre' (to see). Who is doing the seeing? That's your subject.",
+        "Ask yourself: In the statement 'that the king sees the soldiers,' who's doing the action (seeing)? Who's receiving it (being seen)?"
+      ]
+    },
+    {
+      "id": "dialogue-007-4",
+      "difficulty": "advanced",
+      "prompt": "What's the difference between 'Dīcit puellam esse bonam' (present infinitive) and 'Dīcit puellam fuisse bonam' (perfect infinitive)? Both have the same main verb (dīcit), so why do they mean different things?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that present infinitive = same time, perfect infinitive = prior time",
+            "First: 'He says that the girl IS good' (she is good NOW, when he says it)",
+            "Second: 'He says that the girl WAS good' (she was good EARLIER, before he says it now)",
+            "Shows clear understanding of how infinitive type changes the time relationship",
+            "May note this is RELATIVE time, not absolute"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The infinitive type shows WHEN the action happens relative to the main verb. With 'esse' (present infinitive), the girl 'being good' happens at the SAME TIME as he says it, so: 'He says that the girl IS good now.' With 'fuisse' (perfect infinitive), the girl 'being good' happened BEFORE he says it, so: 'He says that the girl WAS good (earlier).' Present infinitive = simultaneous; perfect infinitive = prior action."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes different infinitive types create different meanings",
+            "Translates both correctly",
+            "Generally understands time relationships"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Esse is present infinitive so it's 'is good.' Fuisse is perfect infinitive so it's 'was good.' The perfect infinitive shows something that already happened."
+        },
+        "developing": {
+          "criteria": [
+            "Knows they're different infinitives",
+            "Uncertain about how time works",
+            "May translate one correctly"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Fuisse is perfect so it's past somehow?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain or doesn't see a difference",
+            "Doesn't understand infinitive types",
+            "Translates both the same"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They both mean the same thing, don't they?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! Now the really tricky one: how would 'DĪXIT puellam fuisse bonam' translate? (past main verb + perfect infinitive)",
+        "Excellent! What would a future infinitive look like, and what time relationship would it show?"
+      ],
+      "follow_up_if_developing": [
+        "Think about WHEN things happen. With esse: when is the girl good? With fuisse: when WAS the girl good?",
+        "Present infinitive = happening at the same time as the main verb. Perfect infinitive = happened BEFORE the main verb. Can you apply this?"
+      ]
+    },
+    {
+      "id": "dialogue-007-5",
+      "difficulty": "basic",
+      "prompt": "Which of these verbs can introduce indirect statement: (a) dīcō (to say), (b) currō (to run), (c) putō (to think), (d) audiō (to hear), (e) videō (to see). Explain your choices.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies dīcō, putō, audiō, videō as verbs that take indirect statement",
+            "Excludes currō (to run)",
+            "Explains the rule: verbs of saying, thinking, and perceiving take indirect statement",
+            "May provide the 'test': can you say 'I [verb] THAT...'?"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "dīcō, putō, audiō, and videō can all take indirect statement. dīcō is a verb of saying ('I say that...'), putō is a verb of thinking ('I think that...'), and audiō and videō are verbs of perceiving ('I hear that...' / 'I see that...'). currō (to run) cannot take indirect statement because you can't say 'I run that...' - it doesn't make sense. Only verbs of head, heart, and speech take indirect statement."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies which verbs can/cannot take indirect statement",
+            "Provides some reasoning",
+            "May reference categories (saying/thinking/perceiving)"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "All except currō. You can say 'I say that,' 'I think that,' 'I hear that,' and 'I see that,' but not 'I run that.'"
+        },
+        "developing": {
+          "criteria": [
+            "Gets most correct but unsure on 1-2",
+            "Weak reasoning",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think dīcō and putō work, and maybe audiō? Not sure about the others."
+        },
+        "insufficient": {
+          "criteria": [
+            "Gets multiple wrong",
+            "No clear reasoning",
+            "Doesn't understand the pattern"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "All of them can?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if I gave you 'crēdō' (to believe), would that take indirect statement?",
+        "Excellent. Can you give me an example sentence using dīcō with indirect statement?"
+      ],
+      "follow_up_if_developing": [
+        "Let's test each one. Can you say 'I say THAT...'? Yes. Can you say 'I run THAT...'? Does that make sense?",
+        "The rule is: verbs of saying (speech), thinking (head), and perceiving (senses) take indirect statement. Which category does each verb fit?"
+      ]
+    },
+    {
+      "id": "dialogue-007-6",
+      "difficulty": "advanced",
+      "prompt": "In 'Crēdō vitam puellārum esse bonam,' there are two cases used - accusative (vitam, bonam) and genitive (puellārum). How do you know which noun is the subject of the indirect statement?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies vitam as the accusative subject (life is what 'is good')",
+            "Identifies puellārum as genitive modifier (whose life? the girls')",
+            "Explains that only the ACCUSATIVE can be the subject of the infinitive",
+            "Shows understanding that genitive modifies the accusative subject",
+            "Translates: 'I believe that the girls' life is good'"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The subject of the indirect statement is vitam (life), which is accusative. puellārum is genitive plural, meaning 'of the girls' or 'the girls'' - it's not the subject, it just modifies vitam to show whose life we're talking about. The rule is that the subject of an infinitive is always accusative, never genitive. So vitam (life) is what 'is good' (the subject), and puellārum tells us it's the girls' life. Translation: 'I believe that the girls' life is good.'"
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies vitam as subject",
+            "Recognizes puellārum as genitive modifier",
+            "Generally sound reasoning",
+            "Translates correctly or mostly correctly"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "vitam is the subject because it's accusative. puellārum is genitive, so it's possessive - 'the girls' life.' It means 'I believe that the girls' life is good.'"
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain which is the subject",
+            "May confuse the cases",
+            "Partial understanding of how genitive works here"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think vitam is the subject? But I'm not sure how puellārum fits in."
+        },
+        "insufficient": {
+          "criteria": [
+            "Identifies wrong subject",
+            "Doesn't understand case functions",
+            "Cannot distinguish accusative subject from genitive modifier"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "puellārum is the subject because it's plural?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! How would you say 'I believe that the girl's life is good' (singular girl)?",
+        "Excellent analysis! What if the sentence were 'Crēdō puellās vitam habēre' - which is the subject and which is the object?"
+      ],
+      "follow_up_if_developing": [
+        "Let's identify the cases first. What case is vitam? What case is puellārum? Which case is used for subjects of infinitives?",
+        "Ask: what is good? The life (vitam). Whose life? The girls' (puellārum)."
+      ]
+    },
+    {
+      "id": "dialogue-007-7",
+      "difficulty": "intermediate",
+      "prompt": "How do you form the perfect infinitive of a verb? Use 'amō, amāre, amāvī, amātus' as your example.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains the formation: perfect stem + -isse",
+            "Identifies perfect stem: amāv- (from third principal part amāvī, drop the -ī)",
+            "Forms perfect infinitive correctly: amāvisse",
+            "Provides translation: 'to have loved'",
+            "May note this works for all regular verbs"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "To form the perfect infinitive, you take the perfect stem and add -isse. For amō, the third principal part is amāvī. Drop the -ī to get the stem amāv-, then add -isse: amāvisse. This means 'to have loved.' This pattern works for all regular verbs - just take the perfect stem and add -isse."
+        },
+        "good": {
+          "criteria": [
+            "Knows to use perfect stem + -isse",
+            "Forms amāvisse correctly",
+            "Generally correct explanation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "You take amāv- from amāvī and add -isse, so amāvisse."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May get the form correct but unsure of formation rule",
+            "Incomplete explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "It's amāvisse, and it has -isse at the end."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot form the infinitive",
+            "Incorrect formation or doesn't know the rule",
+            "Confuses with other forms"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Is it amāre?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! Now try forming the perfect infinitive of videō, vidēre, vīdī, vīsus.",
+        "Excellent! How would you translate 'Dīcit puellam amāvisse rēgem' using that perfect infinitive?"
+      ],
+      "follow_up_if_developing": [
+        "Look at the third principal part: amāvī. The perfect stem is everything except the -ī. What's left?",
+        "The pattern is: [perfect stem] + -isse. For amō, the perfect stem is amāv-. Now add -isse."
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 5,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "This is the most complex concept. Students should demonstrate understanding across basic (verb recognition, infinitive formation), intermediate (tense relationships, case distinctions), and advanced (complex sentences with multiple accusatives and modifiers) levels."
+  }
+}

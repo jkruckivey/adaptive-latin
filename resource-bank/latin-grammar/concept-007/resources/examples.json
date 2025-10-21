@@ -1,0 +1,519 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Forming Infinitives - Complete Reference",
+      "description": "Master infinitive formation across all conjugations and tenses.",
+      "infinitive_paradigms": {
+        "first_conjugation": {
+          "verb": "amō, amāre, amāvī, amātus (to love)",
+          "present_active": {
+            "form": "amāre",
+            "translation": "to love",
+            "formation": "2nd principal part"
+          },
+          "perfect_active": {
+            "form": "amāvisse",
+            "translation": "to have loved",
+            "formation": "perfect stem (amāv-) + -isse"
+          },
+          "future_active": {
+            "form": "amātūrus esse",
+            "translation": "to be about to love",
+            "formation": "future participle + esse"
+          }
+        },
+        "second_conjugation": {
+          "verb": "videō, vidēre, vīdī, vīsus (to see)",
+          "present_active": {
+            "form": "vidēre",
+            "translation": "to see",
+            "formation": "2nd principal part"
+          },
+          "perfect_active": {
+            "form": "vīdisse",
+            "translation": "to have seen",
+            "formation": "perfect stem (vīd-) + -isse"
+          },
+          "future_active": {
+            "form": "vīsūrus esse",
+            "translation": "to be about to see",
+            "formation": "future participle + esse"
+          }
+        },
+        "irregular_sum": {
+          "verb": "sum, esse, fuī, futūrus (to be)",
+          "present_active": {
+            "form": "esse",
+            "translation": "to be",
+            "formation": "irregular - memorize"
+          },
+          "perfect_active": {
+            "form": "fuisse",
+            "translation": "to have been",
+            "formation": "fu- + -isse"
+          },
+          "future_active": {
+            "form": "futūrus esse",
+            "translation": "to be about to be / to be going to be",
+            "formation": "futūrus + esse"
+          }
+        },
+        "practice_verbs": [
+          {
+            "verb": "dīcō, dīcere, dīxī, dictus (to say)",
+            "present_inf": "dīcere",
+            "perfect_inf": "dīxisse"
+          },
+          {
+            "verb": "putō, putāre, putāvī, putātus (to think)",
+            "present_inf": "putāre",
+            "perfect_inf": "putāvisse"
+          },
+          {
+            "verb": "audiō, audīre, audīvī, audītus (to hear)",
+            "present_inf": "audīre",
+            "perfect_inf": "audīvisse"
+          }
+        ]
+      },
+      "note": "Focus on present and perfect infinitives - these are most common in indirect statement. Future infinitives are less frequent."
+    },
+    {
+      "title": "Example 2: Direct Statement → Indirect Statement Transformations",
+      "description": "Learn to convert direct quotations into indirect statement using accusative + infinitive.",
+      "transformations": [
+        {
+          "direct_statement": "Puella bona est.",
+          "direct_translation": "The girl is good.",
+          "direct_analysis": {
+            "puella": "nominative singular (subject)",
+            "bona": "nominative singular feminine (predicate adjective)",
+            "est": "3rd person singular present (is)"
+          },
+          "indirect_statement": "Dīcō puellam bonam esse.",
+          "indirect_translation": "I say that the girl is good.",
+          "indirect_analysis": {
+            "Dīcō": "main verb (I say) - verb of saying",
+            "puellam": "accusative singular (subject of indirect statement!)",
+            "bonam": "accusative singular feminine (agrees with puellam)",
+            "esse": "present infinitive (to be)"
+          },
+          "key_changes": [
+            "Subject: puella (nominative) → puellam (accusative)",
+            "Predicate adjective: bona (nominative) → bonam (accusative)",
+            "Verb: est (finite) → esse (infinitive)",
+            "Added main verb: Dīcō (I say)"
+          ],
+          "common_error": "Students often forget to change 'bona' to accusative. Remember: adjectives agree with nouns in gender, number, AND case!"
+        },
+        {
+          "direct_statement": "Mīlitēs pugnant.",
+          "direct_translation": "The soldiers are fighting.",
+          "direct_analysis": {
+            "mīlitēs": "nominative plural (subject)",
+            "pugnant": "3rd person plural present (they fight)"
+          },
+          "indirect_statement": "Narrō mīlitēs pugnāre.",
+          "indirect_translation": "I tell that the soldiers are fighting.",
+          "indirect_analysis": {
+            "Narrō": "main verb (I tell) - verb of saying",
+            "mīlitēs": "accusative plural (subject of indirect statement)",
+            "pugnāre": "present infinitive (to fight)"
+          },
+          "key_changes": [
+            "Subject: mīlitēs (nominative) → mīlitēs (accusative) - same form!",
+            "Verb: pugnant (finite) → pugnāre (infinitive)",
+            "Added main verb: Narrō (I tell)"
+          ],
+          "note": "Third declension nouns often have identical nominative and accusative plural forms. Context determines which case."
+        },
+        {
+          "direct_statement": "Rēx virtūtem habet.",
+          "direct_translation": "The king has courage.",
+          "direct_analysis": {
+            "Rēx": "nominative singular (subject)",
+            "virtūtem": "accusative singular (direct object)",
+            "habet": "3rd person singular present (he has)"
+          },
+          "indirect_statement": "Putō rēgem virtūtem habēre.",
+          "indirect_translation": "I think that the king has courage.",
+          "indirect_analysis": {
+            "Putō": "main verb (I think) - verb of thinking",
+            "rēgem": "accusative singular (subject of indirect statement)",
+            "virtūtem": "accusative singular (still the direct object of habēre)",
+            "habēre": "present infinitive (to have)"
+          },
+          "key_changes": [
+            "Subject: Rēx (nominative) → rēgem (accusative)",
+            "Object: virtūtem stays accusative (object of infinitive)",
+            "Verb: habet (finite) → habēre (infinitive)"
+          ],
+          "challenging_point": "Now there are TWO accusatives: rēgem (subject of infinitive) and virtūtem (object of infinitive). How to distinguish? Syntax and meaning!"
+        }
+      ]
+    },
+    {
+      "title": "Example 3: Infinitive Tense and Relative Time",
+      "description": "Master how infinitive tense relates to the main verb's time.",
+      "time_relationships": [
+        {
+          "scenario": "Present Main Verb + Present Infinitive",
+          "latin": "Dīcit puellam esse bonam.",
+          "translation": "He says that the girl IS good.",
+          "analysis": {
+            "main_verb": "Dīcit (present: he says NOW)",
+            "infinitive": "esse (present infinitive)",
+            "time_relation": "Same time - the girl IS good NOW (when he says it)",
+            "english_tense_in_that_clause": "present (is)"
+          }
+        },
+        {
+          "scenario": "Past Main Verb + Present Infinitive",
+          "latin": "Dīxit puellam esse bonam.",
+          "translation": "He said that the girl WAS good.",
+          "analysis": {
+            "main_verb": "Dīxit (perfect: he said THEN)",
+            "infinitive": "esse (present infinitive)",
+            "time_relation": "Same time - the girl WAS good THEN (when he said it)",
+            "english_tense_in_that_clause": "past (was)"
+          },
+          "key_insight": "The SAME Latin infinitive (esse) translates as 'is' or 'was' depending on the main verb! Present infinitive = simultaneous action."
+        },
+        {
+          "scenario": "Present Main Verb + Perfect Infinitive",
+          "latin": "Dīcit puellam fuisse bonam.",
+          "translation": "He says that the girl WAS good / He says that the girl has been good.",
+          "analysis": {
+            "main_verb": "Dīcit (present: he says NOW)",
+            "infinitive": "fuisse (perfect infinitive)",
+            "time_relation": "Before - the girl WAS good EARLIER (before he says it now)",
+            "english_tense_in_that_clause": "past / present perfect (was / has been)"
+          }
+        },
+        {
+          "scenario": "Past Main Verb + Perfect Infinitive",
+          "latin": "Dīxit puellam fuisse bonam.",
+          "translation": "He said that the girl HAD BEEN good.",
+          "analysis": {
+            "main_verb": "Dīxit (perfect: he said THEN)",
+            "infinitive": "fuisse (perfect infinitive)",
+            "time_relation": "Before - the girl HAD BEEN good EARLIER (before he said it then)",
+            "english_tense_in_that_clause": "pluperfect (had been)"
+          },
+          "note": "This is past-before-past, requiring pluperfect in English."
+        },
+        {
+          "scenario": "Present Main Verb + Future Infinitive",
+          "latin": "Dīcit puellam futūram esse bonam.",
+          "translation": "He says that the girl WILL BE good.",
+          "analysis": {
+            "main_verb": "Dīcit (present: he says NOW)",
+            "infinitive": "futūram esse (future infinitive)",
+            "time_relation": "After - the girl WILL BE good LATER (after he says it)",
+            "english_tense_in_that_clause": "future (will be)"
+          }
+        },
+        {
+          "scenario": "Past Main Verb + Future Infinitive",
+          "latin": "Dīxit puellam futūram esse bonam.",
+          "translation": "He said that the girl WOULD BE good.",
+          "analysis": {
+            "main_verb": "Dīxit (perfect: he said THEN)",
+            "infinitive": "futūram esse (future infinitive)",
+            "time_relation": "After - the girl WOULD BE good LATER (after he said it)",
+            "english_tense_in_that_clause": "conditional (would be)"
+          }
+        }
+      ],
+      "summary_rule": "Think 'RELATIVE TIME': Present inf = same time, Perfect inf = before, Future inf = after. Then adjust your English translation based on when the main verb happens."
+    },
+    {
+      "title": "Example 4: Identifying Accusative Subjects vs. Accusative Objects",
+      "description": "Learn to distinguish the accusative subject of an infinitive from accusative direct objects.",
+      "diagnostic_examples": [
+        {
+          "sentence": "Dīcō puellam bonam esse.",
+          "translation": "I say that the girl is good.",
+          "accusatives": [
+            {
+              "word": "puellam",
+              "function": "Accusative SUBJECT of the infinitive 'esse'",
+              "how_to_identify": "Comes right after verb of saying; paired with infinitive; the thing 'being' good"
+            },
+            {
+              "word": "bonam",
+              "function": "Predicate adjective agreeing with puellam",
+              "how_to_identify": "Agrees with puellam in gender, number, case"
+            }
+          ],
+          "test": "Can I say 'I say the girl'? No - that's incomplete. I say [the whole statement] that the girl is good."
+        },
+        {
+          "sentence": "Putō rēgem mīlitēs vidēre.",
+          "translation": "I think that the king sees the soldiers.",
+          "accusatives": [
+            {
+              "word": "rēgem",
+              "function": "Accusative SUBJECT of the infinitive 'vidēre'",
+              "how_to_identify": "Comes right after 'Putō'; paired with infinitive; the one doing the seeing"
+            },
+            {
+              "word": "mīlitēs",
+              "function": "Accusative OBJECT of the infinitive 'vidēre'",
+              "how_to_identify": "Direct object of 'vidēre' (what the king sees)"
+            }
+          ],
+          "analysis": "TWO accusatives, different functions! rēgem = subject of indirect statement. mīlitēs = object within that indirect statement.",
+          "test": "Who sees? rēgem (king). What does he see? mīlitēs (soldiers)."
+        },
+        {
+          "sentence": "Audiō patrem fīlium amāre.",
+          "translation": "I hear that the father loves his son.",
+          "accusatives": [
+            {
+              "word": "patrem",
+              "function": "Accusative SUBJECT of the infinitive 'amāre'",
+              "how_to_identify": "Subject of the loving action"
+            },
+            {
+              "word": "fīlium",
+              "function": "Accusative OBJECT of the infinitive 'amāre'",
+              "how_to_identify": "Direct object of 'amāre' (whom father loves)"
+            }
+          ],
+          "challenging_note": "Both are accusative masculine singular - endings look identical! Only syntax tells you which is subject and which is object."
+        }
+      ],
+      "strategy": "Ask: (1) What verb introduces this? (verb of saying/thinking/perceiving?) (2) What's the infinitive? (3) Who/what is doing the action of the infinitive? (subject) (4) Who/what receives the action? (object if there is one)"
+    },
+    {
+      "title": "Example 5: Complex Indirect Statements with Modifiers",
+      "description": "Handle indirect statements that include genitive, dative, and other modifiers.",
+      "complex_sentences": [
+        {
+          "latin": "Crēdō vitam puellārum esse bonam.",
+          "translation": "I believe that the girls' life is good. / I believe that the life of the girls is good.",
+          "word_by_word": [
+            {"word": "Crēdō", "info": "I believe (main verb of thinking)"},
+            {"word": "vitam", "info": "accusative singular (SUBJECT of esse - 'life' is what's good)"},
+            {"word": "puellārum", "info": "genitive plural (whose life? - of the girls)"},
+            {"word": "esse", "info": "present infinitive (to be)"},
+            {"word": "bonam", "info": "accusative singular (agrees with vitam)"}
+          ],
+          "key_challenge": "Don't confuse puellārum (genitive) with the accusative subject. The subject is VITAM (life). The genitive just modifies it.",
+          "test_question": "What is good? The life (vitam = accusative subject). Whose life? The girls' (puellārum = genitive)."
+        },
+        {
+          "latin": "Dīcit rēgem mīlitibus arma dare.",
+          "translation": "He says that the king is giving weapons to the soldiers.",
+          "word_by_word": [
+            {"word": "Dīcit", "info": "he says (main verb)"},
+            {"word": "rēgem", "info": "accusative singular (subject of dare)"},
+            {"word": "mīlitibus", "info": "dative plural (to the soldiers - indirect object)"},
+            {"word": "arma", "info": "accusative neuter plural (weapons - direct object of dare)"},
+            {"word": "dare", "info": "present infinitive (to give)"}
+          ],
+          "key_challenge": "Accusative subject (rēgem) + dative indirect object (mīlitibus) + accusative direct object (arma) all in one sentence!",
+          "syntax": "Subject gives (dare) direct object (arma) to indirect object (mīlitibus)"
+        },
+        {
+          "latin": "Putō puellās cum mīlitibus in silvā esse.",
+          "translation": "I think that the girls are in the forest with the soldiers.",
+          "word_by_word": [
+            {"word": "Putō", "info": "I think (main verb)"},
+            {"word": "puellās", "info": "accusative plural (subject of esse)"},
+            {"word": "cum mīlitibus", "info": "with the soldiers (ablative of accompaniment)"},
+            {"word": "in silvā", "info": "in the forest (ablative of place where)"},
+            {"word": "esse", "info": "present infinitive (to be)"}
+          ],
+          "key_challenge": "Prepositional phrases with ablatives included in the indirect statement",
+          "note": "Everything between the main verb and the infinitive is part of the indirect statement"
+        }
+      ]
+    },
+    {
+      "title": "Example 6: Verbs of Head, Heart, and Speech - Recognition Practice",
+      "description": "Identify which verbs can introduce indirect statement and practice using them.",
+      "verb_categories": {
+        "verbs_of_saying": [
+          {
+            "latin": "dīcō, dīcere, dīxī, dictus",
+            "meaning": "to say, tell",
+            "example": "Dīcō eum esse bonum.",
+            "translation": "I say that he is good."
+          },
+          {
+            "latin": "narrō, narrāre, narrāvī, narrātus",
+            "meaning": "to tell, relate",
+            "example": "Narrās puellās pugnāvisse.",
+            "translation": "You tell that the girls have fought."
+          },
+          {
+            "latin": "negō, negāre, negāvī, negātus",
+            "meaning": "to deny, say...not",
+            "example": "Negat rēgem venīre.",
+            "translation": "He denies that the king is coming. / He says that the king is not coming."
+          }
+        ],
+        "verbs_of_thinking": [
+          {
+            "latin": "putō, putāre, putāvī, putātus",
+            "meaning": "to think, consider",
+            "example": "Putāmus vītam esse bonam.",
+            "translation": "We think that life is good."
+          },
+          {
+            "latin": "crēdō, crēdere, crēdidī, crēditus",
+            "meaning": "to believe, trust",
+            "example": "Crēdō mīlitēs esse fortēs.",
+            "translation": "I believe that the soldiers are brave."
+          },
+          {
+            "latin": "sciō, scīre, scīvī, scītus",
+            "meaning": "to know",
+            "example": "Scit puellam esse hīc.",
+            "translation": "He knows that the girl is here."
+          }
+        ],
+        "verbs_of_perceiving": [
+          {
+            "latin": "videō, vidēre, vīdī, vīsus",
+            "meaning": "to see",
+            "example": "Vidēmus rēgem venīre.",
+            "translation": "We see that the king is coming. / We see the king coming."
+          },
+          {
+            "latin": "audiō, audīre, audīvī, audītus",
+            "meaning": "to hear",
+            "example": "Audiunt mīlitēs pugnāre.",
+            "translation": "They hear that the soldiers are fighting."
+          },
+          {
+            "latin": "sentiō, sentīre, sēnsī, sēnsus",
+            "meaning": "to feel, perceive",
+            "example": "Sentiō terram movērī.",
+            "translation": "I feel that the earth is moving. / I feel the earth moving."
+          }
+        ]
+      },
+      "recognition_test": "If you can say 'I [verb] THAT...' in English, the Latin verb probably takes indirect statement. Try it: 'I say THAT...' (✓), 'I think THAT...' (✓), 'I run THAT...' (✗ - doesn't make sense)"
+    },
+    {
+      "title": "Example 7: Common Errors and How to Fix Them",
+      "description": "Learn from typical mistakes students make with indirect statement.",
+      "errors": [
+        {
+          "error_type": "Treating accusative as direct object of main verb",
+          "incorrect_sentence": "Dīcō puellam.",
+          "student_thinking": "'I say the girl' - treating puellam as object of dīcō",
+          "why_wrong": "You can't 'say a person.' You say SOMETHING (a statement). The entire acc + inf construction is what you're saying.",
+          "correct_version": "Dīcō puellam esse bonam.",
+          "correct_thinking": "'I say [this statement:] that the girl is good.' The whole 'puellam esse bonam' is what you're saying."
+        },
+        {
+          "error_type": "Forgetting to change adjective to accusative",
+          "incorrect_sentence": "Putō rēgem bonus esse.",
+          "student_thinking": "Kept 'bonus' nominative, didn't match rēgem (accusative)",
+          "why_wrong": "Adjectives MUST agree in case. rēgem is accusative, so bonus must become bonum (acc. masc. sing.)",
+          "correct_version": "Putō rēgem bonum esse.",
+          "rule": "Adjectives in indirect statement agree with the accusative subject in gender, number, AND case."
+        },
+        {
+          "error_type": "Wrong infinitive tense interpretation",
+          "incorrect_translation": "Dīxit mīlitēs pugnāvisse. → 'He said that the soldiers are fighting.'",
+          "student_thinking": "Didn't recognize pugnāvisse as perfect infinitive",
+          "why_wrong": "pugnāvisse = perfect infinitive (to have fought), not present. Perfect inf with past main verb = pluperfect meaning.",
+          "correct_translation": "He said that the soldiers HAD fought.",
+          "rule": "Perfect infinitive = action BEFORE main verb. Past main verb + perfect inf = pluperfect ('had fought')."
+        },
+        {
+          "error_type": "Adding 'that' word (quod) in Latin",
+          "incorrect_sentence": "Dīcō quod puella bona est.",
+          "student_thinking": "Translated English 'that' literally into Latin",
+          "why_wrong": "This is a DIFFERENT construction (quod clause). Indirect statement uses acc + inf, NOT quod.",
+          "correct_version": "Dīcō puellam bonam esse.",
+          "rule": "No 'that' word in indirect statement - the acc + inf construction itself signals it."
+        },
+        {
+          "error_type": "Confusing nominative plural with accusative in indirect statement",
+          "incorrect_sentence": "Putō puellae bonae esse. (trying to say 'I think that the girls are good')",
+          "student_thinking": "Used nominative plural (puellae bonae) instead of accusative plural",
+          "why_wrong": "The subject of an infinitive is ALWAYS accusative, never nominative",
+          "correct_version": "Putō puellās bonās esse.",
+          "rule": "Accusative subject (puellās) + accusative adjective (bonās) + infinitive (esse)"
+        }
+      ]
+    },
+    {
+      "title": "Example 8: Translation Strategy - Step-by-Step Approach",
+      "description": "A systematic method for translating any indirect statement correctly.",
+      "sample_sentence": "Crēdimus rēgem virtūtem mīlitum laudāvisse.",
+      "step_by_step": [
+        {
+          "step": 1,
+          "action": "Identify the main verb",
+          "analysis": "Crēdimus = we believe (1st person plural present, verb of thinking)",
+          "conclusion": "This signals indirect statement coming"
+        },
+        {
+          "step": 2,
+          "action": "Find the accusative subject",
+          "analysis": "rēgem = accusative singular of rēx, rēgis (king)",
+          "conclusion": "rēgem is the subject of the indirect statement (who did something)"
+        },
+        {
+          "step": 3,
+          "action": "Find the infinitive",
+          "analysis": "laudāvisse = perfect infinitive of laudō (to have praised)",
+          "conclusion": "This is the 'verb' of the indirect statement"
+        },
+        {
+          "step": 4,
+          "action": "Determine infinitive tense relationship",
+          "analysis": "Perfect infinitive (laudāvisse) with present main verb (Crēdimus) = action before now",
+          "conclusion": "Translation will be 'praised' or 'has praised'"
+        },
+        {
+          "step": 5,
+          "action": "Identify other accusatives (if any)",
+          "analysis": "virtūtem = accusative singular (courage, virtue) - this is the direct object of laudāvisse",
+          "conclusion": "The king praised WHAT? Courage (virtūtem)"
+        },
+        {
+          "step": 6,
+          "action": "Identify modifiers (genitive, etc.)",
+          "analysis": "mīlitum = genitive plural of mīles, mīlitis (of the soldiers)",
+          "conclusion": "Whose courage? The soldiers' courage"
+        },
+        {
+          "step": 7,
+          "action": "Assemble the translation",
+          "analysis": "We believe (Crēdimus) that the king (rēgem) has praised (laudāvisse) the courage (virtūtem) of the soldiers (mīlitum)",
+          "final_translation": "We believe that the king has praised the soldiers' courage."
+        }
+      ],
+      "practice_template": "Use this 7-step method on every indirect statement until it becomes automatic!",
+      "additional_examples": [
+        {
+          "latin": "Dīxit puellās in silvā esse.",
+          "step_1": "Dīxit = he said (verb of saying, perfect tense)",
+          "step_2": "puellās = accusative plural (subject of infinitive)",
+          "step_3": "esse = present infinitive (to be)",
+          "step_4": "Present inf + past main verb = same time in past = 'were'",
+          "step_5": "in silvā = in the forest (ablative of place)",
+          "translation": "He said that the girls were in the forest."
+        },
+        {
+          "latin": "Audiō patrem fīliō pecūniam dedisse.",
+          "step_1": "Audiō = I hear (verb of perceiving, present)",
+          "step_2": "patrem = accusative singular (subject: father)",
+          "step_3": "dedisse = perfect infinitive of dō (to have given)",
+          "step_4": "Perfect inf + present main verb = before now = 'gave' or 'has given'",
+          "step_5": "fīliō = dative singular (to the son - indirect object)",
+          "step_6": "pecūniam = accusative singular (money - direct object)",
+          "translation": "I hear that the father gave/has given money to his son."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-003",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-003-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a brief explanation (150-250 words) about the neuter rule in Latin. Your explanation should: (a) define the neuter rule clearly, (b) explain WHY this rule matters for translation, (c) give specific examples using second declension neuter nouns like bellum or dōnum, and (d) explain how context helps you determine whether a neuter form is nominative or accusative. Make sure your explanation would help a fellow student who is just learning this concept.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Understanding",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Clearly states that nom. = acc. for all neuter nouns; explains this applies to singular and plural; demonstrates understanding that context determines case; shows grasp of why this is challenging for translation",
+              "good": "Defines the neuter rule correctly; explains basic concept; may lack depth on context or translation challenges",
+              "developing": "Partial or imprecise explanation; may state the rule but not explain implications",
+              "insufficient": "Cannot explain the rule; fundamental misunderstanding"
+            }
+          },
+          {
+            "name": "Examples & Application",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Provides clear examples (e.g., bellum as subject vs. object); shows how context disambiguates; examples effectively illustrate the concept",
+              "good": "Includes examples but may not fully demonstrate context usage",
+              "developing": "Weak examples or examples that don't help explain",
+              "insufficient": "No examples or incorrect examples"
+            }
+          },
+          {
+            "name": "Clarity & Organization",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Well-organized, logical flow; accessible language; would actually help a peer understand",
+              "good": "Generally clear; minor organizational issues; mostly accessible",
+              "developing": "Somewhat confusing; poor organization; may use unexplained jargon",
+              "insufficient": "Unclear or incoherent; would not help a peer"
+            }
+          },
+          {
+            "name": "Accuracy",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "No errors; completely accurate information",
+              "good": "Minor imprecisions that don't affect overall understanding",
+              "developing": "Some errors that may confuse",
+              "insufficient": "Major errors or misconceptions"
+            }
+          }
+        ]
+      },
+      "word_count_range": [150, 250],
+      "estimated_time": "15-20 minutes",
+      "sample_excellent_response": "The neuter rule states that for all neuter nouns in Latin, the nominative and accusative forms are always identical - both in the singular and in the plural. For second declension neuter nouns like bellum (war), this means bellum serves as both nominative singular (subject) and accusative singular (direct object). In the plural, bella is both nominative plural and accusative plural. This rule matters for translation because you cannot tell from the form alone whether a neuter noun is the subject or object of a sentence - you must rely on context. For example, in 'Bellum est' (the war is), bellum must be nominative because 'est' needs a subject. But in 'Bellum video' (I see the war), bellum must be accusative because 'video' needs a direct object - even though the form is identical. Similarly, 'Dōna sunt bona' (the gifts are good) uses dōna as nominative plural (subject), while 'Dōna video' (I see the gifts) uses the exact same form dōna as accusative plural (object). The verb and sentence structure tell you which case the neuter noun is functioning as, making context critical for accurate translation."
+    },
+    {
+      "id": "written-003-2",
+      "difficulty": "advanced",
+      "prompt": "Translate the following Latin sentences into English and provide detailed grammatical analysis. For each sentence, identify: (a) the case, number, and declension of EVERY noun, (b) explain WHY each noun is in that case based on its function, and (c) note any instances where you had to use context to determine case.\n\nSentences:\n1. Puer amīcīs dōna dat.\n2. Bella agrōrum puellae narrant.\n3. Fīliī agricolārum verba magistrī amant.\n\nYour response should include: English translations, complete parsing of all nouns, and clear explanations of case usage.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "All three sentences translated correctly with natural English phrasing; captures meaning accurately",
+              "good": "2-3 sentences correct; may have minor issues with phrasing but meaning is clear",
+              "developing": "1-2 sentences correct; significant errors in understanding",
+              "insufficient": "Most or all translations incorrect; fundamental misunderstanding"
+            }
+          },
+          {
+            "name": "Noun Parsing (Case/Number/Declension)",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All nouns correctly identified by case, number, and declension; shows systematic understanding of both 1st and 2nd declension forms",
+              "good": "Most nouns correct (80%+); minor errors in declension identification or case",
+              "developing": "Some nouns correct (50-79%); significant gaps in recognition",
+              "insufficient": "Most nouns incorrect; cannot parse reliably"
+            }
+          },
+          {
+            "name": "Grammatical Explanation",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "Clear, accurate explanations of WHY each noun is in its case; connects case to syntactic function; demonstrates understanding of mixed declensions and neuter rule where applicable",
+              "good": "Generally correct explanations; may lack depth or miss some connections",
+              "developing": "Weak or incomplete explanations; may describe cases without explaining their function",
+              "insufficient": "Cannot explain case usage; guessing without understanding"
+            }
+          },
+          {
+            "name": "Context Awareness",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Notes ambiguous forms and explains how context resolved them (e.g., amīcīs, bella, dōna); shows sophisticated understanding",
+              "good": "Recognizes some ambiguous forms; may not fully explain resolution",
+              "developing": "Misses most contextual clues; doesn't note ambiguities",
+              "insufficient": "No awareness of ambiguous forms or context"
+            }
+          }
+        ]
+      },
+      "estimated_time": "30-40 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Puer amīcīs dōna dat.",
+          "translation": "The boy gives gifts to the friends.",
+          "analysis": {
+            "Puer": {
+              "case": "Nominative singular",
+              "declension": "Second (masculine -er, keeps the e)",
+              "reason": "Subject of the sentence (who is giving)"
+            },
+            "amīcīs": {
+              "case": "Dative plural",
+              "declension": "Second (masculine)",
+              "reason": "Indirect object (to whom the gifts are given)",
+              "context_note": "Could also be ablative plural, but 'to whom' context indicates dative"
+            },
+            "dōna": {
+              "case": "Accusative plural",
+              "declension": "Second (neuter)",
+              "reason": "Direct object (what is being given)",
+              "context_note": "Could also be nominative plural (neuter rule), but 'dat' needs an object, so accusative"
+            }
+          }
+        },
+        "sentence_2": {
+          "latin": "Bella agrōrum puellae narrant.",
+          "translation": "The girls tell about the wars of the fields / The girls recount the wars of the fields.",
+          "analysis": {
+            "Bella": {
+              "case": "Accusative plural",
+              "declension": "Second (neuter)",
+              "reason": "Direct object of narrant (what is being told about)",
+              "context_note": "Could also be nominative plural (neuter rule), but puellae is clearly the subject, so bella must be accusative"
+            },
+            "agrōrum": {
+              "case": "Genitive plural",
+              "declension": "Second (masculine)",
+              "reason": "Shows possession - modifies bella (wars of what? of the fields)"
+            },
+            "puellae": {
+              "case": "Nominative plural",
+              "declension": "First (feminine)",
+              "reason": "Subject (who is telling)",
+              "context_note": "Could be gen. sg., dat. sg., or nom. pl., but plural verb 'narrant' confirms nominative plural"
+            }
+          }
+        },
+        "sentence_3": {
+          "latin": "Fīliī agricolārum verba magistrī amant.",
+          "translation": "The sons of the farmers love the words of the teacher.",
+          "analysis": {
+            "Fīliī": {
+              "case": "Nominative plural",
+              "declension": "Second (masculine)",
+              "reason": "Subject (who loves)",
+              "context_note": "Could be gen. sg. or nom. pl., but plural verb 'amant' confirms nominative plural"
+            },
+            "agricolārum": {
+              "case": "Genitive plural",
+              "declension": "First (masculine - exceptional case)",
+              "reason": "Shows possession - modifies fīliī (sons of whom? of the farmers)",
+              "special_note": "Agricola is first declension but masculine (farmer is typically male)"
+            },
+            "verba": {
+              "case": "Accusative plural",
+              "declension": "Second (neuter)",
+              "reason": "Direct object (what is loved)",
+              "context_note": "Could be nom. or acc. plural (neuter rule), but fīliī is the subject, so verba must be accusative"
+            },
+            "magistrī": {
+              "case": "Genitive singular",
+              "declension": "Second (masculine)",
+              "reason": "Shows possession - modifies verba (words of whom? of the teacher)",
+              "context_note": "Could be gen. sg. or nom. pl., but context (modifying verba) indicates genitive singular"
+            }
+          },
+          "note": "This sentence is complex: it mixes 1st and 2nd declension, includes agricola (1st decl. masculine), and tests understanding of multiple genitives plus neuter rule"
+        }
+      },
+      "scoring_note": "Sentence 3 is intentionally challenging. Students who correctly analyze it demonstrate strong mastery of mixed declensions, genitive usage, and the neuter rule. Partial credit for identifying most cases correctly even if translation has minor issues."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments test ability to explain concepts clearly (prompt 1) and to perform detailed grammatical analysis (prompt 2). Students must demonstrate they can both explain AND apply their knowledge of second declension."
+  }
+}

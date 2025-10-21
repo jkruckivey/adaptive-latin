@@ -1,0 +1,323 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-003",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-003-1",
+      "difficulty": "basic",
+      "prompt": "How do you identify a second declension masculine noun? What should you look for in the dictionary entry?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Mentions nominative singular ending (-us or -er)",
+            "Mentions genitive singular ending (-ī)",
+            "Notes that gender is marked as masculine (m.)",
+            "Clear, accurate explanation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Second declension masculine nouns end in -us or -er in the nominative singular and -ī in the genitive singular. The dictionary entry shows the gender as 'm.' For example: amīcus, amīcī, m. (friend)."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies at least one ending (-us or -er)",
+            "May mention genitive",
+            "Generally accurate but incomplete"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "They end in -us, like amīcus."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with other declensions",
+            "Vague or imprecise"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it has something to do with the ending?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify markers",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "All nouns ending in consonants?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! Now, if I give you a new word 'servus, servī, m.' (slave), what declension is it?",
+        "Great! Can you name the two types of nominative singular endings for second declension masculine?"
+      ],
+      "follow_up_if_developing": [
+        "Let me help: think about the dictionary form of amīcus. What does the nominative singular end with?",
+        "Remember: we look at both the nominative singular and genitive singular forms. What are those endings?"
+      ]
+    },
+    {
+      "id": "dialogue-003-2",
+      "difficulty": "intermediate",
+      "prompt": "Explain the neuter rule in Latin. Why is it important, and how does it affect translation?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "States that nominative = accusative for all neuter nouns",
+            "Explains this applies to both singular and plural",
+            "Notes that context determines whether a form is nominative or accusative",
+            "May give examples (bellum as subject vs. object)"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The neuter rule states that for all neuter nouns, the nominative and accusative forms are always identical - both in singular and plural. For example, 'bellum' means both 'the war' as a subject and 'the war' as an object. You have to look at context (like the verb) to determine which case it is. In 'Bellum est' it's nominative (subject), but in 'Bellum video' it's accusative (object)."
+        },
+        "good": {
+          "criteria": [
+            "States that nominative = accusative",
+            "Understands the basic concept",
+            "May not fully explain context or give examples"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Neuter nouns have the same form for nominative and accusative."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with other rules",
+            "Incomplete explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "It's something about neuter nouns being special?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the rule",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Neuter means it has no gender."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So in the sentence 'Bella video,' what case is 'bella' and how do you know?",
+        "Perfect! What are the neuter nom/acc endings in singular and plural?"
+      ],
+      "follow_up_if_developing": [
+        "Think about bellum. Can you decline it in the nominative and accusative singular?",
+        "What does 'neuter rule' mean for the forms? Are they the same or different?"
+      ]
+    },
+    {
+      "id": "dialogue-003-3",
+      "difficulty": "advanced",
+      "prompt": "I'm going to give you a form: 'amīcī'. What case(s) could this be, and how would you figure out which one it is in a sentence?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Lists both possibilities: genitive singular AND nominative plural",
+            "Explains that context/verb agreement determines which",
+            "Gives examples or describes how to use context",
+            "Shows understanding of why this ambiguity exists"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Amīcī could be genitive singular (of the friend) or nominative plural (the friends). To figure out which, I'd look at the context. If there's a plural verb like 'sunt,' then amīcī is nominative plural (subject). If it's modifying another noun to show possession, like 'vita amīcī,' then it's genitive singular (of the friend)."
+        },
+        "good": {
+          "criteria": [
+            "Lists both possibilities",
+            "Understands that context matters",
+            "May not give specific examples"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It could be genitive singular or nominative plural. You have to look at the sentence to know which."
+        },
+        "developing": {
+          "criteria": [
+            "Lists only one possibility",
+            "Doesn't understand the ambiguity",
+            "Unclear about how to resolve"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's genitive?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify any correct case",
+            "Confused about case system"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's accusative."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! Let's test this. In the sentence 'Vita amīcī est bona,' which case is amīcī and why?",
+        "Great understanding! Now what about in 'Amīcī sunt bonī'? Which case is amīcī here?"
+      ],
+      "follow_up_if_developing": [
+        "Let's look at the paradigm. What cases end in -ī in second declension?",
+        "Could this be nominative plural? Could it be genitive singular? Both?"
+      ]
+    },
+    {
+      "id": "dialogue-003-4",
+      "difficulty": "advanced",
+      "prompt": "What's the difference between the two types of -er masculine nouns (like puer vs. ager)? How do you know which pattern a noun follows?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that some keep the -e- (puer → puerī) and others drop it (ager → agrī)",
+            "States that the genitive form shows you which pattern",
+            "Notes that you must memorize both nominative and genitive",
+            "May give examples of each type"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Some -er nouns keep the -e- throughout all forms (like puer → puerī → puerum), while others drop the -e- in all forms except nominative singular (like ager → agrī → agrum). You can tell which pattern a noun follows by looking at the genitive form: if the genitive is 'puerī' (with the e), the e is kept; if it's 'agrī' (without the e), the e is dropped. That's why you must memorize both the nominative and genitive forms!"
+        },
+        "good": {
+          "criteria": [
+            "Recognizes two different patterns",
+            "Mentions genitive as the key",
+            "Generally correct understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Some keep the e and some drop it. The genitive tells you which."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May not explain how to determine pattern",
+            "Incomplete reasoning"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think some are different from others?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the difference",
+            "No understanding of patterns"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They all decline the same way."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if I give you 'magister, magistrī, m.' (teacher), which pattern does it follow?",
+        "Excellent! Why can't you predict the pattern from just the nominative form 'ager'?"
+      ],
+      "follow_up_if_developing": [
+        "Look at puer, puerī vs. ager, agrī. What's different about the genitive forms?",
+        "The genitive shows you the stem. What's the stem of puer? What's the stem of ager?"
+      ]
+    },
+    {
+      "id": "dialogue-003-5",
+      "difficulty": "intermediate",
+      "prompt": "Explain the difference between grammatical gender and natural gender. Give an example from Latin.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Defines grammatical gender as a linguistic classification",
+            "Defines natural gender as biological/actual gender",
+            "Notes they don't always match",
+            "Gives clear Latin example (e.g., amīcus is grammatically masculine but can refer to any gender friend)"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Grammatical gender is a linguistic category (masculine, feminine, neuter) that every Latin noun has, regardless of what it refers to. Natural gender is the actual biological gender of living things. They don't always match. For example, 'amīcus' (friend) is grammatically masculine, even though it can refer to a friend of any gender. Or 'ager' (field) is grammatically masculine even though a field has no biological gender."
+        },
+        "good": {
+          "criteria": [
+            "Understands they are different concepts",
+            "Gives an example",
+            "Generally accurate"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Grammatical gender is the gender of the word, not the thing. Like 'ager' (field) is masculine but it's not a living thing."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse the concepts",
+            "Weak or no example"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Some words are masculine but they're not really masculine?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain difference",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They're the same thing."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if you see 'agricola, agricolae, m.' (farmer), what's surprising about it?",
+        "Great! Why must you memorize the gender marking in the dictionary entry?"
+      ],
+      "follow_up_if_developing": [
+        "Think about this: 'bellum' (war) is neuter. Does war have a biological gender?",
+        "What gender is 'puer' (boy) - grammatical and natural? Do they match?"
+      ]
+    },
+    {
+      "id": "dialogue-003-6",
+      "difficulty": "advanced",
+      "prompt": "Look at this sentence: 'Puerī agrōs amant.' Parse each noun (give case, number, declension) and explain why each is in that case.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Correctly identifies Puerī as nominative plural, 2nd declension masculine",
+            "Correctly identifies agrōs as accusative plural, 2nd declension masculine",
+            "Explains Puerī is nominative because it's the subject (who loves)",
+            "Explains agrōs is accusative because it's the direct object (what is loved)",
+            "Shows syntactic understanding"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Puerī is nominative plural, second declension masculine - it's the subject of the sentence (the ones doing the loving). Agrōs is accusative plural, second declension masculine - it's the direct object (what is being loved). The verb 'amant' (they love) is plural, confirming that puerī is the plural subject."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies both cases",
+            "Provides some reasoning",
+            "Generally correct logic"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Puerī is nominative plural (the boys, subject) and agrōs is accusative plural (the fields, object)."
+        },
+        "developing": {
+          "criteria": [
+            "Identifies one case correctly",
+            "Weak or incomplete reasoning",
+            "Some confusion"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Puerī is the subject, I think agrōs is... accusative?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot parse correctly",
+            "Fundamental misunderstanding",
+            "Wrong cases identified"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Both are nominative."
+        }
+      },
+      "note": "This tests integrated knowledge: case identification, declension recognition, and syntactic reasoning.",
+      "follow_up_if_good": [
+        "Excellent parsing! How would the sentence change if you wanted to say 'The boy loves the field' (singular)?",
+        "Perfect! What if we made agrōs the subject: 'Agrī puerōs amant'? What would that mean?"
+      ],
+      "follow_up_if_developing": [
+        "Let's start with puerī. What case ends in -ī? Could this be genitive singular or nominative plural?",
+        "Look at the verb 'amant' (they love). Does that tell you if the subject is singular or plural?"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 4,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student should demonstrate understanding across basic (identifying forms), intermediate (explaining rules like neuter rule and gender), and advanced (parsing sentences and understanding -er noun patterns) levels"
+  }
+}

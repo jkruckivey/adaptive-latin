@@ -1,0 +1,314 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-002",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-002-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. Pay careful attention to verb tenses and noun cases.\n\n1. Puella aquam amat.\n2. Puellae terram laborābant.\n3. Aquam portābō.\n4. Viam narrāmus.\n5. Puellās vocābunt.",
+      "rubric": {
+        "scoring": "Each sentence worth 0.20 points (5 sentences × 0.20 = 1.00)",
+        "correct_translations": [
+          {
+            "number": 1,
+            "latin": "Puella aquam amat.",
+            "correct_english": "The girl loves water. / The girl is loving water.",
+            "acceptable_variants": ["The girl loves water.", "The girl is loving water.", "The girl loves the water."],
+            "key_points": [
+              "Puella = nominative singular (subject)",
+              "aquam = accusative singular (direct object)",
+              "amat = 3rd sg. present (loves/is loving)"
+            ],
+            "common_errors": [
+              "Translating as past or future tense (wrong - it's present, no tense marker)",
+              "Confusing subject and object"
+            ]
+          },
+          {
+            "number": 2,
+            "latin": "Puellae terram laborābant.",
+            "correct_english": "The girls were working the land. / The girls used to work the land.",
+            "acceptable_variants": ["The girls were working the land.", "The girls used to work the land.", "The girls worked the land (habitual)."],
+            "key_points": [
+              "Puellae = nominative plural (subject)",
+              "terram = accusative singular (direct object)",
+              "laborābant = 3rd pl. imperfect (were working/used to work) - note -bā- marker"
+            ],
+            "common_errors": [
+              "Translating as present tense (wrong - the -bā- signals imperfect)",
+              "Translating puellae as singular (wrong - with plural verb laborābant, must be nominative plural)"
+            ]
+          },
+          {
+            "number": 3,
+            "latin": "Aquam portābō.",
+            "correct_english": "I will carry water. / I shall carry water.",
+            "acceptable_variants": ["I will carry water.", "I shall carry water.", "I will carry the water."],
+            "key_points": [
+              "Aquam = accusative singular (direct object)",
+              "portābō = 1st sg. future (I will carry) - note -bō ending (fused -bi- + -ō)"
+            ],
+            "common_errors": [
+              "Translating as imperfect 'I was carrying' (wrong - -bō is future, not -bām)",
+              "Missing the future meaning"
+            ]
+          },
+          {
+            "number": 4,
+            "latin": "Viam narrāmus.",
+            "correct_english": "We are telling about the road. / We tell about the road. / We narrate the road.",
+            "acceptable_variants": ["We tell about the road.", "We are telling about the road.", "We narrate about the road.", "We relate the road."],
+            "key_points": [
+              "Viam = accusative singular (direct object)",
+              "narrāmus = 1st pl. present (we tell/are telling) - no tense marker, so present"
+            ],
+            "common_errors": [
+              "Translating as past or future (wrong - present tense)",
+              "Missing that narrāmus means 'we' (plural)"
+            ]
+          },
+          {
+            "number": 5,
+            "latin": "Puellās vocābunt.",
+            "correct_english": "They will call the girls.",
+            "acceptable_variants": ["They will call the girls.", "They will summon the girls."],
+            "key_points": [
+              "Puellās = accusative plural (direct object)",
+              "vocābunt = 3rd pl. future (they will call) - note -bu- variant before -nt"
+            ],
+            "common_errors": [
+              "Confusing vocābunt (future) with vocant (present) - the -bu- is the key marker",
+              "Translating as imperfect 'they were calling' (wrong - -bu- is future, not -bā-)"
+            ]
+          }
+        ],
+        "partial_credit": "Award 0.15/0.20 for translations that capture the main meaning but have minor errors in tense or case interpretation. Award 0.10/0.20 for translations that show some understanding but have significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-002-2",
+      "difficulty": "intermediate",
+      "task_type": "tense_identification",
+      "prompt": "For each verb form below, identify: (a) Tense (present, imperfect, or future), (b) Person and number (e.g., '3rd singular'), (c) English translation.\n\n1. amat\n2. amābat\n3. amābit\n4. amant\n5. amābant\n6. amābunt\n7. portāmus\n8. portābāmus\n9. portābimus\n10. vocābō",
+      "rubric": {
+        "scoring": "Each form worth 0.10 points (10 forms × 0.10 = 1.00). Full credit requires all three parts correct (tense, person/number, translation). Partial credit: 0.07 for 2/3 correct, 0.04 for 1/3 correct.",
+        "correct_answers": [
+          {
+            "number": 1,
+            "form": "amat",
+            "tense": "Present",
+            "person_number": "3rd person singular",
+            "translation": "he/she/it loves, is loving",
+            "identification_key": "No tense marker - just stem + -t ending",
+            "points": 0.10
+          },
+          {
+            "number": 2,
+            "form": "amābat",
+            "tense": "Imperfect",
+            "person_number": "3rd person singular",
+            "translation": "he/she/it was loving, used to love",
+            "identification_key": "-bā- tense marker between stem and -t ending",
+            "points": 0.10
+          },
+          {
+            "number": 3,
+            "form": "amābit",
+            "tense": "Future",
+            "person_number": "3rd person singular",
+            "translation": "he/she/it will love",
+            "identification_key": "-bi- tense marker between stem and -t ending",
+            "points": 0.10
+          },
+          {
+            "number": 4,
+            "form": "amant",
+            "tense": "Present",
+            "person_number": "3rd person plural",
+            "translation": "they love, they are loving",
+            "identification_key": "No tense marker - just stem + -nt ending",
+            "points": 0.10,
+            "note": "Don't confuse with amābunt (future)!"
+          },
+          {
+            "number": 5,
+            "form": "amābant",
+            "tense": "Imperfect",
+            "person_number": "3rd person plural",
+            "translation": "they were loving, they used to love",
+            "identification_key": "-bā- tense marker between stem and -nt ending",
+            "points": 0.10
+          },
+          {
+            "number": 6,
+            "form": "amābunt",
+            "tense": "Future",
+            "person_number": "3rd person plural",
+            "translation": "they will love",
+            "identification_key": "-bu- variant of future tense marker before -nt ending",
+            "points": 0.10,
+            "note": "This is the tricky one - -bu- (not -bi-) with -nt!"
+          },
+          {
+            "number": 7,
+            "form": "portāmus",
+            "tense": "Present",
+            "person_number": "1st person plural",
+            "translation": "we carry, we are carrying",
+            "identification_key": "No tense marker - just stem + -mus ending",
+            "points": 0.10
+          },
+          {
+            "number": 8,
+            "form": "portābāmus",
+            "tense": "Imperfect",
+            "person_number": "1st person plural",
+            "translation": "we were carrying, we used to carry",
+            "identification_key": "-bā- tense marker between stem and -mus ending",
+            "points": 0.10
+          },
+          {
+            "number": 9,
+            "form": "portābimus",
+            "tense": "Future",
+            "person_number": "1st person plural",
+            "translation": "we will carry",
+            "identification_key": "-bi- tense marker between stem and -mus ending",
+            "points": 0.10
+          },
+          {
+            "number": 10,
+            "form": "vocābō",
+            "tense": "Future",
+            "person_number": "1st person singular",
+            "translation": "I will call",
+            "identification_key": "-bō ending is fused future marker (-bi-) + 1st sg. ending (-ō)",
+            "points": 0.10,
+            "note": "In 1st sg. future, -bi- + -ō fuses to -bō"
+          }
+        ]
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-002-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the requested Latin verb forms. Use the verb provided in parentheses.\n\n1. '3rd person singular present' (amō, amāre)\n2. '3rd person singular imperfect' (amō, amāre)\n3. '3rd person singular future' (amō, amāre)\n4. '3rd person plural present' (portō, portāre)\n5. '3rd person plural imperfect' (portō, portāre)\n6. '3rd person plural future' (portō, portāre)\n7. '1st person plural present' (vocō, vocāre)\n8. '1st person plural imperfect' (vocō, vocāre)\n9. '1st person plural future' (vocō, vocāre)\n10. '1st person singular future' (laborō, laborāre)\n11. '2nd person singular present' (narrō, narrāre)\n12. '2nd person plural future' (amō, amāre)",
+      "rubric": {
+        "scoring": "Each form worth approximately 0.083 points (12 forms × 0.083 ≈ 1.00)",
+        "correct_answers": [
+          {
+            "number": 1,
+            "prompt": "3rd person singular present (amō, amāre)",
+            "correct_form": "amat",
+            "breakdown": "amā- (stem) + -t (3rd sg. ending)",
+            "tense_marker": "none (present)",
+            "common_errors": ["amāt (wrong - ā shortens before -t)", "amābat (that's imperfect)"]
+          },
+          {
+            "number": 2,
+            "prompt": "3rd person singular imperfect (amō, amāre)",
+            "correct_form": "amābat",
+            "breakdown": "amā- (stem) + -bā- (imperfect marker) + -t (3rd sg. ending)",
+            "tense_marker": "-bā-",
+            "common_errors": ["amat (that's present)", "amābit (that's future)"]
+          },
+          {
+            "number": 3,
+            "prompt": "3rd person singular future (amō, amāre)",
+            "correct_form": "amābit",
+            "breakdown": "amā- (stem) + -bi- (future marker) + -t (3rd sg. ending)",
+            "tense_marker": "-bi-",
+            "common_errors": ["amābat (that's imperfect)", "amat (that's present)"]
+          },
+          {
+            "number": 4,
+            "prompt": "3rd person plural present (portō, portāre)",
+            "correct_form": "portant",
+            "breakdown": "portā- (stem) + -nt (3rd pl. ending)",
+            "tense_marker": "none (present)",
+            "common_errors": ["portābunt (that's future)", "portābant (that's imperfect)"]
+          },
+          {
+            "number": 5,
+            "prompt": "3rd person plural imperfect (portō, portāre)",
+            "correct_form": "portābant",
+            "breakdown": "portā- (stem) + -bā- (imperfect marker) + -nt (3rd pl. ending)",
+            "tense_marker": "-bā-",
+            "common_errors": ["portant (that's present)", "portābunt (that's future)"]
+          },
+          {
+            "number": 6,
+            "prompt": "3rd person plural future (portō, portāre)",
+            "correct_form": "portābunt",
+            "breakdown": "portā- (stem) + -bu- (future marker variant) + -nt (3rd pl. ending)",
+            "tense_marker": "-bu-",
+            "common_errors": ["portābant (that's imperfect)", "portant (that's present)", "portābint (wrong - it's -bu-, not -bi-, with -nt)"],
+            "note": "Remember: 3rd plural future uses -bu-, not -bi-!"
+          },
+          {
+            "number": 7,
+            "prompt": "1st person plural present (vocō, vocāre)",
+            "correct_form": "vocāmus",
+            "breakdown": "vocā- (stem) + -mus (1st pl. ending)",
+            "tense_marker": "none (present)",
+            "common_errors": ["vocābāmus (that's imperfect)", "vocābimus (that's future)"]
+          },
+          {
+            "number": 8,
+            "prompt": "1st person plural imperfect (vocō, vocāre)",
+            "correct_form": "vocābāmus",
+            "breakdown": "vocā- (stem) + -bā- (imperfect marker) + -mus (1st pl. ending)",
+            "tense_marker": "-bā-",
+            "common_errors": ["vocāmus (that's present)", "vocābimus (that's future)"]
+          },
+          {
+            "number": 9,
+            "prompt": "1st person plural future (vocō, vocāre)",
+            "correct_form": "vocābimus",
+            "breakdown": "vocā- (stem) + -bi- (future marker) + -mus (1st pl. ending)",
+            "tense_marker": "-bi-",
+            "common_errors": ["vocābāmus (that's imperfect)", "vocāmus (that's present)"]
+          },
+          {
+            "number": 10,
+            "prompt": "1st person singular future (laborō, laborāre)",
+            "correct_form": "laborābō",
+            "breakdown": "laborā- (stem) + -bō (fused -bi- + -ō for 1st sg. future)",
+            "tense_marker": "-bō (fused -bi- + -ō)",
+            "common_errors": ["laborābam (that's imperfect)", "laborō (that's present)", "laborābiō (wrong - it fuses to -bō)"]
+          },
+          {
+            "number": 11,
+            "prompt": "2nd person singular present (narrō, narrāre)",
+            "correct_form": "narrās",
+            "breakdown": "narrā- (stem) + -s (2nd sg. ending)",
+            "tense_marker": "none (present)",
+            "common_errors": ["narrābās (that's imperfect)", "narrābis (that's future)"]
+          },
+          {
+            "number": 12,
+            "prompt": "2nd person plural future (amō, amāre)",
+            "correct_form": "amābitis",
+            "breakdown": "amā- (stem) + -bi- (future marker) + -tis (2nd pl. ending)",
+            "tense_marker": "-bi-",
+            "common_errors": ["amātis (that's present)", "amābātis (that's imperfect)"]
+          }
+        ],
+        "partial_credit": "Award 0.06/0.083 for forms that are close but have minor errors (e.g., missing macron, wrong vowel length). Award 0.00 for completely incorrect forms.",
+        "note": "Production (generating forms) is harder than recognition. This tests whether students can actively create correct forms from scratch."
+      },
+      "estimated_time": "20-25 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify tenses, and produce verb forms. Students must demonstrate they can USE their knowledge of first conjugation verbs, not just explain the system theoretically."
+  }
+}

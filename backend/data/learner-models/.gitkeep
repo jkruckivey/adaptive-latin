@@ -1,0 +1,2 @@
+# This file ensures the learner-models directory is tracked by git
+# Individual learner JSON files are gitignored for privacy

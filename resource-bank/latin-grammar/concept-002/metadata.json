@@ -1,0 +1,34 @@
+{
+  "id": "concept-002",
+  "title": "First Conjugation Verbs (Present System)",
+  "domain": "latin-grammar",
+  "difficulty": 2,
+  "prerequisites": ["concept-001"],
+  "learning_objectives": [
+    "Identify first conjugation verbs by their infinitive ending (-āre)",
+    "Conjugate first conjugation verbs in present, imperfect, and future tenses",
+    "Explain the function of personal endings (-ō, -s, -t, -mus, -tis, -nt)",
+    "Distinguish between present, imperfect, and future time",
+    "Translate sentences using first conjugation verbs with first declension nouns"
+  ],
+  "estimated_mastery_time": "75-90 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["foundational", "conjugation", "verb-system", "present-tense", "imperfect-tense", "future-tense"],
+  "vocabulary": [
+    {"latin": "amō, amāre, amāvī, amātum", "english": "to love, like", "conjugation": "1st"},
+    {"latin": "vocō, vocāre, vocāvī, vocātum", "english": "to call, summon", "conjugation": "1st"},
+    {"latin": "portō, portāre, portāvī, portātum", "english": "to carry, bring", "conjugation": "1st"},
+    {"latin": "laborō, laborāre, laborāvī, laborātum", "english": "to work, labor", "conjugation": "1st"},
+    {"latin": "narrō, narrāre, narrāvī, narrātum", "english": "to tell, relate", "conjugation": "1st"},
+    {"latin": "dō, dare, dedī, datum", "english": "to give", "conjugation": "1st (irregular)"},
+    {"latin": "stō, stāre, stetī, statum", "english": "to stand", "conjugation": "1st"}
+  ],
+  "grammar_notes": [
+    "Present system uses the present stem (found by dropping -re from infinitive)",
+    "Personal endings are consistent across present, imperfect, and future",
+    "Imperfect tense uses -ba- tense sign",
+    "Future tense uses -bi-/-bu- tense sign (with variations)",
+    "First conjugation is the most regular and predictable pattern"
+  ]
+}

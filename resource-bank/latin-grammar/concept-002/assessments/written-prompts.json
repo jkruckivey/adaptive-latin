@@ -1,0 +1,222 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-002",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-002-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a clear explanation (200-250 words) of the present system of first conjugation verbs that you could use to teach a complete beginner. Your explanation should cover:\n\n1. What the present system is (which three tenses it includes)\n2. How to form each tense (present, imperfect, future)\n3. How to recognize each tense when you see it in Latin\n4. At least one example showing all three tenses of the same verb\n\nWrite as if you're explaining to a friend who has never studied Latin but understands basic English grammar.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Understanding",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Accurately explains all three tenses; correctly describes formation rules (stem + ending for present, stem + -bā- + ending for imperfect, stem + -bi-/-bu- + ending for future); shows clear understanding of how the system works",
+              "good": "Explains the basic concept correctly; may have minor gaps or imprecisions in formation rules; generally accurate",
+              "developing": "Partial explanation; some confusion about formation or tense recognition; incomplete understanding",
+              "insufficient": "Cannot accurately explain the system; major errors or misconceptions; fundamental confusion"
+            }
+          },
+          {
+            "name": "Clarity & Pedagogy",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Clear, well-organized explanation that would genuinely help a beginner; uses accessible language; logical flow; good teaching approach",
+              "good": "Generally clear; minor organizational issues; mostly accessible to a beginner; decent pedagogy",
+              "developing": "Somewhat unclear; poor organization; may use jargon without explanation; weak pedagogical approach",
+              "insufficient": "Confusing or incoherent; would not help a beginner understand; poor or no pedagogical consideration"
+            }
+          },
+          {
+            "name": "Examples",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Provides clear, accurate example(s) showing all three tenses of the same verb; examples effectively illustrate the concepts",
+              "good": "Provides examples but may lack completeness (not all three tenses) or clarity; generally helpful",
+              "developing": "Weak or incomplete examples; may have errors; don't effectively illustrate the concepts",
+              "insufficient": "No examples, incorrect examples, or examples that confuse rather than clarify"
+            }
+          },
+          {
+            "name": "Accuracy",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "No errors in Latin forms, grammatical terminology, or explanations; completely accurate",
+              "good": "Minor imprecisions that don't affect overall accuracy; essentially correct",
+              "developing": "Some errors that may cause confusion; accuracy issues in forms or explanations",
+              "insufficient": "Major errors; incorrect Latin forms or grammatical explanations; unreliable information"
+            }
+          }
+        ]
+      },
+      "word_count_range": [200, 250],
+      "estimated_time": "20-25 minutes",
+      "sample_excellent_response": "The present system of Latin verbs includes three tenses: present, imperfect, and future. All three use the same present stem and personal endings, but they differ in their tense markers.\n\nTo form these tenses, first find the present stem by dropping -re from the infinitive. For example, amāre (to love) becomes amā-. Then add the appropriate tense marker and personal endings.\n\nThe present tense has no tense marker - just add personal endings directly to the stem: amō (I love), amās (you love), amat (he/she/it loves), etc. This describes action happening now or habitually.\n\nThe imperfect tense uses -bā- as a tense marker, placed between the stem and the ending: amābam (I was loving), amābās (you were loving), amābat (he/she/it was loving). This describes ongoing or repeated action in the past. Think 'I was loving' or 'I used to love.'\n\nThe future tense uses -bi- or -bu- as a tense marker: amābō (I will love), amābis (you will love), amābit (he/she/it will love), amābunt (they will love). The -bu- variant appears with the -nt ending (3rd plural). This describes action that will happen.\n\nTo recognize these tenses: if you see -ba- in the verb, it's imperfect; if you see -bi- or -bu-, it's future; if there's no tense marker, it's present. For example, portat (carries), portābat (was carrying), portābit (will carry) show all three tenses of the same verb, differing only in their tense markers."
+    },
+    {
+      "id": "written-002-2",
+      "difficulty": "advanced",
+      "prompt": "Translate the following three sentences into English and provide detailed grammatical commentary for each. Your commentary should:\n\n- Identify the tense of each verb and explain HOW you identified it (what markers/features)\n- Identify the case of each noun and explain WHY it's in that case (based on function)\n- Explain any important grammatical features or potential points of confusion\n\nSentences:\n1. Puellae viam amant et aquam portant.\n2. Terram laborābāmus et fortunam amābāmus.\n3. Puellam vocābō et viam narrābō.\n\nProvide: (a) English translation, (b) Full grammatical analysis with explanations",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All three sentences translated correctly with natural, accurate English; captures tense and meaning precisely",
+              "good": "2-3 sentences correct; may have minor phrasing issues but meaning is clear and tenses are right",
+              "developing": "1-2 sentences correct; significant errors in tense or meaning; incomplete understanding",
+              "insufficient": "Most or all translations incorrect; wrong tenses; fundamental misunderstanding"
+            }
+          },
+          {
+            "name": "Verb Analysis",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All verbs correctly identified by tense; clear, accurate explanations of how to identify (tense markers); systematic understanding demonstrated",
+              "good": "Most verbs correct (80%+); explanations generally sound but may lack some detail",
+              "developing": "Some verbs correct (50-79%); weak or incomplete explanations; gaps in understanding",
+              "insufficient": "Most verbs incorrectly identified; cannot explain tense markers; fundamental confusion"
+            }
+          },
+          {
+            "name": "Noun Analysis",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "All nouns correctly identified by case; clear explanations of WHY each is in that case (function in sentence); shows syntactic understanding",
+              "good": "Most nouns correct (80%+); generally correct explanations of function; solid understanding",
+              "developing": "Some nouns correct (50-79%); weak explanations of function; incomplete understanding",
+              "insufficient": "Most nouns incorrectly identified; cannot explain case functions; fundamental confusion"
+            }
+          },
+          {
+            "name": "Depth of Commentary",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Detailed, insightful commentary; notes points of potential confusion; shows sophisticated grammatical awareness",
+              "good": "Adequate commentary; covers main points; may miss some subtleties",
+              "developing": "Superficial commentary; states facts without much explanation; limited grammatical insight",
+              "insufficient": "Minimal or no commentary; does not explain reasoning; no grammatical insight"
+            }
+          }
+        ]
+      },
+      "estimated_time": "30-40 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Puellae viam amant et aquam portant.",
+          "translation": "The girls love the road and (they) carry water. / The girls are loving the road and carrying water.",
+          "verb_analysis": [
+            {
+              "verb": "amant",
+              "tense": "Present",
+              "person_number": "3rd plural",
+              "identification": "No tense marker - just stem (amā-) + personal ending (-nt). Present tense describes current or habitual action.",
+              "translation": "love / are loving"
+            },
+            {
+              "verb": "portant",
+              "tense": "Present",
+              "person_number": "3rd plural",
+              "identification": "No tense marker - just stem (portā-) + personal ending (-nt). Matches 'amant' in tense.",
+              "translation": "carry / are carrying"
+            }
+          ],
+          "noun_analysis": [
+            {
+              "noun": "Puellae",
+              "case": "Nominative plural",
+              "reason": "Subject of both verbs ('who loves and carries'). The plural -ae ending matches the plural verb forms (amant, portant)."
+            },
+            {
+              "noun": "viam",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'amant' ('love what?'). The -am ending signals accusative singular."
+            },
+            {
+              "noun": "aquam",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'portant' ('carry what?'). The -am ending signals accusative singular."
+            }
+          ],
+          "notes": "Compound sentence with two verbs sharing the same subject (puellae). Both verbs are present tense. Don't confuse 'amant' (present) with 'amābunt' (future)."
+        },
+        "sentence_2": {
+          "latin": "Terram laborābāmus et fortunam amābāmus.",
+          "translation": "We were working the land and were loving fortune. / We used to work the land and love fortune.",
+          "verb_analysis": [
+            {
+              "verb": "laborābāmus",
+              "tense": "Imperfect",
+              "person_number": "1st plural",
+              "identification": "Tense marker -bā- appears between stem (laborā-) and personal ending (-mus). Imperfect describes ongoing or habitual past action.",
+              "translation": "we were working / we used to work"
+            },
+            {
+              "verb": "amābāmus",
+              "tense": "Imperfect",
+              "person_number": "1st plural",
+              "identification": "Tense marker -bā- appears between stem (amā-) and personal ending (-mus). Matches 'laborābāmus' in tense and person.",
+              "translation": "we were loving / we used to love"
+            }
+          ],
+          "noun_analysis": [
+            {
+              "noun": "Terram",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'laborābāmus' ('working what?'). The -am ending signals accusative."
+            },
+            {
+              "noun": "fortunam",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'amābāmus' ('loving what?'). The -am ending signals accusative."
+            }
+          ],
+          "notes": "Both verbs are 1st person plural imperfect. The -bā- marker is the key to identifying imperfect tense. No explicit subject ('we') is needed - the -mus ending tells us. Both imperfect verbs suggest ongoing or habitual action in the past."
+        },
+        "sentence_3": {
+          "latin": "Puellam vocābō et viam narrābō.",
+          "translation": "I will call the girl and I will tell about the road. / I will call the girl and narrate about the road.",
+          "verb_analysis": [
+            {
+              "verb": "vocābō",
+              "tense": "Future",
+              "person_number": "1st singular",
+              "identification": "The -bō ending is the fused future marker (-bi-) + personal ending (-ō) for 1st singular. Signals future action.",
+              "translation": "I will call"
+            },
+            {
+              "verb": "narrābō",
+              "tense": "Future",
+              "person_number": "1st singular",
+              "identification": "The -bō ending (fused -bi- + -ō) signals 1st singular future. Matches 'vocābō' in tense and person.",
+              "translation": "I will tell / I will narrate"
+            }
+          ],
+          "noun_analysis": [
+            {
+              "noun": "Puellam",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'vocābō' ('will call whom?'). The -am ending signals accusative."
+            },
+            {
+              "noun": "viam",
+              "case": "Accusative singular",
+              "reason": "Direct object of 'narrābō' ('will tell about what?'). The -am ending signals accusative."
+            }
+          ],
+          "notes": "Both verbs are 1st singular future. The -bō ending is distinctive for 1st person future (in other persons you'd see -bi- more clearly: vocābis, vocābit). No subject pronoun needed - the verb ending tells us it's 'I.' Both objects are accusative singular."
+        }
+      },
+      "scoring_note": "Sentence 2 and 3 require recognizing tense markers (-bā- and -bō) accurately. Students who correctly analyze all three demonstrate strong mastery of the present system."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments test ability to explain concepts clearly (Prompt 1) and analyze Latin systematically (Prompt 2). Both require deep understanding, not just memorization."
+  }
+}

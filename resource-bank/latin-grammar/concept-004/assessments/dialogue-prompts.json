@@ -1,0 +1,331 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-004",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-004-1",
+      "difficulty": "basic",
+      "prompt": "How do you identify a 1st/2nd declension adjective in the dictionary? What does the entry 'bonus, bona, bonum' tell you?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Recognizes three forms indicate adjective (not noun)",
+            "Identifies first form as masculine, second as feminine, third as neuter",
+            "Explains that these are nominative singular forms",
+            "Notes that adjective uses 2nd declension for M/N, 1st declension for F"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "A 1st/2nd declension adjective has three forms in the dictionary entry: masculine (bonus, uses 2nd declension -us endings), feminine (bona, uses 1st declension -a endings), and neuter (bonum, uses 2nd declension -um endings). These are all nominative singular forms. The three forms exist so the adjective can modify nouns of any gender."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes three forms",
+            "Identifies at least two genders correctly",
+            "Generally correct understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It has three forms for masculine, feminine, and neuter. The first is masculine, second is feminine, third is neuter."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May not identify all three genders",
+            "Unclear about why three forms"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "It's an adjective because it has three forms? I'm not sure why."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the three forms",
+            "Confuses adjectives with nouns",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "I think it's three different words?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if you see 'magnus, magna, magnum', what gender would you use to modify 'puella' (girl)?",
+        "Excellent! How would 'bonus' decline in the genitive singular for each gender?"
+      ],
+      "follow_up_if_developing": [
+        "Think about this: why does an adjective need three forms when a noun only has one dictionary form?",
+        "Remember: adjectives must be able to modify nouns of any gender. What genders exist in Latin?"
+      ]
+    },
+    {
+      "id": "dialogue-004-2",
+      "difficulty": "intermediate",
+      "prompt": "This is the most important question: What does it mean for an adjective to 'agree' with a noun? Do the adjective and noun need to have the same ending?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Clearly states agreement = matching gender, number, case",
+            "Explicitly says endings do NOT need to match",
+            "Explains why: noun and adjective may be different declensions",
+            "Gives example of agreement with different endings"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Agreement means the adjective must match the noun in three ways: gender, number, and case. The endings do NOT have to match! That's because the adjective might use a different declension pattern than the noun. For example, 'bona puella' - they both end in -a by coincidence, but more importantly they're both feminine, singular, nominative. The key is matching those three properties, not the actual ending."
+        },
+        "good": {
+          "criteria": [
+            "Mentions gender, number, case matching",
+            "May say endings don't have to match",
+            "Generally correct but may lack full explanation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The adjective matches the noun's gender, number, and case. The endings don't always match."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding of agreement",
+            "May think endings must match",
+            "Unclear about gender/number/case requirements"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think they have to match somehow, maybe the endings?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Thinks endings must match",
+            "Cannot explain agreement concept",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Yes, the endings have to be the same."
+        }
+      },
+      "note": "This is THE critical misconception for Concept 004. Students who understand this concept have mastered the hardest part.",
+      "follow_up_if_good": [
+        "Perfect! So why is 'bona puella' correct but 'bonus puella' wrong?",
+        "Excellent! Can you think of a case where the adjective and noun WOULD have the same ending, and explain why?"
+      ],
+      "follow_up_if_developing": [
+        "Let me give you an example: 'bonus amicus' (both end in -us) vs 'bona puella' (both end in -a). Both are correct. Why?",
+        "Think about this: if puella is feminine and bonus is masculine, can they agree?"
+      ]
+    },
+    {
+      "id": "dialogue-004-3",
+      "difficulty": "intermediate",
+      "prompt": "Look at this phrase: 'bonus amicus' (good friend). Both words end in -us. Now look at 'bona puella' (good girl). The adjective changed from bonus to bona. Why did it change?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that amicus is masculine, so we use masculine form 'bonus'",
+            "Explains that puella is feminine, so we use feminine form 'bona'",
+            "Shows understanding that adjective adapts to noun's gender",
+            "May note that the dictionary form 'bonus' is just the masculine form"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The adjective changes to match the gender of the noun it modifies. Amicus is masculine, so we use the masculine form 'bonus.' Puella is feminine, so we use the feminine form 'bona.' The adjective has different forms for different genders, and we choose the form that matches our noun. 'Bonus' in the dictionary is just showing you the masculine nominative singular form."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes gender difference",
+            "Understands adjective must match noun's gender",
+            "Generally correct explanation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Amicus is masculine so it uses bonus, but puella is feminine so it uses bona."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May recognize difference but can't explain fully",
+            "Uncertain about gender role"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's because they're different types of nouns?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the change",
+            "Thinks one form is correct and the other wrong",
+            "No understanding of gender matching"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Maybe 'bonus amicus' is right and 'bona puella' is wrong?"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So what form would you use with 'bellum' (war, neuter)?",
+        "Perfect understanding! How would you say 'I see a good friend (masculine)' vs 'I see a good girl'? What cases would you use?"
+      ],
+      "follow_up_if_developing": [
+        "Think about the gender: amicus is masculine (M), puella is feminine (F). What does the adjective need to match?",
+        "Look at the dictionary entry 'bonus, bona, bonum' - which form is for masculine nouns? Which for feminine?"
+      ]
+    },
+    {
+      "id": "dialogue-004-4",
+      "difficulty": "advanced",
+      "prompt": "Here's a challenging one: I see the phrase 'bona bella' (good wars). Someone says 'That's wrong! Bona is feminine and bella is neuter, so they don't agree!' What's the mistake in this reasoning?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Recognizes that 'bona' here is NEUTER PLURAL nominative, not feminine singular",
+            "Explains that neuter plural nominative/accusative ends in -a",
+            "Shows that both 'bona' and 'bella' are neuter plural nominative - perfect agreement",
+            "Demonstrates understanding that you can't determine form from ending alone - must check context"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The mistake is assuming 'bona' is feminine just because it ends in -a. Actually, 'bona' here is the neuter plural nominative form of bonus (neuter plural nom/acc always ends in -a). Bella is also neuter plural nominative. So they DO agree - both are neuter, plural, nominative. The person making the criticism didn't realize that -a can be either feminine singular OR neuter plural."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes 'bona' can be neuter plural",
+            "Understands they do agree",
+            "May not fully explain the -a ending ambiguity"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Bona isn't feminine here - it's neuter plural to match bella. They both agree."
+        },
+        "developing": {
+          "criteria": [
+            "Unsure if they agree or not",
+            "May not know about neuter plural -a ending",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I'm not sure... maybe bona can be neuter too?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Agrees with the wrong criticism",
+            "Thinks 'bona bella' is incorrect",
+            "No understanding of neuter plural forms"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "The person is right - they don't agree. It should be 'bonum bella' or something."
+        }
+      },
+      "note": "This is very advanced - tests whether student understands that form identification requires context, not just endings.",
+      "follow_up_if_good": [
+        "Brilliant! So how would you explain to someone how to tell if 'bona' is feminine singular or neuter plural?",
+        "Perfect! What other forms could be confused this way? Are there other ambiguous endings?"
+      ],
+      "follow_up_if_developing": [
+        "Remember: neuter plural nominative and accusative always end in -a. So 'bella' (wars) is neuter plural, and the adjective modifying it would be 'bona' (also neuter plural).",
+        "Look at the noun first - bella is neuter plural. What form of bonus would be neuter plural nominative?"
+      ]
+    },
+    {
+      "id": "dialogue-004-5",
+      "difficulty": "intermediate",
+      "prompt": "What's the difference between an attributive adjective and a predicate adjective? Can you give me an example of each?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Defines attributive: directly modifies noun, forms noun phrase",
+            "Defines predicate: describes subject through linking verb (est/sunt)",
+            "Gives correct example of each",
+            "Notes that both still require agreement in gender/number/case",
+            "May mention that both can use nominative case"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Attributive adjectives directly modify a noun to form a phrase, like 'bona puella' (good girl) - they go together as a unit. Predicate adjectives describe the subject through a linking verb like 'est': 'Puella bona est' (The girl is good). In this case, 'bona' isn't part of the noun phrase 'the girl,' but describes her through 'is.' Both types require agreement - the adjective must match the noun's gender, number, and case."
+        },
+        "good": {
+          "criteria": [
+            "Distinguishes between the two types",
+            "Provides at least one correct example",
+            "Generally accurate understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Attributive is like 'good girl' where the adjective modifies the noun. Predicate is when you say 'The girl is good' with a linking verb."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse the two types",
+            "Weak or incorrect examples"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think attributive is when the adjective comes before the noun?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot distinguish the two",
+            "No correct examples",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "I don't know the difference."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So in the sentence 'Magnae puellae sunt,' is 'magnae' attributive or predicate?",
+        "Perfect! If I wanted to say 'The large girls see the good road,' where would I have attributive adjectives?"
+      ],
+      "follow_up_if_developing": [
+        "Think about these two sentences: 'The good girl is here' vs 'The girl is good.' What's the difference in how 'good' functions?",
+        "An attributive adjective goes WITH the noun (good girl). A predicate adjective describes through 'is/are' (the girl IS good). Can you create examples?"
+      ]
+    },
+    {
+      "id": "dialogue-004-6",
+      "difficulty": "advanced",
+      "prompt": "Let's test your understanding: Give me the Latin for 'I see the small gifts' (donum, donī, n.) using the adjective parvus, parva, parvum.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Produces correct form: 'Parva dona video' or 'Video parva dona'",
+            "Identifies donum → dona (N acc pl) correctly",
+            "Identifies parvus → parva (N acc pl) correctly",
+            "Shows systematic reasoning: neuter, plural, accusative for both",
+            "Can explain why parva (not parvōs or another form)"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "'Parva dona video.' Donum is neuter, so I need the neuter forms. 'Gifts' as direct object = accusative case. Neuter plural accusative of donum is 'dona' (neuter plural nom/acc end in -a). The adjective must match: neuter plural accusative. Looking at parvus paradigm, neuter plural accusative is 'parva.' So: parva dona."
+        },
+        "good": {
+          "criteria": [
+            "Produces correct or nearly correct form",
+            "Shows understanding of neuter plural -a",
+            "May have minor errors in explanation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "'Parva dona video' - both are neuter plural accusative."
+        },
+        "developing": {
+          "criteria": [
+            "Incorrect form produced",
+            "May get noun right but adjective wrong (or vice versa)",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "'Parvōs donum video'? I'm not sure about the endings."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot produce correct form",
+            "Major errors in noun and/or adjective",
+            "No systematic approach"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "'Parvus dona video'?"
+        }
+      },
+      "note": "This tests production ability, not just recognition - much harder. Requires student to: (1) decline neuter noun, (2) identify case needed, (3) find matching adjective form.",
+      "follow_up_if_good": [
+        "Perfect! How would you change this to 'I see the small gift' (singular)?",
+        "Excellent work! Now what if it were 'of the small gifts' - what would change?"
+      ],
+      "follow_up_if_developing": [
+        "Let's work through this step by step. First: what case do we need for 'gifts' as a direct object?",
+        "Start with the noun: donum is neuter. What is the neuter plural accusative form? (Remember: neuter nom = acc)"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 4,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student must demonstrate understanding of the agreement concept (gender/number/case, NOT endings) and be able to apply it. The critical test is dialogue-004-2 (understanding agreement doesn't mean matching endings)."
+  }
+}

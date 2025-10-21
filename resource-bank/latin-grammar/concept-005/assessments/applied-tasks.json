@@ -1,0 +1,278 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-005",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-005-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. Pay careful attention to verb tenses.\n\n1. Puellam amāvī.\n2. Magistrum vocāverant.\n3. Cēnam parāverimus cum veniēs.\n4. Litterās scrīpsistī.\n5. In viā stetērunt.\n6. Aquam portāverat antequam vēnī.\n\nVocabulary:\n- scrībō, scrībere, scrīpsī = to write\n- stō, stāre, stetī = to stand\n- veniō, venīre, vēnī = to come",
+      "rubric": {
+        "scoring": "Each sentence worth approximately 0.167 points (6 sentences × 0.167 ≈ 1.00)",
+        "correct_translations": [
+          {
+            "latin": "Puellam amāvī.",
+            "correct_english": "I loved the girl / I have loved the girl.",
+            "acceptable_variants": ["I loved the girl.", "I have loved the girl."],
+            "key_points": [
+              "amāvī = perfect, 1st singular (stem: amāv-)",
+              "Both English translations valid",
+              "Puellam = accusative (direct object)"
+            ],
+            "common_errors": [
+              "Translating as 'I was loving' (that would be imperfect: amābam)",
+              "Missing one of the two possible translations"
+            ]
+          },
+          {
+            "latin": "Magistrum vocāverant.",
+            "correct_english": "They had called the teacher.",
+            "acceptable_variants": ["They had called the teacher."],
+            "key_points": [
+              "vocāverant = pluperfect, 3rd plural (stem: vocāv- + -erant)",
+              "Must use 'had' in English (pluperfect)",
+              "Magistrum = accusative (direct object)"
+            ],
+            "common_errors": [
+              "Translating as 'they called' (that would be perfect: vocāvērunt)",
+              "Missing 'had' - pluperfect MUST be 'had [verb]ed'"
+            ]
+          },
+          {
+            "latin": "Cēnam parāverimus cum veniēs.",
+            "correct_english": "We will have prepared dinner when you come.",
+            "acceptable_variants": ["We will have prepared dinner when you come.", "We shall have prepared dinner when you come."],
+            "key_points": [
+              "parāverimus = future perfect, 1st plural (stem: parāv- + -erimus)",
+              "Must use 'will have' in English",
+              "cum = when (conjunction)",
+              "veniēs = future, 2nd singular"
+            ],
+            "common_errors": [
+              "Translating as 'we prepared' or 'we have prepared' (wrong tense)",
+              "Missing 'will have' - future perfect requires this"
+            ]
+          },
+          {
+            "latin": "Litterās scrīpsistī.",
+            "correct_english": "You wrote the letters / You have written the letters.",
+            "acceptable_variants": ["You wrote the letters.", "You have written the letters."],
+            "key_points": [
+              "scrīpsistī = perfect, 2nd singular (stem: scrīps- + -istī)",
+              "Both English translations valid",
+              "Litterās = accusative plural (direct object)"
+            ],
+            "common_errors": [
+              "Confusing with other tenses",
+              "Not recognizing -istī as 2nd person singular perfect ending"
+            ],
+            "note": "This uses a verb with irregular perfect stem (scrībō → scrīpsī, not scrībāvī)"
+          },
+          {
+            "latin": "In viā stetērunt.",
+            "correct_english": "They stood in the road / They have stood in the road.",
+            "acceptable_variants": ["They stood in the road.", "They have stood in the road.", "They stood in the street."],
+            "key_points": [
+              "stetērunt = perfect, 3rd plural (stem: stet- + -ērunt)",
+              "Note the long ē in -ērunt (perfect, not future perfect)",
+              "in viā = in/on the road (ablative of place where)"
+            ],
+            "common_errors": [
+              "Confusing -ērunt (perfect) with -erint (future perfect)",
+              "Not recognizing irregular perfect stem stet- (from stō, stāre, stetī)"
+            ],
+            "note": "Tests recognition of irregular perfect stem and -ērunt ending"
+          },
+          {
+            "latin": "Aquam portāverat antequam vēnī.",
+            "correct_english": "He/She had carried the water before I came.",
+            "acceptable_variants": ["He had carried the water before I came.", "She had carried the water before I came."],
+            "key_points": [
+              "portāverat = pluperfect, 3rd singular (stem: portāv- + -erat)",
+              "vēnī = perfect, 1st singular",
+              "Time sequence: carrying water (earlier - pluperfect) happened before I came (later - perfect)",
+              "antequam = before (conjunction)"
+            ],
+            "common_errors": [
+              "Translating portāverat as 'carried' instead of 'had carried'",
+              "Not recognizing the time sequence (pluperfect before perfect)"
+            ],
+            "note": "Tests understanding of time relationships between pluperfect and perfect"
+          }
+        ],
+        "partial_credit": "Award 0.12/0.167 for translations that capture main meaning but have errors in tense (e.g., using 'called' instead of 'had called'). Award 0.08/0.167 for translations showing some understanding but with significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "20-25 minutes"
+    },
+    {
+      "id": "applied-005-2",
+      "difficulty": "intermediate",
+      "task_type": "tense_identification",
+      "prompt": "For each verb form below, identify:\n(a) The tense (perfect, pluperfect, or future perfect)\n(b) The person and number (e.g., 1st singular, 3rd plural)\n(c) The perfect stem\n(d) English translation\n\nExample: amāvī → (a) Perfect, (b) 1st singular, (c) amāv-, (d) I loved / I have loved\n\nYour turn:\n1. vocāverant\n2. portāverō\n3. dedistī\n4. steterat\n5. amāverint\n6. parāvimus",
+      "rubric": {
+        "scoring": "Each form worth approximately 0.167 points (6 forms × 0.167 ≈ 1.00). Full credit requires all four parts (a-d) correct. Partial credit for 2-3 parts correct.",
+        "correct_answers": [
+          {
+            "form": "vocāverant",
+            "tense": "Pluperfect",
+            "person_number": "3rd plural",
+            "perfect_stem": "vocāv-",
+            "translation": "they had called",
+            "breakdown": "vocāv- + -erant (pluperfect 3rd pl.)",
+            "notes": "Pluperfect ending -erant"
+          },
+          {
+            "form": "portāverō",
+            "tense": "Future perfect",
+            "person_number": "1st singular",
+            "perfect_stem": "portāv-",
+            "translation": "I will have carried",
+            "breakdown": "portāv- + -erō (future perfect 1st sg.)",
+            "notes": "Future perfect ending -erō"
+          },
+          {
+            "form": "dedistī",
+            "tense": "Perfect",
+            "person_number": "2nd singular",
+            "perfect_stem": "ded-",
+            "translation": "you gave / you have given",
+            "breakdown": "ded- + -istī (perfect 2nd sg.)",
+            "notes": "Irregular perfect stem from dō, dāre, dedī (NOT dāv-)"
+          },
+          {
+            "form": "steterat",
+            "tense": "Pluperfect",
+            "person_number": "3rd singular",
+            "perfect_stem": "stet-",
+            "translation": "he/she/it had stood",
+            "breakdown": "stet- + -erat (pluperfect 3rd sg.)",
+            "notes": "Irregular perfect stem from stō, stāre, stetī (NOT stāv-)"
+          },
+          {
+            "form": "amāverint",
+            "tense": "Future perfect",
+            "person_number": "3rd plural",
+            "perfect_stem": "amāv-",
+            "translation": "they will have loved",
+            "breakdown": "amāv- + -erint (future perfect 3rd pl.)",
+            "notes": "Be careful: -erint is future perfect, NOT -ērunt (which is perfect)"
+          },
+          {
+            "form": "parāvimus",
+            "tense": "Perfect",
+            "person_number": "1st plural",
+            "perfect_stem": "parāv-",
+            "translation": "we prepared / we have prepared",
+            "breakdown": "parāv- + -imus (perfect 1st pl.)",
+            "notes": "Perfect ending -imus"
+          }
+        ],
+        "partial_credit": {
+          "4_parts_correct": "Full credit (0.167)",
+          "3_parts_correct": "0.125 (75% credit)",
+          "2_parts_correct": "0.083 (50% credit)",
+          "1_part_correct": "0.042 (25% credit)",
+          "0_parts_correct": "0.00"
+        },
+        "note": "This task tests recognition and analysis skills - can students break down forms they see and identify all components?"
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-005-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the requested Latin verb forms using the verbs provided in parentheses. Make sure to identify the perfect stem first!\n\n1. '3rd plural perfect' of vocō, vocāre, vocāvī (to call)\n2. '1st singular pluperfect' of portō, portāre, portāvī (to carry)\n3. '2nd plural future perfect' of amō, amāre, amāvī (to love)\n4. '3rd singular perfect' of dō, dāre, dedī (to give)\n5. '1st plural perfect' of stō, stāre, stetī (to stand)\n6. '2nd singular pluperfect' of parō, parāre, parāvī (to prepare)\n7. '3rd plural pluperfect' of narrō, narrāre, narrāvī (to tell)\n8. '1st singular future perfect' of moneō, monēre, monuī (to warn)\n\nFor each answer, show your work: perfect stem + ending = form",
+      "rubric": {
+        "scoring": "Each form worth 0.125 points (8 forms × 0.125 = 1.00)",
+        "correct_answers": [
+          {
+            "prompt": "3rd plural perfect of vocō, vocāre, vocāvī",
+            "perfect_stem": "vocāv-",
+            "ending": "-ērunt",
+            "correct_form": "vocāvērunt",
+            "work_shown": "vocāv- + -ērunt = vocāvērunt",
+            "translation": "they called / they have called",
+            "common_errors": ["vocāverint (that's future perfect, not perfect)"]
+          },
+          {
+            "prompt": "1st singular pluperfect of portō, portāre, portāvī",
+            "perfect_stem": "portāv-",
+            "ending": "-eram",
+            "correct_form": "portāveram",
+            "work_shown": "portāv- + -eram = portāveram",
+            "translation": "I had carried",
+            "common_errors": ["portāvī (that's perfect, not pluperfect)"]
+          },
+          {
+            "prompt": "2nd plural future perfect of amō, amāre, amāvī",
+            "perfect_stem": "amāv-",
+            "ending": "-eritis",
+            "correct_form": "amāveritis",
+            "work_shown": "amāv- + -eritis = amāveritis",
+            "translation": "you (pl.) will have loved",
+            "common_errors": ["amāvistis (that's perfect, not future perfect)"]
+          },
+          {
+            "prompt": "3rd singular perfect of dō, dāre, dedī",
+            "perfect_stem": "ded-",
+            "ending": "-it",
+            "correct_form": "dedit",
+            "work_shown": "ded- + -it = dedit",
+            "translation": "he/she/it gave / has given",
+            "common_errors": ["dāvit (wrong stem - must use irregular ded-, not dāv-)"],
+            "note": "Tests knowledge of irregular perfect stem"
+          },
+          {
+            "prompt": "1st plural perfect of stō, stāre, stetī",
+            "perfect_stem": "stet-",
+            "ending": "-imus",
+            "correct_form": "stetimus",
+            "work_shown": "stet- + -imus = stetimus",
+            "translation": "we stood / we have stood",
+            "common_errors": ["stāvimus (wrong stem - must use irregular stet-, not stāv-)"],
+            "note": "Tests knowledge of irregular perfect stem"
+          },
+          {
+            "prompt": "2nd singular pluperfect of parō, parāre, parāvī",
+            "perfect_stem": "parāv-",
+            "ending": "-erās",
+            "correct_form": "parāverās",
+            "work_shown": "parāv- + -erās = parāverās",
+            "translation": "you had prepared",
+            "common_errors": ["parāvistī (that's perfect, not pluperfect)"]
+          },
+          {
+            "prompt": "3rd plural pluperfect of narrō, narrāre, narrāvī",
+            "perfect_stem": "narrāv-",
+            "ending": "-erant",
+            "correct_form": "narrāverant",
+            "work_shown": "narrāv- + -erant = narrāverant",
+            "translation": "they had told",
+            "common_errors": ["narrāvērunt (that's perfect, not pluperfect)"]
+          },
+          {
+            "prompt": "1st singular future perfect of moneō, monēre, monuī",
+            "perfect_stem": "monu-",
+            "ending": "-erō",
+            "correct_form": "monuerō",
+            "work_shown": "monu- + -erō = monuerō",
+            "translation": "I will have warned",
+            "common_errors": ["monuī (that's perfect, not future perfect)"],
+            "note": "Tests application to 2nd conjugation verb (different perfect stem pattern)"
+          }
+        ],
+        "partial_credit": "Award 0.10/0.125 for forms that have correct stem but wrong ending, or vice versa. Award 0.00 for completely incorrect forms.",
+        "note": "Production is harder than recognition. This tests whether students can actively generate correct forms, not just identify them. Questions 4-5 specifically test irregular perfect stems."
+      },
+      "estimated_time": "20-25 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify, and produce perfect system forms. Students must demonstrate they can USE their knowledge in real translation and form generation scenarios. The irregular perfect stems (dedī, stetī) are specifically tested to ensure memorization of principal parts."
+  }
+}

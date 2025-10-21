@@ -1,0 +1,417 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Declining puella (Complete Paradigm)",
+      "description": "Here's the complete declension of puella (girl) with explanations of each form's function.",
+      "paradigm": {
+        "noun": "puella, puellae, f. (girl)",
+        "stem": "puell-",
+        "forms": [
+          {
+            "case": "Nominative Singular",
+            "form": "puella",
+            "breakdown": "puell- + -a",
+            "function": "Subject",
+            "example_sentence": "Puella est.",
+            "translation": "The girl is."
+          },
+          {
+            "case": "Genitive Singular",
+            "form": "puellae",
+            "breakdown": "puell- + -ae",
+            "function": "Possession ('of')",
+            "example_sentence": "Vita puellae est bona.",
+            "translation": "The life of the girl is good. / The girl's life is good."
+          },
+          {
+            "case": "Dative Singular",
+            "form": "puellae",
+            "breakdown": "puell- + -ae",
+            "function": "Indirect object ('to/for')",
+            "example_sentence": "Aquam puellae do.",
+            "translation": "I give water to the girl."
+          },
+          {
+            "case": "Accusative Singular",
+            "form": "puellam",
+            "breakdown": "puell- + -am",
+            "function": "Direct object",
+            "example_sentence": "Puellam video.",
+            "translation": "I see the girl."
+          },
+          {
+            "case": "Ablative Singular",
+            "form": "puellā",
+            "breakdown": "puell- + -ā",
+            "function": "Various ('by/with/from')",
+            "example_sentence": "Cum puellā sum.",
+            "translation": "I am with the girl."
+          },
+          {
+            "case": "Nominative Plural",
+            "form": "puellae",
+            "breakdown": "puell- + -ae",
+            "function": "Subject (plural)",
+            "example_sentence": "Puellae sunt.",
+            "translation": "The girls are."
+          },
+          {
+            "case": "Genitive Plural",
+            "form": "puellārum",
+            "breakdown": "puell- + -ārum",
+            "function": "Possession (plural)",
+            "example_sentence": "Vita puellārum est bona.",
+            "translation": "The life of the girls is good. / The girls' life is good."
+          },
+          {
+            "case": "Dative Plural",
+            "form": "puellīs",
+            "breakdown": "puell- + -īs",
+            "function": "Indirect object (plural)",
+            "example_sentence": "Aquam puellīs do.",
+            "translation": "I give water to the girls."
+          },
+          {
+            "case": "Accusative Plural",
+            "form": "puellās",
+            "breakdown": "puell- + -ās",
+            "function": "Direct object (plural)",
+            "example_sentence": "Puellās video.",
+            "translation": "I see the girls."
+          },
+          {
+            "case": "Ablative Plural",
+            "form": "puellīs",
+            "breakdown": "puell- + -īs",
+            "function": "Various (plural)",
+            "example_sentence": "Cum puellīs sum.",
+            "translation": "I am with the girls."
+          }
+        ],
+        "note": "Notice that puellae appears three times (gen. sg., dat. sg., nom. pl.) and puellīs appears twice (dat. pl., abl. pl.). Context determines which case is meant."
+      }
+    },
+    {
+      "title": "Example 2: Conjugating sum, esse (Present Tense)",
+      "description": "The complete present tense conjugation of sum (to be) with example sentences.",
+      "conjugation": {
+        "verb": "sum, esse (to be)",
+        "tense": "Present",
+        "forms": [
+          {
+            "person": "1st Singular",
+            "form": "sum",
+            "translation": "I am",
+            "example": "Sum puella.",
+            "example_translation": "I am a girl.",
+            "note": "Latin doesn't need 'ego' (I) unless emphasizing"
+          },
+          {
+            "person": "2nd Singular",
+            "form": "es",
+            "translation": "you are",
+            "example": "Es in viā.",
+            "example_translation": "You are on the road.",
+            "note": "Singular 'you' (one person)"
+          },
+          {
+            "person": "3rd Singular",
+            "form": "est",
+            "translation": "he/she/it is",
+            "example": "Puella est.",
+            "example_translation": "The girl is. / She is.",
+            "note": "Context tells you if it's 'he,' 'she,' or 'it'"
+          },
+          {
+            "person": "1st Plural",
+            "form": "sumus",
+            "translation": "we are",
+            "example": "Sumus in terrā.",
+            "example_translation": "We are on the land.",
+            "note": "Notice 'sum' + 'mus' = sumus"
+          },
+          {
+            "person": "2nd Plural",
+            "form": "estis",
+            "translation": "you (pl.) are",
+            "example": "Estis puellae.",
+            "example_translation": "You (all) are girls.",
+            "note": "Plural 'you' (multiple people)"
+          },
+          {
+            "person": "3rd Plural",
+            "form": "sunt",
+            "translation": "they are",
+            "example": "Puellae sunt.",
+            "example_translation": "The girls are. / They are.",
+            "note": "Most common 3rd person plural form"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Example 3: Identifying Cases in Context",
+      "description": "Practice identifying which case a noun is in based on the sentence context.",
+      "sentences": [
+        {
+          "latin": "Puella viam videt.",
+          "translation": "The girl sees the road.",
+          "analysis": [
+            {
+              "word": "Puella",
+              "case": "Nominative singular",
+              "reason": "Subject of the sentence (who is seeing)",
+              "question_answered": "Who sees?"
+            },
+            {
+              "word": "viam",
+              "case": "Accusative singular",
+              "reason": "Direct object (what is being seen)",
+              "question_answered": "Sees what?"
+            },
+            {
+              "word": "videt",
+              "info": "3rd person singular verb (he/she/it sees)"
+            }
+          ]
+        },
+        {
+          "latin": "Vita puellae est bona.",
+          "translation": "The life of the girl is good. / The girl's life is good.",
+          "analysis": [
+            {
+              "word": "Vita",
+              "case": "Nominative singular",
+              "reason": "Subject of the sentence",
+              "question_answered": "What is good?"
+            },
+            {
+              "word": "puellae",
+              "case": "Genitive singular",
+              "reason": "Shows possession (whose life?)",
+              "question_answered": "Whose life?"
+            },
+            {
+              "word": "est",
+              "info": "3rd person singular of sum (is)"
+            },
+            {
+              "word": "bona",
+              "info": "Predicate adjective (nominative) - we'll learn adjectives in Concept 004"
+            }
+          ]
+        },
+        {
+          "latin": "Puellae in silvā sunt.",
+          "translation": "The girls are in the forest.",
+          "analysis": [
+            {
+              "word": "Puellae",
+              "case": "Nominative plural",
+              "reason": "Subject (who is in the forest)",
+              "question_answered": "Who are in the forest?",
+              "note": "Could also be gen. sg. or dat. sg., but 'sunt' (they are) tells us this is nominative plural"
+            },
+            {
+              "word": "in silvā",
+              "case": "Ablative singular (silvā)",
+              "reason": "Ablative of place where (in the forest)",
+              "note": "'in' + ablative = 'in/on' (location)"
+            },
+            {
+              "word": "sunt",
+              "info": "3rd person plural of sum (they are)"
+            }
+          ]
+        },
+        {
+          "latin": "Aquam puellīs do.",
+          "translation": "I give water to the girls.",
+          "analysis": [
+            {
+              "word": "Aquam",
+              "case": "Accusative singular",
+              "reason": "Direct object (what is being given)",
+              "question_answered": "Give what?"
+            },
+            {
+              "word": "puellīs",
+              "case": "Dative plural",
+              "reason": "Indirect object (to whom it's given)",
+              "question_answered": "Give to whom?",
+              "note": "Could also be ablative plural, but 'to whom' context indicates dative"
+            },
+            {
+              "word": "do",
+              "info": "1st person singular verb (I give) - you'll learn this verb type in Concept 002"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Example 4: Common Mistakes and How to Fix Them",
+      "description": "Learn from typical beginner errors.",
+      "mistakes": [
+        {
+          "error": "Assuming -ae always means plural",
+          "incorrect_thinking": "Seeing 'puellae' and always translating as 'girls'",
+          "why_wrong": "The ending -ae can be genitive singular, dative singular, OR nominative plural",
+          "correct_approach": "Look at context and other words in the sentence",
+          "example": {
+            "sentence": "Vita puellae est bona.",
+            "wrong_translation": "The life of the girls is good. (X)",
+            "correct_translation": "The life of the girl is good. / The girl's life is good. (✓)",
+            "explanation": "Here puellae is genitive singular (of the girl), not nominative plural (girls). We know because 'vita' is singular and 'est' (is) is singular."
+          }
+        },
+        {
+          "error": "Relying on word order instead of case endings",
+          "incorrect_thinking": "First word must be the subject",
+          "why_wrong": "Latin word order is flexible - endings show function, not position",
+          "correct_approach": "Identify the case by its ending, not its position",
+          "example": {
+            "sentence": "Viam puella videt.",
+            "wrong_translation": "The road sees the girl. (X)",
+            "correct_translation": "The girl sees the road. (✓)",
+            "explanation": "Even though 'viam' comes first, its accusative ending (-am) tells us it's the object, not the subject. 'Puella' (nominative) is the subject."
+          }
+        },
+        {
+          "error": "Confusing ablative and dative singular",
+          "incorrect_thinking": "Both are -ae, so they're the same",
+          "why_wrong": "Ablative singular is -ā (long a), dative singular is -ae",
+          "correct_approach": "Notice the macron (ā vs. ae) when present; use context when macrons absent",
+          "example": {
+            "sentence_1": "Puellae aquam do. (dative)",
+            "translation_1": "I give water to the girl.",
+            "sentence_2": "Cum puellā sum. (ablative)",
+            "translation_2": "I am with the girl.",
+            "explanation": "In sentence 1, 'to the girl' indicates dative. In sentence 2, 'with the girl' indicates ablative. The macron (puellā) would distinguish them in marked texts."
+          }
+        },
+        {
+          "error": "Adding unnecessary pronouns",
+          "incorrect_thinking": "Need to say 'ego sum' for 'I am'",
+          "why_wrong": "Latin verb endings already indicate person",
+          "correct_approach": "Use pronouns only for emphasis or clarity",
+          "example": {
+            "english": "I am here",
+            "wrong_latin": "Ego hic sum (unless emphasizing 'I')",
+            "correct_latin": "Hic sum",
+            "explanation": "The ending '-m' in 'sum' already tells us it's 'I.' Add 'ego' only if you mean '**I** am here (not you)'"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Example 5: Practice Identifying Forms",
+      "description": "Quick identification drills to test your recognition of forms.",
+      "drills": [
+        {
+          "question": "What case(s) could 'puellae' be?",
+          "answer": "Genitive singular, dative singular, OR nominative plural",
+          "explanation": "All three cases have the same form (-ae). You need context to determine which."
+        },
+        {
+          "question": "If you see 'portārum' in a sentence, what case must it be?",
+          "answer": "Genitive plural only",
+          "explanation": "The ending -ārum is unique to genitive plural in first declension. Translation: 'of the gates'"
+        },
+        {
+          "question": "What's the difference between 'puellam' and 'puellās'?",
+          "answer": "puellam = accusative singular (the girl, as object); puellās = accusative plural (the girls, as object)",
+          "explanation": "Both are accusative (direct objects), but -am is singular, -ās is plural"
+        },
+        {
+          "question": "How do you say 'to the girls' in Latin?",
+          "answer": "puellīs (dative plural)",
+          "explanation": "'To/for' someone indicates dative case. Plural ending is -īs."
+        },
+        {
+          "question": "What person is 'estis'?",
+          "answer": "2nd person plural (you all are)",
+          "explanation": "From sum, esse: estis = you (plural) are"
+        }
+      ]
+    },
+    {
+      "title": "Example 6: Building Simple Sentences",
+      "description": "How to construct basic Latin sentences using what you've learned.",
+      "constructions": [
+        {
+          "pattern": "Subject (nominative) + est",
+          "english": "The girl is.",
+          "latin": "Puella est.",
+          "notes": "Simplest sentence type. States existence or presence."
+        },
+        {
+          "pattern": "Subject (nom.) + in + Place (abl.) + est",
+          "english": "The girl is in the road.",
+          "latin": "Puella in viā est.",
+          "notes": "'in' + ablative = location ('in/on'). Word order flexible: 'In viā puella est' also works."
+        },
+        {
+          "pattern": "Subject (nom.) + Object (acc.) + Verb",
+          "english": "The girl sees the road.",
+          "latin": "Puella viam videt.",
+          "notes": "Most common word order: Subject-Object-Verb (SOV). But 'Viam puella videt' is equally correct."
+        },
+        {
+          "pattern": "Possession (gen.) + Subject (nom.) + est + Description",
+          "english": "The girl's life is good.",
+          "latin": "Vitae puellae est bona.",
+          "notes": "Wait, this looks wrong! Actually: 'Vitae' is genitive? No - this should be 'Vita puellae est bona' (vita = nom., puellae = gen.)"
+        },
+        {
+          "pattern": "Subject (nom.) + Indirect Object (dat.) + Direct Object (acc.) + Verb",
+          "english": "I give water to the girl.",
+          "latin": "Puellae aquam do.",
+          "notes": "Dative shows recipient. Notice: no 'I' pronoun needed - 'do' means 'I give'"
+        }
+      ],
+      "practice_prompt": "Try building your own sentences using: puella, via, aqua, sum, and the verb 'video' (I see)!"
+    },
+    {
+      "title": "Example 7: Case Function Summary Chart",
+      "description": "Quick reference for when to use each case.",
+      "case_functions": [
+        {
+          "case": "Nominative",
+          "primary_function": "Subject of the verb",
+          "question_answered": "Who? What? (does the action)",
+          "example": "Puella videt. (The girl sees.)",
+          "noun_form": "puella"
+        },
+        {
+          "case": "Genitive",
+          "primary_function": "Possession",
+          "question_answered": "Whose? Of whom/what?",
+          "example": "Vita puellae (The girl's life / life of the girl)",
+          "noun_form": "puellae (sg.) / puellārum (pl.)"
+        },
+        {
+          "case": "Dative",
+          "primary_function": "Indirect object",
+          "question_answered": "To/for whom/what?",
+          "example": "Puellae aquam do. (I give water to the girl.)",
+          "noun_form": "puellae (sg.) / puellīs (pl.)"
+        },
+        {
+          "case": "Accusative",
+          "primary_function": "Direct object",
+          "question_answered": "Whom? What? (receives the action)",
+          "example": "Puellam video. (I see the girl.)",
+          "noun_form": "puellam (sg.) / puellās (pl.)"
+        },
+        {
+          "case": "Ablative",
+          "primary_function": "Various (means, place, time, accompaniment)",
+          "question_answered": "By/with/from whom/what? Where? When?",
+          "example": "Cum puellā sum. (I am with the girl.)",
+          "noun_form": "puellā (sg.) / puellīs (pl.)"
+        }
+      ]
+    }
+  ]
+}

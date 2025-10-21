@@ -1,0 +1,25 @@
+{
+  "id": "concept-005",
+  "title": "Perfect System (All Conjugations)",
+  "domain": "latin-grammar",
+  "difficulty": 4,
+  "prerequisites": ["concept-001", "concept-002", "concept-003", "concept-004"],
+  "learning_objectives": [
+    "Identify perfect, pluperfect, and future perfect tenses",
+    "Explain the difference between present system (uses present stem) and perfect system (uses perfect stem)",
+    "Form perfect active forms using perfect stem + endings (-ī, -istī, -it, -imus, -istis, -ērunt)",
+    "Distinguish meanings: amāvī (I loved / I have loved), amāveram (I had loved), amāverō (I will have loved)",
+    "Translate sentences using perfect system tenses"
+  ],
+  "estimated_mastery_time": "90-120 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["advanced", "verb-system", "perfect-tenses", "principal-parts"],
+  "vocabulary": [
+    {"latin": "amō, amāre, amāvī, amātum", "english": "to love", "perfect_stem": "amāv-"},
+    {"latin": "vocō, vocāre, vocāvī, vocātum", "english": "to call", "perfect_stem": "vocāv-"},
+    {"latin": "portō, portāre, portāvī, portātum", "english": "to carry", "perfect_stem": "portāv-"},
+    {"latin": "dō, dāre, dedī, datum", "english": "to give", "perfect_stem": "ded-"},
+    {"latin": "stō, stāre, stetī, statum", "english": "to stand", "perfect_stem": "stet-"}
+  ]
+}

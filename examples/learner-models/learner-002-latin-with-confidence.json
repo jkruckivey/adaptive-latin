@@ -1,0 +1,345 @@
+{
+  "learner_id": "learner-002",
+  "learner_name": "Marcus Rodriguez",
+  "course_domain": "latin-grammar",
+  "started_at": "2025-10-22T09:00:00Z",
+  "last_active": "2025-10-25T14:30:00Z",
+  "current_concept": "concept-001",
+  "learning_path_progress": [
+    "concept-001"
+  ],
+  "overall_progress": 0.14,
+  "total_time_minutes": 120,
+
+  "concept_mastery": {
+    "concept-001": {
+      "title": "First Declension Nouns + Sum, esse",
+      "status": "in_progress",
+      "confidence": 0.78,
+      "self_reported_confidence": 3.8,
+      "confidence_calibration": "well_calibrated",
+      "attempts": 2,
+      "time_spent_minutes": 120,
+      "started_at": "2025-10-22T09:00:00Z",
+
+      "assessment_scores": {
+        "dialogue": {
+          "average_score": 0.80,
+          "average_confidence": 3.67,
+          "calibration_accuracy": 0.85,
+          "attempts": 6,
+          "assessments": [
+            {
+              "id": "dialogue-001-1",
+              "timestamp": "2025-10-22T09:45:00Z",
+              "score": 0.75,
+              "self_confidence": 4,
+              "expected_confidence": 3,
+              "calibration": "slightly_overconfident",
+              "calibration_error": 1,
+              "feedback": "Good basic understanding. You correctly identified the -a ending, but remember to also mention the genitive -ae. Your confidence (4/5) was a bit high for the completeness of your answer, but you're on the right track!"
+            },
+            {
+              "id": "dialogue-001-1",
+              "timestamp": "2025-10-22T10:15:00Z",
+              "score": 0.90,
+              "self_confidence": 4,
+              "expected_confidence": 4,
+              "calibration": "calibrated",
+              "calibration_error": 0,
+              "feedback": "Excellent! Now you mentioned both nominative -a and genitive -ae, plus the feminine gender. Your confidence (4/5) matches your strong understanding perfectly - great self-awareness!"
+            },
+            {
+              "id": "dialogue-001-2",
+              "timestamp": "2025-10-23T10:30:00Z",
+              "score": 0.85,
+              "self_confidence": 3,
+              "expected_confidence": 4,
+              "calibration": "slightly_underconfident",
+              "calibration_error": -1,
+              "feedback": "Great answer! You correctly identified all three possibilities for 'puellae' and explained context matters. I noticed you rated your confidence as 3/5, but this was actually an excellent response (0.85). Trust your reasoning more!"
+            },
+            {
+              "id": "dialogue-001-3",
+              "timestamp": "2025-10-24T11:00:00Z",
+              "score": 0.90,
+              "self_confidence": 4,
+              "expected_confidence": 4,
+              "calibration": "calibrated",
+              "calibration_error": 0,
+              "feedback": "Perfect explanation of the nominative case! You identified it as the subject, gave a clear example, and explained why Latin needs cases. Your confidence (4/5) is right on target."
+            },
+            {
+              "id": "dialogue-001-4",
+              "timestamp": "2025-10-24T14:00:00Z",
+              "score": 0.95,
+              "self_confidence": 2,
+              "expected_confidence": 5,
+              "calibration": "significantly_underconfident",
+              "calibration_error": -3,
+              "feedback": "This is fascinating - you gave an EXCELLENT answer (0.95) about why word order doesn't determine function in Latin, but you rated your confidence as only 2/5. You correctly explained that case endings show function, identified both cases correctly, and demonstrated strong understanding. What made you feel uncertain?"
+            },
+            {
+              "id": "dialogue-001-5",
+              "timestamp": "2025-10-25T09:30:00Z",
+              "score": 0.65,
+              "self_confidence": 5,
+              "expected_confidence": 3,
+              "calibration": "overconfident",
+              "calibration_error": 2,
+              "feedback": "You said you were very confident (5/5), but you only gave the singular forms of sum (sum, es, est). The question asked for all present tense forms, including plural (sumus, estis, sunt). Let's review the full conjugation to fill that gap."
+            }
+          ]
+        },
+        "written": {
+          "average_score": 0.75,
+          "average_confidence": 3.0,
+          "calibration_accuracy": 1.0,
+          "attempts": 1,
+          "assessments": [
+            {
+              "id": "written-001-1",
+              "timestamp": "2025-10-25T11:00:00Z",
+              "score": 0.75,
+              "self_confidence": 3,
+              "expected_confidence": 3,
+              "calibration": "calibrated",
+              "calibration_error": 0,
+              "rubric_breakdown": {
+                "conceptual_understanding": 0.80,
+                "clarity_organization": 0.70,
+                "examples": 0.75,
+                "accuracy": 0.75
+              },
+              "feedback": "Good written explanation of the case system. You correctly explained that cases show function and compared to English word order. Your examples helped clarify. Organization could be tighter - consider leading with the main concept, then examples. Your self-confidence (3/5) matches your performance perfectly - you're developing good self-assessment skills!",
+              "word_count": 215,
+              "calibration_note": "Well-calibrated! Your confidence matched your actual performance."
+            }
+          ]
+        },
+        "applied": {
+          "average_score": 0.72,
+          "average_confidence": 3.5,
+          "calibration_accuracy": 0.75,
+          "attempts": 2,
+          "assessments": [
+            {
+              "id": "applied-001-1",
+              "timestamp": "2025-10-24T16:00:00Z",
+              "score": 0.70,
+              "self_confidence": 4,
+              "expected_confidence": 3,
+              "calibration": "slightly_overconfident",
+              "calibration_error": 1,
+              "rubric_breakdown": {
+                "sentence_1": 1.0,
+                "sentence_2": 0.6,
+                "sentence_3": 1.0,
+                "sentence_4": 0.4,
+                "sentence_5": 0.5
+              },
+              "feedback": "You got 3.5/5 sentences correct (70%). Sentence 1 and 3 were perfect! Sentence 2: you translated 'portae' as nominative plural 'gates' but it's genitive singular 'of the gate'. Sentence 4: you missed that 'terrae' is nominative plural (they tell), not singular. Sentence 5: Good! Your confidence (4/5) was a bit higher than your performance (3/5 equivalent), but you're close to calibrated.",
+              "specific_errors": [
+                "Sentence 2: Misidentified 'portae' as nominative plural instead of genitive singular",
+                "Sentence 4: Didn't recognize 'terrae' as nominative plural matching 'narrant' (they tell)"
+              ]
+            },
+            {
+              "id": "applied-001-2",
+              "timestamp": "2025-10-25T13:00:00Z",
+              "score": 0.74,
+              "self_confidence": 3,
+              "expected_confidence": 3,
+              "calibration": "calibrated",
+              "calibration_error": 0,
+              "rubric_breakdown": {
+                "puellam": 1.0,
+                "puellarum": 1.0,
+                "puella": 1.0,
+                "puellae_all_three": 0.67,
+                "puellis_both": 0.5
+              },
+              "feedback": "Good work! You got the unambiguous forms perfect (puellam, puellārum, puellā). For 'puellae', you listed genitive and dative but missed nominative plural - remember all THREE possibilities. For 'puellīs', you only gave dative but it's also ablative plural. Your confidence (3/5) matched your performance (3.7/5) well - nicely calibrated!",
+              "calibration_note": "Excellent calibration! You accurately assessed your performance."
+            }
+          ]
+        }
+      },
+
+      "confidence_history": [
+        {
+          "assessment_id": "dialogue-001-1",
+          "timestamp": "2025-10-22T09:45:00Z",
+          "self_confidence": 4,
+          "actual_score": 0.75,
+          "calibration": "slightly_overconfident",
+          "error": 1
+        },
+        {
+          "assessment_id": "dialogue-001-1",
+          "timestamp": "2025-10-22T10:15:00Z",
+          "self_confidence": 4,
+          "actual_score": 0.90,
+          "calibration": "calibrated",
+          "error": 0
+        },
+        {
+          "assessment_id": "dialogue-001-2",
+          "timestamp": "2025-10-23T10:30:00Z",
+          "self_confidence": 3,
+          "actual_score": 0.85,
+          "calibration": "slightly_underconfident",
+          "error": -1
+        },
+        {
+          "assessment_id": "dialogue-001-3",
+          "timestamp": "2025-10-24T11:00:00Z",
+          "self_confidence": 4,
+          "actual_score": 0.90,
+          "calibration": "calibrated",
+          "error": 0
+        },
+        {
+          "assessment_id": "dialogue-001-4",
+          "timestamp": "2025-10-24T14:00:00Z",
+          "self_confidence": 2,
+          "actual_score": 0.95,
+          "calibration": "significantly_underconfident",
+          "error": -3
+        },
+        {
+          "assessment_id": "dialogue-001-5",
+          "timestamp": "2025-10-25T09:30:00Z",
+          "self_confidence": 5,
+          "actual_score": 0.65,
+          "calibration": "overconfident",
+          "error": 2
+        },
+        {
+          "assessment_id": "written-001-1",
+          "timestamp": "2025-10-25T11:00:00Z",
+          "self_confidence": 3,
+          "actual_score": 0.75,
+          "calibration": "calibrated",
+          "error": 0
+        },
+        {
+          "assessment_id": "applied-001-1",
+          "timestamp": "2025-10-24T16:00:00Z",
+          "self_confidence": 4,
+          "actual_score": 0.70,
+          "calibration": "slightly_overconfident",
+          "error": 1
+        },
+        {
+          "assessment_id": "applied-001-2",
+          "timestamp": "2025-10-25T13:00:00Z",
+          "self_confidence": 3,
+          "actual_score": 0.74,
+          "calibration": "calibrated",
+          "error": 0
+        }
+      ],
+
+      "calibration_trends": {
+        "overall_calibration_accuracy": 0.78,
+        "improving": true,
+        "recent_3_assessments_accuracy": 0.90,
+        "overconfidence_instances": 3,
+        "underconfidence_instances": 2,
+        "calibrated_instances": 4,
+        "calibration_pattern": "Improving - started overconfident, now mostly calibrated"
+      },
+
+      "concept_end_confidence": null,
+
+      "identified_gaps": [
+        "Distinguishing genitive singular vs. nominative plural 'puellae' in context",
+        "Recognizing plural verbs match plural nominative subjects",
+        "Remembering full conjugation (tends to forget plural forms)"
+      ],
+
+      "agent_decision": "CONTINUE with concept-001. Good progress (0.78 confidence). Calibration is improving significantly (recent accuracy 0.90). Needs more practice with ambiguous -ae forms and plural recognition. 2-3 more assessments should reach mastery threshold (0.85).",
+
+      "notes": "Interesting confidence pattern: Started overconfident (assessment 1), then swung to severe underconfidence (assessment 4-5), now stabilizing. This is healthy metacognitive development. Learner is starting to recognize what they truly know vs. guess."
+    }
+  },
+
+  "calibration_metrics": {
+    "overall_calibration_accuracy": 0.78,
+    "overconfidence_tendency": 0.11,
+    "underconfidence_tendency": 0.11,
+    "calibration_trend": "improving",
+    "calibration_by_assessment_type": {
+      "dialogue": 0.85,
+      "written": 1.0,
+      "applied": 0.75
+    },
+    "metacognitive_development": {
+      "initial_calibration": 0.50,
+      "current_calibration": 0.90,
+      "improvement": 0.40,
+      "note": "Significant improvement in self-assessment accuracy. Learner is developing strong metacognitive awareness."
+    }
+  },
+
+  "learning_preferences": {
+    "strongest_modality": "dialogue",
+    "weakest_modality": "applied",
+    "self_assessment_accuracy": 0.78,
+    "confidence_pattern": "Initially overconfident, now well-calibrated",
+    "notes": "Shows healthy metacognitive development. Responds well to calibration feedback from AI agent."
+  },
+
+  "session_history": [
+    {
+      "session_id": "session-001",
+      "date": "2025-10-22",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 45,
+      "interactions": 6,
+      "progress_made": "Introduced to first declension, completed initial dialogue assessments",
+      "confidence_trend": "Started overconfident (4 vs 3), improved to calibrated (4 vs 4)"
+    },
+    {
+      "session_id": "session-002",
+      "date": "2025-10-23",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 30,
+      "interactions": 4,
+      "progress_made": "Worked on ambiguous forms (puellae), showed slight underconfidence",
+      "confidence_trend": "Underconfident (3 vs 4) - needs encouragement"
+    },
+    {
+      "session_id": "session-003",
+      "date": "2025-10-24",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 60,
+      "interactions": 8,
+      "progress_made": "Mix of dialogue and applied assessments. Severe underconfidence on one (2 vs 5), then overconfidence on sum conjugation (5 vs 3)",
+      "confidence_trend": "Variable - swinging between under and over, searching for calibration"
+    },
+    {
+      "session_id": "session-004",
+      "date": "2025-10-25",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 75,
+      "interactions": 9,
+      "progress_made": "Written assessment + applied tasks. Both showed good calibration (3 vs 3 in both cases). Stabilizing.",
+      "confidence_trend": "Stabilized at calibrated (3 vs 3 on both assessments)"
+    }
+  ],
+
+  "metadata": {
+    "total_sessions": 4,
+    "total_interactions": 27,
+    "total_assessments": 9,
+    "concepts_mastered": 0,
+    "concepts_in_progress": 1,
+    "concepts_deferred": 0,
+    "average_session_duration_minutes": 52.5,
+    "confidence_tracking_enabled": true,
+    "calibration_improvement_rate": 0.10,
+    "last_confidence_update": "2025-10-25T13:00:00Z"
+  }
+}

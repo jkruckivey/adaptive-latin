@@ -1,0 +1,327 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-006",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-006-1",
+      "difficulty": "basic",
+      "prompt": "How do you identify a third declension noun? What should you look for in the dictionary entry?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Mentions genitive singular ending -is as the key identifier",
+            "Notes that nominative is unpredictable/varied",
+            "Explains you need both nominative and genitive forms",
+            "Clear, accurate explanation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Third declension nouns are identified by their genitive singular ending -is. In the dictionary, you'll see both the nominative and genitive forms (like rēx, rēgis) because the nominative is unpredictable - it can end in many different ways. The -is genitive is what tells you it's third declension."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies genitive -is as marker",
+            "May not fully explain why both forms are needed",
+            "Generally accurate"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "They have -is in the genitive singular. That's how you know it's third declension."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May focus on nominative instead of genitive",
+            "Vague or incomplete"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's about the ending, but I'm not sure which one."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify markers",
+            "Confuses with other declensions",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They end in -us like second declension?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if I give you 'homō, hominis, m.' (human), how do you know it's third declension?",
+        "Great! Why can't we just use the nominative ending to identify third declension?"
+      ],
+      "follow_up_if_developing": [
+        "Let me help: Look at rēx, rēgis. What ending do you see in the second form (the genitive)?",
+        "Remember: we look at the genitive singular. What ending identifies third declension in the genitive?"
+      ]
+    },
+    {
+      "id": "dialogue-006-2",
+      "difficulty": "basic",
+      "prompt": "I give you the noun 'virtūs, virtūtis, f.' (virtue). How do you find the stem, and what is it?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains process: look at genitive, drop -is",
+            "Correctly identifies stem as virtūt-",
+            "Clear methodology",
+            "May note why we don't use nominative"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "To find the stem, I look at the genitive singular, which is virtūtis, and drop the -is ending. That gives me the stem virtūt-. I'll use this stem when declining the noun - not the nominative virtūs."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies stem as virtūt-",
+            "May give less detailed explanation of process",
+            "Accurate result"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The stem is virtūt- from the genitive virtūtis."
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain about process",
+            "May identify wrong stem (like virtū- or virtūs-)",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think the stem is virtū-? Or maybe virtūs-?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot find stem",
+            "Uses nominative instead of genitive",
+            "Completely incorrect"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "The stem is virtūs, right?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! Now using that stem, can you give me the accusative singular?",
+        "Excellent! What would be the nominative plural using stem virtūt-?"
+      ],
+      "follow_up_if_developing": [
+        "Look at the genitive: virtūtis. What happens when you remove -is from the end?",
+        "Remember the rule: genitive singular minus -is equals the stem. Try it with virtūtis."
+      ]
+    },
+    {
+      "id": "dialogue-006-3",
+      "difficulty": "intermediate",
+      "prompt": "Why can't you predict the nominative singular of a third declension noun from the genitive? Use an example to explain.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that nominative underwent historical sound changes",
+            "Notes that genitive preserves the stem more faithfully",
+            "Gives clear examples showing unpredictability",
+            "Shows deep understanding of the issue"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The nominative singular is unpredictable because it underwent sound changes that altered the original form. For example, from rēgis (genitive) you might expect something like rēgus, but the nominative is actually rēx. Or mīlitis has stem mīlit-, but the nominative is mīles. The genitive and other cases preserve the stem better, but the nominative changed historically, so you just have to memorize both forms."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes that nominative is irregular/unpredictable",
+            "Provides at least one example",
+            "May not explain historical reason but shows practical understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The nominative is just irregular. Like rēx has genitive rēgis, but you couldn't predict rēx from rēgis. You just have to memorize both."
+        },
+        "developing": {
+          "criteria": [
+            "Vague understanding that nominative is different",
+            "Weak or no examples",
+            "Incomplete explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "The nominative is different from the other cases?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Doesn't understand the problem",
+            "Thinks nominative IS predictable",
+            "No relevant examples"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "You can predict it by adding -us to the stem."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent understanding! So when learning vocabulary, what's the best way to memorize third declension nouns?",
+        "Great! This is why dictionary entries give both forms. How would you learn corpus, corporis?"
+      ],
+      "follow_up_if_developing": [
+        "Let me show you: rēgis has stem rēg-, but the nominative is rēx (not rēgus or rēga). Can you see why you can't predict it?",
+        "Think about this: if you only knew mīlitis (genitive), would you be able to guess the nominative is mīles?"
+      ]
+    },
+    {
+      "id": "dialogue-006-4",
+      "difficulty": "intermediate",
+      "prompt": "What's the difference between how masculine/feminine and neuter third declension nouns form their plural nominative and accusative? Give examples.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains M/F plural nom/acc ends in -ēs",
+            "Explains neuter plural nom/acc ends in -a",
+            "Notes that both follow neuter rule (nom = acc)",
+            "Provides clear examples of both types"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Masculine and feminine third declension nouns have nominative and accusative plural in -ēs (like rēgēs, mīlitēs). But neuter third declension follows the neuter rule - nominative equals accusative - and the plural form ends in -a instead. So nōmen becomes nōmina, corpus becomes corpora. Both types have identical nominative and accusative plural, but different endings."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies -ēs for M/F and -a for neuter",
+            "Provides examples",
+            "May not fully explain neuter rule"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Masculine and feminine use -ēs like rēgēs, but neuter uses -a like nōmina."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse the endings",
+            "Weak or incorrect examples"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think neuter is different... it uses -a?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot distinguish M/F from neuter patterns",
+            "Fundamental confusion about plural forms"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They all use -ēs?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if you see the form 'corpora' in a sentence, what case(s) could it be?",
+        "Excellent! Why do you think neuter uses -a instead of -ēs?"
+      ],
+      "follow_up_if_developing": [
+        "Remember the neuter rule from second declension: nominative = accusative. Does that help?",
+        "Think about bellum, bellī (2nd decl. neuter). Its plural is bella. What pattern do you see?"
+      ]
+    },
+    {
+      "id": "dialogue-006-5",
+      "difficulty": "advanced",
+      "prompt": "Look at this sentence: 'Mīlitēs rēgēs vocant.' What case is 'rēgēs' and how do you know? What's tricky about this form?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies rēgēs as accusative plural (the object)",
+            "Explains reasoning: vocant is plural 'they call', needs object",
+            "Notes that mīlitēs is nominative plural (the subject)",
+            "Explains that rēgēs is ambiguous (-ēs is both nom and acc plural)",
+            "Shows sophisticated syntactic reasoning"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Rēgēs is accusative plural - 'the kings' as direct object. I know because mīlitēs is nominative plural (the subject - 'the soldiers'), and vocant means 'they call,' which needs an object. The tricky part is that -ēs is both nominative AND accusative plural in third declension, so rēgēs could theoretically be either. But syntactically, we already have a subject (mīlitēs), so rēgēs must be the object (accusative). Translation: 'The soldiers call the kings.'"
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies as accusative plural",
+            "Provides basic reasoning about sentence structure",
+            "May not fully explain the ambiguity"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Rēgēs is accusative plural because it's the object of vocant. Mīlitēs is the subject."
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain about case",
+            "May guess nominative plural",
+            "Weak syntactic reasoning"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's nominative plural? Both words are -ēs, so maybe both are subjects?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify case",
+            "No understanding of sentence structure",
+            "Random guess"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's genitive plural?"
+        }
+      },
+      "note": "This is challenging because it requires: (1) recognizing both nouns as third declension plural, (2) using verb syntax to determine which is subject/object, (3) understanding the ambiguity of -ēs forms.",
+      "follow_up_if_good": [
+        "Excellent analysis! How would you say 'The kings call the soldiers' - what would change?",
+        "Perfect! What if the sentence were 'Rēgēs sunt' - what case would rēgēs be then?"
+      ],
+      "follow_up_if_developing": [
+        "Let's break it down: vocant means 'they call.' Who is calling? What verb case is that?",
+        "Look at mīlitēs. Could that be the subject? If so, what would rēgēs be?"
+      ]
+    },
+    {
+      "id": "dialogue-006-6",
+      "difficulty": "advanced",
+      "prompt": "How do you know what gender a third declension noun is? Why can't you tell from the endings like you can with first and second declension?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains you must check the dictionary entry (m., f., or n.)",
+            "Notes that third declension mixes all three genders",
+            "Contrasts with 1st decl. (mostly f.) and 2nd decl. (m. -us, n. -um)",
+            "May give examples showing gender unpredictability",
+            "Shows understanding that grammatical gender ≠ natural gender"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "You can't tell gender from third declension endings because all three genders are mixed in this declension and use the same endings. Unlike first declension (mostly feminine -a) or second declension (masculine -us, neuter -um), third declension has masculine rēx, feminine virtūs, and neuter corpus all using the same case endings. You must check the dictionary entry's gender marker (m., f., or n.) for each noun. Even nouns that look similar can be different genders - corpus ends in -us but is neuter, not masculine like amīcus."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes you must check the dictionary",
+            "Notes that third declension has mixed genders",
+            "May not fully contrast with other declensions"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Third declension nouns can be any gender, so you have to check the dictionary entry to see if it's m., f., or n."
+        },
+        "developing": {
+          "criteria": [
+            "Vague understanding that gender must be learned",
+            "May think there are some predictable patterns",
+            "Incomplete explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think you have to memorize the gender for each word?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Thinks you can predict gender from endings",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Words ending in -us are masculine, right?"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So if you see 'corpus, corporis' in your vocabulary, where do you check for gender?",
+        "Perfect understanding! Why is this important when you're using adjectives?"
+      ],
+      "follow_up_if_developing": [
+        "Let me give you examples: rēx (m.), virtūs (f.), corpus (n.) all use the same third declension endings. How can you tell them apart?",
+        "Look at a dictionary entry: 'pāx, pācis, f.' What part tells you the gender?"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 5,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student should demonstrate understanding across basic (identifying third declension, finding stems), intermediate (explaining nominative unpredictability, neuter patterns), and advanced (syntactic analysis with ambiguous forms, gender assignment) levels"
+  }
+}

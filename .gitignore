@@ -1,0 +1,51 @@
+# Environment variables (contains API keys!)
+.env
+backend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+backend/venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Learner data (contains personal learning progress)
+backend/data/learner-models/*.json
+!backend/data/learner-models/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+backend/test-chat.json
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node (for future frontend)
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+
+# Build outputs
+*.pyc
+*.pyo

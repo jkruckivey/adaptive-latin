@@ -1,0 +1,267 @@
+{
+  "learner_id": "learner-001",
+  "learner_name": "Sarah Chen",
+  "course_domain": "microeconomics",
+  "started_at": "2025-10-15T09:00:00Z",
+  "last_active": "2025-10-21T14:30:00Z",
+  "current_concept": "concept-002",
+  "learning_path_progress": [
+    "concept-001",
+    "concept-002"
+  ],
+  "overall_progress": 0.29,
+  "total_time_minutes": 195,
+
+  "concept_mastery": {
+    "concept-001": {
+      "title": "Supply and Demand Fundamentals",
+      "status": "mastered",
+      "confidence": 0.88,
+      "attempts": 3,
+      "time_spent_minutes": 85,
+      "mastered_at": "2025-10-17T16:45:00Z",
+
+      "assessment_scores": {
+        "dialogue": {
+          "average_score": 0.85,
+          "attempts": 4,
+          "assessments": [
+            {
+              "id": "dialogue-001-1",
+              "timestamp": "2025-10-15T09:30:00Z",
+              "score": 0.75,
+              "feedback": "Good basic understanding of law of demand. Didn't mention ceteris paribus or explain causal mechanism."
+            },
+            {
+              "id": "dialogue-001-1",
+              "timestamp": "2025-10-15T10:00:00Z",
+              "score": 0.90,
+              "feedback": "Excellent! Now includes substitution effect and 'all else equal' condition."
+            },
+            {
+              "id": "dialogue-001-2",
+              "timestamp": "2025-10-16T11:15:00Z",
+              "score": 0.85,
+              "feedback": "Correctly distinguished shifts from movements with good examples."
+            },
+            {
+              "id": "dialogue-001-3",
+              "timestamp": "2025-10-17T10:30:00Z",
+              "score": 0.85,
+              "feedback": "Identified 4 supply shifters correctly with direction of shifts."
+            }
+          ]
+        },
+        "written": {
+          "average_score": 0.90,
+          "attempts": 1,
+          "assessments": [
+            {
+              "id": "written-001-2",
+              "timestamp": "2025-10-17T14:00:00Z",
+              "score": 0.90,
+              "rubric_breakdown": {
+                "economic_analysis": 0.90,
+                "shift_vs_movement": 0.95,
+                "causal_reasoning": 0.85
+              },
+              "feedback": "Excellent analysis of COVID hand sanitizer scenario. Correctly identified demand spike (panic buying) and subsequent decline. Also noted supply constraints and production ramp-up. Strong causal reasoning. Minor: Could have been more specific about timeline of shifts.",
+              "word_count": 285
+            }
+          ]
+        },
+        "applied": {
+          "average_score": 0.88,
+          "attempts": 2,
+          "assessments": [
+            {
+              "id": "applied-001-1",
+              "timestamp": "2025-10-16T15:30:00Z",
+              "score": 0.82,
+              "rubric_breakdown": {
+                "concept_application": 0.80,
+                "practical_reasoning": 0.85,
+                "completeness": 0.80
+              },
+              "feedback": "Good application to coffee shop scenario. Understood that inelastic demand means revenue falls when price cuts. Practical advice was sound (raise prices). Could strengthen explanation of WHY demand is inelastic for this particular shop."
+            },
+            {
+              "id": "applied-001-2",
+              "timestamp": "2025-10-17T16:00:00Z",
+              "score": 0.94,
+              "scenario_scores": {
+                "ev_tax_credit": 1.0,
+                "beef_outbreak": 1.0,
+                "iphone_announcement": 0.8,
+                "coffee_price": 1.0,
+                "mortgage_rates": 1.0
+              },
+              "feedback": "Excellent! Perfect on 4/5 scenarios. Scenario 3 (iPhone): You said 'demand shifts right' but it shifts LEFT for current models as consumers wait. However, your reasoning about expectations was correct. Strong overall performance."
+            }
+          ]
+        }
+      },
+
+      "identified_gaps": [],
+      "notes": "Strong learner. Initially missed some nuances but improved quickly with targeted feedback. Written work was particularly strong. Ready for next concept."
+    },
+
+    "concept-002": {
+      "title": "Market Equilibrium",
+      "status": "in_progress",
+      "confidence": 0.68,
+      "attempts": 2,
+      "time_spent_minutes": 110,
+      "started_at": "2025-10-18T09:00:00Z",
+
+      "assessment_scores": {
+        "dialogue": {
+          "average_score": 0.72,
+          "attempts": 3,
+          "assessments": [
+            {
+              "id": "dialogue-002-1",
+              "timestamp": "2025-10-18T10:00:00Z",
+              "score": 0.80,
+              "feedback": "Can define equilibrium correctly (where S=D). Understands equilibrium price and quantity concept."
+            },
+            {
+              "id": "dialogue-002-2",
+              "timestamp": "2025-10-19T11:30:00Z",
+              "score": 0.65,
+              "feedback": "Struggled to explain what happens when price is ABOVE equilibrium. Confused about surplus vs shortage. Let's clarify this."
+            },
+            {
+              "id": "dialogue-002-2",
+              "timestamp": "2025-10-20T10:15:00Z",
+              "score": 0.72,
+              "feedback": "Better! Now understands that price above equilibrium → surplus → pressure for price to fall. Still a bit hesitant about the self-correcting mechanism."
+            }
+          ]
+        },
+        "written": {
+          "average_score": 0.75,
+          "attempts": 1,
+          "assessments": [
+            {
+              "id": "written-002-1",
+              "timestamp": "2025-10-21T13:00:00Z",
+              "score": 0.75,
+              "rubric_breakdown": {
+                "accuracy": 0.75,
+                "graphical_analysis": 0.70,
+                "explanation": 0.80
+              },
+              "feedback": "Good written explanation of equilibrium concept. Verbal explanation was clear. Graphical analysis was weaker - some confusion about which curve shifts and how equilibrium moves. Need more practice with comparative statics.",
+              "word_count": 220
+            }
+          ]
+        },
+        "applied": {
+          "average_score": 0.58,
+          "attempts": 1,
+          "assessments": [
+            {
+              "id": "applied-002-1",
+              "timestamp": "2025-10-21T14:30:00Z",
+              "score": 0.58,
+              "rubric_breakdown": {
+                "equilibrium_shifts": 0.60,
+                "price_quantity_changes": 0.55,
+                "reasoning": 0.60
+              },
+              "feedback": "Struggled with this comparative statics problem. Correctly identified that demand increase shifts demand right, but incorrectly predicted price would fall (it rises). This suggests confusion about how equilibrium changes when curves shift. Let's work through more examples together.",
+              "task_description": "Predict new equilibrium after demand increase"
+            }
+          ]
+        }
+      },
+
+      "identified_gaps": [
+        "Weak on comparative statics (predicting how equilibrium changes when curves shift)",
+        "Confusion about surplus vs shortage mechanics",
+        "Graphical analysis skills need strengthening"
+      ],
+
+      "agent_decision": "CONTINUE with concept-002. Provide additional scaffolding on graphical analysis. Work through comparative statics examples step-by-step before attempting another applied task. May need to review graphing basics (prerequisite gap?).",
+
+      "notes": "Confidence dipped to 0.68 after applied task. Learner understands equilibrium DEFINITION but struggles with DYNAMICS (how equilibrium adjusts). Plan: 2-3 more dialogue assessments walking through graphs together, then re-attempt applied task."
+    }
+  },
+
+  "learning_preferences": {
+    "strongest_modality": "written",
+    "weakest_modality": "applied",
+    "self_assessment_accuracy": 0.72,
+    "notes": "Strong verbal/written skills. Needs more practice with quantitative/graphical analysis. Benefits from worked examples before attempting problems independently."
+  },
+
+  "session_history": [
+    {
+      "session_id": "session-001",
+      "date": "2025-10-15",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 45,
+      "interactions": 8,
+      "progress_made": "Introduced to supply and demand, completed initial dialogue assessments"
+    },
+    {
+      "session_id": "session-002",
+      "date": "2025-10-16",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 60,
+      "interactions": 12,
+      "progress_made": "Completed applied tasks, improved understanding of shifts vs movements"
+    },
+    {
+      "session_id": "session-003",
+      "date": "2025-10-17",
+      "concepts_covered": ["concept-001"],
+      "duration_minutes": 50,
+      "interactions": 6,
+      "progress_made": "Written assessment, achieved mastery (0.88), progressed to concept-002"
+    },
+    {
+      "session_id": "session-004",
+      "date": "2025-10-18",
+      "concepts_covered": ["concept-002"],
+      "duration_minutes": 55,
+      "interactions": 10,
+      "progress_made": "Started equilibrium concept, initial dialogue assessments, some confusion emerging"
+    },
+    {
+      "session_id": "session-005",
+      "date": "2025-10-19",
+      "concepts_covered": ["concept-002"],
+      "duration_minutes": 40,
+      "interactions": 7,
+      "progress_made": "Worked on surplus/shortage understanding, provided targeted support"
+    },
+    {
+      "session_id": "session-006",
+      "date": "2025-10-20",
+      "concepts_covered": ["concept-002"],
+      "duration_minutes": 35,
+      "interactions": 5,
+      "progress_made": "Re-assessed dialogue, improvement noted but still developing"
+    },
+    {
+      "session_id": "session-007",
+      "date": "2025-10-21",
+      "concepts_covered": ["concept-002"],
+      "duration_minutes": 75,
+      "interactions": 9,
+      "progress_made": "Written + applied assessments. Applied task revealed graphical analysis gap. Currently working on targeted support."
+    }
+  ],
+
+  "metadata": {
+    "total_sessions": 7,
+    "total_interactions": 57,
+    "concepts_mastered": 1,
+    "concepts_in_progress": 1,
+    "concepts_deferred": 0,
+    "average_session_duration_minutes": 51.4,
+    "last_confidence_update": "2025-10-21T14:30:00Z"
+  }
+}

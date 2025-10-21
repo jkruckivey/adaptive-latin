@@ -1,0 +1,652 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Complete Paradigms - Masculine/Feminine",
+      "description": "Full declension of rēx (king, m.) and virtūs (virtue, f.) showing that masculine and feminine third declension share the same endings.",
+      "paradigms": [
+        {
+          "noun": "rēx, rēgis, m. (king)",
+          "stem": "rēg- (from rēgis, dropping -is)",
+          "forms": [
+            {
+              "case": "Nominative Singular",
+              "form": "rēx",
+              "breakdown": "irregular (must be memorized)",
+              "function": "Subject",
+              "example_sentence": "Rēx est.",
+              "translation": "The king is."
+            },
+            {
+              "case": "Genitive Singular",
+              "form": "rēgis",
+              "breakdown": "rēg- + -is",
+              "function": "Possession ('of')",
+              "example_sentence": "Nōmen rēgis est bonum.",
+              "translation": "The name of the king is good. / The king's name is good."
+            },
+            {
+              "case": "Dative Singular",
+              "form": "rēgī",
+              "breakdown": "rēg- + -ī",
+              "function": "Indirect object ('to/for')",
+              "example_sentence": "Aquam rēgī dō.",
+              "translation": "I give water to the king."
+            },
+            {
+              "case": "Accusative Singular",
+              "form": "rēgem",
+              "breakdown": "rēg- + -em",
+              "function": "Direct object",
+              "example_sentence": "Rēgem videō.",
+              "translation": "I see the king."
+            },
+            {
+              "case": "Ablative Singular",
+              "form": "rēge",
+              "breakdown": "rēg- + -e",
+              "function": "Various ('by/with/from')",
+              "example_sentence": "Cum rēge sum.",
+              "translation": "I am with the king."
+            },
+            {
+              "case": "Nominative Plural",
+              "form": "rēgēs",
+              "breakdown": "rēg- + -ēs",
+              "function": "Subject (plural)",
+              "example_sentence": "Rēgēs sunt.",
+              "translation": "The kings are."
+            },
+            {
+              "case": "Genitive Plural",
+              "form": "rēgum",
+              "breakdown": "rēg- + -um",
+              "function": "Possession (plural)",
+              "example_sentence": "Nōmina rēgum sunt bona.",
+              "translation": "The names of the kings are good."
+            },
+            {
+              "case": "Dative Plural",
+              "form": "rēgibus",
+              "breakdown": "rēg- + -ibus",
+              "function": "Indirect object (plural)",
+              "example_sentence": "Aquam rēgibus damus.",
+              "translation": "We give water to the kings."
+            },
+            {
+              "case": "Accusative Plural",
+              "form": "rēgēs",
+              "breakdown": "rēg- + -ēs",
+              "function": "Direct object (plural)",
+              "example_sentence": "Rēgēs videō.",
+              "translation": "I see the kings."
+            },
+            {
+              "case": "Ablative Plural",
+              "form": "rēgibus",
+              "breakdown": "rēg- + -ibus",
+              "function": "Various (plural)",
+              "example_sentence": "Cum rēgibus sumus.",
+              "translation": "We are with the kings."
+            }
+          ],
+          "note": "Notice rēgēs appears twice (nom. pl. and acc. pl.) and rēgibus appears twice (dat. pl. and abl. pl.). Context determines which case."
+        },
+        {
+          "noun": "virtūs, virtūtis, f. (virtue, courage)",
+          "stem": "virtūt- (from virtūtis, dropping -is)",
+          "forms": [
+            {
+              "case": "Nominative Singular",
+              "form": "virtūs",
+              "note": "Irregular nominative - cannot predict from virtūtis"
+            },
+            {
+              "case": "Genitive Singular",
+              "form": "virtūtis",
+              "note": "This is where we get the stem: virtūt-"
+            },
+            {
+              "case": "Dative Singular",
+              "form": "virtūtī",
+              "example": "Virtūtī nōmen est pāx. (To virtue the name is peace.)"
+            },
+            {
+              "case": "Accusative Singular",
+              "form": "virtūtem",
+              "example": "Virtūtem amō. (I love virtue.)"
+            },
+            {
+              "case": "Ablative Singular",
+              "form": "virtūte",
+              "example": "Cum virtūte pugnant. (They fight with courage.)"
+            },
+            {
+              "case": "Nominative Plural",
+              "form": "virtūtēs",
+              "example": "Virtūtēs sunt bonae. (The virtues are good.)"
+            },
+            {
+              "case": "Genitive Plural",
+              "form": "virtūtum",
+              "example": "Nōmina virtūtum (The names of the virtues)"
+            },
+            {
+              "case": "Dative/Ablative Plural",
+              "form": "virtūtibus",
+              "example": "Virtūtibus studeō. (I devote myself to virtues.)"
+            },
+            {
+              "case": "Accusative Plural",
+              "form": "virtūtēs",
+              "example": "Virtūtēs laudō. (I praise the virtues.)"
+            }
+          ],
+          "note": "Virtūs is feminine despite ending in -ūs. Gender must be learned from dictionary. Endings are identical to masculine rēx."
+        }
+      ]
+    },
+    {
+      "title": "Example 2: Complete Paradigm - Neuter",
+      "description": "Full declension of nōmen (name, n.) showing the neuter rule: nominative = accusative, plural in -a.",
+      "paradigm": {
+        "noun": "nōmen, nōminis, n. (name)",
+        "stem": "nōmin- (from nōminis, dropping -is)",
+        "forms": [
+          {
+            "case": "Nominative Singular",
+            "form": "nōmen",
+            "breakdown": "irregular (must be memorized)",
+            "function": "Subject",
+            "example_sentence": "Nōmen est bonum.",
+            "translation": "The name is good."
+          },
+          {
+            "case": "Genitive Singular",
+            "form": "nōminis",
+            "breakdown": "nōmin- + -is",
+            "function": "Possession",
+            "example_sentence": "Fāma nōminis est magna.",
+            "translation": "The fame of the name is great."
+          },
+          {
+            "case": "Dative Singular",
+            "form": "nōminī",
+            "breakdown": "nōmin- + -ī",
+            "function": "Indirect object",
+            "example_sentence": "Nōminī aquam dō.",
+            "translation": "I give water to the name. (rare usage)"
+          },
+          {
+            "case": "Accusative Singular",
+            "form": "nōmen",
+            "breakdown": "same as nominative (neuter rule)",
+            "function": "Direct object",
+            "example_sentence": "Nōmen videō.",
+            "translation": "I see the name."
+          },
+          {
+            "case": "Ablative Singular",
+            "form": "nōmine",
+            "breakdown": "nōmin- + -e",
+            "function": "Various",
+            "example_sentence": "Nōmine vocō.",
+            "translation": "I call by name."
+          },
+          {
+            "case": "Nominative Plural",
+            "form": "nōmina",
+            "breakdown": "nōmin- + -a (neuter plural)",
+            "function": "Subject (plural)",
+            "example_sentence": "Nōmina sunt bona.",
+            "translation": "The names are good.",
+            "note": "Neuter plural always -a, NOT -ēs"
+          },
+          {
+            "case": "Genitive Plural",
+            "form": "nōminum",
+            "breakdown": "nōmin- + -um",
+            "function": "Possession (plural)",
+            "example_sentence": "Fāma nōminum est magna.",
+            "translation": "The fame of the names is great."
+          },
+          {
+            "case": "Dative Plural",
+            "form": "nōminibus",
+            "breakdown": "nōmin- + -ibus",
+            "function": "Indirect object (plural)",
+            "example_sentence": "Aquam nōminibus damus.",
+            "translation": "We give water to the names. (rare usage)"
+          },
+          {
+            "case": "Accusative Plural",
+            "form": "nōmina",
+            "breakdown": "same as nominative (neuter rule)",
+            "function": "Direct object (plural)",
+            "example_sentence": "Nōmina videō.",
+            "translation": "I see the names."
+          },
+          {
+            "case": "Ablative Plural",
+            "form": "nōminibus",
+            "breakdown": "nōmin- + -ibus",
+            "function": "Various (plural)",
+            "example_sentence": "Nōminibus vocō.",
+            "translation": "I call by names."
+          }
+        ],
+        "key_observations": [
+          "Nominative = Accusative in both singular and plural (neuter rule)",
+          "Plural nom/acc is -a (nōmina), NOT -ēs like masculine/feminine",
+          "All other cases identical to masculine/feminine pattern",
+          "Dative and ablative plural both -ibus (context determines which)"
+        ]
+      }
+    },
+    {
+      "title": "Example 3: Finding Stems - Practice Exercises",
+      "description": "Learn how to identify the stem from the genitive singular, which is essential for declining third declension nouns.",
+      "exercises": [
+        {
+          "noun": "mīles, mīlitis, m. (soldier)",
+          "step_1": "Look at genitive singular: mīlitis",
+          "step_2": "Drop -is: mīlit-is → mīlit-",
+          "step_3": "Stem is mīlit-",
+          "forms_from_stem": {
+            "dative_singular": "mīlitī (stem + -ī)",
+            "accusative_singular": "mīlitem (stem + -em)",
+            "nominative_plural": "mīlitēs (stem + -ēs)",
+            "genitive_plural": "mīlitum (stem + -um)"
+          },
+          "warning": "Do NOT use the nominative mīles to find the stem! It's irregular."
+        },
+        {
+          "noun": "pater, patris, m. (father)",
+          "step_1": "Look at genitive singular: patris",
+          "step_2": "Drop -is: patr-is → patr-",
+          "step_3": "Stem is patr-",
+          "forms_from_stem": {
+            "dative_singular": "patrī",
+            "accusative_singular": "patrem",
+            "ablative_singular": "patre",
+            "nominative_plural": "patrēs"
+          },
+          "note": "Even though nominative is pater, the stem is patr- (from patris)"
+        },
+        {
+          "noun": "corpus, corporis, n. (body)",
+          "step_1": "Look at genitive singular: corporis",
+          "step_2": "Drop -is: corpor-is → corpor-",
+          "step_3": "Stem is corpor-",
+          "forms_from_stem": {
+            "dative_singular": "corporī",
+            "ablative_singular": "corpore",
+            "nominative_plural": "corpora (neuter -a, not -ēs)",
+            "genitive_plural": "corporum"
+          },
+          "note": "Neuter, so nominative/accusative plural is corpora (stem + -a)"
+        },
+        {
+          "noun": "tempus, temporis, n. (time)",
+          "step_1": "Genitive: temporis",
+          "step_2": "Drop -is: temporis → tempor-",
+          "step_3": "Stem: tempor-",
+          "quick_forms": "temporī, tempore, tempora, temporum, temporibus"
+        },
+        {
+          "noun": "pāx, pācis, f. (peace)",
+          "step_1": "Genitive: pācis",
+          "step_2": "Drop -is: pācis → pāc-",
+          "step_3": "Stem: pāc-",
+          "quick_forms": "pācī, pācem, pāce, pācēs, pācum, pācibus",
+          "note": "The -x in nominative pāx becomes -c in the stem pāc-"
+        }
+      ],
+      "practice_prompt": "For each noun, cover the answers and try to find the stem yourself before checking!"
+    },
+    {
+      "title": "Example 4: Gender Identification from Dictionary",
+      "description": "Third declension nouns can be any gender. You must learn gender from the dictionary entry.",
+      "gender_examples": [
+        {
+          "category": "Masculine Examples",
+          "nouns": [
+            {
+              "entry": "rēx, rēgis, m.",
+              "english": "king",
+              "gender_marker": "m. = masculine",
+              "note": "Natural gender matches grammatical gender"
+            },
+            {
+              "entry": "mīles, mīlitis, m.",
+              "english": "soldier",
+              "gender_marker": "m. = masculine"
+            },
+            {
+              "entry": "pater, patris, m.",
+              "english": "father",
+              "gender_marker": "m. = masculine",
+              "note": "Natural gender matches grammatical gender"
+            },
+            {
+              "entry": "homō, hominis, m.",
+              "english": "human, man",
+              "gender_marker": "m. = masculine",
+              "note": "Even when referring to a woman, grammatically masculine"
+            }
+          ]
+        },
+        {
+          "category": "Feminine Examples",
+          "nouns": [
+            {
+              "entry": "māter, mātris, f.",
+              "english": "mother",
+              "gender_marker": "f. = feminine",
+              "note": "Natural gender matches grammatical gender"
+            },
+            {
+              "entry": "virtūs, virtūtis, f.",
+              "english": "virtue, courage",
+              "gender_marker": "f. = feminine",
+              "note": "Abstract noun, no natural gender"
+            },
+            {
+              "entry": "pāx, pācis, f.",
+              "english": "peace",
+              "gender_marker": "f. = feminine",
+              "note": "Abstract noun, no natural gender"
+            },
+            {
+              "entry": "mors, mortis, f.",
+              "english": "death",
+              "gender_marker": "f. = feminine",
+              "note": "Abstract noun, grammatically feminine"
+            }
+          ]
+        },
+        {
+          "category": "Neuter Examples",
+          "nouns": [
+            {
+              "entry": "nōmen, nōminis, n.",
+              "english": "name",
+              "gender_marker": "n. = neuter",
+              "note": "Neuter plural: nōmina (not nōminēs)"
+            },
+            {
+              "entry": "corpus, corporis, n.",
+              "english": "body",
+              "gender_marker": "n. = neuter",
+              "warning": "Ends in -us like amīcus, but neuter, NOT masculine!"
+            },
+            {
+              "entry": "tempus, temporis, n.",
+              "english": "time",
+              "gender_marker": "n. = neuter",
+              "note": "Neuter plural: tempora"
+            },
+            {
+              "entry": "genus, generis, n.",
+              "english": "race, kind, type",
+              "gender_marker": "n. = neuter"
+            }
+          ]
+        }
+      ],
+      "key_takeaway": "You CANNOT guess gender from the nominative ending. Always check the dictionary entry (m., f., or n.)."
+    },
+    {
+      "title": "Example 5: Sentences with Mixed Declensions",
+      "description": "Practice translating sentences that combine first, second, and third declension nouns.",
+      "sentences": [
+        {
+          "latin": "Rēx puellam vocat.",
+          "translation": "The king calls the girl.",
+          "analysis": [
+            {
+              "word": "Rēx",
+              "declension": "3rd declension",
+              "case": "Nominative singular",
+              "reason": "Subject (who calls)",
+              "paradigm": "rēx, rēgis, m."
+            },
+            {
+              "word": "puellam",
+              "declension": "1st declension",
+              "case": "Accusative singular",
+              "reason": "Direct object (whom he calls)",
+              "paradigm": "puella, puellae, f."
+            },
+            {
+              "word": "vocat",
+              "info": "3rd person singular verb (he/she calls)"
+            }
+          ]
+        },
+        {
+          "latin": "Mīlitēs bella nārrant.",
+          "translation": "The soldiers tell about the wars.",
+          "analysis": [
+            {
+              "word": "Mīlitēs",
+              "declension": "3rd declension",
+              "case": "Nominative plural",
+              "reason": "Subject (who tell)",
+              "paradigm": "mīles, mīlitis, m.",
+              "stem_note": "Stem mīlit- + -ēs = mīlitēs"
+            },
+            {
+              "word": "bella",
+              "declension": "2nd declension neuter",
+              "case": "Accusative plural",
+              "reason": "Direct object (what they tell about)",
+              "paradigm": "bellum, bellī, n.",
+              "note": "Neuter accusative plural in -a"
+            },
+            {
+              "word": "nārrant",
+              "info": "3rd person plural verb (they tell)"
+            }
+          ]
+        },
+        {
+          "latin": "Virtūtem rēgis videō.",
+          "translation": "I see the virtue of the king. / I see the king's virtue.",
+          "analysis": [
+            {
+              "word": "Virtūtem",
+              "declension": "3rd declension",
+              "case": "Accusative singular",
+              "reason": "Direct object (what I see)",
+              "paradigm": "virtūs, virtūtis, f.",
+              "stem_note": "Stem virtūt- + -em = virtūtem"
+            },
+            {
+              "word": "rēgis",
+              "declension": "3rd declension",
+              "case": "Genitive singular",
+              "reason": "Possession (whose virtue)",
+              "paradigm": "rēx, rēgis, m."
+            },
+            {
+              "word": "videō",
+              "info": "1st person singular verb (I see)"
+            }
+          ],
+          "note": "Both nouns are third declension with different cases"
+        },
+        {
+          "latin": "Nōmina patrum sunt bona.",
+          "translation": "The names of the fathers are good. / The fathers' names are good.",
+          "analysis": [
+            {
+              "word": "Nōmina",
+              "declension": "3rd declension neuter",
+              "case": "Nominative plural",
+              "reason": "Subject (what is good)",
+              "paradigm": "nōmen, nōminis, n.",
+              "note": "Neuter nominative plural in -a (not -ēs)"
+            },
+            {
+              "word": "patrum",
+              "declension": "3rd declension",
+              "case": "Genitive plural",
+              "reason": "Possession (whose names)",
+              "paradigm": "pater, patris, m.",
+              "stem_note": "Stem patr- + -um = patrum"
+            },
+            {
+              "word": "sunt",
+              "info": "3rd person plural of sum (are)"
+            },
+            {
+              "word": "bona",
+              "info": "Nominative neuter plural adjective (good) - agrees with nōmina"
+            }
+          ]
+        },
+        {
+          "latin": "Cum mīlitibus et puellīs sumus.",
+          "translation": "We are with the soldiers and the girls.",
+          "analysis": [
+            {
+              "word": "Cum",
+              "info": "Preposition 'with' (takes ablative)"
+            },
+            {
+              "word": "mīlitibus",
+              "declension": "3rd declension",
+              "case": "Ablative plural",
+              "reason": "Accompaniment with preposition cum",
+              "paradigm": "mīles, mīlitis, m.",
+              "note": "Could also be dative, but cum + ablative = 'with'"
+            },
+            {
+              "word": "et",
+              "info": "Conjunction 'and'"
+            },
+            {
+              "word": "puellīs",
+              "declension": "1st declension",
+              "case": "Ablative plural",
+              "reason": "Accompaniment with cum",
+              "paradigm": "puella, puellae, f."
+            },
+            {
+              "word": "sumus",
+              "info": "1st person plural of sum (we are)"
+            }
+          ],
+          "note": "Mixing 1st and 3rd declension in same sentence with same case"
+        }
+      ],
+      "strategy_reminder": "When translating mixed declensions: (1) Identify each noun's declension by its ending pattern, (2) Determine case from the specific ending, (3) Use case to determine function in sentence."
+    },
+    {
+      "title": "Example 6: Common Mistakes and Corrections",
+      "description": "Learn from typical errors students make with third declension.",
+      "mistakes": [
+        {
+          "error": "Trying to predict nominative from genitive",
+          "incorrect_thinking": "rēgis has stem rēg-, so nominative must be rēga or rēgus",
+          "why_wrong": "The nominative is unpredictable and underwent historical sound changes",
+          "correct_approach": "Memorize nominative-genitive pairs as a unit: rēx, rēgis",
+          "example": {
+            "wrong_assumption": "mīlitis → nominative should be mīlitus",
+            "actual_nominative": "mīles (completely different from what you'd predict)"
+          }
+        },
+        {
+          "error": "Using nominative instead of stem when declining",
+          "incorrect_thinking": "I need dative of rēx, so rēxī",
+          "why_wrong": "The stem comes from genitive, not nominative",
+          "correct_approach": "Find stem from genitive: rēgis → rēg- → rēgī",
+          "example": {
+            "noun": "corpus, corporis, n.",
+            "wrong_dative": "corpusī (using nominative)",
+            "correct_dative": "corporī (using stem corpor- from genitive corporis)"
+          }
+        },
+        {
+          "error": "Assuming gender from appearance",
+          "incorrect_thinking": "corpus ends in -us like amīcus, so it's masculine",
+          "why_wrong": "Third declension has mixed genders - endings don't indicate gender",
+          "correct_approach": "Always check dictionary: corpus, corporis, n. (neuter!)",
+          "example": {
+            "sentence": "Corpus est bonum. (The body is good.)",
+            "wrong_adjective": "bonus (masculine)",
+            "correct_adjective": "bonum (neuter, agreeing with corpus)"
+          }
+        },
+        {
+          "error": "Confusing M/F and neuter plural endings",
+          "incorrect_thinking": "nōmina ends in -a, so it must be like first declension feminine",
+          "why_wrong": "Neuter third declension plural is always -a (nominative/accusative)",
+          "correct_approach": "Recognize -a as neuter plural pattern, not first declension",
+          "example": {
+            "word": "nōmina",
+            "wrong_identification": "First declension nominative plural",
+            "correct_identification": "Third declension neuter nominative/accusative plural (from nōmen, nōminis, n.)"
+          }
+        },
+        {
+          "error": "Not checking for identical forms",
+          "problem": "Seeing rēgēs and assuming it's nominative without checking context",
+          "why_wrong": "rēgēs is both nominative AND accusative plural",
+          "correct_approach": "Use context: verb agreement (if nominative) or sentence logic (if accusative)",
+          "example": {
+            "sentence_1": "Rēgēs sunt. (nominative - they are the subject)",
+            "sentence_2": "Rēgēs videō. (accusative - they are the object of 'I see')",
+            "how_to_tell": "In sentence 1, sunt shows they're the subject. In sentence 2, videō needs an object."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Example 7: Quick Identification Drills",
+      "description": "Rapid-fire practice for identifying cases and declining forms.",
+      "drills": [
+        {
+          "question": "What case could mīlitibus be?",
+          "answer": "Dative plural OR ablative plural",
+          "explanation": "-ibus ending serves both cases in third declension plural. Context determines which."
+        },
+        {
+          "question": "If you see corporis in a sentence, what case is it?",
+          "answer": "Genitive singular only",
+          "explanation": "The ending -is is unique to genitive singular in third declension. Translation: 'of the body'"
+        },
+        {
+          "question": "What's the stem of virtūs, virtūtis?",
+          "answer": "virtūt-",
+          "explanation": "Drop -is from genitive: virtūtis → virtūt-"
+        },
+        {
+          "question": "How do you say 'the times' as direct object?",
+          "answer": "tempora (accusative plural)",
+          "explanation": "Neuter accusative plural: stem tempor- + -a = tempora"
+        },
+        {
+          "question": "What gender is pāx, pācis?",
+          "answer": "Feminine (pāx, pācis, f.)",
+          "explanation": "Cannot guess from ending - must check dictionary"
+        },
+        {
+          "question": "What's the difference between rēgem and rēgēs?",
+          "answer": "rēgem = accusative singular (the king, as object); rēgēs = nominative/accusative plural (the kings)",
+          "explanation": "-em is singular accusative; -ēs is plural nominative/accusative"
+        },
+        {
+          "question": "Why can't nōmen be accusative singular?",
+          "answer": "It CAN be! Neuter rule: nominative = accusative",
+          "explanation": "nōmen is both nominative singular AND accusative singular. Context tells you which."
+        },
+        {
+          "question": "If I want to say 'of the soldiers', what form do I use?",
+          "answer": "mīlitum (genitive plural)",
+          "explanation": "Stem mīlit- + genitive plural ending -um = mīlitum"
+        }
+      ]
+    }
+  ]
+}

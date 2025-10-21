@@ -1,0 +1,292 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-004",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-004-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. Pay close attention to adjective-noun agreement.\n\n1. Bona puella magnam viam videt.\n2. Parvī amicī sunt in silvā.\n3. Multās fortunās bonīs puellīs damus.\n4. Pulchra terra est.\n5. Parva bella magnōs amicōs territant. (territant = they frighten)\n6. Bonōrum bellōrum fortuna magna est.",
+      "rubric": {
+        "scoring": "Each sentence worth 0.167 points (6 sentences × 0.167 ≈ 1.00)",
+        "correct_translations": [
+          {
+            "number": 1,
+            "latin": "Bona puella magnam viam videt.",
+            "correct_english": "The good girl sees the large road.",
+            "acceptable_variants": ["A good girl sees a large road.", "The good girl sees the great road."],
+            "key_adjective_noun_pairs": [
+              {"pair": "bona puella", "agreement": "both F nom sg", "translation": "good girl (subject)"},
+              {"pair": "magnam viam", "agreement": "both F acc sg", "translation": "large road (object)"}
+            ],
+            "common_errors": [
+              "Not recognizing that both adjectives are attributive (not predicate)",
+              "Confusing cases of adjectives"
+            ]
+          },
+          {
+            "number": 2,
+            "latin": "Parvī amicī sunt in silvā.",
+            "correct_english": "The small friends are in the forest.",
+            "acceptable_variants": ["Small friends are in the forest.", "The small friends are in the woods."],
+            "key_adjective_noun_pairs": [
+              {"pair": "parvī amicī", "agreement": "both M nom pl", "translation": "small friends (subject)"}
+            ],
+            "note": "silvā is F abl sg (no adjective modifying it); 'sunt' = they are",
+            "common_errors": [
+              "Translating parvī as genitive singular instead of nominative plural",
+              "Missing that this is plural subject"
+            ]
+          },
+          {
+            "number": 3,
+            "latin": "Multās fortunās bonīs puellīs damus.",
+            "correct_english": "We give many fortunes to the good girls.",
+            "acceptable_variants": ["We give much fortune to good girls.", "We give many fortunes to the good girls."],
+            "key_adjective_noun_pairs": [
+              {"pair": "multās fortunās", "agreement": "both F acc pl", "translation": "many fortunes (direct object)"},
+              {"pair": "bonīs puellīs", "agreement": "both F dat pl", "translation": "to the good girls (indirect object)"}
+            ],
+            "note": "damus = we give; tests understanding of dative (indirect object) agreement",
+            "common_errors": [
+              "Not recognizing bonīs as dative plural (could be confused with ablative)",
+              "Misidentifying which adjective modifies which noun"
+            ]
+          },
+          {
+            "number": 4,
+            "latin": "Pulchra terra est.",
+            "correct_english": "The land is beautiful. / The beautiful land is (here).",
+            "acceptable_variants": ["The land is beautiful.", "The earth is beautiful."],
+            "key_adjective_noun_pairs": [
+              {"pair": "pulchra (+ terra)", "agreement": "both F nom sg", "type": "could be attributive or predicate"}
+            ],
+            "note": "This is ambiguous! Could be predicate ('the land IS beautiful') or attributive ('the beautiful land is [here]'). Both translations acceptable, but predicate is more natural with 'est' present.",
+            "interpretation": "Most likely predicate given word order and presence of 'est' with no other verb",
+            "common_errors": [
+              "Not recognizing the ambiguity",
+              "Thinking only one interpretation is correct"
+            ]
+          },
+          {
+            "number": 5,
+            "latin": "Parva bella magnōs amicōs territant.",
+            "correct_english": "Small wars frighten the large friends. / Small wars frighten great friends.",
+            "acceptable_variants": ["Small wars frighten great friends.", "Little wars frighten large friends."],
+            "key_adjective_noun_pairs": [
+              {"pair": "parva bella", "agreement": "both N nom pl", "translation": "small wars (subject)"},
+              {"pair": "magnōs amicōs", "agreement": "both M acc pl", "translation": "large/great friends (object)"}
+            ],
+            "note": "Tests neuter plural recognition (parva bella) and masculine accusative plural (magnōs amicōs)",
+            "common_errors": [
+              "Thinking parva is feminine singular instead of neuter plural",
+              "Not recognizing bella as subject (neuter plural verb agreement can be tricky)"
+            ]
+          },
+          {
+            "number": 6,
+            "latin": "Bonōrum bellōrum fortuna magna est.",
+            "correct_english": "The fortune of good wars is great. / The good wars' fortune is great.",
+            "acceptable_variants": ["The fortune of the good wars is great.", "The good wars' fortune is large."],
+            "key_adjective_noun_pairs": [
+              {"pair": "bonōrum bellōrum", "agreement": "both N gen pl", "translation": "of good wars"},
+              {"pair": "fortuna magna", "agreement": "both F nom sg", "type": "fortuna = subject, magna = predicate adjective"}
+            ],
+            "note": "Tests genitive plural recognition and predicate adjective (magna est = is great)",
+            "common_errors": [
+              "Not recognizing bonōrum as genitive plural neuter (could confuse with masculine)",
+              "Thinking magna modifies bellōrum instead of fortuna"
+            ]
+          }
+        ],
+        "partial_credit": "Award 0.13/0.167 for translations that capture main meaning but have minor errors in adjective interpretation. Award 0.08/0.167 for translations showing some understanding but significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "20-25 minutes"
+    },
+    {
+      "id": "applied-004-2",
+      "difficulty": "intermediate",
+      "task_type": "form_identification",
+      "prompt": "For each adjective-noun pair below, identify:\n(a) Gender of the pair\n(b) Number (singular or plural)\n(c) Case\n(d) English translation\n(e) Whether the adjective is attributive or predicate (if determinable)\n\n1. bonae puellae (in sentence: Bonae puellae sunt.)\n2. magnum bellum\n3. parvīs viīs\n4. multōrum amicōrum\n5. pulchram terram\n6. bona (in sentence: Puella bona est.)",
+      "rubric": {
+        "scoring": "Questions 1-5 worth 0.18 each; Question 6 worth 0.10 (tests predicate recognition). Total = 1.00",
+        "correct_answers": [
+          {
+            "number": 1,
+            "form": "bonae puellae (in: Bonae puellae sunt.)",
+            "gender": "Feminine",
+            "number": "Plural",
+            "case": "Nominative",
+            "translation": "good girls (subject) / the good girls",
+            "attributive_or_predicate": "Attributive (forms noun phrase 'good girls' that is the subject)",
+            "points": 0.18,
+            "note": "In context with 'sunt' (they are), this is attributive subject, not predicate. 'The good girls are [here/present]' not 'The girls are good.'"
+          },
+          {
+            "number": 2,
+            "form": "magnum bellum",
+            "gender": "Neuter",
+            "number": "Singular",
+            "case": "Nominative OR Accusative (neuter nom = acc)",
+            "translation": "large/great war (subject or object)",
+            "attributive_or_predicate": "Attributive (no context given, but forms noun phrase)",
+            "points": 0.18,
+            "note": "Full credit for recognizing neuter ambiguity (nom = acc)"
+          },
+          {
+            "number": 3,
+            "form": "parvīs viīs",
+            "gender": "Feminine",
+            "number": "Plural",
+            "case": "Dative OR Ablative (-īs is both)",
+            "translation": "to/for small roads (dative) OR with/by small roads (ablative)",
+            "attributive_or_predicate": "Attributive",
+            "points": 0.18,
+            "note": "Full credit for recognizing dative/ablative ambiguity"
+          },
+          {
+            "number": 4,
+            "form": "multōrum amicōrum",
+            "gender": "Masculine",
+            "number": "Plural",
+            "case": "Genitive",
+            "translation": "of many friends / many friends'",
+            "attributive_or_predicate": "Attributive",
+            "points": 0.18,
+            "note": "Could theoretically be neuter, but amicōrum context suggests masculine (amicus is M)"
+          },
+          {
+            "number": 5,
+            "form": "pulchram terram",
+            "gender": "Feminine",
+            "number": "Singular",
+            "case": "Accusative",
+            "translation": "beautiful land/earth (as direct object)",
+            "attributive_or_predicate": "Attributive",
+            "points": 0.18,
+            "note": "Unambiguous accusative singular feminine"
+          },
+          {
+            "number": 6,
+            "form": "bona (in: Puella bona est.)",
+            "gender": "Feminine",
+            "number": "Singular",
+            "case": "Nominative",
+            "translation": "good (describing puella: 'is good')",
+            "attributive_or_predicate": "Predicate (describes subject through 'est')",
+            "points": 0.10,
+            "note": "Key test: recognizing this is predicate ('The girl IS good') not attributive ('good girl'). Context with 'est' is critical."
+          }
+        ],
+        "partial_credit": "Award partial credit for answers that get most elements correct but miss one (e.g., correct gender/number but wrong case). Question 6 is all-or-nothing for predicate recognition."
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-004-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the correct Latin forms for the following English phrases. Use the vocabulary provided. Make sure adjectives agree with nouns in gender, number, and case!\n\nVocabulary:\n- bonus, bona, bonum (good)\n- magnus, magna, magnum (large, great)\n- parvus, parva, parvum (small)\n- multus, multa, multum (much, many)\n- puella, puellae, f. (girl)\n- amicus, amicī, m. (friend)\n- bellum, bellī, n. (war)\n- via, viae, f. (road)\n\nProduce Latin for:\n1. of good girls\n2. large war (as direct object)\n3. to the small friends (masculine)\n4. many roads (as subject)\n5. with good wars\n6. the small girl (as subject)\n7. of many friends (masculine)\n8. I see large girls (include verb: video)\n9. The small wars are good (include verb: sunt)\n10. We give the gift to good friends (context: dative needed for 'to friends')",
+      "rubric": {
+        "scoring": "Questions 1-7 worth 0.10 each; Questions 8-10 worth 0.10 each (full sentences). Total = 1.00",
+        "correct_answers": [
+          {
+            "number": 1,
+            "prompt": "of good girls",
+            "correct_form": "bonārum puellārum",
+            "breakdown": "bona → bonārum (F gen pl), puella → puellārum (F gen pl)",
+            "points": 0.10,
+            "common_errors": ["bonae puellae (wrong case - that's nom/dat/gen sg)", "bonarum puellarum (missing macrons - acceptable)"]
+          },
+          {
+            "number": 2,
+            "prompt": "large war (as direct object)",
+            "correct_form": "magnum bellum",
+            "breakdown": "magnus → magnum (N acc sg), bellum (N acc sg - neuter nom = acc)",
+            "points": 0.10,
+            "common_errors": ["magnus bellum (wrong form - magnus is nominative M)", "magna bellum (wrong gender - magna is F)"]
+          },
+          {
+            "number": 3,
+            "prompt": "to the small friends (masculine)",
+            "correct_form": "parvīs amicīs",
+            "breakdown": "parvus → parvīs (M dat pl), amicus → amicīs (M dat pl)",
+            "points": 0.10,
+            "common_errors": ["parvis amicis (missing macrons - acceptable)", "parvōs amicōs (wrong case - that's accusative)"],
+            "note": "Could also be ablative (with friends), but dative requested in prompt"
+          },
+          {
+            "number": 4,
+            "prompt": "many roads (as subject)",
+            "correct_form": "multae viae",
+            "breakdown": "multus → multae (F nom pl), via → viae (F nom pl)",
+            "points": 0.10,
+            "common_errors": ["multī viae (wrong gender - multī is M)", "multās viās (wrong case - that's accusative)"]
+          },
+          {
+            "number": 5,
+            "prompt": "with good wars",
+            "correct_form": "bonīs bellīs",
+            "breakdown": "bonus → bonīs (N abl pl), bellum → bellīs (N abl pl)",
+            "points": 0.10,
+            "common_errors": ["bonis bellis (missing macrons - acceptable)", "bonōs bellōs (wrong - that would be M acc pl, but bellum is neuter)"],
+            "note": "'With' indicates ablative case"
+          },
+          {
+            "number": 6,
+            "prompt": "the small girl (as subject)",
+            "correct_form": "parva puella",
+            "breakdown": "parvus → parva (F nom sg), puella (F nom sg)",
+            "points": 0.10,
+            "common_errors": ["parvus puella (wrong gender - parvus is M)", "parvam puellam (wrong case - that's accusative)"]
+          },
+          {
+            "number": 7,
+            "prompt": "of many friends (masculine)",
+            "correct_form": "multōrum amicōrum",
+            "breakdown": "multus → multōrum (M gen pl), amicus → amicōrum (M gen pl)",
+            "points": 0.10,
+            "common_errors": ["multorum amicorum (missing macrons - acceptable)", "multī amicī (wrong case - that's nominative)"]
+          },
+          {
+            "number": 8,
+            "prompt": "I see large girls",
+            "correct_form": "Magnās puellās video" or "Video magnās puellās",
+            "breakdown": "magnus → magnās (F acc pl), puella → puellās (F acc pl), video (I see)",
+            "points": 0.10,
+            "common_errors": ["Magnas puellas video (missing macrons - acceptable)", "Magnae puellae video (wrong case - nominative instead of accusative)"],
+            "note": "Word order flexible in Latin"
+          },
+          {
+            "number": 9,
+            "prompt": "The small wars are good",
+            "correct_form": "Parva bella bona sunt" or "Parva bella sunt bona" or similar word order variants,
+            "breakdown": "parvus → parva (N nom pl), bellum → bella (N nom pl), bonus → bona (N nom pl predicate), sunt (they are)",
+            "points": 0.10,
+            "common_errors": ["Parvī bellī bonī sunt (wrong - treating bellum as M instead of N)", "Parvum bellum bonum est (wrong number - singular instead of plural)"],
+            "note": "Tests neuter plural forms AND predicate adjective recognition. 'Bona' is predicate (are good), 'parva' is attributive (small wars)"
+          },
+          {
+            "number": 10,
+            "prompt": "We give the gift to good friends",
+            "correct_form": "Donum bonīs amicīs damus" (or word order variants),
+            "breakdown": "donum (N acc sg - direct object), bonus → bonīs (M dat pl), amicus → amicīs (M dat pl), damus (we give)",
+            "points": 0.10,
+            "common_errors": ["Donum bonis amicis damus (missing macrons - acceptable)", "Donum bonōs amicōs damus (wrong case - accusative instead of dative)"],
+            "note": "This is challenging - requires recognizing dative case for indirect object and producing correct forms. 'Donum' not in vocab list but mentioned in earlier concepts."
+          }
+        ],
+        "partial_credit": "Award 0.07/0.10 for forms that are close but have minor errors (e.g., missing macrons, which are often omitted in Latin texts). Award 0.04/0.10 for forms showing some understanding but wrong case or gender. Award 0.00 for completely incorrect forms.",
+        "note": "Form production is significantly harder than recognition. This tests active mastery of adjective declension and agreement."
+      },
+      "estimated_time": "25-30 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify, and produce adjective-noun pairs with correct agreement. Applied-004-3 is particularly challenging (form production) and demonstrates highest level of mastery."
+  }
+}

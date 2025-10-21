@@ -1,0 +1,21 @@
+# Adaptive Learning System - Backend Dependencies
+
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+
+# Anthropic Claude API
+anthropic>=0.71.0
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Data Validation
+pydantic==2.5.3
+
+# CORS Support
+fastapi-cors==0.0.6
+
+# JSON handling (built-in but explicit for clarity)
+# json - built-in Python module

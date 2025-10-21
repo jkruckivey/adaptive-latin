@@ -1,0 +1,574 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Complete Conjugation of amō in Present System",
+      "description": "Full paradigms showing amō (to love) in all three tenses of the present system.",
+      "conjugations": {
+        "verb": "amō, amāre, amāvī, amātum (to love)",
+        "present_stem": "amā-",
+        "tenses": [
+          {
+            "tense": "Present",
+            "formation": "stem + personal endings",
+            "marker": "none (just stem + ending)",
+            "forms": [
+              {
+                "person": "1st Singular",
+                "latin": "amō",
+                "breakdown": "amā- + -ō",
+                "translation": "I love, I am loving, I do love"
+              },
+              {
+                "person": "2nd Singular",
+                "latin": "amās",
+                "breakdown": "amā- + -s",
+                "translation": "you love, you are loving"
+              },
+              {
+                "person": "3rd Singular",
+                "latin": "amat",
+                "breakdown": "amā- + -t (ā shortens before -t)",
+                "translation": "he/she/it loves, is loving"
+              },
+              {
+                "person": "1st Plural",
+                "latin": "amāmus",
+                "breakdown": "amā- + -mus",
+                "translation": "we love, we are loving"
+              },
+              {
+                "person": "2nd Plural",
+                "latin": "amātis",
+                "breakdown": "amā- + -tis",
+                "translation": "you (pl.) love, are loving"
+              },
+              {
+                "person": "3rd Plural",
+                "latin": "amant",
+                "breakdown": "amā- + -nt (ā shortens before -nt)",
+                "translation": "they love, they are loving"
+              }
+            ]
+          },
+          {
+            "tense": "Imperfect",
+            "formation": "stem + -bā- + personal endings",
+            "marker": "-ba- (signals ongoing/habitual past action)",
+            "forms": [
+              {
+                "person": "1st Singular",
+                "latin": "amābam",
+                "breakdown": "amā- + -bā- + -m",
+                "translation": "I was loving, I used to love"
+              },
+              {
+                "person": "2nd Singular",
+                "latin": "amābās",
+                "breakdown": "amā- + -bā- + -s",
+                "translation": "you were loving, you used to love"
+              },
+              {
+                "person": "3rd Singular",
+                "latin": "amābat",
+                "breakdown": "amā- + -bā- + -t",
+                "translation": "he/she/it was loving, used to love"
+              },
+              {
+                "person": "1st Plural",
+                "latin": "amābāmus",
+                "breakdown": "amā- + -bā- + -mus",
+                "translation": "we were loving, we used to love"
+              },
+              {
+                "person": "2nd Plural",
+                "latin": "amābātis",
+                "breakdown": "amā- + -bā- + -tis",
+                "translation": "you (pl.) were loving, used to love"
+              },
+              {
+                "person": "3rd Plural",
+                "latin": "amābant",
+                "breakdown": "amā- + -bā- + -nt",
+                "translation": "they were loving, they used to love"
+              }
+            ]
+          },
+          {
+            "tense": "Future",
+            "formation": "stem + -bi-/-bu- + personal endings",
+            "marker": "-bi-/-bu- (signals future action)",
+            "forms": [
+              {
+                "person": "1st Singular",
+                "latin": "amābō",
+                "breakdown": "amā- + -bō (fused -bi- + -ō)",
+                "translation": "I will love, I shall love"
+              },
+              {
+                "person": "2nd Singular",
+                "latin": "amābis",
+                "breakdown": "amā- + -bi- + -s",
+                "translation": "you will love"
+              },
+              {
+                "person": "3rd Singular",
+                "latin": "amābit",
+                "breakdown": "amā- + -bi- + -t",
+                "translation": "he/she/it will love"
+              },
+              {
+                "person": "1st Plural",
+                "latin": "amābimus",
+                "breakdown": "amā- + -bi- + -mus",
+                "translation": "we will love"
+              },
+              {
+                "person": "2nd Plural",
+                "latin": "amābitis",
+                "breakdown": "amā- + -bi- + -tis",
+                "translation": "you (pl.) will love"
+              },
+              {
+                "person": "3rd Plural",
+                "latin": "amābunt",
+                "breakdown": "amā- + -bu- + -nt (note -bu- variant)",
+                "translation": "they will love"
+              }
+            ]
+          }
+        ]
+      },
+      "key_observations": [
+        "Present tense has no tense marker - just stem + personal endings",
+        "Imperfect always has -bā- between stem and ending",
+        "Future has -bi- (most forms) or -bu- (3rd plural only)",
+        "Personal endings stay consistent across all three tenses (except 1st sg. present uses -ō instead of -m)",
+        "The -ā- of the stem shortens before -t and -nt in present tense only"
+      ]
+    },
+    {
+      "title": "Example 2: Sentence Translation Practice (Present Tense)",
+      "description": "Translating sentences with first conjugation verbs in the present tense.",
+      "sentences": [
+        {
+          "latin": "Puella aquam portat.",
+          "translation": "The girl carries water. / The girl is carrying water.",
+          "word_by_word": [
+            {
+              "word": "Puella",
+              "form": "nominative singular",
+              "function": "subject",
+              "translation": "the girl"
+            },
+            {
+              "word": "aquam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "water"
+            },
+            {
+              "word": "portat",
+              "form": "3rd sg. present active",
+              "breakdown": "portā- + -t",
+              "function": "verb",
+              "translation": "carries, is carrying"
+            }
+          ],
+          "notes": "Simple present tense sentence. Either translation ('carries' or 'is carrying') is correct."
+        },
+        {
+          "latin": "Puellae vias amant.",
+          "translation": "The girls love the roads.",
+          "word_by_word": [
+            {
+              "word": "Puellae",
+              "form": "nominative plural",
+              "function": "subject",
+              "translation": "the girls"
+            },
+            {
+              "word": "vias",
+              "form": "accusative plural",
+              "function": "direct object",
+              "translation": "the roads"
+            },
+            {
+              "word": "amant",
+              "form": "3rd pl. present active",
+              "breakdown": "amā- + -nt",
+              "function": "verb",
+              "translation": "love, are loving"
+            }
+          ],
+          "notes": "Both subject and object are plural. Don't confuse 'amant' (present) with 'amābunt' (future)."
+        },
+        {
+          "latin": "Terram laborāmus.",
+          "translation": "We are working the land. / We work the land.",
+          "word_by_word": [
+            {
+              "word": "Terram",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "the land"
+            },
+            {
+              "word": "laborāmus",
+              "form": "1st pl. present active",
+              "breakdown": "laborā- + -mus",
+              "function": "verb",
+              "translation": "we work, we are working"
+            }
+          ],
+          "notes": "No explicit subject needed - 'laborāmus' tells us it's 'we.' Object comes before verb (common in Latin)."
+        },
+        {
+          "latin": "Puellam vocō.",
+          "translation": "I call the girl. / I am calling the girl.",
+          "word_by_word": [
+            {
+              "word": "Puellam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "the girl"
+            },
+            {
+              "word": "vocō",
+              "form": "1st sg. present active",
+              "breakdown": "vocā- + -ō",
+              "function": "verb",
+              "translation": "I call, I am calling"
+            }
+          ],
+          "notes": "Object-verb word order (also very common). The -ō ending tells us 'I' am doing the action."
+        }
+      ]
+    },
+    {
+      "title": "Example 3: Sentence Translation Practice (Imperfect Tense)",
+      "description": "Translating sentences with imperfect tense verbs (ongoing or habitual past).",
+      "sentences": [
+        {
+          "latin": "Puella aquam portābat.",
+          "translation": "The girl was carrying water. / The girl used to carry water.",
+          "word_by_word": [
+            {
+              "word": "Puella",
+              "form": "nominative singular",
+              "function": "subject",
+              "translation": "the girl"
+            },
+            {
+              "word": "aquam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "water"
+            },
+            {
+              "word": "portābat",
+              "form": "3rd sg. imperfect active",
+              "breakdown": "portā- + -bā- + -t",
+              "tense_marker": "-bā-",
+              "function": "verb",
+              "translation": "was carrying, used to carry"
+            }
+          ],
+          "notes": "The -bā- marker signals imperfect. Choose 'was carrying' for ongoing past action, 'used to carry' for habitual past action."
+        },
+        {
+          "latin": "Puellae viam amābant.",
+          "translation": "The girls were loving the road. / The girls used to love the road.",
+          "word_by_word": [
+            {
+              "word": "Puellae",
+              "form": "nominative plural",
+              "function": "subject",
+              "translation": "the girls"
+            },
+            {
+              "word": "viam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "the road"
+            },
+            {
+              "word": "amābant",
+              "form": "3rd pl. imperfect active",
+              "breakdown": "amā- + -bā- + -nt",
+              "tense_marker": "-bā-",
+              "function": "verb",
+              "translation": "were loving, used to love"
+            }
+          ],
+          "notes": "Plural subject with imperfect verb. The imperfect emphasizes the ongoing or habitual nature of their affection."
+        },
+        {
+          "latin": "In viā laborābāmus.",
+          "translation": "We were working on the road. / We used to work on the road.",
+          "word_by_word": [
+            {
+              "word": "In viā",
+              "form": "ablative singular (with preposition)",
+              "function": "place where",
+              "translation": "on the road / in the road"
+            },
+            {
+              "word": "laborābāmus",
+              "form": "1st pl. imperfect active",
+              "breakdown": "laborā- + -bā- + -mus",
+              "tense_marker": "-bā-",
+              "function": "verb",
+              "translation": "we were working, we used to work"
+            }
+          ],
+          "notes": "Prepositional phrase 'in viā' shows location. Imperfect suggests ongoing or repeated work in the past."
+        }
+      ]
+    },
+    {
+      "title": "Example 4: Sentence Translation Practice (Future Tense)",
+      "description": "Translating sentences with future tense verbs.",
+      "sentences": [
+        {
+          "latin": "Puella aquam portābit.",
+          "translation": "The girl will carry water.",
+          "word_by_word": [
+            {
+              "word": "Puella",
+              "form": "nominative singular",
+              "function": "subject",
+              "translation": "the girl"
+            },
+            {
+              "word": "aquam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "water"
+            },
+            {
+              "word": "portābit",
+              "form": "3rd sg. future active",
+              "breakdown": "portā- + -bi- + -t",
+              "tense_marker": "-bi-",
+              "function": "verb",
+              "translation": "will carry"
+            }
+          ],
+          "notes": "The -bi- marker signals future tense. Straightforward future meaning."
+        },
+        {
+          "latin": "Puellās vocābimus.",
+          "translation": "We will call the girls.",
+          "word_by_word": [
+            {
+              "word": "Puellās",
+              "form": "accusative plural",
+              "function": "direct object",
+              "translation": "the girls"
+            },
+            {
+              "word": "vocābimus",
+              "form": "1st pl. future active",
+              "breakdown": "vocā- + -bi- + -mus",
+              "tense_marker": "-bi-",
+              "function": "verb",
+              "translation": "we will call"
+            }
+          ],
+          "notes": "Future tense with 1st person plural. The -bi- is clearly visible before -mus."
+        },
+        {
+          "latin": "Puellae viam amābunt.",
+          "translation": "The girls will love the road.",
+          "word_by_word": [
+            {
+              "word": "Puellae",
+              "form": "nominative plural",
+              "function": "subject",
+              "translation": "the girls"
+            },
+            {
+              "word": "viam",
+              "form": "accusative singular",
+              "function": "direct object",
+              "translation": "the road"
+            },
+            {
+              "word": "amābunt",
+              "form": "3rd pl. future active",
+              "breakdown": "amā- + -bu- + -nt",
+              "tense_marker": "-bu-",
+              "function": "verb",
+              "translation": "will love"
+            }
+          ],
+          "notes": "Note the -bu- variant in 3rd plural future. Don't confuse 'amābunt' (future) with 'amant' (present) or 'amābant' (imperfect)."
+        }
+      ]
+    },
+    {
+      "title": "Example 5: Tense Identification Practice",
+      "description": "Practice distinguishing present, imperfect, and future tenses.",
+      "drills": [
+        {
+          "verb_form": "amat",
+          "tense": "Present",
+          "person_number": "3rd person singular",
+          "translation": "he/she/it loves, is loving",
+          "how_to_identify": "No tense marker - just stem (amā-) + personal ending (-t)",
+          "comparison": {
+            "imperfect": "amābat (was loving)",
+            "future": "amābit (will love)"
+          }
+        },
+        {
+          "verb_form": "amābat",
+          "tense": "Imperfect",
+          "person_number": "3rd person singular",
+          "translation": "he/she/it was loving, used to love",
+          "how_to_identify": "Look for -bā- tense marker between stem and ending",
+          "comparison": {
+            "present": "amat (loves)",
+            "future": "amābit (will love)"
+          }
+        },
+        {
+          "verb_form": "amābit",
+          "tense": "Future",
+          "person_number": "3rd person singular",
+          "translation": "he/she/it will love",
+          "how_to_identify": "Look for -bi- tense marker between stem and ending",
+          "comparison": {
+            "present": "amat (loves)",
+            "imperfect": "amābat (was loving)"
+          }
+        },
+        {
+          "verb_form": "amant",
+          "tense": "Present",
+          "person_number": "3rd person plural",
+          "translation": "they love, they are loving",
+          "how_to_identify": "No tense marker - just stem + -nt",
+          "comparison": {
+            "imperfect": "amābant (they were loving)",
+            "future": "amābunt (they will love)"
+          },
+          "common_error": "Confusing 'amant' (present) with 'amābunt' (future) - look for the -bu- in future!"
+        },
+        {
+          "verb_form": "amābant",
+          "tense": "Imperfect",
+          "person_number": "3rd person plural",
+          "translation": "they were loving, they used to love",
+          "how_to_identify": "Look for -bā- before -nt",
+          "comparison": {
+            "present": "amant (they love)",
+            "future": "amābunt (they will love)"
+          }
+        },
+        {
+          "verb_form": "amābunt",
+          "tense": "Future",
+          "person_number": "3rd person plural",
+          "translation": "they will love",
+          "how_to_identify": "Look for -bu- before -nt (variant of -bi- used with -nt)",
+          "comparison": {
+            "present": "amant (they love)",
+            "imperfect": "amābant (they were loving)"
+          },
+          "common_error": "This is the tricky one! The -bu- (not -bi-) signals future with -nt ending."
+        }
+      ]
+    },
+    {
+      "title": "Example 6: Common Mistakes and Corrections",
+      "description": "Learn from typical errors when working with first conjugation verbs.",
+      "mistakes": [
+        {
+          "error": "Confusing present 'amant' with future 'amābunt'",
+          "incorrect_translation": "Puellae viam amant. → 'The girls will love the road.' (WRONG)",
+          "correct_translation": "Puellae viam amant. → 'The girls love the road.' (CORRECT)",
+          "explanation": "Without the -bu- marker, this is present tense. Compare: 'Puellae viam amābunt' = 'The girls WILL love the road' (future).",
+          "how_to_avoid": "Always look for the tense marker! Present has none, future has -bi-/-bu-."
+        },
+        {
+          "error": "Not recognizing the imperfect -bā- marker",
+          "incorrect_translation": "Puella aquam portābat. → 'The girl carries water.' (WRONG)",
+          "correct_translation": "Puella aquam portābat. → 'The girl was carrying water.' (CORRECT)",
+          "explanation": "The -bā- signals imperfect tense (ongoing or habitual past), not present.",
+          "how_to_avoid": "Train your eye to spot -ba- immediately. It always means imperfect."
+        },
+        {
+          "error": "Treating the infinitive (-re) as a conjugated form",
+          "incorrect_thinking": "amāre means 'they love'? (WRONG)",
+          "correct_understanding": "amāre is the INFINITIVE ('to love'), not a conjugated form. It has no person or number.",
+          "explanation": "The infinitive is the dictionary form. To conjugate, drop -re to get the stem (amā-), then add personal endings.",
+          "how_to_avoid": "Remember: infinitive = 'to [verb]'. Conjugated forms show WHO is doing the action."
+        },
+        {
+          "error": "Confusing which personal ending goes with which tense",
+          "incorrect_form": "Using 'amō' for imperfect 1st singular (WRONG)",
+          "correct_form": "amābam (imperfect 1st sg.), NOT amābaō",
+          "explanation": "First person singular uses -ō in PRESENT tense only. In imperfect and future, it uses -m: amābam, amābō.",
+          "how_to_avoid": "Remember the pattern: present 1st sg. ends in -ō, but imperfect/future 1st sg. ends in -m."
+        },
+        {
+          "error": "Wrong tense identification in context",
+          "sentence": "Puellae aquam portābant et viam amābant.",
+          "incorrect_translation": "'The girls carry water and love the road.' (WRONG - this is present, but the Latin is imperfect)",
+          "correct_translation": "'The girls were carrying water and were loving the road.' OR 'The girls used to carry water and love the road.' (CORRECT)",
+          "explanation": "Both verbs have -bā-, so both are imperfect. The tenses must match in your translation.",
+          "how_to_avoid": "Check EVERY verb for its tense marker, especially in sentences with multiple verbs."
+        }
+      ]
+    },
+    {
+      "title": "Example 7: Mixed Tense Translation Exercise",
+      "description": "Translate sentences with different tenses to practice distinguishing them.",
+      "sentences": [
+        {
+          "latin": "Puella terram amat.",
+          "tense": "Present",
+          "translation": "The girl loves the land.",
+          "parse": "puella (nom. sg.) + terram (acc. sg.) + amat (3rd sg. present)"
+        },
+        {
+          "latin": "Puella terram amābat.",
+          "tense": "Imperfect",
+          "translation": "The girl was loving the land. / The girl used to love the land.",
+          "parse": "puella (nom. sg.) + terram (acc. sg.) + amābat (3rd sg. imperfect)",
+          "note": "Only difference from previous sentence is the -bā- marker!"
+        },
+        {
+          "latin": "Puella terram amābit.",
+          "tense": "Future",
+          "translation": "The girl will love the land.",
+          "parse": "puella (nom. sg.) + terram (acc. sg.) + amābit (3rd sg. future)",
+          "note": "Only difference is the -bi- marker!"
+        },
+        {
+          "latin": "Puellae vias amābant et aquam portābant.",
+          "tense": "Imperfect (both verbs)",
+          "translation": "The girls were loving the roads and were carrying water. / The girls used to love the roads and carry water.",
+          "parse": "puellae (nom. pl.) + vias (acc. pl.) + amābant (3rd pl. imperfect) + et (and) + aquam (acc. sg.) + portābant (3rd pl. imperfect)",
+          "note": "Compound sentence with two imperfect verbs. Both have -bā- marker."
+        },
+        {
+          "latin": "Puellam vocābō et terram narrābō.",
+          "tense": "Future (both verbs)",
+          "translation": "I will call the girl and I will tell about the land.",
+          "parse": "puellam (acc. sg.) + vocābō (1st sg. future) + et (and) + terram (acc. sg.) + narrābō (1st sg. future)",
+          "note": "Both verbs are 1st person future. Notice the -bō ending (fused -bi- + -ō)."
+        },
+        {
+          "latin": "Puellae aquam portant et viam amant.",
+          "tense": "Present (both verbs)",
+          "translation": "The girls are carrying water and love the road.",
+          "parse": "puellae (nom. pl.) + aquam (acc. sg.) + portant (3rd pl. present) + et (and) + viam (acc. sg.) + amant (3rd pl. present)",
+          "note": "No tense markers - both are present tense."
+        }
+      ],
+      "key_takeaway": "The same sentence with different tense markers completely changes the time frame. Master recognizing -bā- (imperfect) and -bi-/-bu- (future), and you'll always know the tense!"
+    }
+  ]
+}

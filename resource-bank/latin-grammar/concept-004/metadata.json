@@ -1,0 +1,27 @@
+{
+  "id": "concept-004",
+  "title": "Adjectives (1st/2nd Declension) + Agreement",
+  "domain": "latin-grammar",
+  "difficulty": 3,
+  "prerequisites": ["concept-001", "concept-002", "concept-003"],
+  "learning_objectives": [
+    "Decline adjectives using first declension (feminine) and second declension (masculine/neuter) endings",
+    "Apply the agreement rule (adjective matches noun in gender, number, case - NOT ending)",
+    "Distinguish between attributive and predicate adjectives",
+    "Translate sentences with adjectives modifying nouns",
+    "Explain why bonus -a -um has three different forms"
+  ],
+  "estimated_mastery_time": "90-120 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["adjectives", "agreement", "gender-number-case", "attributive-predicate"],
+  "vocabulary": [
+    {"latin": "bonus, bona, bonum", "english": "good", "type": "adjective"},
+    {"latin": "magnus, magna, magnum", "english": "large, great", "type": "adjective"},
+    {"latin": "parvus, parva, parvum", "english": "small", "type": "adjective"},
+    {"latin": "multus, multa, multum", "english": "much, many", "type": "adjective"},
+    {"latin": "meus, mea, meum", "english": "my", "type": "possessive adjective"},
+    {"latin": "tuus, tua, tuum", "english": "your", "type": "possessive adjective"},
+    {"latin": "pulcher, pulchra, pulchrum", "english": "beautiful, handsome", "type": "adjective"}
+  ]
+}

@@ -1,0 +1,347 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-007",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-007-1",
+      "difficulty": "intermediate",
+      "task_type": "transformation",
+      "prompt": "Transform the following direct statements into indirect statements. Use the main verb provided in parentheses. Make sure to:\n- Change the subject to accusative\n- Change any adjectives to agree with the accusative subject\n- Change the finite verb to the appropriate infinitive\n- Keep other elements (objects, modifiers) in their original cases\n\n1. Direct: 'Puella bona est.' → Indirect: Use dīcō (I say)\n2. Direct: 'Mīlitēs pugnāvērunt.' → Indirect: Use narrō (I tell)\n3. Direct: 'Rēx virtūtem habet.' → Indirect: Use putō (I think)\n4. Direct: 'Puellae in silvā sunt.' → Indirect: Use crēdō (I believe)\n5. Direct: 'Pater pecūniam fīliō dedit.' → Indirect: Use audiō (I hear)\n\nProvide the complete Latin sentence for each indirect statement.",
+      "rubric": {
+        "scoring": "Each transformation worth 0.20 points (5 transformations × 0.20 = 1.00)",
+        "correct_transformations": [
+          {
+            "direct": "Puella bona est.",
+            "main_verb_provided": "dīcō (I say)",
+            "correct_indirect": "Dīcō puellam bonam esse.",
+            "translation": "I say that the girl is good.",
+            "key_changes": [
+              "puella (nom.) → puellam (acc.)",
+              "bona (nom.) → bonam (acc.) - agrees with puellam",
+              "est → esse (present infinitive)"
+            ],
+            "common_errors": [
+              "Dīcō puella bona esse. (X - forgot to change nominatives to accusative)",
+              "Dīcō puellam bonus esse. (X - bonus doesn't agree with puellam in gender)"
+            ],
+            "points": 0.20
+          },
+          {
+            "direct": "Mīlitēs pugnāvērunt.",
+            "main_verb_provided": "narrō (I tell)",
+            "correct_indirect": "Narrō mīlitēs pugnāvisse.",
+            "translation": "I tell that the soldiers fought. / I tell that the soldiers have fought.",
+            "key_changes": [
+              "mīlitēs (nom. pl.) → mīlitēs (acc. pl.) - same form!",
+              "pugnāvērunt → pugnāvisse (perfect infinitive, because direct statement was perfect tense)"
+            ],
+            "common_errors": [
+              "Narrō mīlitēs pugnāre. (X - wrong infinitive tense; direct was perfect, so use perfect infinitive)",
+              "Narrō mīlitēs pugnāvērunt. (X - must use infinitive, not finite verb)"
+            ],
+            "note": "This tests whether student recognizes to use PERFECT infinitive when direct statement was in perfect tense",
+            "points": 0.20
+          },
+          {
+            "direct": "Rēx virtūtem habet.",
+            "main_verb_provided": "putō (I think)",
+            "correct_indirect": "Putō rēgem virtūtem habēre.",
+            "translation": "I think that the king has courage.",
+            "key_changes": [
+              "Rēx (nom.) → rēgem (acc.) - subject of infinitive",
+              "virtūtem (acc.) → virtūtem (acc.) - stays accusative (object of infinitive)",
+              "habet → habēre (present infinitive)"
+            ],
+            "common_errors": [
+              "Putō rēx virtūtem habēre. (X - forgot to change subject to accusative)",
+              "Putō rēgem virtūte habēre. (X - virtūtem is object of habēre, must stay accusative)"
+            ],
+            "challenge": "Two accusatives - subject (rēgem) and object (virtūtem)",
+            "points": 0.20
+          },
+          {
+            "direct": "Puellae in silvā sunt.",
+            "main_verb_provided": "crēdō (I believe)",
+            "correct_indirect": "Crēdō puellās in silvā esse.",
+            "translation": "I believe that the girls are in the forest.",
+            "key_changes": [
+              "Puellae (nom. pl.) → puellās (acc. pl.)",
+              "in silvā (abl.) → in silvā (abl.) - stays ablative (prepositional phrase)",
+              "sunt → esse (present infinitive)"
+            ],
+            "common_errors": [
+              "Crēdō puellae in silvā esse. (X - puellae is nominative/genitive/dative, not accusative plural)",
+              "Crēdō puellās in silvam esse. (X - prepositional phrase should stay ablative, not change to accusative)"
+            ],
+            "note": "Tests understanding that prepositional phrases maintain their original case",
+            "points": 0.20
+          },
+          {
+            "direct": "Pater pecūniam fīliō dedit.",
+            "main_verb_provided": "audiō (I hear)",
+            "correct_indirect": "Audiō patrem pecūniam fīliō dedisse.",
+            "translation": "I hear that the father gave money to his son.",
+            "key_changes": [
+              "Pater (nom.) → patrem (acc.) - subject of infinitive",
+              "pecūniam (acc.) → pecūniam (acc.) - stays accusative (direct object of dedisse)",
+              "fīliō (dat.) → fīliō (dat.) - stays dative (indirect object of dedisse)",
+              "dedit → dedisse (perfect infinitive)"
+            ],
+            "common_errors": [
+              "Audiō pater pecūniam fīliō dedisse. (X - forgot to change subject to accusative)",
+              "Audiō patrem pecūniam fīliō dare. (X - wrong infinitive tense; direct was perfect)",
+              "Audiō patrem pecūniam fīlium dedisse. (X - indirect object should stay dative, not accusative)"
+            ],
+            "challenge": "Most complex - accusative subject + accusative object + dative indirect object + perfect infinitive",
+            "points": 0.20
+          }
+        ],
+        "partial_credit": "Award 0.15/0.20 for transformations that show understanding but have minor errors (e.g., wrong infinitive tense but correct case changes). Award 0.10/0.20 for attempts showing some understanding. Award 0.00 for completely incorrect transformations.",
+        "note": "This transformation exercise tests the core skill: converting direct to indirect statement while maintaining grammatical accuracy."
+      },
+      "estimated_time": "20-25 minutes"
+    },
+    {
+      "id": "applied-007-2",
+      "difficulty": "advanced",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences containing indirect statement into English. Pay careful attention to:\n- Identifying the accusative subject\n- Determining the infinitive tense and translating time relationships correctly\n- Recognizing other case functions (genitive, dative, etc.)\n\n1. Crēdimus rēgem bonum esse.\n2. Dīxit mīlitēs vīcisse.\n3. Putō vitam puellārum esse longam.\n4. Audīvī patrem fīliīs pecūniam dedisse.\n5. Narrās puellam cum mātre in viā fuisse.\n6. Sciō rēgem mīlitibus arma datūrum esse.\n\nProvide accurate, natural-sounding English translations.",
+      "rubric": {
+        "scoring": "Sentences 1-3 worth 0.15 each (basic/intermediate); Sentences 4-6 worth 0.185 each (advanced complexity). Total = 1.00",
+        "correct_translations": [
+          {
+            "latin": "Crēdimus rēgem bonum esse.",
+            "correct_translation": "We believe that the king is good.",
+            "acceptable_variants": ["We believe that the king is a good man."],
+            "analysis": {
+              "main_verb": "Crēdimus (we believe) - present tense, verb of thinking",
+              "acc_subject": "rēgem (king) - accusative subject of esse",
+              "adjective": "bonum (good) - accusative agreeing with rēgem",
+              "infinitive": "esse (present infinitive) - same time as main verb",
+              "time": "Present main verb + present infinitive = 'is' (both present)"
+            },
+            "common_errors": [
+              "'We believe that the good king to be.' (X - too literal, not natural English)",
+              "'We believed that the king is good.' (X - wrong main verb tense; crēdimus is present 'believe')"
+            ],
+            "points": 0.15
+          },
+          {
+            "latin": "Dīxit mīlitēs vīcisse.",
+            "correct_translation": "He/She said that the soldiers had conquered. / He/She said that the soldiers conquered.",
+            "acceptable_variants": ["He said that the soldiers had won.", "She said that the soldiers conquered."],
+            "analysis": {
+              "main_verb": "Dīxit (he/she said) - perfect tense, verb of saying",
+              "acc_subject": "mīlitēs (soldiers) - accusative plural",
+              "infinitive": "vīcisse (perfect infinitive of vincō) - action before main verb",
+              "time": "Past main verb + perfect infinitive = pluperfect 'had conquered' or simple past 'conquered'"
+            },
+            "common_errors": [
+              "'He said that the soldiers have conquered.' (X - wrong tense; should be pluperfect or simple past)",
+              "'He said that the soldiers are conquering.' (X - vīcisse is perfect infinitive, not present)"
+            ],
+            "note": "Either pluperfect ('had conquered') or simple past ('conquered') acceptable in English",
+            "points": 0.15
+          },
+          {
+            "latin": "Putō vitam puellārum esse longam.",
+            "correct_translation": "I think that the girls' life is long. / I think that the life of the girls is long.",
+            "acceptable_variants": ["I think that the life of the girls is a long one."],
+            "analysis": {
+              "main_verb": "Putō (I think) - present, verb of thinking",
+              "acc_subject": "vitam (life) - accusative subject (what is long)",
+              "genitive": "puellārum (of the girls) - genitive plural modifying vitam",
+              "adjective": "longam (long) - accusative agreeing with vitam",
+              "infinitive": "esse (present infinitive) - same time",
+              "time": "Present + present = 'is'"
+            },
+            "common_errors": [
+              "'I think that the girls' lives are long.' (X - vitam is singular, not plural)",
+              "'I think that the girls are long life.' (X - confused subject; vitam is subject, puellārum is genitive modifier)"
+            ],
+            "challenge": "Distinguishing accusative subject (vitam) from genitive modifier (puellārum)",
+            "points": 0.15
+          },
+          {
+            "latin": "Audīvī patrem fīliīs pecūniam dedisse.",
+            "correct_translation": "I heard that the father had given money to his sons. / I heard that the father gave money to his sons.",
+            "acceptable_variants": ["I heard that the father gave the sons money."],
+            "analysis": {
+              "main_verb": "Audīvī (I heard) - perfect tense, verb of perceiving",
+              "acc_subject": "patrem (father) - subject of dedisse",
+              "dative": "fīliīs (to the sons) - dative plural, indirect object",
+              "acc_object": "pecūniam (money) - accusative, direct object of dedisse",
+              "infinitive": "dedisse (perfect infinitive of dō) - action before hearing",
+              "time": "Past main verb + perfect infinitive = pluperfect 'had given' or simple past 'gave'"
+            },
+            "common_errors": [
+              "'I heard that the father gave money to the son.' (X - fīliīs is plural 'sons')",
+              "'I heard that the father is giving money to his sons.' (X - dedisse is perfect infinitive, not present)",
+              "'I heard that the sons gave money to the father.' (X - confused subject/indirect object; patrem is subject, fīliīs is dative)"
+            ],
+            "challenge": "Three different case functions: acc subject, dat indirect object, acc direct object",
+            "points": 0.185
+          },
+          {
+            "latin": "Narrās puellam cum mātre in viā fuisse.",
+            "correct_translation": "You tell/are telling that the girl was in the street with her mother.",
+            "acceptable_variants": ["You say that the girl was on the road with her mother.", "You relate that the girl was in the street with her mother."],
+            "analysis": {
+              "main_verb": "Narrās (you tell/are telling) - present tense, verb of saying",
+              "acc_subject": "puellam (girl) - accusative subject",
+              "prepositional_phrase_1": "cum mātre (with mother) - ablative of accompaniment",
+              "prepositional_phrase_2": "in viā (in/on the street) - ablative of place where",
+              "infinitive": "fuisse (perfect infinitive of sum) - action before telling",
+              "time": "Present main verb + perfect infinitive = past 'was'"
+            },
+            "common_errors": [
+              "'You tell that the girl is in the street with her mother.' (X - fuisse is perfect infinitive, requires past 'was')",
+              "'You told that the girl was in the street with her mother.' (X - narrās is present 'you tell', not past)"
+            ],
+            "challenge": "Multiple prepositional phrases within indirect statement; perfect infinitive with present main verb",
+            "points": 0.185
+          },
+          {
+            "latin": "Sciō rēgem mīlitibus arma datūrum esse.",
+            "correct_translation": "I know that the king will give weapons to the soldiers. / I know that the king is going to give weapons to the soldiers.",
+            "acceptable_variants": ["I know that the king will give arms to the soldiers."],
+            "analysis": {
+              "main_verb": "Sciō (I know) - present tense, verb of thinking/knowing",
+              "acc_subject": "rēgem (king) - subject",
+              "dative": "mīlitibus (to the soldiers) - dative plural, indirect object",
+              "acc_object": "arma (weapons/arms) - accusative neuter plural, direct object",
+              "infinitive": "datūrum esse (future infinitive of dō) - action after main verb",
+              "time": "Present main verb + future infinitive = future 'will give'"
+            },
+            "common_errors": [
+              "'I know that the king gives weapons to the soldiers.' (X - datūrum esse is future infinitive, not present)",
+              "'I know that the king gave weapons to the soldiers.' (X - future infinitive shows future action, not past)",
+              "'I knew that the king will give weapons to the soldiers.' (X - sciō is present 'I know', not past)"
+            ],
+            "challenge": "Future infinitive (most difficult infinitive type); three case functions in one sentence",
+            "note": "This is the most advanced sentence, testing future infinitive recognition",
+            "points": 0.185
+          }
+        ],
+        "partial_credit": "Award partial credit (75-85% of points) for translations that capture main meaning but have minor errors in tense or case interpretation. Award 50-70% for translations showing understanding but with significant tense/case errors. Award 0% for completely incorrect translations.",
+        "note": "Sentences progress in difficulty. Sentences 1-3 test basic indirect statement. Sentences 4-5 add complexity (multiple cases, prepositional phrases). Sentence 6 tests future infinitive (most advanced)."
+      },
+      "estimated_time": "25-30 minutes"
+    },
+    {
+      "id": "applied-007-3",
+      "difficulty": "advanced",
+      "task_type": "production",
+      "prompt": "Produce complete Latin sentences using indirect statement based on the English prompts. Your sentences must:\n- Use the specified main verb\n- Create grammatically correct accusative + infinitive construction\n- Use the appropriate infinitive tense based on the time relationship\n\n1. Say in Latin: 'I say that the king is good.' (Use dīcō)\n2. Say in Latin: 'We believe that the soldiers fought.' (Use crēdimus; fought = use perfect infinitive of pugnō)\n3. Say in Latin: 'He heard that the girls were in the forest.' (Use audīvit; were = use present infinitive of sum; 'in the forest' = in silvā)\n4. Say in Latin: 'I think that the father gave money to his son.' (Use putō; gave = use perfect infinitive of dō, dare, dedī; money = pecūnia; son = fīlius; father = pater)\n5. Say in Latin: 'They said that the life of the soldiers is difficult.' (Use dīxērunt; is = present infinitive; difficult = difficilis; life = vīta; soldiers = mīlitēs)\n\nProvide complete, accurate Latin sentences.",
+      "rubric": {
+        "scoring": "Each sentence worth 0.20 points (5 sentences × 0.20 = 1.00)",
+        "correct_productions": [
+          {
+            "english": "I say that the king is good.",
+            "main_verb_specified": "dīcō",
+            "correct_latin": "Dīcō rēgem esse bonum.",
+            "acceptable_variants": ["Dīcō rēgem bonum esse."],
+            "breakdown": {
+              "Dīcō": "I say (main verb)",
+              "rēgem": "accusative singular (king - subject of esse). From rēx, rēgis",
+              "esse": "present infinitive (to be) - same time as dīcō",
+              "bonum": "accusative singular masculine (good) - agrees with rēgem"
+            },
+            "common_errors": [
+              "Dīcō rēx esse bonus. (X - rēx should be accusative rēgem; bonus should be accusative bonum)",
+              "Dīcō rēgem est bonum. (X - must use infinitive esse, not finite verb est)"
+            ],
+            "points": 0.20
+          },
+          {
+            "english": "We believe that the soldiers fought.",
+            "main_verb_specified": "crēdimus",
+            "correct_latin": "Crēdimus mīlitēs pugnāvisse.",
+            "breakdown": {
+              "Crēdimus": "we believe (main verb)",
+              "mīlitēs": "accusative plural (soldiers - subject of pugnāvisse). From mīles, mīlitis",
+              "pugnāvisse": "perfect infinitive of pugnō (to have fought) - action before we believe"
+            },
+            "common_errors": [
+              "Crēdimus mīlitēs pugnāre. (X - wrong tense; 'fought' requires perfect infinitive pugnāvisse, not present pugnāre)",
+              "Crēdimus mīlitēs pugnāvērunt. (X - must use infinitive, not finite verb)",
+              "Crēdimus mīlitēs pugnāsse. (X - wrong infinitive formation; should be pugnāvisse)"
+            ],
+            "note": "Tests perfect infinitive formation",
+            "points": 0.20
+          },
+          {
+            "english": "He heard that the girls were in the forest.",
+            "main_verb_specified": "audīvit",
+            "correct_latin": "Audīvit puellās in silvā esse.",
+            "breakdown": {
+              "Audīvit": "he heard (main verb, perfect tense)",
+              "puellās": "accusative plural (girls - subject of esse)",
+              "in silvā": "in the forest (ablative of place where) - prepositional phrase",
+              "esse": "present infinitive (to be) - same time as the hearing in past = 'were'"
+            },
+            "common_errors": [
+              "Audīvit puellae in silvā esse. (X - puellae is not accusative plural; should be puellās)",
+              "Audīvit puellās in silvā fuisse. (X - 'were' here means same time as hearing, so present infinitive esse, not perfect fuisse)",
+              "Audīvit puellās in silvam esse. (X - 'in the forest' requires ablative silvā, not accusative silvam)"
+            ],
+            "challenge": "Understanding that 'were' uses present infinitive (same time relationship) when main verb is past",
+            "points": 0.20
+          },
+          {
+            "english": "I think that the father gave money to his son.",
+            "main_verb_specified": "putō",
+            "correct_latin": "Putō patrem fīliō pecūniam dedisse.",
+            "acceptable_variants": ["Putō patrem pecūniam fīliō dedisse."],
+            "breakdown": {
+              "Putō": "I think (main verb)",
+              "patrem": "accusative singular (father - subject of dedisse). From pater, patris",
+              "fīliō": "dative singular (to the son - indirect object). From fīlius",
+              "pecūniam": "accusative singular (money - direct object). From pecūnia",
+              "dedisse": "perfect infinitive of dō (to have given) - giving happened before I think about it"
+            },
+            "common_errors": [
+              "Putō pater fīliō pecūniam dedisse. (X - pater should be accusative patrem)",
+              "Putō patrem fīlium pecūniam dedisse. (X - fīlium is accusative; should be dative fīliō for 'to the son')",
+              "Putō patrem fīliō pecūniam dare. (X - 'gave' requires perfect infinitive dedisse, not present dare)",
+              "Putō patrem fīliō pecūniam dāvisse. (X - wrong perfect infinitive formation; dō forms dedisse, not dāvisse)"
+            ],
+            "challenge": "Complex sentence with three case functions + irregular verb formation (dō → dedisse)",
+            "points": 0.20
+          },
+          {
+            "english": "They said that the life of the soldiers is difficult.",
+            "main_verb_specified": "dīxērunt",
+            "correct_latin": "Dīxērunt vītam mīlitum esse difficilem.",
+            "acceptable_variants": ["Dīxērunt vītam mīlitum difficilem esse."],
+            "breakdown": {
+              "Dīxērunt": "they said (main verb, perfect tense)",
+              "vītam": "accusative singular (life - subject of esse). From vīta",
+              "mīlitum": "genitive plural (of the soldiers - possessive modifier). From mīles, mīlitis",
+              "esse": "present infinitive (to be) - same time as saying in past = 'was' ... wait, prompt says 'IS'!",
+              "difficilem": "accusative singular feminine (difficult) - agrees with vītam. From difficilis"
+            },
+            "common_errors": [
+              "Dīxērunt vīta mīlitum esse difficilis. (X - vīta should be accusative vītam; difficilis should be accusative difficilem)",
+              "Dīxērunt vītam mīlitēs esse difficilem. (X - mīlitēs is accusative; should be genitive mīlitum for 'of the soldiers')",
+              "Dīxērunt vītam mīlitum est difficilis. (X - must use infinitive esse, not finite verb est; and difficilis should be accusative)"
+            ],
+            "tricky_note": "Prompt says 'IS difficult' (present) but main verb is past 'they said.' This tests understanding that present infinitive with past main verb creates apparent present in English: 'They said (then) that the life IS (meaning: was, at that time) difficult.' Could also interpret as 'They said that the life (still) is difficult (now).' Present infinitive esse is correct either way.",
+            "challenge": "Genitive modifier + adjective agreement + potential confusion about tense",
+            "points": 0.20
+          }
+        ],
+        "partial_credit": "Award 0.15/0.20 for sentences with minor errors (e.g., word order variations, missing macrons). Award 0.10/0.20 for sentences showing understanding but with case or infinitive errors. Award 0.05/0.20 for attempts showing minimal understanding. Award 0.00 for completely incorrect sentences.",
+        "note": "Production is the hardest skill - requires active creation, not just recognition. This tests whether students can independently construct indirect statement from English prompts."
+      },
+      "estimated_time": "25-30 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks for Concept 007 test practical mastery at the highest level. Task 1 (transformation) tests core conversion skills. Task 2 (translation) tests reading comprehension of complex indirect statements. Task 3 (production) tests ability to create indirect statements from scratch. Students must demonstrate they can USE indirect statement actively, not just recognize it passively."
+  }
+}

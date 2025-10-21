@@ -1,0 +1,318 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: The Complete Bonus Paradigm",
+      "description": "Master the full declension of bonus, bona, bonum (good) across all three genders.",
+      "paradigm": {
+        "adjective": "bonus, bona, bonum (good)",
+        "stem": "bon-",
+        "masculine_forms": [
+          {"case": "Nominative Singular", "form": "bonus", "breakdown": "bon- + -us", "example": "bonus amicus", "translation": "good friend (subject)"},
+          {"case": "Genitive Singular", "form": "bonī", "breakdown": "bon- + -ī", "example": "bonī amicī", "translation": "of the good friend"},
+          {"case": "Dative Singular", "form": "bonō", "breakdown": "bon- + -ō", "example": "bonō amicō", "translation": "to/for the good friend"},
+          {"case": "Accusative Singular", "form": "bonum", "breakdown": "bon- + -um", "example": "bonum amicum", "translation": "good friend (object)"},
+          {"case": "Ablative Singular", "form": "bonō", "breakdown": "bon- + -ō", "example": "bonō amicō", "translation": "with the good friend"},
+          {"case": "Nominative Plural", "form": "bonī", "breakdown": "bon- + -ī", "example": "bonī amicī", "translation": "good friends (subject)"},
+          {"case": "Genitive Plural", "form": "bonōrum", "breakdown": "bon- + -ōrum", "example": "bonōrum amicōrum", "translation": "of the good friends"},
+          {"case": "Dative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs amicīs", "translation": "to/for the good friends"},
+          {"case": "Accusative Plural", "form": "bonōs", "breakdown": "bon- + -ōs", "example": "bonōs amicōs", "translation": "good friends (object)"},
+          {"case": "Ablative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs amicīs", "translation": "with the good friends"}
+        ],
+        "feminine_forms": [
+          {"case": "Nominative Singular", "form": "bona", "breakdown": "bon- + -a", "example": "bona puella", "translation": "good girl (subject)"},
+          {"case": "Genitive Singular", "form": "bonae", "breakdown": "bon- + -ae", "example": "bonae puellae", "translation": "of the good girl"},
+          {"case": "Dative Singular", "form": "bonae", "breakdown": "bon- + -ae", "example": "bonae puellae", "translation": "to/for the good girl"},
+          {"case": "Accusative Singular", "form": "bonam", "breakdown": "bon- + -am", "example": "bonam puellam", "translation": "good girl (object)"},
+          {"case": "Ablative Singular", "form": "bonā", "breakdown": "bon- + -ā", "example": "bonā puellā", "translation": "with the good girl"},
+          {"case": "Nominative Plural", "form": "bonae", "breakdown": "bon- + -ae", "example": "bonae puellae", "translation": "good girls (subject)"},
+          {"case": "Genitive Plural", "form": "bonārum", "breakdown": "bon- + -ārum", "example": "bonārum puellārum", "translation": "of the good girls"},
+          {"case": "Dative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs puellīs", "translation": "to/for the good girls"},
+          {"case": "Accusative Plural", "form": "bonās", "breakdown": "bon- + -ās", "example": "bonās puellās", "translation": "good girls (object)"},
+          {"case": "Ablative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs puellīs", "translation": "with the good girls"}
+        ],
+        "neuter_forms": [
+          {"case": "Nominative Singular", "form": "bonum", "breakdown": "bon- + -um", "example": "bonum bellum", "translation": "good war (subject)"},
+          {"case": "Genitive Singular", "form": "bonī", "breakdown": "bon- + -ī", "example": "bonī bellī", "translation": "of the good war"},
+          {"case": "Dative Singular", "form": "bonō", "breakdown": "bon- + -ō", "example": "bonō bellō", "translation": "to/for the good war"},
+          {"case": "Accusative Singular", "form": "bonum", "breakdown": "bon- + -um", "example": "bonum bellum", "translation": "good war (object)"},
+          {"case": "Ablative Singular", "form": "bonō", "breakdown": "bon- + -ō", "example": "bonō bellō", "translation": "with the good war"},
+          {"case": "Nominative Plural", "form": "bona", "breakdown": "bon- + -a", "example": "bona bella", "translation": "good wars (subject)"},
+          {"case": "Genitive Plural", "form": "bonōrum", "breakdown": "bon- + -ōrum", "example": "bonōrum bellōrum", "translation": "of the good wars"},
+          {"case": "Dative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs bellīs", "translation": "to/for the good wars"},
+          {"case": "Accusative Plural", "form": "bona", "breakdown": "bon- + -a", "example": "bona bella", "translation": "good wars (object)"},
+          {"case": "Ablative Plural", "form": "bonīs", "breakdown": "bon- + -īs", "example": "bonīs bellīs", "translation": "with the good wars"}
+        ],
+        "note": "Notice that masculine and neuter share most endings (both use 2nd declension), while feminine uses 1st declension. Dative and ablative plural are identical across all three genders."
+      }
+    },
+    {
+      "title": "Example 2: Understanding Agreement (NOT Ending-Matching)",
+      "description": "The critical concept: adjectives match gender-number-case, NOT endings.",
+      "demonstrations": [
+        {
+          "concept": "Same endings (both happen to be 2nd declension masculine)",
+          "latin": "bonus amicus",
+          "breakdown": {
+            "bonus": "masculine, nominative, singular (M nom sg)",
+            "amicus": "masculine, nominative, singular (M nom sg)",
+            "agreement": "BOTH M nom sg - endings match because both use 2nd decl M pattern"
+          },
+          "translation": "good friend",
+          "student_reaction": "This makes sense - they both end in -us"
+        },
+        {
+          "concept": "Different endings (adjective changes to match noun's GENDER, not ending)",
+          "latin": "bona puella",
+          "breakdown": {
+            "bona": "feminine, nominative, singular (F nom sg)",
+            "puella": "feminine, nominative, singular (F nom sg)",
+            "agreement": "BOTH F nom sg - endings look different (-a vs -a, but these are from different declension patterns) BUT they agree in gender/number/case"
+          },
+          "translation": "good girl",
+          "student_reaction": "Wait, why is it 'bona' not 'bonus'? Because bonus is MASCULINE and puella is FEMININE. The adjective must take its FEMININE form.",
+          "common_mistake": "Thinking 'bonus puella' is correct because you keep the dictionary form",
+          "correction": "bonus is the MASCULINE dictionary form. For feminine nouns, use bona (the feminine form of the adjective)"
+        },
+        {
+          "concept": "Neuter agreement",
+          "latin": "bonum bellum",
+          "breakdown": {
+            "bonum": "neuter, nominative, singular (N nom sg)",
+            "bellum": "neuter, nominative, singular (N nom sg)",
+            "agreement": "BOTH N nom sg - endings match because both use 2nd decl N pattern"
+          },
+          "translation": "good war",
+          "student_reaction": "Both end in -um, like neuter nouns do"
+        },
+        {
+          "concept": "Testing understanding: why NOT 'bonus puella'?",
+          "wrong_latin": "bonus puella",
+          "why_wrong": "bonus = M nom sg, puella = F nom sg. Different GENDERS means no agreement!",
+          "correct_latin": "bona puella",
+          "explanation": "bona = F nom sg, puella = F nom sg. Same gender/number/case = agreement ✓",
+          "key_insight": "You must use the form of the adjective that matches the noun's GENDER (and number and case), not match the noun's ending"
+        }
+      ]
+    },
+    {
+      "title": "Example 3: Agreement Across Different Cases",
+      "description": "Watch how adjectives follow their nouns through case changes.",
+      "case_demonstrations": [
+        {
+          "phrase": "good girl",
+          "noun": "puella (F)",
+          "adjective": "bonus → bona (F form)",
+          "cases": [
+            {"case": "Nominative", "latin": "bona puella", "translation": "the good girl (subject)", "note": "Both F nom sg"},
+            {"case": "Genitive", "latin": "bonae puellae", "translation": "of the good girl", "note": "Both F gen sg"},
+            {"case": "Dative", "latin": "bonae puellae", "translation": "to/for the good girl", "note": "Both F dat sg"},
+            {"case": "Accusative", "latin": "bonam puellam", "translation": "the good girl (object)", "note": "Both F acc sg"},
+            {"case": "Ablative", "latin": "bonā puellā", "translation": "with the good girl", "note": "Both F abl sg"}
+          ],
+          "observation": "The adjective ALWAYS takes the same case as puella, but uses feminine forms from the adjective paradigm"
+        },
+        {
+          "phrase": "large friend",
+          "noun": "amicus (M)",
+          "adjective": "magnus (M form)",
+          "cases": [
+            {"case": "Nominative", "latin": "magnus amicus", "translation": "the large friend (subject)", "note": "Both M nom sg"},
+            {"case": "Genitive", "latin": "magnī amicī", "translation": "of the large friend", "note": "Both M gen sg"},
+            {"case": "Accusative", "latin": "magnum amicum", "translation": "the large friend (object)", "note": "Both M acc sg"}
+          ],
+          "observation": "When both are 2nd declension masculine, endings will match"
+        },
+        {
+          "phrase": "small wars",
+          "noun": "bella (N plural)",
+          "adjective": "parvus → parva (N plural forms)",
+          "cases": [
+            {"case": "Nominative", "latin": "parva bella", "translation": "the small wars (subject)", "note": "Both N nom pl"},
+            {"case": "Genitive", "latin": "parvōrum bellōrum", "translation": "of the small wars", "note": "Both N gen pl"},
+            {"case": "Accusative", "latin": "parva bella", "translation": "the small wars (object)", "note": "Both N acc pl (neuter rule!)"}
+          ],
+          "observation": "Neuter nominative and accusative are identical, for both adjective and noun"
+        }
+      ]
+    },
+    {
+      "title": "Example 4: Attributive vs. Predicate Adjectives",
+      "description": "Understanding the two ways adjectives function in sentences.",
+      "attributive_examples": [
+        {
+          "type": "Attributive (adjective modifies noun directly)",
+          "latin": "Bona puella viam videt.",
+          "translation": "The good girl sees the road.",
+          "analysis": "'Bona' directly modifies 'puella' - they form a noun phrase 'good girl'",
+          "word_order_variant": "Puella bona viam videt.",
+          "variant_translation": "The good girl sees the road. (same meaning, noun-first order)",
+          "note": "Both word orders create attributive relationship"
+        },
+        {
+          "type": "Attributive (object)",
+          "latin": "Puella bonam viam videt.",
+          "translation": "The girl sees the good road.",
+          "analysis": "'Bonam' modifies 'viam' (both F acc sg) - they form the phrase 'good road'",
+          "emphasis": "The adjective agrees with the OBJECT noun here, taking accusative case"
+        }
+      ],
+      "predicate_examples": [
+        {
+          "type": "Predicate (adjective describes subject through 'est')",
+          "latin": "Puella bona est.",
+          "translation": "The girl is good.",
+          "analysis": "'Bona' is separated by 'est' - it describes puella through the linking verb",
+          "note": "Still nominative case (agrees with subject), but functions as predicate, not attributive",
+          "word_order_variant": "Puella est bona.",
+          "variant_translation": "The girl is good. (same meaning)"
+        },
+        {
+          "type": "Predicate (plural subject)",
+          "latin": "Puellae bonae sunt.",
+          "translation": "The girls are good.",
+          "analysis": "'Bonae' agrees with 'puellae' (both F nom pl) but functions as predicate adjective",
+          "contrast_with_attributive": "Compare: 'Bonae puellae viam vident' = 'The good girls see the road' (attributive)"
+        }
+      ],
+      "comparison": {
+        "attributive": "Forms noun phrase WITH the noun (good girl, large war)",
+        "predicate": "Describes noun THROUGH linking verb est/sunt (the girl IS good)",
+        "agreement": "BOTH types require gender/number/case agreement!",
+        "case_note": "Predicate adjectives take NOMINATIVE case (agreeing with subject) even though they come after 'est'"
+      }
+    },
+    {
+      "title": "Example 5: Translating Complex Sentences",
+      "description": "Practice identifying adjective-noun agreement in full sentences.",
+      "sentences": [
+        {
+          "latin": "Magnae puellae parvum donum bonō amicō dant.",
+          "translation": "The large girls give a small gift to the good friend.",
+          "word_by_word_analysis": [
+            {"word": "Magnae", "info": "F nom pl (adjective)", "modifies": "puellae", "agreement": "both F nom pl"},
+            {"word": "puellae", "info": "F nom pl (noun)", "function": "subject"},
+            {"word": "parvum", "info": "N acc sg (adjective)", "modifies": "donum", "agreement": "both N acc sg"},
+            {"word": "donum", "info": "N acc sg (noun)", "function": "direct object"},
+            {"word": "bonō", "info": "M dat sg (adjective)", "modifies": "amicō", "agreement": "both M dat sg"},
+            {"word": "amicō", "info": "M dat sg (noun)", "function": "indirect object"},
+            {"word": "dant", "info": "3rd person plural verb", "translation": "they give"}
+          ],
+          "noun_adjective_pairs": [
+            {"pair": "magnae puellae", "type": "F nom pl", "translation": "large girls (subject)"},
+            {"pair": "parvum donum", "type": "N acc sg", "translation": "small gift (direct object)"},
+            {"pair": "bonō amicō", "type": "M dat sg", "translation": "good friend (indirect object)"}
+          ],
+          "key_insight": "Three different adjective-noun pairs, three different genders, three different cases - but ALL show perfect agreement!"
+        },
+        {
+          "latin": "Multae viae bonae sunt.",
+          "translation": "Many roads are good.",
+          "analysis": [
+            {"word": "Multae", "info": "F nom pl", "modifies": "viae", "note": "attributive adjective"},
+            {"word": "viae", "info": "F nom pl", "function": "subject"},
+            {"word": "bonae", "info": "F nom pl", "function": "predicate adjective (agrees with subject)"},
+            {"word": "sunt", "info": "they are"}
+          ],
+          "note": "This sentence has BOTH attributive ('multae' modifying 'viae') and predicate ('bonae' describing subject through 'sunt')",
+          "breakdown": "'Many roads' (attributive pair) ARE good (predicate adjective)"
+        },
+        {
+          "latin": "Bona bella parvis terrīs magnam fortunam dant.",
+          "translation": "Good wars give great fortune to small lands.",
+          "analysis": [
+            {"pair": "bona bella", "info": "N nom pl", "translation": "good wars (subject)", "note": "neuter plural -a"},
+            {"pair": "parvis terrīs", "info": "F dat pl", "translation": "to small lands (indirect object)"},
+            {"pair": "magnam fortunam", "info": "F acc sg", "translation": "great fortune (direct object)"}
+          ],
+          "challenge": "Notice 'bona' looks like feminine, but it's actually neuter plural nominative. Context (agreeing with 'bella') tells you this.",
+          "key_insight": "You must look at the NOUN to determine the adjective's gender/number/case, not just the ending alone"
+        }
+      ]
+    },
+    {
+      "title": "Example 6: Common Mistakes and Corrections",
+      "description": "Learn from typical beginner errors.",
+      "mistakes": [
+        {
+          "error": "Using the wrong gender form",
+          "incorrect": "Magnus puella viam videt.",
+          "why_wrong": "Magnus is masculine, but puella is feminine. They don't agree in gender!",
+          "correct": "Magna puella viam videt.",
+          "explanation": "You must use magna (the FEMININE form of magnus) to match puella's feminine gender",
+          "lesson": "Always check noun's gender first, then find the matching adjective form"
+        },
+        {
+          "error": "Forgetting to change case",
+          "incorrect": "Puella magna viam videt. (trying to say: The girl sees the large road)",
+          "why_wrong": "Magna is nominative (matching puella), but if we want it to modify viam (acc), it needs to be accusative too!",
+          "correct": "Puella magnam viam videt.",
+          "explanation": "Magnam (F acc sg) now agrees with viam (F acc sg) in gender, number, AND case",
+          "lesson": "The adjective must match the case of the noun it modifies, not just the subject"
+        },
+        {
+          "error": "Confusing neuter plural with feminine singular",
+          "incorrect_thinking": "Seeing 'bona' and assuming it's feminine singular nominative",
+          "context": "Bona bella sunt.",
+          "wrong_translation": "The good (feminine) thing wars are. (??)",
+          "correct_translation": "The good wars are.",
+          "explanation": "Bona here is NEUTER PLURAL nominative (agreeing with bella), not feminine singular. Both 'bona' and 'bella' are neuter plural.",
+          "lesson": "Check the NOUN to determine what the adjective must be, not the adjective in isolation"
+        },
+        {
+          "error": "Thinking word order determines attribution",
+          "incorrect_thinking": "If the adjective comes after 'est', it must be different from when it comes before",
+          "example_1": "Puella bona est.",
+          "example_2": "Puella est bona.",
+          "clarification": "BOTH mean 'The girl is good' (predicate adjective). Word order is flexible in Latin.",
+          "contrast": "Compare attributive: 'Bona puella vident' OR 'Puella bona vident' = 'The good girl sees' (both attributive, flexible order)",
+          "lesson": "The presence of 'est/sunt' determines predicate function, not word order alone"
+        },
+        {
+          "error": "Not recognizing agreement with different declensions",
+          "setup": "Later you'll learn 3rd declension nouns like 'rex, regis' (king, masculine)",
+          "incorrect_thinking": "Since rex is 3rd declension, I should use a different adjective form",
+          "preview": "bonus rex (good king) - still uses MASCULINE form (bonus) because rex is MASCULINE",
+          "explanation": "Agreement is by GENDER, not declension. Even though rex doesn't end in -us, it's still masculine, so you use the masculine adjective form",
+          "lesson": "Focus on gender/number/case, not what declension the noun belongs to"
+        }
+      ]
+    },
+    {
+      "title": "Example 7: Quick Identification Drills",
+      "description": "Test your ability to identify agreement patterns.",
+      "drills": [
+        {
+          "question": "What gender/number/case is 'bonōrum'?",
+          "answer": "Masculine OR Neuter, plural, genitive",
+          "explanation": "The -ōrum ending is genitive plural for both masculine and neuter. You'd need to see the noun to know which gender."
+        },
+        {
+          "question": "In 'magnās vias video', what does 'magnās' agree with and why?",
+          "answer": "Agrees with 'vias' - both are feminine, plural, accusative",
+          "explanation": "magnās (F acc pl) matches viās (F acc pl) in all three dimensions of agreement"
+        },
+        {
+          "question": "Why is 'bona bella' correct but 'bonus bella' wrong?",
+          "answer": "Bella is neuter plural nominative. You must use bona (neuter plural form), not bonus (masculine singular form)",
+          "explanation": "Agreement requires matching gender/number/case. Bonus is M sg, bella is N pl - no match!"
+        },
+        {
+          "question": "Translate and explain: 'Puella pulchra est'",
+          "answer": "The girl is beautiful. 'Pulchra' is a predicate adjective (F nom sg, agreeing with puella through 'est')",
+          "explanation": "Even though pulchra could be attributive ('beautiful girl'), the presence of 'est' makes it predicate ('is beautiful')"
+        },
+        {
+          "question": "How would you say 'of the good gifts' (donum, donī, n.)?",
+          "answer": "bonōrum donōrum",
+          "explanation": "Both neuter genitive plural: bonus → bonōrum (N gen pl), donum → donōrum (N gen pl)"
+        },
+        {
+          "question": "What's wrong with 'multī puellae'?",
+          "answer": "Multī is masculine nom/gen sg OR masculine nominative plural. Puellae is feminine. Gender mismatch!",
+          "correct": "multae puellae (many girls - both F nom pl)",
+          "explanation": "Must use the FEMININE form multae to match puellae's gender"
+        }
+      ]
+    }
+  ]
+}

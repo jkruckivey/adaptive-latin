@@ -1,0 +1,266 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-003",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-003-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. Make sure your translations are accurate and natural-sounding.\n\n1. Amīcus puellae dōnum dat.\n2. Puerī agrōs amant.\n3. Bella sunt mala.\n4. Fīlius verba magistrī audit.\n5. Puellae fīliōs agricolārum vocant.",
+      "rubric": {
+        "scoring": "Each sentence worth 0.20 points (5 sentences × 0.20 = 1.00)",
+        "correct_translations": [
+          {
+            "latin": "Amīcus puellae dōnum dat.",
+            "correct_english": "The friend of the girl gives a gift. / The girl's friend gives a gift.",
+            "acceptable_variants": ["The friend gives a gift to the girl.", "A friend of the girl gives a gift."],
+            "key_points": [
+              "Amīcus = nominative singular masculine (the friend, subject)",
+              "puellae = genitive singular OR dative singular (context suggests genitive 'of the girl' or dative 'to the girl' - both work!)",
+              "dōnum = accusative singular neuter (the gift, direct object)",
+              "dat = he/she gives"
+            ],
+            "common_errors": [
+              "Translating 'puellae' as plural (wrong - singular here)",
+              "Not recognizing dōnum as neuter"
+            ],
+            "note": "This sentence is deliberately ambiguous - puellae could be genitive (friend OF the girl) or dative (gives gift TO the girl). Both interpretations are grammatically valid!"
+          },
+          {
+            "latin": "Puerī agrōs amant.",
+            "correct_english": "The boys love the fields.",
+            "acceptable_variants": ["The boys love fields.", "Boys love the fields."],
+            "key_points": [
+              "Puerī = nominative plural masculine (the boys, subject)",
+              "agrōs = accusative plural masculine (the fields, direct object)",
+              "amant = they love"
+            ],
+            "common_errors": [
+              "Translating puerī as genitive singular 'of the boy' (wrong - nominative plural)",
+              "Not recognizing agrōs as accusative plural"
+            ]
+          },
+          {
+            "latin": "Bella sunt mala.",
+            "correct_english": "The wars are bad.",
+            "acceptable_variants": ["Wars are bad.", "The wars are evil."],
+            "key_points": [
+              "Bella = nominative plural neuter (the wars, subject)",
+              "sunt = they are",
+              "mala = bad (neuter plural adjective agreeing with bella)"
+            ],
+            "common_errors": [
+              "Translating bella as first declension singular 'the war-woman' (wrong - it's neuter plural from bellum)",
+              "Not recognizing the neuter rule (bella is nom. = acc.)"
+            ],
+            "note": "Tests neuter plural recognition - bella looks like 1st decl. singular but it's 2nd decl. neuter plural"
+          },
+          {
+            "latin": "Fīlius verba magistrī audit.",
+            "correct_english": "The son hears the words of the teacher. / The son hears the teacher's words.",
+            "acceptable_variants": ["The son listens to the words of the teacher.", "A son hears the teacher's words."],
+            "key_points": [
+              "Fīlius = nominative singular masculine (the son, subject)",
+              "verba = accusative plural neuter (the words, direct object)",
+              "magistrī = genitive singular masculine (of the teacher)",
+              "audit = he/she hears"
+            ],
+            "common_errors": [
+              "Translating verba as nominative (wrong - it's accusative object)",
+              "Translating magistrī as nominative plural (wrong - genitive singular modifying verba)"
+            ],
+            "note": "Tests neuter plural accusative (verba) and genitive singular (magistrī) recognition"
+          },
+          {
+            "latin": "Puellae fīliōs agricolārum vocant.",
+            "correct_english": "The girls call the sons of the farmers. / The girls are calling the farmers' sons.",
+            "acceptable_variants": ["Girls call the sons of the farmers."],
+            "key_points": [
+              "Puellae = nominative plural feminine (the girls, subject)",
+              "fīliōs = accusative plural masculine (the sons, direct object)",
+              "agricolārum = genitive plural masculine (of the farmers)",
+              "vocant = they call"
+            ],
+            "common_errors": [
+              "Translating puellae as singular (wrong - plural here, confirmed by vocant)",
+              "Not recognizing agricolārum as first declension masculine (farmer)"
+            ],
+            "note": "Tests mixed declensions - puellae (1st decl. fem.), fīliōs (2nd decl. masc.), agricolārum (1st decl. masc. exceptional)"
+          }
+        ],
+        "partial_credit": "Award 0.15/0.20 for translations that capture the main meaning but have minor errors in case interpretation or English phrasing. Award 0.10/0.20 for translations that show some understanding but have significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-003-2",
+      "difficulty": "intermediate",
+      "task_type": "form_identification",
+      "prompt": "For each Latin form below, provide: (a) All possible cases, (b) Number (singular or plural), (c) Declension and gender, (d) English translation(s).\n\nExample: amīcōs → accusative only, plural, 2nd declension masculine, 'the friends' (as direct object)\n\nYour turn:\n1. bellum\n2. puerī\n3. agrōrum\n4. amīcīs\n5. bella\n6. fīliō",
+      "rubric": {
+        "scoring": "Questions 1-3 worth 0.15 each; Questions 4-6 worth 0.183 each (ambiguous forms require multiple answers). Total = 1.00",
+        "correct_answers": [
+          {
+            "form": "bellum",
+            "case": "Nominative OR Accusative (neuter rule)",
+            "number": "Singular",
+            "declension_gender": "Second declension, neuter",
+            "translation": "the war (as subject OR as object)",
+            "points": 0.15,
+            "notes": "Neuter rule: nom. = acc. Context determines which."
+          },
+          {
+            "form": "puerī",
+            "case": "Genitive singular OR Nominative plural",
+            "number": "Singular (gen.) OR Plural (nom.)",
+            "declension_gender": "Second declension, masculine",
+            "translation": "(1) of the boy / the boy's, (2) the boys (as subject)",
+            "points": 0.15,
+            "notes": "Two possibilities - context determines which"
+          },
+          {
+            "form": "agrōrum",
+            "case": "Genitive only",
+            "number": "Plural",
+            "declension_gender": "Second declension, masculine",
+            "translation": "of the fields / the fields'",
+            "points": 0.15,
+            "notes": "Unambiguous - -ōrum is always genitive plural"
+          },
+          {
+            "form": "amīcīs",
+            "case": "Dative plural OR Ablative plural",
+            "number": "Plural",
+            "declension_gender": "Second declension, masculine",
+            "translation": "(1) to/for the friends, (2) with/by/from the friends",
+            "points": 0.183,
+            "full_credit_requires": "Both possibilities listed",
+            "partial_credit": "0.10 for one possibility",
+            "notes": "-īs serves both dative and ablative plural"
+          },
+          {
+            "form": "bella",
+            "case": "Nominative OR Accusative (neuter rule)",
+            "number": "Plural",
+            "declension_gender": "Second declension, neuter",
+            "translation": "the wars (as subject OR as object)",
+            "points": 0.183,
+            "full_credit_requires": "Recognition of neuter rule (nom. = acc.)",
+            "partial_credit": "0.10 for listing only one case",
+            "notes": "Critical test of neuter rule understanding - bella looks like 1st decl. but it's 2nd decl. neuter plural"
+          },
+          {
+            "form": "fīliō",
+            "case": "Dative singular OR Ablative singular",
+            "number": "Singular",
+            "declension_gender": "Second declension, masculine",
+            "translation": "(1) to/for the son, (2) with/by/from the son",
+            "points": 0.183,
+            "full_credit_requires": "Both possibilities listed",
+            "partial_credit": "0.10 for one possibility",
+            "notes": "-ō serves both dative and ablative singular"
+          }
+        ]
+      },
+      "estimated_time": "12-18 minutes"
+    },
+    {
+      "id": "applied-003-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the requested Latin forms. Use the nouns provided in parentheses.\n\n1. 'of the friends' (amīcus, amīcī, m.)\n2. 'to the boy' (puer, puerī, m.)\n3. 'the wars' as direct object (bellum, bellī, n.)\n4. 'with the fields' (ager, agrī, m.)\n5. 'the sons' as subject, plural (fīlius, fīliī, m.)\n6. 'the gifts' as subject, plural (dōnum, dōnī, n.)\n7. 'of the war' (bellum, bellī, n.)\n8. 'the field' as direct object (ager, agrī, m.)\n9. 'to the friends' (amīcus, amīcī, m.)\n10. 'the words' as direct object (verbum, verbī, n.)",
+      "rubric": {
+        "scoring": "Each form worth 0.10 points (10 forms × 0.10 = 1.00)",
+        "correct_answers": [
+          {
+            "prompt": "'of the friends'",
+            "correct_form": "amīcōrum",
+            "case": "Genitive plural",
+            "declension": "Second masculine",
+            "common_errors": ["amicorum (missing macron acceptable)", "amīcī (wrong - that's singular or wrong case)"]
+          },
+          {
+            "prompt": "'to the boy'",
+            "correct_form": "puerō",
+            "case": "Dative singular",
+            "declension": "Second masculine -er (keeps e)",
+            "common_errors": ["puero (missing macron acceptable)", "puerum (that's accusative)", "puerī (that's genitive sg. or nom. pl.)"],
+            "note": "Tests dative recognition and puer declension"
+          },
+          {
+            "prompt": "'the wars' as direct object",
+            "correct_form": "bella",
+            "case": "Accusative plural",
+            "declension": "Second neuter",
+            "common_errors": ["bellum (that's singular)", "bellōs (that would be masculine, not neuter)"],
+            "note": "Tests neuter rule - accusative plural = nominative plural"
+          },
+          {
+            "prompt": "'with the fields'",
+            "correct_form": "agrīs",
+            "case": "Ablative plural",
+            "declension": "Second masculine -er (drops e)",
+            "common_errors": ["agris (missing macron acceptable)", "agrōs (that's accusative plural)", "agerīs (wrong - e drops in all forms except nom. sg.)"],
+            "note": "'With' indicates ablative; tests ager declension (drops e)"
+          },
+          {
+            "prompt": "'the sons' as subject, plural",
+            "correct_form": "fīliī",
+            "case": "Nominative plural",
+            "declension": "Second masculine",
+            "common_errors": ["filii (missing macron acceptable)", "fīliōs (that's accusative plural)", "fīlius (that's singular)"]
+          },
+          {
+            "prompt": "'the gifts' as subject, plural",
+            "correct_form": "dōna",
+            "case": "Nominative plural",
+            "declension": "Second neuter",
+            "common_errors": ["dona (missing macron acceptable)", "dōnum (that's singular)", "dōnī (that would be masculine nominative plural)"],
+            "note": "Tests neuter plural - nominative plural ends in -a"
+          },
+          {
+            "prompt": "'of the war'",
+            "correct_form": "bellī",
+            "case": "Genitive singular",
+            "declension": "Second neuter",
+            "common_errors": ["belli (missing macron acceptable)", "bellōrum (that's plural)", "bellō (that's dative/ablative singular)"]
+          },
+          {
+            "prompt": "'the field' as direct object",
+            "correct_form": "agrum",
+            "case": "Accusative singular",
+            "declension": "Second masculine -er (drops e)",
+            "common_errors": ["agerum (wrong - e drops except in nom. sg.)", "ager (that's nominative)", "agrī (that's genitive sg. or nom. pl.)"],
+            "note": "Tests ager pattern - e drops: ager → agrum"
+          },
+          {
+            "prompt": "'to the friends'",
+            "correct_form": "amīcīs",
+            "case": "Dative plural",
+            "declension": "Second masculine",
+            "common_errors": ["amicis (missing macron acceptable)", "amīcōs (that's accusative plural)", "amīcō (that's singular)"],
+            "note": "'To' indicates dative"
+          },
+          {
+            "prompt": "'the words' as direct object",
+            "correct_form": "verba",
+            "case": "Accusative plural",
+            "declension": "Second neuter",
+            "common_errors": ["verbum (that's singular)", "verbōs (that would be masculine, not neuter)", "verbīs (that's dative/ablative plural)"],
+            "note": "Tests neuter accusative plural = nominative plural (-a ending)"
+          }
+        ],
+        "partial_credit": "Award 0.08/0.10 for forms that are close but have minor errors (e.g., missing macron but correct ending). Award 0.05/0.10 for forms that show partial understanding (right case, wrong number). Award 0.00 for completely incorrect forms.",
+        "note": "Production tests active knowledge - can the student generate correct forms, not just recognize them? This is harder than identification and tests true mastery."
+      },
+      "estimated_time": "18-25 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify, and produce second declension forms (both masculine and neuter). Students must demonstrate they can USE their knowledge of second declension, neuter rule, and -er noun patterns - not just explain them. Production (task 3) is the hardest and shows true mastery."
+  }
+}

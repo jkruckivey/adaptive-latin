@@ -1,0 +1,323 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-001",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-001-1",
+      "difficulty": "basic",
+      "prompt": "How do you know if a noun is first declension? What should you look for?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Mentions nominative singular ending (-a)",
+            "Mentions genitive singular ending (-ae)",
+            "Notes that most are feminine",
+            "Clear, accurate explanation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "First declension nouns end in -a in the nominative singular and -ae in the genitive singular. Almost all of them are feminine, though there are rare exceptions like nauta (sailor)."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies the -a ending",
+            "May not mention genitive or gender",
+            "Generally accurate but incomplete"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "They end in -a, like puella."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with other declensions",
+            "Vague or imprecise"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's about the endings but I'm not sure which ones."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify markers",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "All nouns that start with p?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if I give you a new word 'insula, insulae, f.' (island), how do you know it's first declension?",
+        "Great! Can you think of any first declension nouns we've learned?"
+      ],
+      "follow_up_if_developing": [
+        "Let me help: think about the dictionary form of puella. What does it end with?",
+        "Remember: we look at the nominative singular (the first form) and the genitive singular (the second form). What are those endings?"
+      ]
+    },
+    {
+      "id": "dialogue-001-2",
+      "difficulty": "intermediate",
+      "prompt": "I'm going to give you a form: 'puellae'. What case(s) could this be, and how would you figure out which one it is?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Lists all three possibilities: genitive singular, dative singular, nominative plural",
+            "Explains that context determines which",
+            "Gives examples or describes how to use context",
+            "Shows understanding of why this ambiguity exists"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Puellae could be genitive singular (of the girl), dative singular (to/for the girl), or nominative plural (the girls). To figure out which, I'd look at the context - like if there's a verb form that tells me if it's singular or plural, or if the sentence structure shows possession or an indirect object."
+        },
+        "good": {
+          "criteria": [
+            "Lists 2-3 possibilities",
+            "Understands that context matters",
+            "May not give specific examples"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It could be genitive or dative singular, or maybe nominative plural. You have to look at the rest of the sentence."
+        },
+        "developing": {
+          "criteria": [
+            "Lists only one possibility",
+            "Doesn't understand the ambiguity",
+            "Unclear about how to resolve"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's plural?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify any correct case",
+            "Confused about case system"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's accusative."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! Let's test this. In the sentence 'Vita puellae est bona,' which case is puellae and why?",
+        "Great understanding! Now what about in 'Puellae sunt': which case is puellae here?"
+      ],
+      "follow_up_if_developing": [
+        "Let's look at the paradigm chart together. What cases end in -ae?",
+        "Remember there are three cases that use -ae. Can you name them?"
+      ]
+    },
+    {
+      "id": "dialogue-001-3",
+      "difficulty": "intermediate",
+      "prompt": "Explain what the nominative case does in a Latin sentence. Why do we need it?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies nominative as subject case",
+            "Explains it shows who/what does the action",
+            "May note it's also used for predicate nominatives",
+            "Gives clear example"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The nominative case is used for the subject of the sentence - the person or thing doing the action. For example, in 'Puella viam videt' (The girl sees the road), 'puella' is nominative because she's doing the seeing. We need it because Latin doesn't rely on word order like English does, so the case ending tells us the noun's function."
+        },
+        "good": {
+          "criteria": [
+            "Identifies it as subject",
+            "Generally correct understanding",
+            "May lack example or full explanation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It's the subject of the sentence, like who does the action."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with other cases",
+            "Vague explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "It's used for the main noun?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain function",
+            "Confuses with direct object or other case"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's the object of the sentence."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So in the sentence 'Aquam video' (I see the water), what case would 'aquam' be and why?",
+        "Excellent. How would you say 'The water is good' - what case would 'water' be?"
+      ],
+      "follow_up_if_developing": [
+        "Think about this sentence: 'The girl sees.' Who is doing the seeing?",
+        "In 'Puella est' (The girl is), what is 'puella' doing in this sentence?"
+      ]
+    },
+    {
+      "id": "dialogue-001-4",
+      "difficulty": "advanced",
+      "prompt": "Look at this sentence: 'Viam puella videt.' Why doesn't this mean 'The road sees the girl' even though 'viam' comes first?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that Latin uses case endings, not word order, to show function",
+            "Identifies 'viam' as accusative (object) by its -am ending",
+            "Identifies 'puella' as nominative (subject) by its -a ending",
+            "Shows understanding that word order is flexible in Latin"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "In Latin, case endings show function, not word position. 'Viam' ends in -am, which is accusative singular, so it's the direct object (what is seen), even though it comes first. 'Puella' ends in -a, which is nominative singular, so it's the subject (who sees). Latin word order is flexible - you can emphasize different words by moving them, but the endings always tell you who's doing what."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes that endings matter more than position",
+            "Identifies cases correctly",
+            "Generally sound reasoning"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The endings tell you what the word does. Viam is accusative so it's the object, and puella is nominative so it's the subject."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding of case vs. word order",
+            "May correctly identify one case but not explain fully",
+            "Incomplete reasoning"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think the endings change the meaning?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Still thinks word order determines function",
+            "Cannot identify cases correctly",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "The first word in Latin is always the subject."
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So if I wanted to emphasize 'the girl' in English, I might say 'The GIRL sees the road.' How might Latin show this emphasis?",
+        "Perfect understanding! Can you translate this for me: 'Puellam via videt'? What would that mean, and is it correct Latin?"
+      ],
+      "follow_up_if_developing": [
+        "Let's look at the endings. What case is 'viam' in?",
+        "Remember: accusative is the direct object, nominative is the subject. Which ending is which here?"
+      ]
+    },
+    {
+      "id": "dialogue-001-5",
+      "difficulty": "basic",
+      "prompt": "Can you conjugate the present tense of 'sum, esse' for me? Just the singular forms are fine.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "All three forms correct: sum, es, est",
+            "Provides accurate translations",
+            "Clear and confident delivery"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Sum (I am), es (you are), est (he/she/it is)."
+        },
+        "good": {
+          "criteria": [
+            "Most forms correct (2/3)",
+            "May have minor errors in translation or Latin form",
+            "Generally accurate"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Sum is I am, es is you are, and... est is he/she is?"
+        },
+        "developing": {
+          "criteria": [
+            "Some correct (1/3)",
+            "Significant errors or confusion",
+            "Incomplete"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Sum means I am, and... es is something?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot provide forms",
+            "Completely incorrect",
+            "Doesn't know the verb"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Is it sumo, sumas, sumat?"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! Now can you give me the plural forms?",
+        "Great! How would you say 'We are' in Latin?"
+      ],
+      "follow_up_if_developing": [
+        "Let's practice: sum means 'I am.' Can you try the next one, 'you are'?",
+        "Here's a hint: the forms are sum, es, est. Try saying them with their meanings."
+      ]
+    },
+    {
+      "id": "dialogue-001-6",
+      "difficulty": "advanced",
+      "prompt": "Here's a tricky one: In the sentence 'Puellae aquam do,' what case is 'puellae' and how do you know?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies as dative singular ('to/for the girl')",
+            "Explains reasoning: 'do' means 'I give' which takes an indirect object",
+            "Rules out other -ae possibilities (genitive and nominative plural don't fit context)",
+            "Shows sophisticated understanding of syntax"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Puellae is dative singular - 'to the girl.' I know because 'do' means 'I give,' and you give something TO someone. That someone is the indirect object, which uses dative case. It can't be genitive (no possession here) or nominative plural (the verb 'do' is singular 'I give,' not 'they give')."
+        },
+        "good": {
+          "criteria": [
+            "Identifies as dative",
+            "Provides some reasoning",
+            "Generally correct logic"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It's dative, 'to the girl,' because you're giving something to her."
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain or incorrect case identification",
+            "Weak reasoning",
+            "May guess genitive or nominative plural"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Maybe genitive? Or nominative plural?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify case",
+            "No understanding of syntax",
+            "Random guess"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Accusative because it's the object?"
+        }
+      },
+      "note": "This is challenging because it requires understanding verb syntax (verbs of giving take dative) and eliminating other -ae possibilities through contextual reasoning.",
+      "follow_up_if_good": [
+        "Excellent syntactic reasoning! How would the sentence change if you wanted to say 'I give water to the girlS' (plural)?",
+        "Perfect! So dative shows the recipient. What would the accusative be in this sentence?"
+      ],
+      "follow_up_if_developing": [
+        "Think about the verb 'do' (I give). When you give something, you give it TO someone. Which case shows 'to/for' someone?",
+        "Could this be nominative plural? Look at the verb - is it plural (they give) or singular (I give)?"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 4,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student should demonstrate understanding across basic (identifying forms), intermediate (explaining functions), and advanced (applying knowledge to solve problems) levels"
+  }
+}

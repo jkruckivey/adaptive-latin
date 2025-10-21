@@ -1,0 +1,338 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-002",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-002-1",
+      "difficulty": "basic",
+      "prompt": "How can you tell if a verb is first conjugation? What should you look for in the dictionary entry?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Mentions the infinitive ending -āre",
+            "Explains that you look at the second principal part (infinitive)",
+            "May give an example (e.g., amō, amāre)",
+            "Clear, confident explanation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "First conjugation verbs have infinitives ending in -āre. You look at the second principal part in the dictionary entry - like 'amō, amāre' - the 'amāre' ending tells you it's first conjugation."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies -āre ending",
+            "May not mention it's the infinitive/second principal part",
+            "Generally accurate but incomplete"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "They end in -āre, like amāre means 'to love.'"
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with other conjugations or with noun declensions",
+            "Vague explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it has something to do with the -a- vowel?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify the marker",
+            "Confuses conjugation with declension",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Is it about the noun endings?"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So if I give you 'vocō, vocāre' - is this first conjugation?",
+        "Perfect! Can you name one or two first conjugation verbs we've learned?"
+      ],
+      "follow_up_if_developing": [
+        "Let's look at the verb 'amō, amāre, amāvī, amātum.' Which part tells you the conjugation?",
+        "Remember: the infinitive (the 'to [verb]' form) ends in -āre for first conjugation. Can you spot that in our vocabulary?"
+      ]
+    },
+    {
+      "id": "dialogue-002-2",
+      "difficulty": "basic",
+      "prompt": "What are the personal endings for Latin verbs? Can you give me at least the singular forms?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Provides all six personal endings correctly: -ō/-m, -s, -t, -mus, -tis, -nt",
+            "May note that 1st sg. uses -ō in present but -m in imperfect/future",
+            "Clear presentation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The personal endings are: -ō (or -m) for 'I,' -s for 'you,' -t for 'he/she/it,' -mus for 'we,' -tis for 'you all,' and -nt for 'they.' The 1st person singular uses -ō in present tense but -m in imperfect and future."
+        },
+        "good": {
+          "criteria": [
+            "Provides most endings correctly (at least 4/6)",
+            "May have minor errors or omissions",
+            "Shows solid understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Singular is -ō, -s, -t and plural is -mus, -tis, -nt."
+        },
+        "developing": {
+          "criteria": [
+            "Provides some endings (2-3 correct)",
+            "Significant gaps or errors",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I know -s is 'you' and -t is 'he/she/it'..."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot provide endings",
+            "Completely incorrect",
+            "No understanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Um... -a, -ae, -am?"
+        }
+      },
+      "follow_up_if_good": [
+        "Great! Now, what's the difference between using -ō and using -m for first person singular?",
+        "Perfect! Can you conjugate 'amō' in the present tense using these endings?"
+      ],
+      "follow_up_if_developing": [
+        "Let's start with 'you' (singular). What's that ending?",
+        "Here's a hint: amō (I), amās (you), amat (he/she/it). Can you see the pattern?"
+      ]
+    },
+    {
+      "id": "dialogue-002-3",
+      "difficulty": "intermediate",
+      "prompt": "What's the difference between 'amat' and 'amābat'? How do you know which tense each one is?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies 'amat' as present tense (loves, is loving)",
+            "Identifies 'amābat' as imperfect tense (was loving, used to love)",
+            "Explains the -bā- marker signals imperfect",
+            "Shows understanding of the time difference (present vs. ongoing/habitual past)"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "'Amat' is present tense meaning 'he/she/it loves' or 'is loving.' 'Amābat' is imperfect tense meaning 'he/she/it was loving' or 'used to love.' You can tell because 'amābat' has the -bā- marker between the stem and the ending, which always signals imperfect tense."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies both tenses",
+            "Recognizes the -bā- marker",
+            "May not fully explain the time/aspect difference",
+            "Generally solid understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "'Amat' is present (loves) and 'amābat' is imperfect (was loving). The -ba- tells you it's imperfect."
+        },
+        "developing": {
+          "criteria": [
+            "Partially correct (gets one tense right)",
+            "May recognize -bā- but not explain it well",
+            "Unclear about time difference",
+            "Incomplete understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think 'amat' is present... and 'amābat' might be past?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot distinguish the tenses",
+            "Doesn't recognize -bā- marker",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "They both mean 'loves'?"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! So what would be the future tense of this same verb (3rd person singular)?",
+        "Perfect! Can you explain when you'd use imperfect vs. present in a sentence?"
+      ],
+      "follow_up_if_developing": [
+        "Let's look at the structure. Do you see any extra letters in 'amābat' that aren't in 'amat'?",
+        "The -bā- is the key. That always means imperfect (past, ongoing). Can you try again?"
+      ]
+    },
+    {
+      "id": "dialogue-002-4",
+      "difficulty": "intermediate",
+      "prompt": "I'm going to give you a verb form: 'amābunt.' What tense is this, and how do you know?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies as future tense, 3rd person plural",
+            "Explains the -bu- marker (variant of -bi-) signals future",
+            "Translates correctly: 'they will love'",
+            "May contrast with present 'amant' or imperfect 'amābant' to show understanding"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "'Amābunt' is future tense, 3rd person plural - 'they will love.' I know because of the -bu- marker before the -nt ending. The -bu- is a variant of -bi- that's used with the -nt ending in future tense. It's different from 'amant' (present) which has no marker, and 'amābant' (imperfect) which has -bā-."
+        },
+        "good": {
+          "criteria": [
+            "Correctly identifies as future",
+            "Recognizes the -bu- or -bi- marker",
+            "Provides accurate translation",
+            "Generally solid understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It's future tense - 'they will love.' The -bu- shows it's future."
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain about tense (may guess future or imperfect)",
+            "Doesn't clearly understand the marker",
+            "May confuse with other tenses",
+            "Partial understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Is it imperfect? Or maybe future? I'm not sure..."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify the tense",
+            "Doesn't recognize any marker",
+            "Fundamental confusion"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's present tense, 'they love'?"
+        }
+      },
+      "follow_up_if_good": [
+        "Excellent! This is tricky because -bu- only appears in 3rd plural future. What would be the 3rd singular future?",
+        "Perfect! Can you explain why it's -bu- and not -bi- in this form?"
+      ],
+      "follow_up_if_developing": [
+        "Let's compare: 'amant' (present), 'amābant' (imperfect), 'amābunt' (future). Do you see the different markers?",
+        "The -bu- appears in future tense with -nt. The -bā- appears in imperfect. Which one do you see here?"
+      ]
+    },
+    {
+      "id": "dialogue-002-5",
+      "difficulty": "advanced",
+      "prompt": "Why does first conjugation use -bi- for future tense instead of -bā- like imperfect? What's the logic behind having different tense markers?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that different markers distinguish different tenses",
+            "Notes that -bā- consistently marks imperfect (past)",
+            "Notes that -bi-/-bu- consistently marks future",
+            "May mention historical/linguistic reasons (if known) or simply explain functional purpose",
+            "Shows sophisticated understanding of morphology"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Latin uses different tense markers to clearly distinguish tenses. The -bā- marker is reserved for imperfect tense (ongoing or habitual past action), while -bi-/-bu- marks future tense. This prevents confusion - if you see -ba-, you know it's imperfect; if you see -bi-/-bu-, you know it's future. These markers are consistent across all conjugations, which makes Latin verb morphology systematic and predictable. Historically, these come from different Indo-European roots, but functionally, they serve to keep the tenses distinct."
+        },
+        "good": {
+          "criteria": [
+            "Recognizes that different markers distinguish tenses",
+            "Understands the functional purpose",
+            "May not know historical reasons",
+            "Sound reasoning"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The different markers help you tell the tenses apart. -Bā- is always imperfect and -bi- is always future, so you can't confuse them."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May recognize the distinction but not explain why",
+            "Vague or incomplete reasoning",
+            "Shows some thought"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I guess they're different so you know which is which?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the distinction",
+            "No understanding of morphological function",
+            "Random guess"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "I have no idea. Maybe it's just random?"
+        }
+      },
+      "note": "This is a higher-order question testing understanding of morphology and linguistic function, not just memorization.",
+      "follow_up_if_good": [
+        "Excellent linguistic thinking! So if you encounter a new conjugation pattern (like 2nd or 3rd), would you expect to see the same -bā- and -bi-/-bu- markers?",
+        "Great answer! This systematic use of markers is one reason Latin is considered a 'regular' language compared to English. Can you think of how English forms its past tense inconsistently?"
+      ],
+      "follow_up_if_developing": [
+        "Think about it this way: if both imperfect and future used -bā-, how would you tell 'was loving' from 'will love'?",
+        "The markers create a system. Imperfect always has -bā-, future always has -bi-/-bu-. Why is that helpful when reading Latin?"
+      ]
+    },
+    {
+      "id": "dialogue-002-6",
+      "difficulty": "advanced",
+      "prompt": "Translate this sentence and explain your grammatical reasoning: 'Puellae aquam portābant.' What tense is the verb, and how do you know? What case is each noun and why?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Correct translation: 'The girls were carrying water' or 'The girls used to carry water'",
+            "Identifies 'portābant' as 3rd plural imperfect (because of -bā- marker)",
+            "Identifies 'puellae' as nominative plural (subject)",
+            "Identifies 'aquam' as accusative singular (direct object)",
+            "Explains reasoning clearly for each grammatical decision"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "'The girls were carrying water' or 'The girls used to carry water.' 'Portābant' is 3rd person plural imperfect - I know because of the -bā- tense marker and the -nt ending (they). It's imperfect, so it describes ongoing or habitual past action. 'Puellae' is nominative plural (the girls as subject - who was carrying). 'Aquam' is accusative singular (water as direct object - what was being carried)."
+        },
+        "good": {
+          "criteria": [
+            "Correct or nearly correct translation",
+            "Identifies verb tense correctly",
+            "Identifies most noun cases correctly",
+            "Provides reasoning but may lack some detail"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "'The girls were carrying water.' The verb is imperfect (has -ba-). Puellae is nominative plural (subject) and aquam is accusative (object)."
+        },
+        "developing": {
+          "criteria": [
+            "Partially correct translation or analysis",
+            "May identify some elements correctly but miss others",
+            "Incomplete reasoning",
+            "Shows effort but gaps in understanding"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "'The girls carry water.' Puellae is nominative and aquam is accusative. The verb is... imperfect maybe?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Incorrect translation",
+            "Cannot identify tense or cases",
+            "No clear reasoning",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "'The girl will carry water?' I'm not sure about the cases."
+        }
+      },
+      "note": "This tests integrated understanding - recognizing verb tense, noun cases, and translating accurately.",
+      "follow_up_if_good": [
+        "Excellent analysis! How would the sentence change if I wanted to say 'The girls will carry water' instead?",
+        "Perfect! What if I made aquam plural - 'aquās'? How would your translation change?"
+      ],
+      "follow_up_if_developing": [
+        "Let's break it down. First, look at 'portābant.' Do you see -bā-? What does that tell you?",
+        "For the nouns: 'puellae' - is this nominative plural or some other form? How do you know?"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 4,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student should demonstrate understanding across basic (identifying conjugation, personal endings), intermediate (tense recognition and comparison), and advanced (morphological reasoning, integrated sentence analysis) levels"
+  }
+}

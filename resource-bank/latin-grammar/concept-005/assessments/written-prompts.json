@@ -1,0 +1,194 @@
+{
+  "assessment_type": "written",
+  "concept_id": "concept-005",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before submitting your written response, please rate your confidence in your work (1-5):\n  1 - Very unsure about my answer\n  2 - Not very confident\n  3 - Moderately confident\n  4 - Quite confident\n  5 - Very confident in my answer",
+  "prompts": [
+    {
+      "id": "written-005-1",
+      "difficulty": "intermediate",
+      "prompt": "Write a brief explanation (200-300 words) comparing the perfect and imperfect tenses in Latin. Your explanation should:\n\n1. Describe what stems each tense uses\n2. Explain the difference in meaning/aspect (completed vs. ongoing)\n3. Provide at least two Latin examples with translations showing the contrast\n4. Explain why a Latin learner might confuse these tenses and how to avoid that confusion\n\nImagine you're teaching this to a fellow student who keeps mixing up these tenses.",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Conceptual Accuracy",
+            "weight": 0.40,
+            "criteria": {
+              "excellent": "Correctly explains that perfect uses perfect stem (completed action) and imperfect uses present stem + -ba- (ongoing/habitual action); clearly distinguishes the aspectual difference; accurate understanding throughout",
+              "good": "Generally correct distinction; may lack depth in explaining aspectual difference; minor imprecisions",
+              "developing": "Partial understanding; some confusion about stems or meanings; significant gaps",
+              "insufficient": "Cannot distinguish the tenses; fundamental errors about stems or meanings"
+            }
+          },
+          {
+            "name": "Examples Quality",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Provides clear, contrasting examples (e.g., amāvī vs. amābam) with accurate translations; examples effectively illustrate the conceptual difference",
+              "good": "Provides examples with mostly accurate translations; examples somewhat illustrate the difference",
+              "developing": "Weak examples or inaccurate translations; examples don't clearly show the contrast",
+              "insufficient": "No examples, or completely incorrect examples"
+            }
+          },
+          {
+            "name": "Practical Guidance",
+            "weight": 0.20,
+            "criteria": {
+              "excellent": "Provides clear, practical advice for avoiding confusion (e.g., check the stem, look for -ba-, remember the aspect); helpful tips that would actually work",
+              "good": "Provides some practical advice; may be generic or incomplete",
+              "developing": "Weak or unclear guidance; may not actually help avoid confusion",
+              "insufficient": "No practical guidance or incorrect advice"
+            }
+          },
+          {
+            "name": "Clarity & Organization",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Well-organized, logical flow; clear writing that would help a peer understand; appropriate for teaching context",
+              "good": "Generally clear; minor organizational issues; mostly accessible",
+              "developing": "Somewhat confusing; poor organization; hard to follow",
+              "insufficient": "Unclear or incoherent; would not help a fellow student"
+            }
+          }
+        ]
+      },
+      "word_count_range": [200, 300],
+      "estimated_time": "20-25 minutes",
+      "sample_excellent_response": "The perfect and imperfect tenses in Latin both refer to past time, but they differ in aspect - how the action is viewed. The perfect tense uses the perfect stem (from the third principal part, like amāv- from amāvī) and expresses a completed action: 'I loved' or 'I have loved.' The imperfect tense uses the present stem (from the infinitive, like amā- from amāre) plus the -ba- marker and expresses an ongoing or habitual past action: 'I was loving' or 'I used to love.'\n\nConsider these examples: 'Puellam amāvī' (I loved the girl / I have loved the girl) uses perfect to show a completed action - it happened and it's done. But 'Puellam amābam' (I was loving the girl / I used to love the girl) uses imperfect to show the action was ongoing or repeated in the past. Another example: 'Litterās scrīpsī' (I wrote the letter - completed) vs. 'Litterās scrībēbam' (I was writing the letter - ongoing).\n\nStudents often confuse these because both refer to past time. The key to avoiding confusion is checking the stem: if you see the perfect stem (like amāv-, vocāv-, ded-), it's perfect system. If you see the present stem with -ba- (like amā-ba-, vocā-ba-, dā-ba-), it's imperfect. Also remember the aspect: perfect = done/completed, imperfect = was doing/used to do. When translating, ask yourself: is this a completed action or an ongoing/habitual one? That will guide you to the right tense."
+    },
+    {
+      "id": "written-005-2",
+      "difficulty": "advanced",
+      "prompt": "Translate and analyze the following Latin sentences. For each sentence:\n\n(a) Translate into natural English\n(b) Identify the tense of each verb (perfect, pluperfect, or future perfect)\n(c) Identify the perfect stem used\n(d) Explain WHY that tense was used (what does it tell us about the time relationship?)\n\nSentences:\n1. Puellam amāveram antequam abīvit.\n2. Cēnam parāverō cum veniēs.\n3. Magistrum vocāvistis.\n4. Litterās scrīpserant sed nōn mīserant.\n\nNote: abīvit = (he/she) left; mīserant = they had sent; scrīpserant = they had written",
+      "rubric": {
+        "dimensions": [
+          {
+            "name": "Translation Accuracy",
+            "weight": 0.35,
+            "criteria": {
+              "excellent": "All four sentences translated accurately with natural English; tenses rendered correctly (had, will have, etc.)",
+              "good": "3-4 sentences correct; may have minor English phrasing issues but meaning clear",
+              "developing": "1-2 sentences correct; significant translation errors",
+              "insufficient": "Most or all translations incorrect; cannot translate perfect system tenses"
+            }
+          },
+          {
+            "name": "Tense Identification",
+            "weight": 0.25,
+            "criteria": {
+              "excellent": "All verbs correctly identified by tense; perfect stems accurately identified",
+              "good": "Most verbs (75%+) correctly identified; minor errors in stem identification",
+              "developing": "Some verbs (50-74%) correctly identified; significant gaps",
+              "insufficient": "Most verbs incorrectly identified; cannot distinguish perfect system tenses"
+            }
+          },
+          {
+            "name": "Time Relationship Explanation",
+            "weight": 0.30,
+            "criteria": {
+              "excellent": "Clear, accurate explanations of WHY each tense is used; demonstrates understanding of time sequences (e.g., pluperfect shows action before another past action); connects tense choice to meaning",
+              "good": "Generally correct explanations; may lack depth or miss some nuances",
+              "developing": "Weak or partial explanations; may describe tense without explaining time relationship",
+              "insufficient": "Cannot explain why tenses are used; no understanding of time relationships"
+            }
+          },
+          {
+            "name": "Grammatical Analysis",
+            "weight": 0.10,
+            "criteria": {
+              "excellent": "Systematic, thorough analysis; correctly breaks down forms into stem + ending",
+              "good": "Generally systematic; minor gaps in analysis",
+              "developing": "Incomplete or inconsistent analysis",
+              "insufficient": "Cannot analyze verb forms"
+            }
+          }
+        ]
+      },
+      "estimated_time": "30-40 minutes",
+      "correct_analysis": {
+        "sentence_1": {
+          "latin": "Puellam amāveram antequam abīvit.",
+          "translation": "I had loved the girl before she left.",
+          "verb_analysis": [
+            {
+              "verb": "amāveram",
+              "tense": "Pluperfect, 1st person singular",
+              "perfect_stem": "amāv- (from amō, amāre, amāvī)",
+              "breakdown": "amāv- + -eram",
+              "why_this_tense": "Pluperfect is used because the loving happened BEFORE she left (another past action). The pluperfect shows which of two past actions happened first."
+            },
+            {
+              "verb": "abīvit",
+              "tense": "Perfect, 3rd person singular",
+              "perfect_stem": "abīv- (from abeō, abīre, abīvī)",
+              "breakdown": "abīv- + -it",
+              "why_this_tense": "Perfect shows the completed action 'she left.' This happened after the loving (which is in pluperfect)."
+            }
+          ],
+          "time_sequence": "Two past actions: loving (earlier - pluperfect) → leaving (later - perfect)"
+        },
+        "sentence_2": {
+          "latin": "Cēnam parāverō cum veniēs.",
+          "translation": "I will have prepared dinner when you come.",
+          "verb_analysis": [
+            {
+              "verb": "parāverō",
+              "tense": "Future perfect, 1st person singular",
+              "perfect_stem": "parāv- (from parō, parāre, parāvī)",
+              "breakdown": "parāv- + -erō",
+              "why_this_tense": "Future perfect shows that preparing dinner will be completed BEFORE you come (another future action). It emphasizes that the dinner will already be ready when you arrive."
+            },
+            {
+              "verb": "veniēs",
+              "tense": "Future, 2nd person singular (present system)",
+              "note": "This is regular future, not perfect system",
+              "why_this_tense": "Future shows you will come. This happens after the dinner preparation (which is in future perfect)."
+            }
+          ],
+          "time_sequence": "Two future actions: preparing dinner (earlier - future perfect) → you come (later - future)"
+        },
+        "sentence_3": {
+          "latin": "Magistrum vocāvistis.",
+          "translation": "You (all) called the teacher / You (all) have called the teacher.",
+          "verb_analysis": [
+            {
+              "verb": "vocāvistis",
+              "tense": "Perfect, 2nd person plural",
+              "perfect_stem": "vocāv- (from vocō, vocāre, vocāvī)",
+              "breakdown": "vocāv- + -istis",
+              "why_this_tense": "Perfect shows a completed action in the past. 'You called' (simple past) or 'you have called' (present perfect) - both are valid translations. No other time reference, so plain perfect is used."
+            }
+          ],
+          "time_sequence": "Single completed past action - no sequence needed, hence perfect (not pluperfect)"
+        },
+        "sentence_4": {
+          "latin": "Litterās scrīpserant sed nōn mīserant.",
+          "translation": "They had written the letters but they had not sent (them).",
+          "verb_analysis": [
+            {
+              "verb": "scrīpserant",
+              "tense": "Pluperfect, 3rd person plural",
+              "perfect_stem": "scrīps- (from scrībō, scrībere, scrīpsī)",
+              "breakdown": "scrīps- + -erant",
+              "why_this_tense": "Pluperfect shows they had written at some point before another past time reference (implied: before some other event or before the time of speaking about the past)."
+            },
+            {
+              "verb": "mīserant",
+              "tense": "Pluperfect, 3rd person plural",
+              "perfect_stem": "mīs- (from mittō, mittere, mīsī)",
+              "breakdown": "mīs- + -erant",
+              "why_this_tense": "Pluperfect matches the first verb - both actions (writing and not sending) occurred before another implied past reference point. The pluperfect emphasizes that by some past time, they had written but had not sent."
+            }
+          ],
+          "time_sequence": "Both actions in past-before-past time frame; pluperfect is used consistently"
+        }
+      },
+      "scoring_note": "Sentence 4 is the most challenging because both verbs are pluperfect and the time reference is implicit. Students who correctly analyze this demonstrate strong understanding."
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 1,
+    "average_score_threshold": 0.80,
+    "note": "Written assessments test ability to explain concepts clearly and analyze complex sentences. Both prompts require demonstration of deep understanding, not just surface-level recall."
+  }
+}

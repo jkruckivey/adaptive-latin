@@ -1,0 +1,331 @@
+{
+  "assessment_type": "dialogue",
+  "concept_id": "concept-005",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I give you feedback, how confident are you in this answer? (1-5)\n  1 - Just guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "prompts": [
+    {
+      "id": "dialogue-005-1",
+      "difficulty": "basic",
+      "prompt": "Explain the difference between the present system and the perfect system in Latin verbs. What stems do they use?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Identifies that present system uses present stem (from infinitive)",
+            "Identifies that perfect system uses perfect stem (from 3rd principal part)",
+            "Names the tenses in each system correctly",
+            "Clear, organized explanation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Latin verbs have two separate stem systems. The present system uses the present stem (which you get from the infinitive, like amā- from amāre) and includes present, imperfect, and future tenses. The perfect system uses the perfect stem (from the third principal part, like amāv- from amāvī) and includes perfect, pluperfect, and future perfect tenses. You need to know both stems to conjugate a verb completely."
+        },
+        "good": {
+          "criteria": [
+            "Understands there are two systems",
+            "Identifies different stems",
+            "May not list all tenses or explain fully"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "The present system uses the present stem for present, imperfect, and future. The perfect system uses a different stem from the third principal part."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse which stems go with which tenses",
+            "Incomplete explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think there are different stems for different tenses?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain the two systems",
+            "Fundamental confusion about stems"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "All verbs use the same stem."
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! So if I give you the verb 'vocō, vocāre, vocāvī, vocātum,' what are the two stems?",
+        "Excellent. Why can't you predict the perfect stem from the present stem?"
+      ],
+      "follow_up_if_developing": [
+        "Let's think about amō, amāre, amāvī. The infinitive is amāre - what stem does that give you?",
+        "The third principal part is amāvī. If you remove the -ī, what stem do you get?"
+      ]
+    },
+    {
+      "id": "dialogue-005-2",
+      "difficulty": "basic",
+      "prompt": "The Latin perfect tense has two possible English translations. What are they, and can you give me an example?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Correctly identifies both translations: simple past (loved) and present perfect (have loved)",
+            "Provides accurate Latin example with both English translations",
+            "Shows understanding that both are valid"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The perfect tense can be translated as either simple past or present perfect. For example, 'amāvī' means both 'I loved' and 'I have loved.' Both are correct - you choose based on which sounds better in English context."
+        },
+        "good": {
+          "criteria": [
+            "Identifies both translations",
+            "May not provide example or full explanation",
+            "Generally correct understanding"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It can mean 'I loved' or 'I have loved.'"
+        },
+        "developing": {
+          "criteria": [
+            "Identifies only one translation",
+            "Unclear about the dual meaning",
+            "May confuse with other tenses"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think it's just 'I loved'?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify either translation correctly",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It means 'I was loving.'"
+        }
+      },
+      "follow_up_if_good": [
+        "Great! So how would you translate 'portāvit' in a sentence?",
+        "Perfect! What about pluperfect - how many English translations does it have?"
+      ],
+      "follow_up_if_developing": [
+        "Let me help: 'amāvī' can mean 'I loved' (simple past). What's the other way to say this using 'have'?",
+        "Think about these: 'I loved' vs 'I have loved.' Which one uses the helping verb 'have'?"
+      ]
+    },
+    {
+      "id": "dialogue-005-3",
+      "difficulty": "intermediate",
+      "prompt": "Look at this verb form: 'amāvērunt'. What tense is this, and how do you know? Be careful - explain your reasoning.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Correctly identifies as perfect tense, 3rd person plural",
+            "Explains the -ērunt ending (with long ē) is the marker for perfect 3rd plural",
+            "Distinguishes from future perfect -erint",
+            "Provides correct translation: 'they loved / they have loved'"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "This is perfect tense, 3rd person plural. I know because of the -ērunt ending (with a long ē). It means 'they loved' or 'they have loved.' I need to be careful not to confuse this with -erint (short e), which would be future perfect 'they will have loved.'"
+        },
+        "good": {
+          "criteria": [
+            "Identifies as perfect tense",
+            "Notes the -ērunt ending",
+            "May not explain the long ē vs short e distinction fully"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "It's perfect tense because of -ērunt. It means 'they loved.'"
+        },
+        "developing": {
+          "criteria": [
+            "Uncertain identification",
+            "May confuse with future perfect",
+            "Weak explanation of reasoning"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Is it future perfect? It has -erunt..."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify tense",
+            "Confuses with present or imperfect",
+            "No understanding of perfect endings"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It's future tense."
+        }
+      },
+      "note": "This tests the crucial distinction between perfect -ērunt and future perfect -erint, a common source of confusion.",
+      "follow_up_if_good": [
+        "Excellent! So how would you say 'they will have loved' (future perfect)?",
+        "Perfect reasoning! Now tell me: what's the difference between amāvērunt and amābant?"
+      ],
+      "follow_up_if_developing": [
+        "The ending is -ērunt with a long ē. This is a perfect ending. Future perfect would be -erint. Can you try again?",
+        "Think about the perfect endings: -ī, -istī, -it, -imus, -istis, -ērunt. Which one do you see here?"
+      ]
+    },
+    {
+      "id": "dialogue-005-4",
+      "difficulty": "intermediate",
+      "prompt": "What does the pluperfect tense mean, and when would you use it? Give me an example sentence that would require pluperfect in Latin.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains pluperfect means 'had [verb]ed'",
+            "Identifies that it shows action completed BEFORE another past action",
+            "Provides example with two past actions in sequence",
+            "Shows understanding of time relationships"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The pluperfect means 'had [verb]ed' and shows an action that was completed before another past action. For example, 'I had prepared dinner before you came' - the preparing happened first (pluperfect: parāveram), then you came (perfect: vēnistī). In Latin: 'Cēnam parāveram antequam vēnistī.'"
+        },
+        "good": {
+          "criteria": [
+            "Correctly translates as 'had [verb]ed'",
+            "Understands it's about past before past",
+            "May not provide complete example"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Pluperfect is 'had loved' - it's for something that happened before another past event."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "May confuse with perfect",
+            "Unclear about time sequence",
+            "Weak or no example"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "It's a past tense?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot explain pluperfect",
+            "Confuses with other tenses",
+            "No understanding of time sequence"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "It means 'I love.'"
+        }
+      },
+      "follow_up_if_good": [
+        "Perfect! How would you form the pluperfect? What endings do you add to the perfect stem?",
+        "Great example! So in that sentence, which action happened first chronologically?"
+      ],
+      "follow_up_if_developing": [
+        "Think about two past actions: 'I ate dinner' and 'You arrived.' Which one happened first? How would you say 'I had eaten dinner before you arrived'?",
+        "Pluperfect uses 'had' in English. Can you think of a sentence using 'had loved' or 'had called'?"
+      ]
+    },
+    {
+      "id": "dialogue-005-5",
+      "difficulty": "advanced",
+      "prompt": "I'll give you a verb you haven't seen before: 'moneō, monēre, monuī, monitum' (to warn). Can you give me the 1st person singular for all three perfect system tenses and translate each one?",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Correctly identifies perfect stem: monu- (from monuī)",
+            "Forms all three tenses correctly: monuī, monueram, monuerō",
+            "Provides accurate translations for all three",
+            "Shows systematic understanding of perfect system formation"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "The perfect stem is monu- (from monuī, remove the -ī). So: monuī (I warned / I have warned - perfect), monueram (I had warned - pluperfect), monuerō (I will have warned - future perfect)."
+        },
+        "good": {
+          "criteria": [
+            "Identifies perfect stem correctly",
+            "Forms 2-3 tenses correctly",
+            "Generally accurate translations",
+            "Minor errors in formation or translation"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "Perfect stem is monu-. Perfect: monuī (I warned), pluperfect: monueram (I had warned), future perfect: monuerō (I will have warned)."
+        },
+        "developing": {
+          "criteria": [
+            "Attempts to find perfect stem",
+            "Forms 1-2 tenses correctly",
+            "Significant errors in formation or translation",
+            "Incomplete response"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "Perfect stem is monu-. Perfect is monuī... I'm not sure about the others."
+        },
+        "insufficient": {
+          "criteria": [
+            "Cannot identify perfect stem",
+            "Cannot form perfect system tenses",
+            "Fundamental misunderstanding",
+            "Uses wrong stem or wrong endings"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "Is it moneī, moneram, monerō?"
+        }
+      },
+      "note": "This tests whether the student can APPLY knowledge to a new verb, not just recall memorized paradigms.",
+      "follow_up_if_good": [
+        "Excellent application! Now can you give me the 3rd person plural perfect of this verb?",
+        "Perfect! How would the perfect system be different if this were a first conjugation verb like amō?"
+      ],
+      "follow_up_if_developing": [
+        "You've got the right idea with the stem. Let me help with the tenses. Perfect uses -ī, so monuī is correct. For pluperfect, you add -eram. What would that be?",
+        "Remember: perfect stem + perfect endings. The endings are the same for ALL conjugations: -ī, -istī, -it, -imus, -istis, -ērunt."
+      ]
+    },
+    {
+      "id": "dialogue-005-6",
+      "difficulty": "advanced",
+      "prompt": "Here's a tricky one: Why is it impossible to predict the perfect stem just by looking at the present tense? Use specific verbs as examples.",
+      "rubric": {
+        "excellent": {
+          "criteria": [
+            "Explains that perfect stems are irregular/unpredictable",
+            "Provides specific examples of irregular perfect stems (dō→dedī, stō→stetī, etc.)",
+            "Shows understanding that this is why you must memorize principal parts",
+            "May mention different types of perfect formation (reduplication, stem change, etc.)"
+          ],
+          "score_range": "0.90-1.00",
+          "example_response": "Perfect stems are formed in different ways and aren't predictable from the present. For example, 'dō' (to give) has perfect 'dedī' (not 'dāvī'), and 'stō' (to stand) has perfect 'stetī' (not 'stāvī'). Some verbs add -v- (amō→amāvī), some use reduplication (dō→dedī), and some change the stem entirely (faciō→fēcī). That's why we have to memorize all four principal parts."
+        },
+        "good": {
+          "criteria": [
+            "Understands perfect stems are irregular",
+            "Provides at least one good example",
+            "May not explain fully why this matters"
+          ],
+          "score_range": "0.75-0.89",
+          "example_response": "They're irregular. Like 'dō' becomes 'dedī,' not 'dāvī' like you might expect from a first conjugation verb."
+        },
+        "developing": {
+          "criteria": [
+            "Partial understanding",
+            "Weak or no examples",
+            "May think some pattern exists",
+            "Unclear explanation"
+          ],
+          "score_range": "0.50-0.74",
+          "example_response": "I think you just have to memorize them?"
+        },
+        "insufficient": {
+          "criteria": [
+            "Thinks perfect stems ARE predictable",
+            "Cannot provide examples",
+            "Fundamental misunderstanding"
+          ],
+          "score_range": "0.00-0.49",
+          "example_response": "You just add -vī to the present stem."
+        }
+      },
+      "note": "This tests deeper conceptual understanding - why the Latin verb system requires memorization of principal parts.",
+      "follow_up_if_good": [
+        "Excellent! So when you learn a new verb, what do you need to memorize?",
+        "Great examples! This is why dictionaries always list all four principal parts, right?"
+      ],
+      "follow_up_if_developing": [
+        "Think about 'amō, amāre, amāvī' - that follows a pattern. But what about 'dō, dāre, dedī'? Does that follow the same pattern?",
+        "If you tried to guess that 'dō' has perfect 'dāvī,' you'd be wrong - it's actually 'dedī.' Why is that a problem?"
+      ]
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_prompts_attempted": 4,
+    "average_score_threshold": 0.80,
+    "must_include_difficulty_range": true,
+    "note": "Student should demonstrate understanding across basic (two stem systems, two translations), intermediate (distinguishing tenses, time relationships), and advanced (applying to new verbs, understanding why principal parts must be memorized) levels."
+  }
+}

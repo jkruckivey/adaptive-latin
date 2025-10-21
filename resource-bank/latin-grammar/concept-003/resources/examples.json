@@ -1,0 +1,508 @@
+{
+  "examples": [
+    {
+      "title": "Example 1: Declining amīcus (Masculine -us Noun)",
+      "description": "Complete paradigm of the standard second declension masculine noun amīcus (friend).",
+      "paradigm": {
+        "noun": "amīcus, amīcī, m. (friend)",
+        "stem": "amīc-",
+        "forms": [
+          {
+            "case": "Nominative Singular",
+            "form": "amīcus",
+            "breakdown": "amīc- + -us",
+            "function": "Subject",
+            "example_sentence": "Amīcus est bonus.",
+            "translation": "The friend is good."
+          },
+          {
+            "case": "Genitive Singular",
+            "form": "amīcī",
+            "breakdown": "amīc- + -ī",
+            "function": "Possession ('of')",
+            "example_sentence": "Vita amīcī est bona.",
+            "translation": "The life of the friend is good. / The friend's life is good."
+          },
+          {
+            "case": "Dative Singular",
+            "form": "amīcō",
+            "breakdown": "amīc- + -ō",
+            "function": "Indirect object ('to/for')",
+            "example_sentence": "Amīcō dōnum do.",
+            "translation": "I give a gift to the friend."
+          },
+          {
+            "case": "Accusative Singular",
+            "form": "amīcum",
+            "breakdown": "amīc- + -um",
+            "function": "Direct object",
+            "example_sentence": "Amīcum video.",
+            "translation": "I see the friend."
+          },
+          {
+            "case": "Ablative Singular",
+            "form": "amīcō",
+            "breakdown": "amīc- + -ō",
+            "function": "Various ('by/with/from')",
+            "example_sentence": "Cum amīcō sum.",
+            "translation": "I am with the friend."
+          },
+          {
+            "case": "Nominative Plural",
+            "form": "amīcī",
+            "breakdown": "amīc- + -ī",
+            "function": "Subject (plural)",
+            "example_sentence": "Amīcī sunt bonī.",
+            "translation": "The friends are good."
+          },
+          {
+            "case": "Genitive Plural",
+            "form": "amīcōrum",
+            "breakdown": "amīc- + -ōrum",
+            "function": "Possession (plural)",
+            "example_sentence": "Vita amīcōrum est bona.",
+            "translation": "The life of the friends is good. / The friends' life is good."
+          },
+          {
+            "case": "Dative Plural",
+            "form": "amīcīs",
+            "breakdown": "amīc- + -īs",
+            "function": "Indirect object (plural)",
+            "example_sentence": "Amīcīs dōna do.",
+            "translation": "I give gifts to the friends."
+          },
+          {
+            "case": "Accusative Plural",
+            "form": "amīcōs",
+            "breakdown": "amīc- + -ōs",
+            "function": "Direct object (plural)",
+            "example_sentence": "Amīcōs video.",
+            "translation": "I see the friends."
+          },
+          {
+            "case": "Ablative Plural",
+            "form": "amīcīs",
+            "breakdown": "amīc- + -īs",
+            "function": "Various (plural)",
+            "example_sentence": "Cum amīcīs sum.",
+            "translation": "I am with the friends."
+          }
+        ],
+        "note": "Notice that amīcī appears twice (gen. sg., nom. pl.) and amīcō appears twice (dat. sg., abl. sg.) and amīcīs appears twice (dat. pl., abl. pl.). Context determines which case is meant."
+      }
+    },
+    {
+      "title": "Example 2: Declining bellum (Neuter -um Noun)",
+      "description": "Complete paradigm demonstrating the neuter rule (nominative = accusative).",
+      "paradigm": {
+        "noun": "bellum, bellī, n. (war)",
+        "stem": "bell-",
+        "forms": [
+          {
+            "case": "Nominative Singular",
+            "form": "bellum",
+            "breakdown": "bell- + -um",
+            "function": "Subject",
+            "example_sentence": "Bellum est.",
+            "translation": "The war is. / There is a war.",
+            "neuter_note": "Same form as accusative singular"
+          },
+          {
+            "case": "Genitive Singular",
+            "form": "bellī",
+            "breakdown": "bell- + -ī",
+            "function": "Possession ('of')",
+            "example_sentence": "Fortūna bellī est mala.",
+            "translation": "The fortune of the war is bad."
+          },
+          {
+            "case": "Dative Singular",
+            "form": "bellō",
+            "breakdown": "bell- + -ō",
+            "function": "Indirect object ('to/for')",
+            "example_sentence": "Bellō locum do.",
+            "translation": "I give a place to the war."
+          },
+          {
+            "case": "Accusative Singular",
+            "form": "bellum",
+            "breakdown": "bell- + -um",
+            "function": "Direct object",
+            "example_sentence": "Bellum video.",
+            "translation": "I see the war.",
+            "neuter_note": "Same form as nominative singular - THE NEUTER RULE"
+          },
+          {
+            "case": "Ablative Singular",
+            "form": "bellō",
+            "breakdown": "bell- + -ō",
+            "function": "Various ('by/with/from')",
+            "example_sentence": "Bellō terram liberant.",
+            "translation": "They free the land by war."
+          },
+          {
+            "case": "Nominative Plural",
+            "form": "bella",
+            "breakdown": "bell- + -a",
+            "function": "Subject (plural)",
+            "example_sentence": "Bella sunt mala.",
+            "translation": "The wars are bad.",
+            "neuter_note": "Same form as accusative plural"
+          },
+          {
+            "case": "Genitive Plural",
+            "form": "bellōrum",
+            "breakdown": "bell- + -ōrum",
+            "function": "Possession (plural)",
+            "example_sentence": "Fortūna bellōrum est mala.",
+            "translation": "The fortune of the wars is bad."
+          },
+          {
+            "case": "Dative Plural",
+            "form": "bellīs",
+            "breakdown": "bell- + -īs",
+            "function": "Indirect object (plural)",
+            "example_sentence": "Bellīs fīnem do.",
+            "translation": "I give an end to the wars."
+          },
+          {
+            "case": "Accusative Plural",
+            "form": "bella",
+            "breakdown": "bell- + -a",
+            "function": "Direct object (plural)",
+            "example_sentence": "Bella video.",
+            "translation": "I see the wars.",
+            "neuter_note": "Same form as nominative plural - THE NEUTER RULE"
+          },
+          {
+            "case": "Ablative Plural",
+            "form": "bellīs",
+            "breakdown": "bell- + -īs",
+            "function": "Various (plural)",
+            "example_sentence": "Bellīs terram liberant.",
+            "translation": "They free the land by wars."
+          }
+        ],
+        "critical_note": "THE NEUTER RULE: bellum (nom.) = bellum (acc.) in singular; bella (nom.) = bella (acc.) in plural. This is true for ALL neuter nouns in Latin, not just second declension!"
+      }
+    },
+    {
+      "title": "Example 3: -er Noun Patterns (puer vs. ager)",
+      "description": "Demonstrates the two different patterns for -er masculine nouns: those that keep the -e- and those that drop it.",
+      "comparison": {
+        "pattern_a": {
+          "description": "Keeps the -e- throughout all forms",
+          "noun": "puer, puerī, m. (boy)",
+          "stem": "puer-",
+          "key_indicator": "Genitive is puerī (e is retained)",
+          "forms": {
+            "nominative_sg": "puer",
+            "genitive_sg": "puerī",
+            "dative_sg": "puerō",
+            "accusative_sg": "puerum",
+            "ablative_sg": "puerō",
+            "nominative_pl": "puerī",
+            "genitive_pl": "puerōrum",
+            "dative_pl": "puerīs",
+            "accusative_pl": "puerōs",
+            "ablative_pl": "puerīs"
+          },
+          "example_sentence": "Puerī in agrīs sunt.",
+          "translation": "The boys are in the fields."
+        },
+        "pattern_b": {
+          "description": "Drops the -e- in all forms except nominative singular",
+          "noun": "ager, agrī, m. (field)",
+          "stem": "agr-",
+          "key_indicator": "Genitive is agrī (e is dropped)",
+          "forms": {
+            "nominative_sg": "ager",
+            "genitive_sg": "agrī",
+            "dative_sg": "agrō",
+            "accusative_sg": "agrum",
+            "ablative_sg": "agrō",
+            "nominative_pl": "agrī",
+            "genitive_pl": "agrōrum",
+            "dative_pl": "agrīs",
+            "accusative_pl": "agrōs",
+            "ablative_pl": "agrīs"
+          },
+          "example_sentence": "Puerī in agrīs sunt.",
+          "translation": "The boys are in the fields."
+        },
+        "critical_rule": "You MUST memorize the genitive form to know which pattern a noun follows. The genitive shows you the stem: puerī (stem = puer-) vs. agrī (stem = agr-). There's no way to predict this from the nominative alone!"
+      }
+    },
+    {
+      "title": "Example 4: Mixed First and Second Declension Sentences",
+      "description": "Practice translating sentences that combine first declension (feminine) and second declension (masculine/neuter) nouns.",
+      "sentences": [
+        {
+          "latin": "Puella amīcum vocat.",
+          "translation": "The girl calls the friend.",
+          "analysis": [
+            {
+              "word": "Puella",
+              "case": "Nominative singular",
+              "declension": "First",
+              "gender": "Feminine",
+              "reason": "Subject of the sentence (who is calling)"
+            },
+            {
+              "word": "amīcum",
+              "case": "Accusative singular",
+              "declension": "Second",
+              "gender": "Masculine",
+              "reason": "Direct object (whom is being called)"
+            },
+            {
+              "word": "vocat",
+              "info": "3rd person singular verb (she calls)"
+            }
+          ]
+        },
+        {
+          "latin": "Fīlius puellae dōnum dat.",
+          "translation": "The son gives a gift to the girl.",
+          "analysis": [
+            {
+              "word": "Fīlius",
+              "case": "Nominative singular",
+              "declension": "Second",
+              "gender": "Masculine",
+              "reason": "Subject (who is giving)"
+            },
+            {
+              "word": "puellae",
+              "case": "Dative singular",
+              "declension": "First",
+              "gender": "Feminine",
+              "reason": "Indirect object (to whom the gift is given)"
+            },
+            {
+              "word": "dōnum",
+              "case": "Accusative singular",
+              "declension": "Second",
+              "gender": "Neuter",
+              "reason": "Direct object (what is being given)",
+              "note": "Could also be nominative (neuter rule), but context shows it's the object of 'dat'"
+            },
+            {
+              "word": "dat",
+              "info": "3rd person singular verb (he/she/it gives)"
+            }
+          ]
+        },
+        {
+          "latin": "Verba puellārum sunt bona.",
+          "translation": "The words of the girls are good. / The girls' words are good.",
+          "analysis": [
+            {
+              "word": "Verba",
+              "case": "Nominative plural",
+              "declension": "Second",
+              "gender": "Neuter",
+              "reason": "Subject (what are good)",
+              "note": "Neuter nom. pl. ends in -a, not to be confused with 1st decl. sing. -a"
+            },
+            {
+              "word": "puellārum",
+              "case": "Genitive plural",
+              "declension": "First",
+              "gender": "Feminine",
+              "reason": "Possession (whose words)"
+            },
+            {
+              "word": "sunt",
+              "info": "3rd person plural verb (they are)"
+            },
+            {
+              "word": "bona",
+              "info": "Predicate adjective (good) - agrees with verba in neuter plural"
+            }
+          ]
+        },
+        {
+          "latin": "Puerī agrōs amant.",
+          "translation": "The boys love the fields.",
+          "analysis": [
+            {
+              "word": "Puerī",
+              "case": "Nominative plural",
+              "declension": "Second",
+              "gender": "Masculine",
+              "reason": "Subject (who loves)"
+            },
+            {
+              "word": "agrōs",
+              "case": "Accusative plural",
+              "declension": "Second",
+              "gender": "Masculine",
+              "reason": "Direct object (what is loved)"
+            },
+            {
+              "word": "amant",
+              "info": "3rd person plural verb (they love)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Example 5: The Neuter Rule in Action",
+      "description": "Demonstrates how nominative = accusative for neuter nouns makes context critical for interpretation.",
+      "demonstrations": [
+        {
+          "latin": "Bellum est.",
+          "translation": "The war is. / There is a war.",
+          "explanation": "Bellum is nominative singular (subject). You know this because 'est' (is) needs a subject, and bellum must be nominative here."
+        },
+        {
+          "latin": "Bellum video.",
+          "translation": "I see the war.",
+          "explanation": "Bellum is accusative singular (direct object). You know this because 'video' (I see) needs a direct object, and bellum must be accusative here. THE FORM IS IDENTICAL TO NOMINATIVE!"
+        },
+        {
+          "latin": "Bella sunt.",
+          "translation": "The wars are.",
+          "explanation": "Bella is nominative plural (subject). The plural verb 'sunt' tells you bella is the subject."
+        },
+        {
+          "latin": "Bella video.",
+          "translation": "I see the wars.",
+          "explanation": "Bella is accusative plural (direct object). The verb 'video' tells you bella must be the object. AGAIN, THE FORM IS IDENTICAL TO NOMINATIVE!"
+        },
+        {
+          "comparison": {
+            "nominative_example": "Dōna sunt bona. (The gifts are good.)",
+            "accusative_example": "Dōna video. (I see the gifts.)",
+            "critical_point": "The form 'dōna' is IDENTICAL in both sentences. Only the context (sunt vs. video) tells you whether it's nominative or accusative. This is the neuter rule in action!"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Example 6: Grammatical Gender vs. Natural Gender",
+      "description": "Explores how grammatical gender doesn't always match biological gender or natural properties.",
+      "cases": [
+        {
+          "type": "Grammatical masculine referring to males",
+          "examples": [
+            {
+              "latin": "puer, puerī, m.",
+              "english": "boy",
+              "note": "Grammatical gender matches natural gender"
+            },
+            {
+              "latin": "fīlius, fīliī, m.",
+              "english": "son",
+              "note": "Grammatical gender matches natural gender"
+            }
+          ]
+        },
+        {
+          "type": "Grammatical masculine referring to objects or abstractions",
+          "examples": [
+            {
+              "latin": "ager, agrī, m.",
+              "english": "field",
+              "note": "A field has no biological gender, but is grammatically masculine"
+            },
+            {
+              "latin": "amīcus, amīcī, m.",
+              "english": "friend",
+              "note": "Can refer to a friend of ANY gender, but the word is grammatically masculine"
+            },
+            {
+              "latin": "numerus, numerī, m.",
+              "english": "number",
+              "note": "An abstract concept, but grammatically masculine"
+            }
+          ]
+        },
+        {
+          "type": "First declension masculine (natural males, grammatical feminine form)",
+          "examples": [
+            {
+              "latin": "agricola, agricolae, m.",
+              "english": "farmer",
+              "note": "Usually a male profession in Roman times, but uses first declension (feminine form). Gender is marked as m. to show natural gender."
+            },
+            {
+              "latin": "nauta, nautae, m.",
+              "english": "sailor",
+              "note": "Uses first declension form but refers to males"
+            },
+            {
+              "latin": "poēta, poētae, m.",
+              "english": "poet",
+              "note": "Uses first declension form but refers to males"
+            }
+          ]
+        },
+        {
+          "type": "Neuter nouns (never refer to people)",
+          "examples": [
+            {
+              "latin": "bellum, bellī, n.",
+              "english": "war",
+              "note": "Abstract concept, neuter gender"
+            },
+            {
+              "latin": "dōnum, dōnī, n.",
+              "english": "gift",
+              "note": "Object, neuter gender"
+            },
+            {
+              "latin": "verbum, verbī, n.",
+              "english": "word",
+              "note": "Abstract concept, neuter gender"
+            }
+          ]
+        }
+      ],
+      "key_principle": "You CANNOT predict a noun's grammatical gender from its meaning. You must memorize the gender as part of the vocabulary: amīcus, amīcī, M. (not just 'friend' but 'friend, masculine')"
+    },
+    {
+      "title": "Example 7: Form Identification Practice",
+      "description": "Quick drills to test recognition of second declension forms.",
+      "drills": [
+        {
+          "question": "What case(s) could 'amīcī' be?",
+          "answer": "Genitive singular OR nominative plural",
+          "explanation": "Context tells them apart: 'Vita amīcī' (gen. sg.) vs. 'Amīcī sunt' (nom. pl.)"
+        },
+        {
+          "question": "If you see 'bellōrum' in a sentence, what case must it be?",
+          "answer": "Genitive plural only",
+          "explanation": "The ending -ōrum is unique to genitive plural. Translation: 'of the wars'"
+        },
+        {
+          "question": "What's the difference between 'puerum' and 'puerōs'?",
+          "answer": "puerum = accusative singular (the boy, as object); puerōs = accusative plural (the boys, as object)",
+          "explanation": "Both are accusative (direct objects), but -um is singular, -ōs is plural"
+        },
+        {
+          "question": "Why is 'bella' ambiguous?",
+          "answer": "It could be nominative plural OR accusative plural (neuter rule: nom. = acc.)",
+          "explanation": "Context determines: 'Bella sunt' (nom. pl. subject) vs. 'Bella video' (acc. pl. object)"
+        },
+        {
+          "question": "How do you know if an -er noun keeps the -e- or drops it?",
+          "answer": "Check the genitive singular form",
+          "explanation": "puer, puerī → keeps -e- (stem = puer-); ager, agrī → drops -e- (stem = agr-)"
+        },
+        {
+          "question": "What case is 'amīcō'?",
+          "answer": "Dative singular OR ablative singular",
+          "explanation": "Context shows which: 'Amīcō dōnum do' (dat. = to the friend) vs. 'Cum amīcō sum' (abl. = with the friend)"
+        },
+        {
+          "question": "Is 'dōna' first declension or second declension?",
+          "answer": "Second declension (neuter plural)",
+          "explanation": "From dōnum, dōnī, n. The plural nom/acc is 'dōna' (looks like 1st decl. but it's 2nd decl. neuter)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "assessment_type": "applied",
+  "concept_id": "concept-001",
+  "confidence_tracking_enabled": true,
+  "confidence_prompt": "Before I evaluate your work, how confident are you in your answers? (1-5)\n  1 - Mostly guessing\n  2 - Not very confident\n  3 - Somewhat confident\n  4 - Quite confident\n  5 - Very confident",
+  "tasks": [
+    {
+      "id": "applied-001-1",
+      "difficulty": "intermediate",
+      "task_type": "translation",
+      "prompt": "Translate the following Latin sentences into English. Make sure your translations are accurate and natural-sounding.\n\n1. Puellae sunt in silvā.\n2. Aquam portae video.\n3. Vita est bona.\n4. Terrae fortunam narrant.\n5. Cum puellīs sumus.",
+      "rubric": {
+        "scoring": "Each sentence worth 0.20 points (5 sentences × 0.20 = 1.00)",
+        "correct_translations": [
+          {
+            "latin": "Puellae sunt in silvā.",
+            "correct_english": "The girls are in the forest.",
+            "acceptable_variants": ["The girls are in the woods.", "The girls are in a forest."],
+            "key_points": [
+              "Puellae = nominative plural (the girls)",
+              "sunt = they are",
+              "in silvā = in the forest (ablative of place where)"
+            ],
+            "common_errors": [
+              "Translating 'puellae' as singular 'the girl' (wrong - it's plural here)",
+              "Missing 'in' in translation"
+            ]
+          },
+          {
+            "latin": "Aquam portae video.",
+            "correct_english": "I see the water of the gate / I see the gate's water.",
+            "acceptable_variants": ["I see the gate's water.", "I see the water at the gate."],
+            "key_points": [
+              "Aquam = accusative singular (direct object)",
+              "portae = genitive singular (possession)",
+              "video = I see"
+            ],
+            "common_errors": [
+              "Translating 'portae' as nominative plural 'gates' (wrong - it's genitive singular)",
+              "Making 'porta' the subject instead of understanding it modifies 'aquam'"
+            ],
+            "note": "This tests whether student recognizes portae as genitive (of the gate) rather than nominative plural (gates)"
+          },
+          {
+            "latin": "Vita est bona.",
+            "correct_english": "Life is good. / The life is good.",
+            "acceptable_variants": ["Life is good.", "The life is good."],
+            "key_points": [
+              "Vita = nominative singular (subject)",
+              "est = is",
+              "bona = good (predicate adjective, we'll learn adjectives in Concept 004)"
+            ],
+            "common_errors": [
+              "Translating 'vita' as genitive (wrong - nominative here)"
+            ]
+          },
+          {
+            "latin": "Terrae fortunam narrant.",
+            "correct_english": "The lands tell fortune / The lands proclaim fortune.",
+            "acceptable_variants": ["The lands tell fortune.", "The lands relate fortune.", "The lands narrate fortune."],
+            "key_points": [
+              "Terrae = nominative plural (subject)",
+              "fortunam = accusative singular (direct object)",
+              "narrant = they tell/relate/narrate"
+            ],
+            "common_errors": [
+              "Translating 'terrae' as genitive or dative singular (wrong - nominative plural)",
+              "Not recognizing 'narrant' as plural verb (they tell)"
+            ],
+            "note": "Slightly metaphorical/poetic, but grammatically straightforward. Tests plural recognition."
+          },
+          {
+            "latin": "Cum puellīs sumus.",
+            "correct_english": "We are with the girls.",
+            "acceptable_variants": ["We are with the girls."],
+            "key_points": [
+              "Cum = with (preposition)",
+              "puellīs = ablative plural (with whom)",
+              "sumus = we are"
+            ],
+            "common_errors": [
+              "Translating 'puellīs' as dative 'to the girls' (wrong context - cum takes ablative)",
+              "Translating 'sumus' as 'sum' (I am) instead of 'we are'"
+            ]
+          }
+        ],
+        "partial_credit": "Award 0.15/0.20 for translations that capture the main meaning but have minor errors in case interpretation or English phrasing. Award 0.10/0.20 for translations that show some understanding but have significant errors. Award 0.00 for completely incorrect translations."
+      },
+      "estimated_time": "15-20 minutes"
+    },
+    {
+      "id": "applied-001-2",
+      "difficulty": "intermediate",
+      "task_type": "form_identification",
+      "prompt": "For each Latin form below, provide: (a) Case, (b) Number (singular or plural), (c) English translation. Use the noun puella.\n\nExample: puellās → accusative, plural, 'the girls' (as direct object)\n\nYour turn:\n1. puellam\n2. puellārum\n3. puellā\n4. puellae (give ALL possible answers)\n5. puellīs (give ALL possible answers)",
+      "rubric": {
+        "scoring": "Question 1-3 worth 0.15 each (straightforward); Questions 4-5 worth 0.275 each (ambiguous forms require multiple answers). Total = 1.00",
+        "correct_answers": [
+          {
+            "form": "puellam",
+            "case": "Accusative",
+            "number": "Singular",
+            "translation": "the girl (as direct object)",
+            "points": 0.15,
+            "notes": "Unambiguous form"
+          },
+          {
+            "form": "puellārum",
+            "case": "Genitive",
+            "number": "Plural",
+            "translation": "of the girls / the girls'",
+            "points": 0.15,
+            "notes": "Unambiguous form"
+          },
+          {
+            "form": "puellā",
+            "case": "Ablative",
+            "number": "Singular",
+            "translation": "with/by/from the girl",
+            "points": 0.15,
+            "notes": "Unambiguous form (note the macron distinguishing it from -ae)"
+          },
+          {
+            "form": "puellae",
+            "case": "THREE POSSIBILITIES: (1) Genitive singular, (2) Dative singular, (3) Nominative plural",
+            "number": "Singular for gen/dat, Plural for nominative",
+            "translation": "(1) of the girl / the girl's, (2) to/for the girl, (3) the girls (as subject)",
+            "points": 0.275,
+            "full_credit_requires": "All three possibilities listed",
+            "partial_credit": "0.18 for two possibilities, 0.09 for one possibility",
+            "notes": "Tests whether student understands the ambiguity of -ae forms"
+          },
+          {
+            "form": "puellīs",
+            "case": "TWO POSSIBILITIES: (1) Dative plural, (2) Ablative plural",
+            "number": "Plural",
+            "translation": "(1) to/for the girls, (2) with/by/from the girls",
+            "points": 0.275,
+            "full_credit_requires": "Both possibilities listed",
+            "partial_credit": "0.14 for one possibility",
+            "notes": "Tests understanding that -īs serves both dative and ablative plural"
+          }
+        ]
+      },
+      "estimated_time": "10-15 minutes"
+    },
+    {
+      "id": "applied-001-3",
+      "difficulty": "advanced",
+      "task_type": "form_production",
+      "prompt": "Produce the requested Latin forms. Use the nouns provided in parentheses.\n\n1. 'of the roads' (via, viae, f.)\n2. 'to the land' (terra, terrae, f.)\n3. 'the gates' as direct object (porta, portae, f.)\n4. 'with the waters' (aqua, aquae, f.)\n5. 'the girls' as subject, plural (puella, puellae, f.)\n6. Conjugate: 'they are' (sum, esse)\n7. 'the life' as direct object (vita, vitae, f.)\n8. 'of the fortunes' (fortuna, fortunae, f.)",
+      "rubric": {
+        "scoring": "Each form worth 0.125 points (8 forms × 0.125 = 1.00)",
+        "correct_answers": [
+          {
+            "prompt": "'of the roads'",
+            "correct_form": "viārum",
+            "case": "Genitive plural",
+            "common_errors": ["viarum (missing macron is acceptable)", "viae (wrong - that's singular or wrong case)"]
+          },
+          {
+            "prompt": "'to the land'",
+            "correct_form": "terrae",
+            "case": "Dative singular",
+            "common_errors": ["terram (that's accusative)", "terrā (that's ablative)"],
+            "note": "Tests dative recognition"
+          },
+          {
+            "prompt": "'the gates' as direct object",
+            "correct_form": "portās",
+            "case": "Accusative plural",
+            "common_errors": ["portas (missing macron acceptable)", "portae (that's nominative plural or wrong case singular)", "porta (that's singular)"]
+          },
+          {
+            "prompt": "'with the waters'",
+            "correct_form": "aquīs",
+            "case": "Ablative plural",
+            "common_errors": ["aquis (missing macron acceptable)", "aquās (that's accusative plural)", "aquā (that's singular)"],
+            "note": "'With' indicates ablative"
+          },
+          {
+            "prompt": "'the girls' as subject, plural",
+            "correct_form": "puellae",
+            "case": "Nominative plural",
+            "common_errors": ["puella (that's singular)", "puellās (that's accusative plural)"]
+          },
+          {
+            "prompt": "'they are'",
+            "correct_form": "sunt",
+            "verb": "sum, esse (3rd person plural present)",
+            "common_errors": ["est (that's singular)", "sumus (that's 'we are')"]
+          },
+          {
+            "prompt": "'the life' as direct object",
+            "correct_form": "vitam",
+            "case": "Accusative singular",
+            "common_errors": ["vita (that's nominative)", "vitae (that's genitive/dative/nom.pl.)"]
+          },
+          {
+            "prompt": "'of the fortunes'",
+            "correct_form": "fortunārum",
+            "case": "Genitive plural",
+            "common_errors": ["fortunarum (missing macron acceptable)", "fortunae (that's singular or wrong case)"]
+          }
+        ],
+        "partial_credit": "Award 0.10/0.125 for forms that are close but have minor errors (e.g., wrong macron placement but correct ending). Award 0.00 for completely incorrect forms.",
+        "note": "Production is harder than recognition. This tests whether student can actively generate correct forms, not just identify them."
+      },
+      "estimated_time": "15-20 minutes"
+    }
+  ],
+  "mastery_criteria": {
+    "minimum_tasks_attempted": 2,
+    "average_score_threshold": 0.80,
+    "note": "Applied tasks test practical ability to translate, identify, and produce Latin forms. Students must demonstrate they can USE their knowledge, not just explain it."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "concept-003",
+  "title": "Second Declension Nouns (Masculine & Neuter)",
+  "domain": "latin-grammar",
+  "difficulty": 2,
+  "prerequisites": ["concept-001", "concept-002"],
+  "learning_objectives": [
+    "Identify second declension masculine nouns (-us, -er) and neuter nouns (-um)",
+    "Decline second declension nouns in all cases (singular and plural)",
+    "Explain the neuter rule (nominative = accusative)",
+    "Translate sentences with mixed first and second declension nouns",
+    "Identify grammatical gender vs. natural gender"
+  ],
+  "estimated_mastery_time": "75-90 minutes",
+  "available_resource_types": ["text", "examples"],
+  "assessment_types": ["dialogue", "written", "applied"],
+  "tags": ["declension", "noun-system", "masculine-nouns", "neuter-nouns", "gender"],
+  "vocabulary": [
+    {"latin": "amīcus, amīcī", "english": "friend", "gender": "m"},
+    {"latin": "fīlius, fīliī", "english": "son", "gender": "m"},
+    {"latin": "ager, agrī", "english": "field", "gender": "m"},
+    {"latin": "puer, puerī", "english": "boy", "gender": "m"},
+    {"latin": "bellum, bellī", "english": "war", "gender": "n"},
+    {"latin": "dōnum, dōnī", "english": "gift", "gender": "n"},
+    {"latin": "verbum, verbī", "english": "word", "gender": "n"}
+  ]
+}
