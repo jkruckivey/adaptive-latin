@@ -150,12 +150,18 @@ def load_concept_metadata(concept_id: str) -> Dict[str, Any]:
 # Learner Model Management Functions
 # ============================================================================
 
-def create_learner_model(learner_id: str) -> Dict[str, Any]:
+def create_learner_model(
+    learner_id: str,
+    learner_name: Optional[str] = None,
+    profile: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
     """
     Create a new learner model with initial state.
 
     Args:
         learner_id: Unique identifier for the learner
+        learner_name: Learner's name (optional)
+        profile: Learner profile from onboarding (optional)
 
     Returns:
         New learner model dictionary
@@ -172,10 +178,13 @@ def create_learner_model(learner_id: str) -> Dict[str, Any]:
         # Initialize learner model
         learner_model = {
             "learner_id": learner_id,
+            "learner_name": learner_name,
+            "profile": profile or {},
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
             "current_concept": "concept-001",
             "concepts": {},
+            "question_history": [],  # Track recent questions to avoid repetition
             "overall_progress": {
                 "concepts_completed": 0,
                 "concepts_in_progress": 1,
@@ -462,4 +471,63 @@ def list_all_concepts() -> List[str]:
 
     except Exception as e:
         logger.error(f"Error listing concepts: {e}")
+        return []
+
+
+def load_external_resources(concept_id: str = None, learner_profile: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+    """
+    Load curated external resources (videos, articles) for a concept.
+
+    Args:
+        concept_id: Concept identifier (e.g., "concept-001"), or None for general resources
+        learner_profile: Learner profile to filter resources by learning preference
+
+    Returns:
+        List of external resource dictionaries
+
+    Raises:
+        FileNotFoundError: If external resources file doesn't exist
+    """
+    try:
+        resources_file = config.RESOURCE_BANK_DIR.parent / "external-resources.json"
+
+        if not resources_file.exists():
+            logger.warning("External resources file not found")
+            return []
+
+        with open(resources_file, "r", encoding="utf-8") as f:
+            all_resources = json.load(f)
+
+        # Get resources for the concept
+        concept_key = concept_id if concept_id else "general"
+        if concept_key not in all_resources:
+            logger.info(f"No external resources found for {concept_key}")
+            return []
+
+        resources = all_resources[concept_key]["resources"]
+
+        # Filter by learner profile if provided
+        if learner_profile:
+            learning_preference = learner_profile.get("learningStyle", "")
+            preference_mapping = {
+                "visual": ["visual_learners", "video"],
+                "connections": ["conceptual_learners", "article"],
+                "practice": ["kinesthetic_learners", "practice"]
+            }
+
+            # Prioritize resources matching learner's preference
+            recommended_tags = preference_mapping.get(learning_preference, [])
+            if recommended_tags:
+                # Sort resources to put matching ones first
+                resources = sorted(
+                    resources,
+                    key=lambda r: any(tag in r.get("recommended_for", []) for tag in recommended_tags),
+                    reverse=True
+                )
+
+        logger.info(f"Loaded {len(resources)} external resources for {concept_key}")
+        return resources
+
+    except Exception as e:
+        logger.error(f"Error loading external resources: {e}")
         return []

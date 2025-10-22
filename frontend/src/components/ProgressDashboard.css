@@ -1,0 +1,153 @@
+.progress-dashboard {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 24px;
+}
+
+.progress-dashboard h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.progress-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.concepts-list {
+  margin-bottom: 24px;
+}
+
+.concepts-list h3 {
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.concepts-list ul {
+  list-style: none;
+}
+
+.concept-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  transition: all 0.3s;
+}
+
+.concept-item:hover {
+  background: #f0f0f0;
+}
+
+.concept-item.current {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-left: 4px solid #667eea;
+}
+
+.concept-item.completed {
+  opacity: 0.7;
+}
+
+.concept-number {
+  width: 24px;
+  height: 24px;
+  background: #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.concept-item.current .concept-number {
+  background: #667eea;
+  color: white;
+}
+
+.concept-item.completed .concept-number {
+  background: #4caf50;
+  color: white;
+}
+
+.concept-id {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.current-badge {
+  background: #667eea;
+  color: white;
+}
+
+.completed-badge {
+  background: #4caf50;
+  color: white;
+}
+
+.loading-text {
+  color: #999;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.info-section {
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.info-section h3 {
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.info-list {
+  list-style: none;
+}
+
+.info-list li {
+  padding: 8px 0;
+  color: #666;
+  font-size: 0.9rem;
+}

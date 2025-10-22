@@ -64,6 +64,25 @@ def load_system_prompt() -> str:
         raise
 
 
+def load_content_generation_prompt() -> str:
+    """
+    Load the content generation instructions.
+
+    Returns:
+        Content generation prompt as string
+    """
+    try:
+        with open(config.CONTENT_GENERATION_PROMPT_FILE, "r", encoding="utf-8") as f:
+            content_prompt = f.read()
+
+        logger.info("Loaded content generation prompt")
+        return content_prompt
+
+    except Exception as e:
+        logger.error(f"Error loading content generation prompt: {e}")
+        raise
+
+
 def inject_learner_context(base_prompt: str, learner_id: str) -> str:
     """
     Inject learner-specific context into system prompt.
@@ -81,6 +100,66 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
         # Build learner context
         context = f"\n\n## Current Learner Context\n\n"
         context += f"**Learner ID**: {learner_id}\n"
+
+        # Add learner name if available
+        if model.get("learner_name"):
+            context += f"**Learner Name**: {model['learner_name']}\n"
+
+        # Add learner profile for personalization
+        profile = model.get("profile", {})
+        if profile:
+            context += f"\n### Learner Profile (for Personalization)\n\n"
+
+            if profile.get("background"):
+                context += f"**Background & Motivation**: {profile['background']}\n"
+
+            if profile.get("priorKnowledge"):
+                pk = profile["priorKnowledge"]
+                context += f"\n**Prior Knowledge**:\n"
+                if pk.get("languageDetails"):
+                    context += f"- Languages studied: {pk['languageDetails']}\n"
+                if pk.get("hasRomanceLanguage"):
+                    context += f"- Has studied Romance language (Spanish/French) - use cognates and comparisons!\n"
+                if pk.get("hasInflectedLanguage"):
+                    context += f"- Has studied inflected language (German) - familiar with cases!\n"
+                if "understandsSubjectObject" in pk:
+                    context += f"- Subject/Object understanding: {pk.get('understandsSubjectObject')}\n"
+                    context += f"- Confidence level: {pk.get('subjectObjectConfidence', 'unknown')}\n"
+
+            if profile.get("grammarExperience"):
+                exp_map = {
+                    "loved": "Enthusiastic about grammar - can use technical terminology",
+                    "okay": "Has basic grammar foundation - balance terminology with explanation",
+                    "confused": "Found grammar confusing - use simple language and clear examples",
+                    "forgotten": "Needs grammar refresher - build from basics"
+                }
+                context += f"\n**Grammar Comfort**: {exp_map.get(profile['grammarExperience'], profile['grammarExperience'])}\n"
+
+            if profile.get("learningStyle"):
+                style_map = {
+                    "connections": "Prefers connections to English words and cognates",
+                    "stories": "Learns best through context and example sentences",
+                    "patterns": "Likes to see patterns and systematic logic",
+                    "repetition": "Benefits from practice and repetition"
+                }
+                context += f"**Learning Style**: {style_map.get(profile['learningStyle'], profile['learningStyle'])}\n"
+
+                # Add specific teaching guidance based on learning style
+                context += f"\n**Teaching Strategy**: "
+                if profile['learningStyle'] == "connections":
+                    context += "Show English derivatives and cognates with other languages they know.\n"
+                elif profile['learningStyle'] == "stories":
+                    context += "Use example sentences and contextual learning.\n"
+                elif profile['learningStyle'] == "patterns":
+                    context += "Highlight patterns, endings, and systematic rules.\n"
+                elif profile['learningStyle'] == "repetition":
+                    context += "Provide practice exercises and review.\n"
+
+            if profile.get("interests"):
+                context += f"**Interests**: {profile['interests']}\n"
+                context += f"**Example Personalization**: Use examples related to {profile['interests'].split(',')[0].strip()} when possible.\n"
+
+        context += f"\n### Learning Progress\n\n"
         context += f"**Current Concept**: {model['current_concept']}\n"
         context += f"**Concepts Completed**: {model['overall_progress']['concepts_completed']}\n"
         context += f"**Total Assessments**: {model['overall_progress']['total_assessments']}\n"
@@ -459,4 +538,172 @@ def chat(
             "success": False,
             "error": str(e),
             "conversation_history": conversation_history
+        }
+
+
+# ============================================================================
+# Content Generation Function
+# ============================================================================
+
+def generate_content(learner_id: str, stage: str = "start", correctness: bool = None,
+                     confidence: int = None, remediation_type: str = None) -> Dict[str, Any]:
+    """
+    Generate personalized learning content based on learner profile and current stage.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        stage: Learning stage ("start", "practice", "assess", "remediate", "reinforce")
+        correctness: Whether the previous answer was correct (for adaptive response)
+        confidence: Confidence level 1-4 (for adaptive response)
+        remediation_type: Type of remediation ("brief", "supportive", "full_calibration")
+
+    Returns:
+        Dictionary containing generated content object
+    """
+    try:
+        # Load content generation prompt
+        content_prompt = load_content_generation_prompt()
+
+        # Load learner context and question history
+        learner_context = inject_learner_context("", learner_id)
+
+        # Get question history to avoid repetition
+        try:
+            from .tools import load_learner_model
+            learner_model = load_learner_model(learner_id)
+            question_history = learner_model.get("question_history", [])
+        except Exception:
+            question_history = []
+
+        # Combine prompts
+        system_prompt = f"{content_prompt}\n\n{learner_context}"
+
+        # Add question history context if available
+        if question_history:
+            history_text = "\n\nRECENT QUESTIONS ASKED (do NOT repeat these):\n"
+            for i, q in enumerate(question_history[-5:], 1):  # Show last 5 questions
+                history_text += f"{i}. {q.get('scenario', '')} {q.get('question', '')}\n"
+            system_prompt += history_text
+
+        # Build generation request based on stage
+        if stage == "start":
+            # DIAGNOSTIC-FIRST: Always start with a question
+            request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from any shown above). This is the first question for the current concept. Include a rich Roman context (inscription, letter, etc.). Respond ONLY with the JSON object, no other text."
+
+        elif stage == "practice":
+            # Generate next diagnostic question
+            request = "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario from those listed above. Vary the context: use different Latin words, different Roman settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase difficulty slightly. Respond ONLY with the JSON object, no other text."
+
+        elif stage == "assess":
+            # Deep understanding check
+            request = "Generate a 'dialogue' type question requiring explanation, not just recall. Respond ONLY with the JSON object, no other text."
+
+        elif stage == "remediate":
+            # Get context about what they just answered wrong
+            last_question_context = ""
+            if question_history and len(question_history) > 0:
+                last_q = question_history[-1]
+                user_ans = last_q.get('user_answer', 'unknown')
+                correct_ans = last_q.get('correct_answer', 'unknown')
+                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED INCORRECTLY:\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\nThey chose: {user_ans}\nCorrect answer: {correct_ans}\n"
+
+            # Adaptive remediation based on confidence
+            if remediation_type == "full_calibration":
+                request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' that: 1) Directly addresses the SPECIFIC concept tested in the question above, 2) Explains WHY their chosen answer was wrong and what misconception it reveals, 3) Includes calibration feedback about recognizing when to be less certain. Focus on the exact misconception revealed by their wrong answer. Respond ONLY with the JSON object, no other text."
+            elif remediation_type == "supportive":
+                request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' or 'example-set' that directly addresses the SPECIFIC concept from the question above. Explain why their chosen answer was incorrect, but be gentle and encouraging. Respond ONLY with the JSON object, no other text."
+            else:
+                request = f"Generate a brief 'lesson' to clarify the concept tested in the most recent question.{last_question_context}Explain why their answer was incorrect. Respond ONLY with the JSON object, no other text."
+
+        elif stage == "reinforce":
+            # Get context about what they answered correctly but uncertainly
+            last_question_context = ""
+            if question_history and len(question_history) > 0:
+                last_q = question_history[-1]
+                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence):\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\n"
+
+            # Brief reinforcement for correct but uncertain answers
+            request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+
+        else:
+            request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+
+        # Make API call
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=4096,
+            system=system_prompt,
+            messages=[{
+                "role": "user",
+                "content": request
+            }]
+        )
+
+        logger.info(f"Content generation API call completed. Stop reason: {response.stop_reason}")
+
+        # Extract text response
+        content_text = ""
+        for content_block in response.content:
+            if hasattr(content_block, "text"):
+                content_text += content_block.text
+
+        # Strip markdown code fences if present
+        content_text = content_text.strip()
+        logger.info(f"Raw content text starts with: {content_text[:50]}")
+
+        if content_text.startswith("```"):
+            logger.info("Stripping markdown code fences from response")
+            # Remove opening fence (```json or ```)
+            lines = content_text.split('\n')
+            if lines[0].startswith("```"):
+                lines = lines[1:]
+            # Remove closing fence
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            content_text = '\n'.join(lines).strip()
+            logger.info(f"After stripping, content starts with: {content_text[:50]}")
+
+        # Parse JSON
+        try:
+            content_obj = json.loads(content_text)
+            content_type = content_obj.get('type', 'unknown')
+            logger.info(f"Successfully generated content type: {content_type}")
+
+            # Attach external resources for lesson/example-set content
+            if content_type in ['lesson', 'example-set'] and stage in ['remediate', 'reinforce']:
+                from .tools import load_external_resources, load_learner_model
+                try:
+                    learner_model = load_learner_model(learner_id)
+                    current_concept = learner_model.get('current_concept', 'concept-001')
+                    learner_profile = learner_model.get('profile', {})
+
+                    # Load external resources for this concept
+                    external_resources = load_external_resources(current_concept, learner_profile)
+
+                    if external_resources:
+                        # Add top 2 resources to the content
+                        content_obj['external_resources'] = external_resources[:2]
+                        logger.info(f"Attached {len(content_obj['external_resources'])} external resources")
+                except Exception as e:
+                    logger.warning(f"Failed to attach external resources: {e}")
+
+            return {
+                "success": True,
+                "content": content_obj
+            }
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse JSON response: {e}")
+            logger.error(f"Response text: {content_text}")
+            # Return error content
+            return {
+                "success": False,
+                "error": "Failed to parse AI response",
+                "raw_response": content_text
+            }
+
+    except Exception as e:
+        logger.error(f"Error generating content: {e}")
+        return {
+            "success": False,
+            "error": str(e)
         }

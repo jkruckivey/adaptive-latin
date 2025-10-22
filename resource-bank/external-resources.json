@@ -1,0 +1,270 @@
+{
+  "concept-001": {
+    "concept_id": "concept-001",
+    "concept_name": "First Declension Nouns",
+    "resources": [
+      {
+        "type": "video",
+        "title": "Latin First Declension - Visual Guide",
+        "url": "https://www.youtube.com/watch?v=9VIqEh8Le54",
+        "duration": "8:32",
+        "provider": "YouTube - Latin Tutorial",
+        "description": "Clear explanation of first declension noun endings with visual examples",
+        "recommended_for": ["visual_learners", "struggling_with_endings"],
+        "thumbnail": "https://img.youtube.com/vi/9VIqEh8Le54/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "First Declension Nouns Explained",
+        "url": "https://www.youtube.com/watch?v=PQVCVlnqhJw",
+        "duration": "6:15",
+        "provider": "YouTube - LatinTutorial",
+        "description": "Step-by-step walkthrough of puella and other first declension examples",
+        "recommended_for": ["beginners", "needs_examples"],
+        "thumbnail": "https://img.youtube.com/vi/PQVCVlnqhJw/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "First Declension Song",
+        "url": "https://www.youtube.com/watch?v=j03ysSqyC9s",
+        "duration": "2:15",
+        "provider": "YouTube - Latin Songs",
+        "description": "Mnemonic song to memorize first declension endings",
+        "recommended_for": ["auditory_learners", "memory_aids", "struggling_with_endings"],
+        "thumbnail": "https://img.youtube.com/vi/j03ysSqyC9s/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "Professor Dave Explains First Declension",
+        "url": "https://www.youtube.com/watch?v=KmBeotLa9P0",
+        "duration": "7:45",
+        "provider": "YouTube - Professor Dave",
+        "description": "Alternative teaching style with clear breakdown of first declension patterns",
+        "recommended_for": ["visual_learners", "needs_different_approach"],
+        "thumbnail": "https://img.youtube.com/vi/KmBeotLa9P0/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "Puella Declension Walkthrough",
+        "url": "https://www.youtube.com/watch?v=Fjk23c31k7Y",
+        "duration": "5:30",
+        "provider": "YouTube - Latin Tutorial",
+        "description": "Detailed walkthrough of declining puella with case explanations",
+        "recommended_for": ["step_by_step_learners", "needs_examples"],
+        "thumbnail": "https://img.youtube.com/vi/Fjk23c31k7Y/mqdefault.jpg"
+      },
+      {
+        "type": "article",
+        "title": "First Declension Patterns - Interactive Guide",
+        "url": "https://dcc.dickinson.edu/grammar/latin/1st-declension",
+        "provider": "Dickinson College Commentaries",
+        "description": "Comprehensive reference with declension tables and usage notes",
+        "recommended_for": ["reference", "deep_dive"],
+        "reading_time": "10 min"
+      },
+      {
+        "type": "article",
+        "title": "First Declension Lesson with Worksheets",
+        "url": "https://familystyleschooling.com/lesson-1-1st-declension/",
+        "provider": "FamilyStyleSchooling",
+        "description": "Structured lesson with practice worksheets and exercises",
+        "recommended_for": ["structured_learners", "wants_worksheets"],
+        "reading_time": "15 min"
+      },
+      {
+        "type": "practice",
+        "title": "First Declension Exercises",
+        "url": "https://www.quia.com/quiz/291708.html",
+        "provider": "Quia",
+        "description": "Interactive practice exercises for first declension endings",
+        "recommended_for": ["needs_practice", "kinesthetic_learners"],
+        "estimated_time": "15 min"
+      },
+      {
+        "type": "practice",
+        "title": "Purpose Games - 1st Declension",
+        "url": "https://www.purposegames.com/game/latin-noun-endings-1st-declension-game",
+        "provider": "Purpose Games",
+        "description": "Interactive game-based practice for first declension noun endings",
+        "recommended_for": ["kinesthetic_learners", "gamification", "needs_practice"],
+        "estimated_time": "10 min"
+      }
+    ]
+  },
+  "concept-002": {
+    "concept_id": "concept-002",
+    "concept_name": "Second Declension Nouns",
+    "resources": [
+      {
+        "type": "video",
+        "title": "Second Declension Made Easy",
+        "url": "https://www.youtube.com/watch?v=LHa2qXnhlZY",
+        "duration": "9:45",
+        "provider": "YouTube - Latin Made Simple",
+        "description": "Covers both -us and -um endings with clear examples",
+        "recommended_for": ["visual_learners", "comparative_learners"],
+        "thumbnail": "https://img.youtube.com/vi/LHa2qXnhlZY/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "Neuter Nouns -us/-um Comparison",
+        "url": "https://www.youtube.com/watch?v=qHa8tywH0DU",
+        "duration": "8:20",
+        "provider": "YouTube - Latin Lessons",
+        "description": "Detailed comparison between masculine -us and neuter -um endings",
+        "recommended_for": ["comparative_learners", "confused_about_gender"],
+        "thumbnail": "https://img.youtube.com/vi/qHa8tywH0DU/mqdefault.jpg"
+      },
+      {
+        "type": "article",
+        "title": "Second Declension Reference",
+        "url": "https://dcc.dickinson.edu/grammar/latin/2nd-declension",
+        "provider": "Dickinson College",
+        "description": "Complete paradigm tables and usage rules",
+        "recommended_for": ["reference", "detailed_learners"],
+        "reading_time": "8 min"
+      },
+      {
+        "type": "article",
+        "title": "Second Declension - servus/dominus",
+        "url": "https://www.nationalarchives.gov.uk/latin/stage-1-latin/lessons/lesson-3-second-declension-nouns-to-be/",
+        "provider": "UK National Archives",
+        "description": "Interactive lesson with servus and dominus examples",
+        "recommended_for": ["interactive_learners", "needs_examples"],
+        "reading_time": "12 min"
+      },
+      {
+        "type": "article",
+        "title": "Masculine/Feminine/Neuter Endings Guide",
+        "url": "https://www.usu.edu/markdamen/Latin1000/Presentation/transcriptions/04T.pdf",
+        "provider": "Utah State University",
+        "description": "Clear explanation of gender patterns and endings across declensions",
+        "recommended_for": ["confused_about_gender", "reference"],
+        "reading_time": "10 min"
+      },
+      {
+        "type": "practice",
+        "title": "Beginner's Latin Exercises (1st/2nd)",
+        "url": "http://www.milagathos.com/beginnersLatinExercises/indexFirstAndSecondDeclensions/",
+        "provider": "Milagathos",
+        "description": "Comprehensive practice drills for first and second declensions",
+        "recommended_for": ["needs_practice", "wants_mixed_review"],
+        "estimated_time": "20 min"
+      },
+      {
+        "type": "practice",
+        "title": "SoftSchools 1st/2nd Declension Quiz",
+        "url": "https://www.softschools.com/quizzes/latin/grammar_declensions_practice_1st_and_2nd_declension/quiz10901.html",
+        "provider": "SoftSchools",
+        "description": "Mixed practice quiz covering both first and second declensions",
+        "recommended_for": ["needs_practice", "wants_mixed_review"],
+        "estimated_time": "10 min"
+      }
+    ]
+  },
+  "concept-003": {
+    "concept_id": "concept-003",
+    "concept_name": "Third Declension Nouns",
+    "resources": [
+      {
+        "type": "video",
+        "title": "Third Declension Overview",
+        "url": "https://www.youtube.com/watch?v=Zq8o8QYnF5s",
+        "duration": "12:20",
+        "provider": "YouTube - Classical Latin",
+        "description": "Comprehensive guide to the complex third declension",
+        "recommended_for": ["advanced_learners", "struggling_with_complexity"],
+        "thumbnail": "https://img.youtube.com/vi/Zq8o8QYnF5s/mqdefault.jpg"
+      },
+      {
+        "type": "video",
+        "title": "Third Declension i-Stems",
+        "url": "https://www.youtube.com/watch?v=jm8HjKvzpeE",
+        "duration": "10:15",
+        "provider": "YouTube - Latin Lessons",
+        "description": "Detailed explanation of i-stem third declension nouns",
+        "recommended_for": ["advanced_learners", "confused_about_i_stems"],
+        "thumbnail": "https://img.youtube.com/vi/jm8HjKvzpeE/mqdefault.jpg"
+      },
+      {
+        "type": "article",
+        "title": "Dickinson College 3rd Declension",
+        "url": "https://dcc.dickinson.edu/grammar/latin/3rd-declension-classes",
+        "provider": "Dickinson College Commentaries",
+        "description": "Complete reference for all third declension classes and patterns",
+        "recommended_for": ["reference", "comprehensive_learners"],
+        "reading_time": "15 min"
+      },
+      {
+        "type": "article",
+        "title": "Third Declension of Nouns",
+        "url": "https://latinfromscratch.com/course/third-declension/third-declension-nouns/",
+        "provider": "Latin From Scratch",
+        "description": "Step-by-step guide to understanding third declension patterns",
+        "recommended_for": ["structured_learners", "needs_breakdown"],
+        "reading_time": "12 min"
+      },
+      {
+        "type": "article",
+        "title": "Find the Stem of Any Latin Noun",
+        "url": "https://booksnbackpacks.com/find-the-stem-of-any-latin-noun/",
+        "provider": "Books n' Backpacks",
+        "description": "Practical guide to finding noun stems from genitive forms",
+        "recommended_for": ["struggling_with_stems", "practical_learners"],
+        "reading_time": "8 min"
+      },
+      {
+        "type": "article",
+        "title": "Latin Declensions Comparison Table",
+        "url": "https://www.thelatinlibrary.com/101/Declension3.pdf",
+        "provider": "The Latin Library",
+        "description": "Side-by-side comparison table of all three declensions",
+        "recommended_for": ["visual_learners", "wants_comparison", "reference"],
+        "reading_time": "5 min"
+      },
+      {
+        "type": "practice",
+        "title": "SoftSchools 3rd Declension Quiz",
+        "url": "https://www.softschools.com/quizzes/latin/grammar_declensions_practice_3rd_declension/quiz10902.html",
+        "provider": "SoftSchools",
+        "description": "Interactive quiz for third declension practice",
+        "recommended_for": ["needs_practice", "kinesthetic_learners"],
+        "estimated_time": "15 min"
+      },
+      {
+        "type": "practice",
+        "title": "Beginner's Latin Declension Review",
+        "url": "http://www.milagathos.com/beginnersLatinExercises/indexFirstAndSecondDeclensions/",
+        "provider": "Milagathos",
+        "description": "Comprehensive review exercises across all declensions",
+        "recommended_for": ["needs_practice", "wants_comprehensive_review"],
+        "estimated_time": "25 min"
+      }
+    ]
+  },
+  "general": {
+    "concept_id": "general",
+    "concept_name": "General Latin Resources",
+    "resources": [
+      {
+        "type": "video",
+        "title": "How Latin Cases Work",
+        "url": "https://www.youtube.com/watch?v=8zJC3QV6G_E",
+        "duration": "15:30",
+        "provider": "YouTube - PolyMath",
+        "description": "Conceptual overview of the Latin case system",
+        "recommended_for": ["confused_about_cases", "conceptual_learners"],
+        "thumbnail": "https://img.youtube.com/vi/8zJC3QV6G_E/mqdefault.jpg"
+      },
+      {
+        "type": "article",
+        "title": "Latin Grammar Reference",
+        "url": "https://www.nationalarchives.gov.uk/latin/beginners/",
+        "provider": "UK National Archives",
+        "description": "Beginner-friendly Latin grammar guide",
+        "recommended_for": ["beginners", "needs_overview"],
+        "reading_time": "20 min"
+      }
+    ]
+  }
+}
