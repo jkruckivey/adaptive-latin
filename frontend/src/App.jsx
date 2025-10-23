@@ -203,11 +203,17 @@ function App() {
           null,  // No confidence rating
           progress?.current_concept || 'concept-001',
           currentContent.question,
-          currentContent.scenario
+          currentContent.scenario,
+          currentContent.options || null
         )
 
         if (result.next_content) {
-          setCurrentContent(result.next_content)
+          // Attach debug info to content for debugging display
+          const contentWithDebug = {
+            ...result.next_content,
+            debug_context: result.debug_context
+          }
+          setCurrentContent(contentWithDebug)
           setContentIndex(contentIndex + 1)
         } else {
           setError('Failed to get next content')
@@ -235,12 +241,18 @@ function App() {
         confidenceLevel,
         'noun-declensions', // TODO: Get from learner state
         currentQuestionData.content.question, // Pass question text
-        currentQuestionData.content.scenario // Pass scenario text
+        currentQuestionData.content.scenario, // Pass scenario text
+        currentQuestionData.content.options || null // Pass answer options for specific feedback
       )
 
       // Show the next content returned by the backend
       if (result.next_content) {
-        setCurrentContent(result.next_content)
+        // Attach debug info to content for debugging display
+        const contentWithDebug = {
+          ...result.next_content,
+          debug_context: result.debug_context
+        }
+        setCurrentContent(contentWithDebug)
         setContentIndex(contentIndex + 1)
       } else {
         setError('Failed to get next content')

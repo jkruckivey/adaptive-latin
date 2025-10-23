@@ -74,7 +74,7 @@ export const api = {
   },
 
   // Submit learner response with confidence for evaluation
-  async submitResponse(learnerId, questionType, userAnswer, correctAnswer, confidence, currentConcept, questionText = null, scenarioText = null) {
+  async submitResponse(learnerId, questionType, userAnswer, correctAnswer, confidence, currentConcept, questionText = null, scenarioText = null, options = null) {
     const response = await fetch(`${API_BASE_URL}/submit-response`, {
       method: 'POST',
       headers: {
@@ -88,9 +88,22 @@ export const api = {
         confidence: confidence,
         current_concept: currentConcept,
         question_text: questionText,
-        scenario_text: scenarioText
+        scenario_text: scenarioText,
+        options: options
       }),
     });
+    return response.json();
+  },
+
+  // Get concepts due for review (spaced repetition)
+  async getDueReviews(learnerId, includeUpcoming = 0) {
+    const response = await fetch(`${API_BASE_URL}/reviews/${learnerId}?include_upcoming=${includeUpcoming}`);
+    return response.json();
+  },
+
+  // Get review statistics
+  async getReviewStats(learnerId) {
+    const response = await fetch(`${API_BASE_URL}/review-stats/${learnerId}`);
     return response.json();
   }
 };

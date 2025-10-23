@@ -216,3 +216,69 @@
   margin-bottom: 8px;
   color: #4a5568;
 }
+
+/* Debug Panel */
+.debug-panel {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.debug-summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #4a5568;
+  padding: 8px;
+  user-select: none;
+  list-style: none;
+}
+
+.debug-summary:hover {
+  color: #2d3748;
+  background: #edf2f7;
+  border-radius: 4px;
+}
+
+.debug-summary::marker {
+  content: '';
+}
+
+.debug-content {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.debug-content h4 {
+  margin: 0 0 16px 0;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.debug-section {
+  margin-bottom: 16px;
+}
+
+.debug-section strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #4a5568;
+}
+
+.debug-json {
+  background: #2d3748;
+  color: #a0aec0;
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.debug-section em {
+  color: #a0aec0;
+}

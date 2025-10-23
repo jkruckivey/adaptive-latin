@@ -7,7 +7,7 @@ system prompt management, and conversation handling.
 
 import json
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from anthropic import Anthropic
 from .config import config
 from .tools import (
@@ -17,7 +17,9 @@ from .tools import (
     update_learner_model,
     calculate_mastery,
     get_next_concept,
-    load_learner_model
+    load_learner_model,
+    should_show_cumulative_review,
+    select_concepts_for_cumulative
 )
 from .confidence import (
     calculate_calibration,
@@ -28,6 +30,90 @@ from .confidence import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def validate_diagnostic_content(content_obj: Dict) -> Tuple[bool, str]:
+    """
+    Validate diagnostic question content for structural integrity.
+
+    Checks:
+    - Multiple-choice: has exactly one correct answer, valid index, unique options
+    - Fill-blank: has correct answers matching number of blanks
+    - Dialogue: has question text
+
+    Args:
+        content_obj: The parsed JSON content object
+
+    Returns:
+        Tuple of (is_valid: bool, error_message: str)
+    """
+    content_type = content_obj.get('type', '')
+
+    if content_type == 'multiple-choice':
+        # Validate multiple-choice question
+        if 'correctAnswer' not in content_obj:
+            return False, "Multiple-choice question missing 'correctAnswer' field"
+
+        correct_answer = content_obj['correctAnswer']
+        if not isinstance(correct_answer, int):
+            return False, f"correctAnswer must be an integer, got {type(correct_answer).__name__}"
+
+        options = content_obj.get('options', [])
+        if not options:
+            return False, "Multiple-choice question missing 'options' array"
+
+        if correct_answer < 0 or correct_answer >= len(options):
+            return False, f"correctAnswer index {correct_answer} out of bounds for {len(options)} options"
+
+        # Check for duplicate options
+        unique_options = set(options)
+        if len(unique_options) < len(options):
+            return False, "Multiple-choice question has duplicate options"
+
+        # Ensure scenario and question exist
+        if 'scenario' not in content_obj or not content_obj['scenario']:
+            return False, "Multiple-choice question missing 'scenario' field (required for authentic context)"
+
+        if 'question' not in content_obj or not content_obj['question']:
+            return False, "Multiple-choice question missing 'question' field"
+
+        logger.info(f"✓ Valid multiple-choice: {len(options)} unique options, correctAnswer={correct_answer}")
+        return True, ""
+
+    elif content_type == 'fill-blank':
+        # Validate fill-blank exercise
+        if 'correctAnswers' not in content_obj:
+            return False, "Fill-blank exercise missing 'correctAnswers' field"
+
+        correct_answers = content_obj['correctAnswers']
+        if not isinstance(correct_answers, list):
+            return False, f"correctAnswers must be a list, got {type(correct_answers).__name__}"
+
+        blanks = content_obj.get('blanks', [])
+        if not blanks:
+            return False, "Fill-blank exercise missing 'blanks' array"
+
+        if len(correct_answers) != len(blanks):
+            return False, f"Fill-blank has {len(blanks)} blanks but {len(correct_answers)} correctAnswers"
+
+        # Ensure sentence exists
+        if 'sentence' not in content_obj or not content_obj['sentence']:
+            return False, "Fill-blank exercise missing 'sentence' field"
+
+        logger.info(f"✓ Valid fill-blank: {len(blanks)} blanks with matching answers")
+        return True, ""
+
+    elif content_type == 'dialogue':
+        # Validate dialogue question
+        if 'question' not in content_obj or not content_obj['question']:
+            return False, "Dialogue question missing 'question' field"
+
+        logger.info(f"✓ Valid dialogue question")
+        return True, ""
+
+    # Non-diagnostic content types don't need validation
+    return True, ""
+
 
 # Initialize Anthropic client
 client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
@@ -137,23 +223,20 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
 
             if profile.get("learningStyle"):
                 style_map = {
-                    "connections": "Prefers connections to English words and cognates",
-                    "stories": "Learns best through context and example sentences",
-                    "patterns": "Likes to see patterns and systematic logic",
-                    "repetition": "Benefits from practice and repetition"
+                    "visual": "Prefers video explanations and visual structured displays (tables, charts)",
+                    "connections": "Prefers written articles, guides, and connecting to English/other languages",
+                    "practice": "Prefers interactive practice exercises, drills, and hands-on activities"
                 }
                 context += f"**Learning Style**: {style_map.get(profile['learningStyle'], profile['learningStyle'])}\n"
 
                 # Add specific teaching guidance based on learning style
-                context += f"\n**Teaching Strategy**: "
-                if profile['learningStyle'] == "connections":
-                    context += "Show English derivatives and cognates with other languages they know.\n"
-                elif profile['learningStyle'] == "stories":
-                    context += "Use example sentences and contextual learning.\n"
-                elif profile['learningStyle'] == "patterns":
-                    context += "Highlight patterns, endings, and systematic rules.\n"
-                elif profile['learningStyle'] == "repetition":
-                    context += "Provide practice exercises and review.\n"
+                context += f"\n**Content Format Preference**: "
+                if profile['learningStyle'] == "visual":
+                    context += "For remediation/reinforcement, generate 'paradigm-table' content showing structured grammar tables. Use visual organization.\n"
+                elif profile['learningStyle'] == "connections":
+                    context += "For remediation/reinforcement, generate 'lesson' or 'example-set' content with written explanations and connections to English.\n"
+                elif profile['learningStyle'] == "practice":
+                    context += "For remediation/reinforcement, generate 'fill-blank' exercises for hands-on practice. Include hints.\n"
 
             if profile.get("interests"):
                 context += f"**Interests**: {profile['interests']}\n"
@@ -546,7 +629,8 @@ def chat(
 # ============================================================================
 
 def generate_content(learner_id: str, stage: str = "start", correctness: bool = None,
-                     confidence: int = None, remediation_type: str = None) -> Dict[str, Any]:
+                     confidence: int = None, remediation_type: str = None,
+                     question_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     Generate personalized learning content based on learner profile and current stage.
 
@@ -556,6 +640,12 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         correctness: Whether the previous answer was correct (for adaptive response)
         confidence: Confidence level 1-4 (for adaptive response)
         remediation_type: Type of remediation ("brief", "supportive", "full_calibration")
+        question_context: Optional dict with question details for specific feedback:
+            - scenario: The question scenario text
+            - question: The question text
+            - user_answer: Answer index or text the student selected
+            - options: List of options (for multiple-choice)
+            - correct_answer: The correct answer
 
     Returns:
         Dictionary containing generated content object
@@ -585,14 +675,65 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                 history_text += f"{i}. {q.get('scenario', '')} {q.get('question', '')}\n"
             system_prompt += history_text
 
+        # Check if cumulative review should be shown (only for practice stage)
+        is_cumulative = False
+        cumulative_concepts = []
+        if stage in ["start", "practice"]:
+            try:
+                is_cumulative = should_show_cumulative_review(learner_id)
+                if is_cumulative:
+                    cumulative_concepts = select_concepts_for_cumulative(learner_id, count=3)
+                    logger.info(f"Generating cumulative review across concepts: {cumulative_concepts}")
+
+                    # Load metadata for all selected concepts
+                    concepts_metadata = []
+                    for concept_id in cumulative_concepts:
+                        metadata = load_concept_metadata(concept_id)
+                        concepts_metadata.append({
+                            "concept_id": concept_id,
+                            "title": metadata.get("title", concept_id),
+                            "description": metadata.get("description", "")
+                        })
+
+                    # Add cumulative context to system prompt
+                    cumulative_context = "\n\n=== CUMULATIVE REVIEW MODE ===\n"
+                    cumulative_context += "Generate a question that integrates concepts from MULTIPLE previously learned topics:\n"
+                    for cm in concepts_metadata:
+                        cumulative_context += f"- {cm['concept_id']}: {cm['title']} ({cm['description']})\n"
+                    cumulative_context += "\nThe question should require the learner to apply knowledge from at least 2 of these concepts together.\n"
+                    system_prompt += cumulative_context
+            except ValueError as e:
+                # Not enough concepts for cumulative review yet
+                logger.info(f"Cumulative review not available: {e}")
+                is_cumulative = False
+
         # Build generation request based on stage
-        if stage == "start":
+        if stage == "preview":
+            # PREVIEW MODE: Quick conceptual foundation before diagnostic (addresses audit feedback)
+            # Adapt preview format to learning style
+            learner_model = load_learner_model(learner_id)
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+
+            if learning_style == 'visual':
+                request = "Generate a brief 'paradigm-table' preview (30-second scan) showing the key grammatical patterns for this concept. Include a very short explanation (2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'practice':
+                request = "Generate a single 'fill-blank' exercise preview with generous hints showing the key pattern for this concept. This is a quick guided practice before assessment. Respond ONLY with the JSON object, no other text."
+            else:  # connections
+                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept and how it connects to familiar ideas (English grammar, etc.). Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
+
+        elif stage == "start":
             # DIAGNOSTIC-FIRST: Always start with a question
-            request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from any shown above). This is the first question for the current concept. Include a rich Roman context (inscription, letter, etc.). Respond ONLY with the JSON object, no other text."
+            if is_cumulative:
+                request = f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates the concepts listed above. The scenario should naturally require applying knowledge from at least 2 of those concepts. Include a rich Roman context. Mark this as is_cumulative: true in the metadata. Respond ONLY with the JSON object, no other text."
+            else:
+                request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from any shown above). This is the first question for the current concept. Include a rich Roman context (inscription, letter, etc.). Respond ONLY with the JSON object, no other text."
 
         elif stage == "practice":
             # Generate next diagnostic question
-            request = "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario from those listed above. Vary the context: use different Latin words, different Roman settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase difficulty slightly. Respond ONLY with the JSON object, no other text."
+            if is_cumulative:
+                request = f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates concepts from the list above. Create a scenario that requires applying knowledge from at least 2 of those concepts together. Use a different Roman setting. Mark this as is_cumulative: true in the metadata. Respond ONLY with the JSON object, no other text."
+            else:
+                request = "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario from those listed above. Vary the context: use different Latin words, different Roman settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase difficulty slightly. Respond ONLY with the JSON object, no other text."
 
         elif stage == "assess":
             # Deep understanding check
@@ -601,29 +742,102 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         elif stage == "remediate":
             # Get context about what they just answered wrong
             last_question_context = ""
-            if question_history and len(question_history) > 0:
+
+            # Prioritize question_context parameter (passed directly from current question)
+            if question_context:
+                # Build detailed context with the actual question and answer choices
+                scenario = question_context.get('scenario', '')
+                question = question_context.get('question', '')
+                user_ans_idx = question_context.get('user_answer', 'unknown')
+                correct_ans_idx = question_context.get('correct_answer', 'unknown')
+                options = question_context.get('options', [])
+
+                # Get the actual text of what they chose vs correct answer
+                user_answer_text = options[user_ans_idx] if isinstance(user_ans_idx, int) and options and user_ans_idx < len(options) else str(user_ans_idx)
+                correct_answer_text = options[correct_ans_idx] if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
+
+                last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED INCORRECTLY ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEY CHOSE: '{user_answer_text}' (Option {user_ans_idx})\n\nCORRECT ANSWER: '{correct_answer_text}' (Option {correct_ans_idx})\n\nAll Options:\n"
+                for i, opt in enumerate(options):
+                    marker = "✓ CORRECT" if i == correct_ans_idx else ("✗ THEY CHOSE THIS" if i == user_ans_idx else "")
+                    last_question_context += f"{i}. {opt} {marker}\n"
+                last_question_context += "\n"
+
+            # Fallback to question history if no direct context provided
+            elif question_history and len(question_history) > 0:
                 last_q = question_history[-1]
                 user_ans = last_q.get('user_answer', 'unknown')
                 correct_ans = last_q.get('correct_answer', 'unknown')
                 last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED INCORRECTLY:\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\nThey chose: {user_ans}\nCorrect answer: {correct_ans}\n"
 
+            # Determine preferred content format based on learner style
+            learner_model = load_learner_model(learner_id)
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+
+            # Map learning style to content type
+            preferred_content_type = 'lesson'  # default
+            if learning_style == 'visual':
+                preferred_content_type = 'paradigm-table'
+            elif learning_style == 'practice':
+                preferred_content_type = 'fill-blank'
+            elif learning_style == 'connections':
+                preferred_content_type = 'lesson'
+
             # Adaptive remediation based on confidence
             if remediation_type == "full_calibration":
-                request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' that: 1) STARTS with: 'You chose [their answer], which suggests [what misconception this reveals]. However, the correct answer is [correct answer] because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 examples using their interests (see Learner Profile above - ACTUALLY use those topics in your examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the Learner Profile. Respond ONLY with the JSON object, no other text."
+                if preferred_content_type == 'paradigm-table':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'paradigm-table' that: 1) Shows the complete declension table for the grammar concept they missed, 2) Highlights the specific form they should have chosen (in the correct_answer field), 3) Includes explanation text that STARTS with: 'You chose [their answer], but looking at the complete paradigm, the correct answer is [correct answer] because...' 4) Uses their interests in the explanation. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'fill-blank':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'fill-blank' exercise that: 1) Targets the SPECIFIC grammar concept they misunderstood, 2) Uses their interests in the sentence, 3) Includes helpful hints that address their misconception, 4) Has exactly 1 blank focusing on the concept they got wrong. Respond ONLY with the JSON object, no other text."
+                else:
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' that: 1) STARTS with: 'You chose [their answer], which suggests [what misconception this reveals]. However, the correct answer is [correct answer] because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 examples using their interests (see Learner Profile above - ACTUALLY use those topics in your examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the Learner Profile. Respond ONLY with the JSON object, no other text."
             elif remediation_type == "supportive":
-                request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' or 'example-set' that: 1) Explains: 'You chose [their answer], but the correct answer is [correct answer] because...' 2) Directly addresses why their specific choice was wrong, 3) Provides 2-3 encouraging examples using their interests from the Learner Profile (ACTUALLY use those topics!). Be gentle and encouraging. Respond ONLY with the JSON object, no other text."
+                if preferred_content_type == 'paradigm-table':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'paradigm-table' with: 1) Complete declension table, 2) Encouraging explanation that validates their awareness of difficulty, 3) Clear marking of the correct answer. Be gentle. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'fill-blank':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate an encouraging 'fill-blank' exercise with: 1) Sentence using their interests, 2) Generous hints to build confidence, 3) Focus on the concept they missed. Be supportive. Respond ONLY with the JSON object, no other text."
+                else:
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' or 'example-set' that: 1) Explains: 'You chose [their answer], but the correct answer is [correct answer] because...' 2) Directly addresses why their specific choice was wrong, 3) Provides 2-3 encouraging examples using their interests from the Learner Profile (ACTUALLY use those topics!). Be gentle and encouraging. Respond ONLY with the JSON object, no other text."
             else:
-                request = f"Generate a brief 'lesson' to clarify the concept tested in the most recent question.{last_question_context}Start by explaining: 'You chose [their answer], but the correct answer is [correct answer].' Then briefly explain the specific concept and provide 1-2 examples using their interests (see Learner Profile). Respond ONLY with the JSON object, no other text."
+                if preferred_content_type == 'paradigm-table':
+                    request = f"Generate a 'paradigm-table' showing the grammar concept from the most recent question.{last_question_context}Include brief explanation. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'fill-blank':
+                    request = f"Generate a 'fill-blank' exercise to practice the concept from the most recent question.{last_question_context}Use their interests. Include hints. Respond ONLY with the JSON object, no other text."
+                else:
+                    request = f"Generate a brief 'lesson' to clarify the concept tested in the most recent question.{last_question_context}Start by explaining: 'You chose [their answer], but the correct answer is [correct answer].' Then briefly explain the specific concept and provide 1-2 examples using their interests (see Learner Profile). Respond ONLY with the JSON object, no other text."
 
         elif stage == "reinforce":
             # Get context about what they answered correctly but uncertainly
             last_question_context = ""
-            if question_history and len(question_history) > 0:
+
+            # Prioritize question_context parameter (passed directly from current question)
+            if question_context:
+                scenario = question_context.get('scenario', '')
+                question = question_context.get('question', '')
+                user_ans_idx = question_context.get('user_answer', 'unknown')
+                correct_ans_idx = question_context.get('correct_answer', 'unknown')
+                options = question_context.get('options', [])
+
+                # Get the actual text of the correct answer they chose
+                correct_answer_text = options[correct_ans_idx] if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
+
+                last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence) ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEIR ANSWER: '{correct_answer_text}' (Option {correct_ans_idx}) ✓ CORRECT\n\n"
+
+            # Fallback to question history
+            elif question_history and len(question_history) > 0:
                 last_q = question_history[-1]
                 last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence):\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\n"
 
-            # Brief reinforcement for correct but uncertain answers
-            request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            # Determine preferred content format based on learner style
+            learner_model = load_learner_model(learner_id)
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+
+            # Brief reinforcement for correct but uncertain answers - adapt format to preference
+            if learning_style == 'visual':
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'paradigm-table' showing the pattern they correctly identified. Include encouraging explanation. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'practice':
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a quick 'fill-blank' exercise to reinforce what they got right. Include positive hints. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            else:
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
@@ -669,6 +883,17 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             content_type = content_obj.get('type', 'unknown')
             logger.info(f"Successfully generated content type: {content_type}")
 
+            # Validate diagnostic question content
+            is_valid, error_msg = validate_diagnostic_content(content_obj)
+            if not is_valid:
+                logger.error(f"Content validation failed: {error_msg}")
+                logger.error(f"Invalid content: {json.dumps(content_obj, indent=2)}")
+                return {
+                    "success": False,
+                    "error": f"Content validation failed: {error_msg}",
+                    "raw_response": content_text
+                }
+
             # Attach external resources for lesson/example-set content
             if content_type in ['lesson', 'example-set'] and stage in ['remediate', 'reinforce']:
                 from .tools import load_external_resources, load_learner_model
@@ -686,6 +911,27 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                         logger.info(f"Attached {len(content_obj['external_resources'])} external resources")
                 except Exception as e:
                     logger.warning(f"Failed to attach external resources: {e}")
+
+            # Add cumulative review metadata if applicable
+            if is_cumulative:
+                content_obj['is_cumulative'] = True
+                content_obj['cumulative_concepts'] = cumulative_concepts
+                logger.info(f"Marked content as cumulative review across: {cumulative_concepts}")
+
+            # Determine if confidence rating should be shown for this question (adaptive frequency)
+            show_confidence = False
+            if content_type in ['multiple-choice', 'fill-blank', 'dialogue']:  # Only for question types
+                from .tools import should_show_confidence_rating, load_learner_model
+                try:
+                    learner_model = load_learner_model(learner_id)
+                    current_concept = learner_model.get('current_concept', 'concept-001')
+                    show_confidence = should_show_confidence_rating(learner_id, current_concept)
+                    logger.info(f"Confidence rating for this question: {show_confidence}")
+                except Exception as e:
+                    logger.warning(f"Failed to determine confidence rating: {e}, defaulting to True")
+                    show_confidence = True
+
+            content_obj['show_confidence'] = show_confidence
 
             return {
                 "success": True,

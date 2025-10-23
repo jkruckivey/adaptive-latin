@@ -6,6 +6,7 @@ Main application with REST API endpoints for the adaptive learning tutor.
 
 import logging
 from typing import Optional, List, Dict, Any
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -21,6 +22,17 @@ from .tools import (
     list_all_concepts
 )
 from .confidence import calculate_overall_calibration
+from .spaced_repetition import get_due_reviews, get_review_stats
+from .conversations import (
+    save_conversation,
+    load_conversation,
+    get_recent_conversations,
+    detect_struggle_patterns,
+    count_conversation_toward_progress,
+    get_conversation_stats
+)
+from .tutor_agent import start_tutor_conversation, continue_tutor_conversation
+from .roman_agent import start_roman_conversation, continue_roman_conversation, load_scenarios
 
 # Configure logging
 logging.basicConfig(
@@ -118,10 +130,11 @@ class SubmitResponseRequest(BaseModel):
     question_type: str = Field(..., description="Type of question (multiple-choice, fill-blank, dialogue)")
     user_answer: Any = Field(..., description="Learner's answer (index for MC, string for others)")
     correct_answer: Any = Field(..., description="Correct answer")
-    confidence: int = Field(..., ge=1, le=4, description="Confidence level (1-4 stars)")
+    confidence: Optional[int] = Field(None, ge=1, le=4, description="Confidence level (1-4 stars), optional for adaptive frequency")
     current_concept: str = Field(..., description="Concept being tested")
     question_text: Optional[str] = Field(None, description="The question text")
     scenario_text: Optional[str] = Field(None, description="The scenario text (if any)")
+    options: Optional[List[str]] = Field(None, description="List of answer options for multiple-choice questions")
 
 
 class EvaluationResponse(BaseModel):
@@ -131,6 +144,66 @@ class EvaluationResponse(BaseModel):
     calibration_type: str  # "calibrated", "overconfident", "underconfident"
     feedback_message: str
     next_content: dict  # The next piece of content to show
+    debug_context: Optional[dict] = None  # Debug info showing what was sent to AI
+
+
+class TutorConversationRequest(BaseModel):
+    """Request to start or continue a tutor conversation."""
+    learner_id: str = Field(..., description="Unique identifier for the learner")
+    concept_id: str = Field(..., description="Current concept being studied")
+    message: Optional[str] = Field(None, description="User message (None to start new conversation)")
+    conversation_id: Optional[str] = Field(None, description="Existing conversation ID (None to start new)")
+
+
+class TutorConversationResponse(BaseModel):
+    """Response from tutor conversation endpoint."""
+    success: bool
+    conversation_id: str
+    message: str  # The tutor's response
+    conversation_history: List[dict]
+    error: Optional[str] = None
+
+
+class ConversationHistoryRequest(BaseModel):
+    """Request to get conversation history."""
+    learner_id: str = Field(..., description="Unique identifier for the learner")
+    concept_id: Optional[str] = Field(None, description="Filter by concept (optional)")
+    conversation_type: Optional[str] = Field(None, description="Filter by type: 'tutor' or 'roman' (optional)")
+    hours: int = Field(24, description="Get conversations from last N hours")
+    limit: int = Field(10, description="Maximum number of conversations to return")
+
+
+class StruggleDetectionResponse(BaseModel):
+    """Response from struggle detection endpoint."""
+    is_struggling: bool
+    topics: List[str] = []
+    recommendation: Optional[str] = None
+    intervention: Optional[str] = None
+
+
+class RomanConversationRequest(BaseModel):
+    """Request to start or continue a Roman character conversation."""
+    learner_id: str = Field(..., description="Unique identifier for the learner")
+    concept_id: str = Field(..., description="Current concept being studied")
+    message: Optional[str] = Field(None, description="User message (None to start new conversation)")
+    conversation_id: Optional[str] = Field(None, description="Existing conversation ID (None to start new)")
+    scenario_id: Optional[str] = Field(None, description="Specific scenario to use (optional)")
+
+
+class RomanConversationResponse(BaseModel):
+    """Response from Roman conversation endpoint."""
+    success: bool
+    conversation_id: str
+    message: str  # The Roman character's response
+    conversation_history: List[dict]
+    scenario: dict  # Scenario information (character name, setting, etc.)
+    error: Optional[str] = None
+
+
+class ScenariosListResponse(BaseModel):
+    """List of available scenarios for a concept."""
+    concept_id: str
+    scenarios: List[dict]
 
 
 # ============================================================================
@@ -432,44 +505,58 @@ async def submit_response(request: SubmitResponseRequest):
             is_correct = request.user_answer.lower().strip() == request.correct_answer.lower().strip()
         # For dialogue, we'd need AI evaluation (future enhancement)
 
-        # Determine calibration type
-        high_confidence = request.confidence >= 3
+        # Determine calibration type and next content stage
+        if request.confidence is None:
+            # No confidence rating - skip calibration, decide based on correctness only
+            calibration_type = None
+            if is_correct:
+                stage = "practice"
+                remediation_type = None
+            else:
+                stage = "remediate"
+                remediation_type = "supportive"
+        else:
+            # Has confidence rating - use confidence × correctness matrix
+            high_confidence = request.confidence >= 3
 
-        if is_correct and high_confidence:
-            calibration_type = "calibrated"
-        elif is_correct and not high_confidence:
-            calibration_type = "underconfident"
-        elif not is_correct and high_confidence:
-            calibration_type = "overconfident"
-        else:  # incorrect and low confidence
-            calibration_type = "calibrated_low"
+            if is_correct and high_confidence:
+                calibration_type = "calibrated"
+                stage = "practice"
+                remediation_type = None
+            elif is_correct and not high_confidence:
+                calibration_type = "underconfident"
+                stage = "reinforce"
+                remediation_type = "brief"
+            elif not is_correct and high_confidence:
+                calibration_type = "overconfident"
+                stage = "remediate"
+                remediation_type = "full_calibration"
+            else:  # incorrect and low confidence
+                calibration_type = "calibrated_low"
+                stage = "remediate"
+                remediation_type = "supportive"
 
-        # Determine what content to generate next
-        if is_correct and high_confidence:
-            # Move on to next diagnostic
-            stage = "practice"
-            remediation_type = None
-        elif is_correct and not high_confidence:
-            # Brief reinforcement
-            stage = "reinforce"
-            remediation_type = "brief"
-        elif not is_correct and high_confidence:
-            # Full lesson + calibration
-            stage = "remediate"
-            remediation_type = "full_calibration"
-        else:  # incorrect and low confidence
-            # Supportive lesson
-            stage = "remediate"
-            remediation_type = "supportive"
+        # Build question context for specific feedback
+        question_context = None
+        if (stage in ["remediate", "reinforce"]) and (request.question_text or request.scenario_text):
+            # We're providing feedback on a specific question - pass the details to AI
+            question_context = {
+                "scenario": request.scenario_text or "",
+                "question": request.question_text or "",
+                "user_answer": request.user_answer,
+                "correct_answer": request.correct_answer,
+                "options": request.options or []
+            }
+            logger.info(f"Passing question context to AI for {stage} feedback")
 
         # Generate next content using the AI
-        # We'll pass the remediation context in the learner model or as a parameter
         result = generate_content(
             request.learner_id,
             stage,
             correctness=is_correct,
             confidence=request.confidence,
-            remediation_type=remediation_type
+            remediation_type=remediation_type,
+            question_context=question_context
         )
 
         if not result["success"]:
@@ -528,7 +615,12 @@ async def submit_response(request: SubmitResponseRequest):
             "confidence": request.confidence,
             "calibration_type": calibration_type,
             "feedback_message": feedback_messages[calibration_type],
-            "next_content": result["content"]
+            "next_content": result["content"],
+            "debug_context": {
+                "stage": stage,
+                "remediation_type": remediation_type,
+                "question_context_sent_to_ai": question_context
+            }
         }
 
     except Exception as e:
@@ -578,6 +670,414 @@ async def generate_content_endpoint(learner_id: str, stage: str = "start"):
 
 
 # ============================================================================
+# Spaced Repetition / Review Endpoints
+# ============================================================================
+
+@app.get("/reviews/{learner_id}")
+async def get_due_concepts(learner_id: str, include_upcoming: int = 0):
+    """
+    Get concepts that are due for spaced repetition review.
+
+    Args:
+        learner_id: The learner's unique identifier
+        include_upcoming: Include concepts due within N days (default 0 = today only)
+
+    Returns:
+        List of concepts due for review, sorted by priority
+    """
+    try:
+        model = load_learner_model(learner_id)
+        due_concepts = get_due_reviews(model, include_upcoming=include_upcoming)
+
+        return {
+            "success": True,
+            "learner_id": learner_id,
+            "due_count": len(due_concepts),
+            "include_upcoming_days": include_upcoming,
+            "due_concepts": due_concepts
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except Exception as e:
+        logger.error(f"Error getting due reviews: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get due reviews: {str(e)}"
+        )
+
+
+@app.get("/review-stats/{learner_id}")
+async def get_review_statistics(learner_id: str):
+    """
+    Get overall statistics about spaced repetition progress.
+
+    Args:
+        learner_id: The learner's unique identifier
+
+    Returns:
+        Statistics including total reviews, concepts due, etc.
+    """
+    try:
+        model = load_learner_model(learner_id)
+        stats = get_review_stats(model)
+
+        return {
+            "success": True,
+            "learner_id": learner_id,
+            **stats
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except Exception as e:
+        logger.error(f"Error getting review stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get review stats: {str(e)}"
+        )
+
+
+# ============================================================================
+# Conversation Endpoints ("Talk to Tutor" and "Talk to Roman")
+# ============================================================================
+
+@app.post("/conversations/tutor", response_model=TutorConversationResponse)
+async def tutor_conversation(request: TutorConversationRequest):
+    """
+    Start or continue a conversation with the Latin tutor.
+
+    The tutor provides Socratic guidance, conceptual explanations, and
+    encouragement. It has guardrails to prevent giving direct answers to
+    assessment questions and stays focused on the current concept.
+
+    Args:
+        request: Contains learner_id, concept_id, optional message and conversation_id
+
+    Returns:
+        Conversation response with tutor's message and full history
+    """
+    try:
+        # Start new conversation
+        if not request.conversation_id:
+            conversation = start_tutor_conversation(
+                learner_id=request.learner_id,
+                concept_id=request.concept_id
+            )
+
+            # Save conversation
+            save_conversation(conversation)
+
+            # Return initial greeting
+            return {
+                "success": True,
+                "conversation_id": conversation.conversation_id,
+                "message": conversation.messages[-1].content,  # Last message is tutor's greeting
+                "conversation_history": [m.to_dict() for m in conversation.messages]
+            }
+
+        # Continue existing conversation
+        else:
+            conversation = load_conversation(
+                conversation_id=request.conversation_id,
+                learner_id=request.learner_id
+            )
+
+            if not conversation:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Conversation not found: {request.conversation_id}"
+                )
+
+            if not request.message:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Message required to continue conversation"
+                )
+
+            # Generate tutor response
+            tutor_response = continue_tutor_conversation(conversation, request.message)
+
+            # Save updated conversation
+            save_conversation(conversation)
+
+            # Check if conversation is long enough to count toward progress
+            if conversation.get_message_count() >= 6:
+                try:
+                    count_conversation_toward_progress(conversation)
+                except Exception as e:
+                    logger.warning(f"Failed to count conversation toward progress: {e}")
+
+            return {
+                "success": True,
+                "conversation_id": conversation.conversation_id,
+                "message": tutor_response,
+                "conversation_history": [m.to_dict() for m in conversation.messages]
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in tutor conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to process tutor conversation: {str(e)}"
+        )
+
+
+@app.post("/conversations/roman", response_model=RomanConversationResponse)
+async def roman_conversation(request: RomanConversationRequest):
+    """
+    Start or continue a conversation with a Roman character.
+
+    Roman characters are everyday people (merchants, students, poets) who
+    demonstrate Latin grammar in natural contexts. Students practice speaking
+    Latin in immersive scenarios.
+
+    Args:
+        request: Contains learner_id, concept_id, optional message, conversation_id, and scenario_id
+
+    Returns:
+        Conversation response with Roman character's message and scenario info
+    """
+    try:
+        # Start new conversation
+        if not request.conversation_id:
+            # Get learner performance for scenario selection
+            try:
+                learner_model = load_learner_model(request.learner_id)
+                concept_data = learner_model.get("concepts", {}).get(request.concept_id, {})
+                recent_assessments = concept_data.get("assessments", [])[-5:]
+
+                if recent_assessments:
+                    recent_scores = [a.get("score", 0.7) for a in recent_assessments]
+                    recent_average = sum(recent_scores) / len(recent_scores)
+                    learner_performance = {"recent_average_score": recent_average}
+                else:
+                    learner_performance = None
+            except:
+                learner_performance = None
+
+            # Start conversation with selected scenario
+            conversation = start_roman_conversation(
+                learner_id=request.learner_id,
+                concept_id=request.concept_id,
+                scenario_id=request.scenario_id,
+                learner_performance=learner_performance
+            )
+
+            # Save conversation
+            save_conversation(conversation)
+
+            # Return initial greeting
+            return {
+                "success": True,
+                "conversation_id": conversation.conversation_id,
+                "message": conversation.messages[-1].content,  # Last message is character's greeting
+                "conversation_history": [m.to_dict() for m in conversation.messages],
+                "scenario": conversation.scenario
+            }
+
+        # Continue existing conversation
+        else:
+            conversation = load_conversation(
+                conversation_id=request.conversation_id,
+                learner_id=request.learner_id
+            )
+
+            if not conversation:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Conversation not found: {request.conversation_id}"
+                )
+
+            if not request.message:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Message required to continue conversation"
+                )
+
+            # Generate Roman character response
+            roman_response = continue_roman_conversation(conversation, request.message)
+
+            # Save updated conversation
+            save_conversation(conversation)
+
+            # Check if conversation is long enough to count toward progress
+            if conversation.get_message_count() >= 6:
+                try:
+                    count_conversation_toward_progress(conversation)
+                except Exception as e:
+                    logger.warning(f"Failed to count conversation toward progress: {e}")
+
+            return {
+                "success": True,
+                "conversation_id": conversation.conversation_id,
+                "message": roman_response,
+                "conversation_history": [m.to_dict() for m in conversation.messages],
+                "scenario": conversation.scenario
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in Roman conversation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to process Roman conversation: {str(e)}"
+        )
+
+
+@app.get("/conversations/scenarios/{concept_id}", response_model=ScenariosListResponse)
+async def get_scenarios(concept_id: str):
+    """
+    Get available Roman character scenarios for a concept.
+
+    Useful for displaying scenario options to the learner before starting
+    a Roman conversation.
+
+    Args:
+        concept_id: The concept to get scenarios for
+
+    Returns:
+        List of available scenarios with character info
+    """
+    try:
+        scenarios = load_scenarios(concept_id)
+
+        if not scenarios:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No scenarios found for concept: {concept_id}"
+            )
+
+        return {
+            "concept_id": concept_id,
+            "scenarios": scenarios
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting scenarios: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get scenarios: {str(e)}"
+        )
+
+
+@app.post("/conversations/history")
+async def get_conversation_history(request: ConversationHistoryRequest):
+    """
+    Get recent conversation history for a learner.
+
+    Useful for displaying past conversations or analyzing learner engagement.
+
+    Args:
+        request: Contains learner_id and optional filters
+
+    Returns:
+        List of recent conversations
+    """
+    try:
+        conversations = get_recent_conversations(
+            learner_id=request.learner_id,
+            concept_id=request.concept_id,
+            conversation_type=request.conversation_type,
+            hours=request.hours,
+            limit=request.limit
+        )
+
+        return {
+            "success": True,
+            "count": len(conversations),
+            "conversations": [c.to_dict() for c in conversations]
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting conversation history: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get conversation history: {str(e)}"
+        )
+
+
+@app.get("/conversations/detect-struggle/{learner_id}/{concept_id}", response_model=StruggleDetectionResponse)
+async def detect_struggle(learner_id: str, concept_id: str):
+    """
+    Detect if a learner is struggling based on conversation patterns.
+
+    Analyzes recent tutor conversations to identify:
+    - Repeated questions about the same topic (3+ times in 1 hour)
+    - Patterns indicating confusion or lack of understanding
+
+    This can trigger interventions like extra practice or guided lessons.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Concept to analyze
+
+    Returns:
+        Struggle detection result with recommended interventions
+    """
+    try:
+        result = detect_struggle_patterns(learner_id, concept_id)
+
+        return {
+            "is_struggling": result.get("is_struggling", False),
+            "topics": result.get("topics", []),
+            "recommendation": result.get("recommendation"),
+            "intervention": result.get("intervention")
+        }
+
+    except Exception as e:
+        logger.error(f"Error detecting struggle: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to detect struggle: {str(e)}"
+        )
+
+
+@app.get("/conversations/stats/{learner_id}")
+async def get_stats(learner_id: str, concept_id: Optional[str] = None):
+    """
+    Get conversation statistics for a learner.
+
+    Provides insights into:
+    - Total conversations (tutor + Roman)
+    - Average messages per conversation
+    - Concepts discussed
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Optional filter by concept
+
+    Returns:
+        Conversation statistics
+    """
+    try:
+        stats = get_conversation_stats(learner_id, concept_id)
+
+        return {
+            "success": True,
+            "stats": stats
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting conversation stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get conversation stats: {str(e)}"
+        )
+
+
+# ============================================================================
 # Run Application
 # ============================================================================
 
@@ -589,3 +1089,5 @@ if __name__ == "__main__":
         reload=config.DEBUG,
         log_level=config.LOG_LEVEL.lower()
     )
+
+

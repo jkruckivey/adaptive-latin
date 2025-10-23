@@ -167,10 +167,39 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
     </div>
   )
 
+  // Debug panel
+  const debugPanel = content?.debug_context && (
+    <details className="debug-panel">
+      <summary className="debug-summary">🔍 Debug: AI Context (Click to expand)</summary>
+      <div className="debug-content">
+        <h4>Context Sent to AI</h4>
+        <div className="debug-section">
+          <strong>Stage:</strong> {content.debug_context.stage}
+        </div>
+        <div className="debug-section">
+          <strong>Remediation Type:</strong> {content.debug_context.remediation_type || 'none'}
+        </div>
+        {content.debug_context.question_context_sent_to_ai ? (
+          <div className="debug-section">
+            <strong>Question Context:</strong>
+            <pre className="debug-json">
+              {JSON.stringify(content.debug_context.question_context_sent_to_ai, null, 2)}
+            </pre>
+          </div>
+        ) : (
+          <div className="debug-section">
+            <strong>Question Context:</strong> <em>None (no question context sent)</em>
+          </div>
+        )}
+      </div>
+    </details>
+  )
+
   return (
     <div className="content-renderer">
       {cumulativeBadge}
       {renderContent()}
+      {debugPanel}
     </div>
   )
 }
