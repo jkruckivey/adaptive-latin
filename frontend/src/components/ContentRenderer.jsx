@@ -8,7 +8,7 @@ import DialogueQuestion from './content-types/DialogueQuestion'
 import AssessmentResult from './content-types/AssessmentResult'
 import './ContentRenderer.css'
 
-function ContentRenderer({ content, onResponse, onNext, isLoading }) {
+function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, conceptId }) {
   const [userAnswer, setUserAnswer] = useState(null)
 
   const renderContent = () => {
@@ -92,6 +92,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading }) {
             correctAnswer={content.correctAnswer}
             calibration={content.calibration}
             onContinue={onNext}
+            learnerId={learnerId}
+            conceptId={conceptId}
           />
         )
 
@@ -101,6 +103,39 @@ function ContentRenderer({ content, onResponse, onNext, isLoading }) {
             <div className="text-body" dangerouslySetInnerHTML={{ __html: content.html }} />
             <button onClick={onNext} className="continue-button">
               Continue
+            </button>
+          </div>
+        )
+
+      case 'course-end':
+        return (
+          <div className="course-end-message">
+            <div className="end-icon">🎓</div>
+            <h2>Congratulations on Completing Available Content!</h2>
+            <div className="end-description">
+              <p><strong>You've mastered {content.completedConcepts || 1} concept{content.completedConcepts !== 1 ? 's' : ''}!</strong></p>
+              <p>This course is currently under development. Additional concepts are being authored and will be available soon.</p>
+
+              <div className="development-status">
+                <h3>Development Status</h3>
+                <ul>
+                  <li>✅ Concept 001: First Declension & Present Tense of "Sum" (Complete)</li>
+                  <li>🚧 Concepts 002-007: In Development</li>
+                </ul>
+              </div>
+
+              <p>Your progress has been saved. When new concepts are added, you'll be able to continue your learning journey right where you left off.</p>
+
+              <p className="review-prompt">In the meantime, you can:</p>
+              <ul>
+                <li>Review what you've learned by restarting the course</li>
+                <li>Check the progress dashboard to see your mastery scores</li>
+                <li>Use the AI tutor to ask questions about Latin grammar</li>
+              </ul>
+            </div>
+
+            <button onClick={() => window.location.reload()} className="continue-button">
+              Return to Dashboard
             </button>
           </div>
         )
@@ -117,8 +152,24 @@ function ContentRenderer({ content, onResponse, onNext, isLoading }) {
     }
   }
 
+  // Show cumulative badge if applicable
+  const cumulativeBadge = content?.is_cumulative && (
+    <div className="cumulative-badge-container">
+      <div className="cumulative-badge">
+        <span className="badge-icon">🔗</span>
+        <div className="badge-content">
+          <strong>Cumulative Review</strong>
+          <span className="badge-subtitle">
+            Integrating: {content.cumulative_concepts?.join(', ') || 'multiple concepts'}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="content-renderer">
+      {cumulativeBadge}
       {renderContent()}
     </div>
   )

@@ -3,6 +3,7 @@ import ContentRenderer from './components/ContentRenderer'
 import ProgressDashboard from './components/ProgressDashboard'
 import OnboardingFlow from './components/OnboardingFlow'
 import ConfidenceSlider from './components/ConfidenceSlider'
+import FloatingTutorButton from './components/FloatingTutorButton'
 import { api } from './api'
 import './App.css'
 
@@ -22,6 +23,10 @@ function App() {
   const [waitingForConfidence, setWaitingForConfidence] = useState(false)
   const [currentAnswer, setCurrentAnswer] = useState(null)
   const [currentQuestionData, setCurrentQuestionData] = useState(null)
+
+  // Preview mode state
+  const [showPreviewChoice, setShowPreviewChoice] = useState(false)
+  const [previewShown, setPreviewShown] = useState(false)
 
   // Generate or retrieve learner ID
   useEffect(() => {
@@ -54,6 +59,12 @@ function App() {
 
   const loadInitialContent = async () => {
     if (!learnerId) return
+
+    // Show preview choice for first question only
+    if (!previewShown && progress?.overall_progress?.total_assessments === 0) {
+      setShowPreviewChoice(true)
+      return
+    }
 
     setIsLoading(true)
     try {
@@ -105,6 +116,46 @@ function App() {
     }
   }
 
+  const handleShowPreview = async () => {
+    setShowPreviewChoice(false)
+    setIsLoading(true)
+    try {
+      const result = await api.generateContent(learnerId, 'preview')
+      if (result.success) {
+        setCurrentContent(result.content)
+        setPreviewShown(true)
+      } else {
+        setError('Failed to load preview. Please try again.')
+        console.error('Preview generation error:', result.error)
+      }
+    } catch (err) {
+      setError('Connection error. Please try again.')
+      console.error('Failed to load preview:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSkipPreview = async () => {
+    setShowPreviewChoice(false)
+    setPreviewShown(true)
+    setIsLoading(true)
+    try {
+      const result = await api.generateContent(learnerId, 'start')
+      if (result.success) {
+        setCurrentContent(result.content)
+      } else {
+        setError('Failed to load content. Please try again.')
+        console.error('Content generation error:', result.error)
+      }
+    } catch (err) {
+      setError('Connection error. Please try again.')
+      console.error('Failed to load content:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleNext = async () => {
     setIsLoading(true)
     try {
@@ -128,14 +179,46 @@ function App() {
     }
   }
 
-  const handleResponse = (response) => {
-    // Store the answer and question data, then show confidence slider
-    setCurrentAnswer(response.answer)
-    setCurrentQuestionData({
-      type: response.type || 'multiple-choice',
-      content: currentContent
-    })
-    setWaitingForConfidence(true)
+  const handleResponse = async (response) => {
+    // Check if we should show confidence rating for this question
+    const shouldShowConfidence = currentContent?.show_confidence !== false
+
+    if (shouldShowConfidence) {
+      // Store the answer and question data, then show confidence slider
+      setCurrentAnswer(response.answer)
+      setCurrentQuestionData({
+        type: response.type || 'multiple-choice',
+        content: currentContent
+      })
+      setWaitingForConfidence(true)
+    } else {
+      // Skip confidence slider - submit directly with null confidence
+      setIsLoading(true)
+      try {
+        const result = await api.submitResponse(
+          learnerId,
+          response.type || 'multiple-choice',
+          response.answer,
+          currentContent.correctAnswer || 0,
+          null,  // No confidence rating
+          progress?.current_concept || 'concept-001',
+          currentContent.question,
+          currentContent.scenario
+        )
+
+        if (result.next_content) {
+          setCurrentContent(result.next_content)
+          setContentIndex(contentIndex + 1)
+        } else {
+          setError('Failed to get next content')
+        }
+      } catch (err) {
+        setError('Connection error. Please try again.')
+        console.error('Failed to submit response:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
   }
 
   const handleConfidenceSelect = async (confidenceLevel) => {
@@ -265,11 +348,43 @@ function App() {
             Reset Progress
           </button>
         </div>
+        {/* Development Status Banner */}
+        <div className="development-banner">
+          <span className="banner-icon">🚧</span>
+          <span className="banner-text">
+            <strong>Early Access:</strong> Currently featuring Concept 001 (First Declension). Additional concepts in development.
+          </span>
+          <span className="banner-status">1/7 Complete</span>
+        </div>
       </header>
 
       <div className="main-content">
         <div className="chat-column">
-          {waitingForConfidence ? (
+          {showPreviewChoice ? (
+            <div className="preview-choice-container">
+              <h2>Ready to start your first question?</h2>
+              <p className="preview-description">
+                This is your first diagnostic question. Would you like a quick preview of the concept first,
+                or jump right into the assessment?
+              </p>
+              <div className="preview-buttons">
+                <button onClick={handleShowPreview} className="preview-button show-preview">
+                  <span className="button-icon">📖</span>
+                  <span className="button-text">
+                    <strong>Show me a preview first</strong>
+                    <small>Quick 30-second introduction</small>
+                  </span>
+                </button>
+                <button onClick={handleSkipPreview} className="preview-button skip-preview">
+                  <span className="button-icon">🎯</span>
+                  <span className="button-text">
+                    <strong>Jump right in</strong>
+                    <small>Start with the diagnostic</small>
+                  </span>
+                </button>
+              </div>
+            </div>
+          ) : waitingForConfidence ? (
             <ConfidenceSlider onConfidenceSelect={handleConfidenceSelect} />
           ) : (
             <ContentRenderer
@@ -277,6 +392,8 @@ function App() {
               onResponse={handleResponse}
               onNext={handleNext}
               isLoading={isLoading}
+              learnerId={learnerId}
+              conceptId={progress?.current_concept || 'concept-001'}
             />
           )}
         </div>
@@ -287,6 +404,12 @@ function App() {
           />
         </div>
       </div>
+
+      {/* Floating Tutor Button - always accessible */}
+      <FloatingTutorButton
+        learnerId={learnerId}
+        conceptId={progress?.current_concept || 'concept-001'}
+      />
     </div>
   )
 }

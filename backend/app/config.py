@@ -33,10 +33,10 @@ class Config:
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     RESOURCE_BANK_DIR: Path = BASE_DIR.parent / "resource-bank" / "latin-grammar"
     LEARNER_MODELS_DIR: Path = BASE_DIR / "data" / "learner-models"
-    PROMPTS_DIR: Path = BASE_DIR.parent / "examples" / "prompts"
+    PROMPTS_DIR: Path = BASE_DIR / "prompts"
 
-    # System Prompts
-    SYSTEM_PROMPT_FILE: Path = PROMPTS_DIR / "tutor-agent-system-prompt.md"
+    # System Prompts (now located in backend/prompts/ for better organization)
+    SYSTEM_PROMPT_FILE: Path = PROMPTS_DIR / "tutor-agent-system-prompt-active.md"
     CONFIDENCE_PROMPT_FILE: Path = PROMPTS_DIR / "confidence-response-addendum.md"
     CONTENT_GENERATION_PROMPT_FILE: Path = PROMPTS_DIR / "content-generation-addendum.md"
 

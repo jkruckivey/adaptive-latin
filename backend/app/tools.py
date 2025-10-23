@@ -11,6 +11,13 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from .config import config
+from .spaced_repetition import (
+    initialize_review_data,
+    update_review_schedule,
+    get_due_reviews,
+    get_review_stats
+)
+import random
 
 # Configure logging
 logging.basicConfig(level=getattr(logging, config.LOG_LEVEL))
@@ -296,7 +303,8 @@ def update_learner_model(
                 "started_at": datetime.now().isoformat(),
                 "assessments": [],
                 "confidence_history": [],
-                "mastery_score": 0.0
+                "mastery_score": 0.0,
+                "review_data": initialize_review_data(concept_id)
             }
 
         concept_data = model["concepts"][concept_id]
@@ -328,6 +336,21 @@ def update_learner_model(
         if concept_data["assessments"]:
             scores = [a["score"] for a in concept_data["assessments"]]
             concept_data["mastery_score"] = sum(scores) / len(scores)
+
+        # Update spaced repetition schedule
+        if "review_data" not in concept_data:
+            concept_data["review_data"] = initialize_review_data(concept_id)
+
+        # Get calibration error for review schedule calculation
+        calibration_error = 0
+        if "calibration" in assessment_data:
+            calibration_error = assessment_data["calibration"].get("calibration_error", 0)
+
+        concept_data["review_data"] = update_review_schedule(
+            review_data=concept_data["review_data"],
+            score=assessment_data.get("score", 0.0),
+            confidence_error=calibration_error
+        )
 
         # Update overall progress
         model["overall_progress"]["total_assessments"] = sum(
@@ -419,6 +442,53 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
         raise
 
 
+def validate_concept_completeness(concept_id: str) -> bool:
+    """
+    Validate that a concept has minimum viable resources for learning.
+
+    Checks that required files exist and contain content (not empty scaffolds).
+    Based on peer review feedback to prevent crashes from empty concept directories.
+
+    Args:
+        concept_id: Concept identifier (e.g., "concept-001")
+
+    Returns:
+        True if concept has all required resources, False otherwise
+    """
+    try:
+        concept_dir = config.get_concept_dir(concept_id)
+
+        # Check that concept directory exists
+        if not concept_dir.exists():
+            logger.warning(f"Concept directory does not exist: {concept_id}")
+            return False
+
+        # Define required files with minimum size requirements
+        required_files = [
+            (concept_dir / "metadata.json", 50),  # At least 50 bytes (not empty JSON)
+            (concept_dir / "resources" / "text-explainer.md", 100),  # At least 100 bytes
+            (concept_dir / "assessments" / "dialogue-prompts.json", 100),  # At least 100 bytes
+        ]
+
+        # Validate each required file
+        for file_path, min_size in required_files:
+            if not file_path.exists():
+                logger.warning(f"Required file missing for {concept_id}: {file_path.name}")
+                return False
+
+            # Check file has content (not empty scaffold)
+            if file_path.stat().st_size < min_size:
+                logger.warning(f"Required file too small for {concept_id}: {file_path.name} ({file_path.stat().st_size} bytes < {min_size} bytes)")
+                return False
+
+        logger.info(f"Concept {concept_id} validation passed - all required resources present")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error validating concept completeness for {concept_id}: {e}")
+        return False
+
+
 def get_next_concept(current_concept_id: str) -> Optional[str]:
     """
     Determine the next concept in the learning path.
@@ -438,13 +508,17 @@ def get_next_concept(current_concept_id: str) -> Optional[str]:
         if next_num <= 7:
             next_concept_id = f"concept-{next_num:03d}"
 
-            # Verify it exists in resource bank
+            # Verify it exists in resource bank AND has complete content
+            # (Based on peer review: prevent crashes from empty concept directories)
             next_concept_dir = config.get_concept_dir(next_concept_id)
-            if next_concept_dir.exists():
+            if next_concept_dir.exists() and validate_concept_completeness(next_concept_id):
                 logger.info(f"Next concept after {current_concept_id} is {next_concept_id}")
                 return next_concept_id
+            else:
+                logger.warning(f"Concept {next_concept_id} exists but is incomplete - no content to progress to")
+                return None
 
-        logger.info(f"No next concept after {current_concept_id}")
+        logger.info(f"No next concept after {current_concept_id} - reached end of learning path")
         return None
 
     except Exception as e:
@@ -531,3 +605,176 @@ def load_external_resources(concept_id: str = None, learner_profile: Dict[str, A
     except Exception as e:
         logger.error(f"Error loading external resources: {e}")
         return []
+
+
+# ============================================================================
+# Cumulative Review Functions
+# ============================================================================
+
+def get_eligible_concepts_for_cumulative(learner_id: str, min_mastery: float = 0.6) -> List[str]:
+    """
+    Get concepts eligible for cumulative review (those with sufficient mastery).
+
+    Args:
+        learner_id: Unique identifier for the learner
+        min_mastery: Minimum mastery score to be eligible for cumulative review (default 0.6)
+
+    Returns:
+        List of concept IDs eligible for cumulative review
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        model = load_learner_model(learner_id)
+
+        eligible_concepts = []
+        for concept_id, concept_data in model["concepts"].items():
+            mastery_score = concept_data.get("mastery_score", 0.0)
+            if mastery_score >= min_mastery:
+                eligible_concepts.append(concept_id)
+
+        logger.info(f"Found {len(eligible_concepts)} eligible concepts for cumulative review (mastery >= {min_mastery})")
+        return eligible_concepts
+
+    except Exception as e:
+        logger.error(f"Error getting eligible concepts for {learner_id}: {e}")
+        raise
+
+
+def select_concepts_for_cumulative(learner_id: str, count: int = 3) -> List[str]:
+    """
+    Select random concepts for cumulative review questions.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        count: Number of concepts to select (default 3, will select min of count or available)
+
+    Returns:
+        List of concept IDs for cumulative review
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+        ValueError: If no eligible concepts available
+    """
+    try:
+        eligible = get_eligible_concepts_for_cumulative(learner_id)
+
+        if not eligible:
+            raise ValueError(f"No eligible concepts for cumulative review (none with mastery >= 0.6)")
+
+        # Select min(count, available) concepts randomly
+        num_to_select = min(count, len(eligible))
+        selected = random.sample(eligible, num_to_select)
+
+        logger.info(f"Selected {len(selected)} concepts for cumulative review: {selected}")
+        return selected
+
+    except Exception as e:
+        logger.error(f"Error selecting concepts for cumulative review: {e}")
+        raise
+
+
+def should_show_cumulative_review(learner_id: str) -> bool:
+    """
+    Determine if cumulative review should be shown based on learner progress.
+
+    Criteria:
+    - Learner has completed at least 3 concepts with mastery >= 0.6
+    - Last assessment was not a cumulative review
+    - Random chance (30%) to encourage spaced interleaving
+
+    Args:
+        learner_id: Unique identifier for the learner
+
+    Returns:
+        True if cumulative review should be shown
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        model = load_learner_model(learner_id)
+
+        # Check if at least 3 concepts are eligible
+        eligible = get_eligible_concepts_for_cumulative(learner_id)
+        if len(eligible) < 3:
+            logger.info(f"Not enough eligible concepts for cumulative review: {len(eligible)}/3")
+            return False
+
+        # Check question history to avoid consecutive cumulative reviews
+        question_history = model.get("question_history", [])
+        if question_history:
+            last_question = question_history[-1]
+            if last_question.get("is_cumulative", False):
+                logger.info("Last question was cumulative, skipping cumulative review")
+                return False
+
+        # 50% chance to show cumulative review (increased from 30% based on student journey audit)
+        show_cumulative = random.random() < 0.5
+        logger.info(f"Cumulative review decision: {show_cumulative} (50% chance)")
+        return show_cumulative
+
+    except Exception as e:
+        logger.error(f"Error determining cumulative review for {learner_id}: {e}")
+        return False
+
+
+def should_show_confidence_rating(learner_id: str, current_concept_id: str) -> bool:
+    """
+    Determine if confidence rating should be shown based on learner performance.
+
+    Adaptive frequency based on student journey audit feedback:
+    - High performers (mastery >= 0.7): confidence every 3-5 questions
+    - Struggling learners (mastery < 0.7): confidence every 1-2 questions
+    - Random sampling to avoid predictability
+
+    Args:
+        learner_id: Unique identifier for the learner
+        current_concept_id: Current concept being practiced
+
+    Returns:
+        True if confidence rating should be shown
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        model = load_learner_model(learner_id)
+
+        # Get current concept data
+        concept_data = model.get("concepts", {}).get(current_concept_id, {})
+
+        # Calculate mastery score (average of all assessments)
+        assessments = concept_data.get("assessments", [])
+        if not assessments:
+            # First question - always show confidence
+            logger.info("First question - showing confidence rating")
+            return True
+
+        mastery_score = sum(a["score"] for a in assessments) / len(assessments)
+
+        # Count questions since last confidence rating
+        confidence_history = concept_data.get("confidence_history", [])
+        questions_since_rating = len(assessments) - len(confidence_history)
+
+        # Determine threshold based on performance
+        if mastery_score >= 0.7:
+            # High performer: every 3-5 questions (with randomness)
+            threshold = random.randint(3, 5)
+            logger.info(f"High performer (mastery={mastery_score:.2f}): threshold={threshold}")
+        else:
+            # Struggling learner: every 1-2 questions
+            threshold = random.randint(1, 2)
+            logger.info(f"Struggling learner (mastery={mastery_score:.2f}): threshold={threshold}")
+
+        # Show confidence if threshold reached
+        show_confidence = questions_since_rating >= threshold
+        logger.info(f"Questions since rating: {questions_since_rating}, Threshold: {threshold}, Show: {show_confidence}")
+
+        return show_confidence
+
+    except Exception as e:
+        logger.error(f"Error determining confidence rating for {learner_id}: {e}")
+        # Default to showing confidence on error
+        return True
