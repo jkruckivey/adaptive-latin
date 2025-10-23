@@ -38,6 +38,7 @@ class Config:
     # System Prompts
     SYSTEM_PROMPT_FILE: Path = PROMPTS_DIR / "tutor-agent-system-prompt.md"
     CONFIDENCE_PROMPT_FILE: Path = PROMPTS_DIR / "confidence-response-addendum.md"
+    CONTENT_GENERATION_PROMPT_FILE: Path = PROMPTS_DIR / "content-generation-addendum.md"
 
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
@@ -65,6 +66,9 @@ class Config:
 
         if not cls.CONFIDENCE_PROMPT_FILE.exists():
             errors.append(f"Confidence prompt file not found: {cls.CONFIDENCE_PROMPT_FILE}")
+
+        if not cls.CONTENT_GENERATION_PROMPT_FILE.exists():
+            errors.append(f"Content generation prompt file not found: {cls.CONTENT_GENERATION_PROMPT_FILE}")
 
         if errors:
             raise ValueError("Configuration errors:\n" + "\n".join(f"  - {e}" for e in errors))
