@@ -14,16 +14,10 @@ services:
         value: production
       - key: LOG_LEVEL
         value: INFO
-    disk:
-      name: learner-data
-      mountPath: /data
-      sizeGB: 1
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: adaptive-latin-frontend
-    env: static
-    region: oregon
     plan: free
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: frontend/dist
