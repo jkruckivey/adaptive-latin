@@ -1,0 +1,101 @@
+.floating-tutor-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.floating-tutor-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  width: 140px;
+  border-radius: 30px;
+}
+
+.floating-tutor-button:active {
+  transform: scale(1.05);
+}
+
+.floating-tutor-button svg {
+  width: 28px;
+  height: 28px;
+  transition: all 0.3s ease;
+}
+
+.floating-tutor-button .button-text {
+  position: absolute;
+  opacity: 0;
+  margin-left: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.3s ease 0.1s;
+  pointer-events: none;
+}
+
+.floating-tutor-button:hover svg {
+  margin-right: 60px;
+}
+
+.floating-tutor-button:hover .button-text {
+  opacity: 1;
+}
+
+/* Pulsing animation to draw attention */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.8);
+  }
+}
+
+.floating-tutor-button {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.floating-tutor-button:hover {
+  animation: none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .floating-tutor-button {
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .floating-tutor-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .floating-tutor-button:hover {
+    width: 56px;
+    border-radius: 50%;
+  }
+
+  .floating-tutor-button:hover svg {
+    margin-right: 0;
+  }
+
+  .floating-tutor-button .button-text {
+    display: none;
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "market-merchant",
+      "character_name": "Lucia",
+      "character_role": "Market merchant selling fruit and vegetables",
+      "setting": "Roman marketplace (forum) on a busy morning",
+      "difficulty": "beginner",
+      "primary_grammar_focus": [
+        "First declension nouns (nominative, accusative, genitive)",
+        "Present tense of 'sum, esse' (to be)"
+      ],
+      "learning_goals": [
+        "Practice identifying and using first declension noun endings",
+        "Use 'sum, esse' to describe things ('The apple is good')",
+        "Understand genitive case for possession ('the merchant's apple')",
+        "Build confidence speaking simple Latin sentences"
+      ],
+      "initial_greeting_latin": "Salvē! Ego sum Lucia. Mercātor sum. Quid cupis? (Hello! I am Lucia. I am a merchant. What do you want?)",
+      "initial_greeting_translation": "Hello! I am Lucia. I am a merchant. What do you want?",
+      "character_personality": "Friendly and patient, enjoys teaching customers Latin words for her products",
+      "conversation_structure": {
+        "opening": "Lucia greets the student and introduces herself using 'sum'",
+        "middle": "Student asks about products (mālum = apple, pira = pear, rosa = rose) using first declension nouns. Lucia responds describing her goods.",
+        "closing": "Student makes a purchase or says goodbye, practicing accusative case"
+      },
+      "example_exchanges": [
+        {
+          "student_intent": "Ask what something is",
+          "latin": "Quid est hoc?",
+          "english": "What is this?",
+          "lucia_response_latin": "Hoc est mālum. Mālum bonum est!",
+          "lucia_response_english": "This is an apple. The apple is good!"
+        },
+        {
+          "student_intent": "Ask about possession",
+          "latin": "Cuius mālum est?",
+          "english": "Whose apple is it?",
+          "lucia_response_latin": "Mālum mercātōris est. Meum mālum est!",
+          "lucia_response_english": "It is the merchant's apple. It is my apple!"
+        }
+      ],
+      "vocabulary_used": [
+        {"latin": "mālum, -ī", "english": "apple", "declension": "2nd (neuter)", "note": "Common marketplace item"},
+        {"latin": "rosa, -ae", "english": "rose", "declension": "1st", "note": "Perfect for practicing first declension"},
+        {"latin": "puella, -ae", "english": "girl", "declension": "1st", "note": "Can reference customer"},
+        {"latin": "mercātor, -ōris", "english": "merchant", "declension": "3rd", "note": "Lucia's profession"},
+        {"latin": "sum, esse", "english": "to be", "type": "verb", "note": "Present tense practice"}
+      ]
+    },
+    {
+      "scenario_id": "school-conversation",
+      "character_name": "Marcus",
+      "character_role": "Young Roman student (age 14) learning rhetoric",
+      "setting": "Outside a Roman school (lūdus) after lessons",
+      "difficulty": "beginner",
+      "primary_grammar_focus": [
+        "First declension nouns (all cases)",
+        "Present tense of 'sum, esse'",
+        "Dative case introduction (showing interest)"
+      ],
+      "learning_goals": [
+        "Practice all five cases of first declension nouns in context",
+        "Use 'sum, esse' to describe people and things",
+        "Understand how Romans talked about school and family",
+        "Build conversational confidence"
+      ],
+      "initial_greeting_latin": "Salvē! Ego Marcus sum. Discipulus sum. Et tū? (Hello! I am Marcus. I am a student. And you?)",
+      "initial_greeting_translation": "Hello! I am Marcus. I am a student. And you?",
+      "character_personality": "Curious and enthusiastic, loves talking about his studies and family",
+      "conversation_structure": {
+        "opening": "Marcus introduces himself as a student, asks about the learner",
+        "middle": "Conversation about Marcus's life: his familia (family), schola (school), and vita (life). Practices 'puella, -ae' and 'familia, -ae'",
+        "closing": "Marcus says goodbye, mentions he needs to return to his familia"
+      },
+      "example_exchanges": [
+        {
+          "student_intent": "Ask about Marcus's family",
+          "latin": "Quis est in familiā tuā?",
+          "english": "Who is in your family?",
+          "marcus_response_latin": "Familia mea magna est! Māter et pater sunt. Soror quoque est. Nōmen sorōris est Julia.",
+          "marcus_response_english": "My family is large! There is a mother and father. There is also a sister. The sister's name is Julia."
+        },
+        {
+          "student_intent": "Ask how Marcus is feeling",
+          "latin": "Quōmodo es?",
+          "english": "How are you?",
+          "marcus_response_latin": "Bene sum! Vīta discipulī bona est.",
+          "marcus_response_english": "I am well! The life of a student is good."
+        }
+      ],
+      "vocabulary_used": [
+        {"latin": "familia, -ae", "english": "family", "declension": "1st", "note": "Perfect for genitive practice"},
+        {"latin": "puella, -ae", "english": "girl", "declension": "1st", "note": "Can refer to sister"},
+        {"latin": "vita, -ae", "english": "life", "declension": "1st", "note": "Common topic"},
+        {"latin": "schola, -ae", "english": "school", "declension": "1st", "note": "Marcus's context"},
+        {"latin": "discipulus, -ī", "english": "student (male)", "declension": "2nd", "note": "Marcus's role"},
+        {"latin": "sum, esse", "english": "to be", "type": "verb", "note": "Heavy use in introductions"}
+      ]
+    },
+    {
+      "scenario_id": "poetry-recitation",
+      "character_name": "Flavia",
+      "character_role": "Young woman who loves poetry and music",
+      "setting": "Roman garden (hortus) in the afternoon",
+      "difficulty": "beginner-intermediate",
+      "primary_grammar_focus": [
+        "First declension nouns (especially abstract concepts)",
+        "Present tense of 'sum, esse'",
+        "Describing qualities (adjectives agreeing with first declension)"
+      ],
+      "learning_goals": [
+        "Practice first declension abstract nouns (poēta, fāma, fortūna)",
+        "Use 'sum, esse' with adjectives to describe",
+        "Understand cultural context of Roman poetry",
+        "Practice more complex sentences"
+      ],
+      "initial_greeting_latin": "Salvē! Flavia sum. Poēta sum. Poēsia vītae meae est. Et tū? Amāsne poēsiam? (Hello! I am Flavia. I am a poet. Poetry is my life. And you? Do you love poetry?)",
+      "initial_greeting_translation": "Hello! I am Flavia. I am a poet. Poetry is my life. And you? Do you love poetry?",
+      "character_personality": "Artistic, thoughtful, speaks poetically even in casual conversation",
+      "conversation_structure": {
+        "opening": "Flavia introduces herself and her love of poetry",
+        "middle": "Discussion about beauty (pulchritūdō), fame (fāma), and fortune (fortūna) in poetry. Practices abstract first declension nouns.",
+        "closing": "Flavia recites a simple line of Latin poetry and explains it"
+      },
+      "example_exchanges": [
+        {
+          "student_intent": "Ask about poetry",
+          "latin": "Cūr poēsiam amās?",
+          "english": "Why do you love poetry?",
+          "flavia_response_latin": "Poēsia pulchra est. Poēsia vītam pulchram facit. Fāma poētae aeterna est!",
+          "flavia_response_english": "Poetry is beautiful. Poetry makes life beautiful. The fame of the poet is eternal!"
+        },
+        {
+          "student_intent": "Ask what Flavia is working on",
+          "latin": "Quid facis hodiē?",
+          "english": "What are you doing today?",
+          "flavia_response_latin": "Poēma novum scrībō. Poēma dē rosā est. Rosa in hortō pulchra est!",
+          "flavia_response_english": "I am writing a new poem. The poem is about a rose. The rose in the garden is beautiful!"
+        }
+      ],
+      "vocabulary_used": [
+        {"latin": "poēta, -ae", "english": "poet", "declension": "1st (masculine)", "note": "Unusual: masculine 1st declension"},
+        {"latin": "poēsia, -ae", "english": "poetry", "declension": "1st", "note": "Abstract noun"},
+        {"latin": "fāma, -ae", "english": "fame, reputation", "declension": "1st", "note": "Abstract concept"},
+        {"latin": "fortūna, -ae", "english": "fortune, luck", "declension": "1st", "note": "Abstract concept"},
+        {"latin": "rosa, -ae", "english": "rose", "declension": "1st", "note": "Poetic subject"},
+        {"latin": "vita, -ae", "english": "life", "declension": "1st", "note": "Philosophical discussion"},
+        {"latin": "sum, esse", "english": "to be", "type": "verb", "note": "Describing qualities"}
+      ]
+    }
+  ],
+  "usage_instructions": {
+    "when_to_use": "Offer Roman scenarios after student completes assessment questions as additional practice",
+    "how_to_select": "Match scenario difficulty to student performance. If struggling, use 'market-merchant'. If confident, try 'poetry-recitation'.",
+    "conversation_guidelines": [
+      "Roman character should speak primarily in Latin with translations in parentheses",
+      "Character should gently correct grammar errors by modeling correct usage",
+      "Keep exchanges short (2-3 sentences) to avoid overwhelming beginner students",
+      "Praise student's attempts enthusiastically",
+      "If student is stuck, offer multiple-choice Latin responses to choose from"
+    ]
+  }
+}
