@@ -298,12 +298,32 @@ async def startup_event():
         config.validate()
         config.ensure_directories()
 
+        # Log directory status for debugging
+        logger.info(f"Learner models directory: {config.LEARNER_MODELS_DIR}")
+        logger.info(f"Directory exists: {config.LEARNER_MODELS_DIR.exists()}")
+        logger.info(f"Directory writable: {os.access(config.LEARNER_MODELS_DIR, os.W_OK)}")
+
+        # Test write permissions
+        test_file = config.LEARNER_MODELS_DIR / ".write_test"
+        try:
+            test_file.write_text("test")
+            test_file.unlink()
+            logger.info("✅ Learner models directory is writable")
+        except Exception as e:
+            logger.error(f"❌ Cannot write to learner models directory: {e}")
+            logger.warning("⚠️  Learner data will not persist! Consider using a database or persistent storage.")
+
         # Validate CORS configuration for production safety
         if "*" in config.CORS_ORIGINS:
             if config.ENVIRONMENT == "production":
                 raise ValueError("CORS wildcard (*) is not allowed in production. Please specify explicit origins.")
             else:
                 logger.warning("⚠️  CORS wildcard (*) detected - acceptable for development but NOT for production!")
+
+        # Production storage warning
+        if config.ENVIRONMENT == "production":
+            logger.warning("⚠️  PRODUCTION MODE: Using local filesystem for learner data.")
+            logger.warning("⚠️  Data will be lost on container restart. Consider using a database for persistence.")
 
         logger.info("Configuration validated successfully")
         logger.info(f"Environment: {config.ENVIRONMENT}")
@@ -348,12 +368,25 @@ async def start_learner(request: Request, body: StartRequest):
     Creates a new learner model and returns the initial state.
     """
     try:
+        logger.info(f"📝 Creating new learner: {body.learner_id}")
+        logger.info(f"   Name: {body.learner_name}")
+        logger.info(f"   Has profile: {body.profile is not None}")
+
         learner_model = create_learner_model(
             body.learner_id,
             learner_name=body.learner_name,
             profile=body.profile
         )
-        logger.info(f"Started new learner: {body.learner_id}")
+
+        # Verify the file was actually created
+        learner_file = config.get_learner_file(body.learner_id)
+        if learner_file.exists():
+            logger.info(f"✅ Learner model file created: {learner_file}")
+            logger.info(f"   File size: {learner_file.stat().st_size} bytes")
+        else:
+            logger.error(f"❌ Learner model file NOT found after creation: {learner_file}")
+
+        logger.info(f"🎉 Successfully started learner: {body.learner_id}")
 
         return {
             "success": True,
@@ -364,12 +397,13 @@ async def start_learner(request: Request, body: StartRequest):
 
     except ValueError as e:
         # Learner already exists
+        logger.warning(f"Learner {body.learner_id} already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=str(e)
         )
     except Exception as e:
-        logger.error(f"Error starting learner: {e}")
+        logger.error(f"❌ Error starting learner {body.learner_id}: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to initialize learner: {str(e)}"

@@ -14,6 +14,12 @@ services:
         value: production
       - key: LOG_LEVEL
         value: INFO
+      - key: LEARNER_MODELS_PATH
+        value: /var/data/learner-models
+    disk:
+      name: adaptive-latin-data
+      mountPath: /var/data
+      sizeGB: 1
 
   # Frontend Static Site
   - type: web
