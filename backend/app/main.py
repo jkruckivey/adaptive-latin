@@ -4,6 +4,7 @@ FastAPI Application for Latin Adaptive Learning System
 Main application with REST API endpoints for the adaptive learning tutor.
 """
 
+import os
 import logging
 from typing import Optional, List, Dict, Any
 from datetime import datetime
