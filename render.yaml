@@ -16,6 +16,8 @@ services:
         value: INFO
       - key: LEARNER_MODELS_PATH
         value: /var/data/learner-models
+      - key: CORS_ORIGINS
+        value: https://adaptive-latin-frontend.onrender.com
     disk:
       name: adaptive-latin-data
       mountPath: /var/data
