@@ -19,6 +19,8 @@ from .spaced_repetition import (
 )
 import random
 
+from .confidence import calculate_calibration, calculate_overall_calibration
+
 # Configure logging
 logging.basicConfig(level=getattr(logging, config.LOG_LEVEL))
 logger = logging.getLogger(__name__)
@@ -365,6 +367,120 @@ def update_learner_model(
 
     except Exception as e:
         logger.error(f"Error updating learner model for {learner_id}: {e}")
+        raise
+
+
+def record_assessment_and_check_completion(
+    learner_id: str,
+    concept_id: str,
+    is_correct: bool,
+    confidence: Optional[int],
+    question_type: str,
+) -> Dict[str, Any]:
+    """Record an assessment attempt and determine mastery completion.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Concept currently being practiced
+        is_correct: Whether the learner's answer was correct
+        confidence: Self-reported confidence rating (1-5) or None
+        question_type: Type of question answered (multiple-choice, fill-blank, dialogue)
+
+    Returns:
+        Dictionary with mastery tracking details including updated mastery score,
+        assessment count, completion flag, and total concepts completed.
+    """
+
+    try:
+        # Translate correctness into a mastery score contribution
+        score = 1.0 if is_correct else 0.0
+
+        # Build assessment payload for the learner model helper
+        assessment_data: Dict[str, Any] = {
+            "type": question_type or "assessment",
+            "score": score,
+            "self_confidence": confidence,
+        }
+
+        calibration_data = None
+        if confidence is not None:
+            calibration_data = calculate_calibration(int(confidence), score)
+            assessment_data["calibration"] = calibration_data
+
+        learner_model = update_learner_model(
+            learner_id=learner_id,
+            concept_id=concept_id,
+            assessment_data=assessment_data,
+        )
+
+        concept_data = learner_model["concepts"][concept_id]
+        mastery_info = calculate_mastery(learner_id, concept_id)
+        mastery_score = mastery_info.get("mastery_score", concept_data.get("mastery_score", 0.0))
+        assessments_count = len(concept_data.get("assessments", []))
+
+        concept_completed = mastery_info.get("mastery_achieved", False)
+        next_concept = None
+
+        if concept_completed:
+            # Mark concept as completed and advance to the next one when available
+            if concept_data.get("status") != "completed":
+                concept_data["status"] = "completed"
+                concept_data["completed_at"] = datetime.now().isoformat()
+
+            next_concept = get_next_concept(concept_id)
+            if next_concept:
+                learner_model["current_concept"] = next_concept
+
+                if next_concept not in learner_model["concepts"]:
+                    learner_model["concepts"][next_concept] = {
+                        "concept_id": next_concept,
+                        "status": "in_progress",
+                        "started_at": datetime.now().isoformat(),
+                        "assessments": [],
+                        "confidence_history": [],
+                        "mastery_score": 0.0,
+                        "review_data": initialize_review_data(next_concept),
+                    }
+
+        # Update overall progress counters
+        concepts_completed_total = sum(
+            1 for data in learner_model["concepts"].values() if data.get("status") == "completed"
+        )
+        concepts_in_progress = sum(
+            1 for data in learner_model["concepts"].values() if data.get("status") == "in_progress"
+        )
+
+        learner_model["overall_progress"]["concepts_completed"] = concepts_completed_total
+        learner_model["overall_progress"]["concepts_in_progress"] = concepts_in_progress
+
+        # Refresh calibration accuracy when new confidence data is provided
+        if confidence is not None:
+            all_confidence = []
+            for data in learner_model["concepts"].values():
+                all_confidence.extend(data.get("confidence_history", []))
+
+            if all_confidence:
+                overall_calibration = calculate_overall_calibration(all_confidence)
+                learner_model["overall_progress"]["average_calibration_accuracy"] = overall_calibration.get(
+                    "overall_accuracy", 0.0
+                )
+
+        # Persist any progress/status updates performed above
+        save_learner_model(learner_id, learner_model)
+
+        return {
+            "concept_completed": concept_completed,
+            "concepts_completed_total": concepts_completed_total,
+            "mastery_score": mastery_score,
+            "assessments_count": assessments_count,
+            "next_concept": next_concept,
+            "calibration": calibration_data,
+        }
+
+    except Exception as e:
+        logger.error(
+            f"Error recording assessment for {learner_id}, {concept_id}: {e}"
+        )
         raise
 
 

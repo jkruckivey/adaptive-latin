@@ -60,6 +60,51 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!learnerId || !progress?.current_concept) {
+      return
+    }
+
+    let isCancelled = false
+    const conceptId = progress.current_concept
+
+    const loadMasteryAndConcept = async () => {
+      try {
+        const [masteryResponse, conceptResponse] = await Promise.all([
+          api.getMastery(learnerId, conceptId),
+          api.getConceptInfo(conceptId)
+        ])
+
+        if (isCancelled) {
+          return
+        }
+
+        if (masteryResponse) {
+          setMasteryScore(masteryResponse.mastery_score || 0)
+          setAssessmentsCount(masteryResponse.assessments_completed || 0)
+        }
+
+        if (conceptResponse?.title) {
+          setCurrentConceptName(conceptResponse.title)
+        } else if (conceptResponse?.concept_id) {
+          setCurrentConceptName(conceptResponse.concept_id)
+        } else {
+          setCurrentConceptName(conceptId.replace('concept-', 'Concept '))
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          console.error('Failed to load mastery data:', err)
+        }
+      }
+    }
+
+    loadMasteryAndConcept()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [learnerId, progress?.current_concept])
+
   // Load initial content when learner ID is set
   useEffect(() => {
     if (learnerId && onboardingComplete && !currentContent) {
@@ -71,7 +116,7 @@ function App() {
   const loadProgress = async (id) => {
     try {
       const data = await api.getProgress(id)
-      if (data.success) {
+      if (data) {
         setProgress(data)
       }
     } catch (err) {
@@ -83,7 +128,7 @@ function App() {
     if (!learnerId) return
 
     // Show preview choice for first question only
-    if (!previewShown && progress?.overall_progress?.total_assessments === 0) {
+    if (!previewShown && progress?.total_assessments === 0) {
       setShowPreviewChoice(true)
       return
     }
@@ -129,6 +174,7 @@ function App() {
         setOnboardingComplete(true)
         localStorage.setItem('learnerId', id)
         localStorage.setItem('learnerProfile', JSON.stringify(profile))
+        loadProgress(id)
         // Content will be loaded by the useEffect hook watching learnerId and onboardingComplete
       } else {
         setContentError(response.message || 'Failed to start learning session')
@@ -248,6 +294,9 @@ function App() {
             setMasteryScore(masteryData.masteryScore || 0)
             setMasteryThreshold(masteryData.masteryThreshold || 0.85)
             setAssessmentsCount(masteryData.assessmentsCount || 0)
+            if (masteryData.conceptCompleted) {
+              loadProgress(learnerId)
+            }
           }
         }
       })
@@ -276,6 +325,9 @@ function App() {
           setMasteryScore(masteryData.masteryScore || 0)
           setMasteryThreshold(masteryData.masteryThreshold || 0.85)
           setAssessmentsCount(masteryData.assessmentsCount || 0)
+          if (masteryData.conceptCompleted) {
+            loadProgress(learnerId)
+          }
         }
       }
     })
@@ -414,7 +466,7 @@ function App() {
             <strong>Early Access:</strong> Currently featuring Concept 001 (First Declension). Additional concepts in development.
           </span>
           <span className="banner-status">
-            {progress?.overall_progress?.concepts_completed || 0}/7 Complete
+            {progress?.concepts_completed || 0}/7 Complete
           </span>
         </div>
       </header>
@@ -449,15 +501,13 @@ function App() {
             <ConfidenceSlider onConfidenceSelect={handleConfidenceSelect} />
           ) : (
             <>
-              {/* Show mastery progress bar when we have assessment data */}
-              {assessmentsCount > 0 && (
-                <MasteryProgressBar
-                  masteryScore={masteryScore}
-                  masteryThreshold={masteryThreshold}
-                  conceptName={currentConceptName}
-                  assessmentsCount={assessmentsCount}
-                />
-              )}
+              {/* Always show mastery progress to help learners orient themselves */}
+              <MasteryProgressBar
+                masteryScore={masteryScore}
+                masteryThreshold={masteryThreshold}
+                conceptName={currentConceptName}
+                assessmentsCount={assessmentsCount}
+              />
 
               <ContentRenderer
                 content={isLoading ? null : currentContent}

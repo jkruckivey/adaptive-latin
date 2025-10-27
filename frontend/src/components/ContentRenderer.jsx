@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
 import LessonView from './content-types/LessonView'
 import ParadigmTable from './content-types/ParadigmTable'
 import SentenceDiagram from './content-types/SentenceDiagram'
@@ -152,17 +151,46 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
           />
         )
 
-      case 'text':
+      case 'text': {
+        const paragraphs = (() => {
+          if (content.html) {
+            return null
+          }
+
+          const rawText = content.text || ''
+          const blocks = rawText.split(/\n{2,}/).map(block => block.trim()).filter(Boolean)
+          return blocks.length > 0 ? blocks : rawText ? [rawText] : []
+        })()
+
         return (
           <div className="text-content">
             <div className="text-body">
-              <ReactMarkdown>{content.html || content.text || ''}</ReactMarkdown>
+              {content.html ? (
+                <div
+                  dangerouslySetInnerHTML={{ __html: content.html }}
+                />
+              ) : (
+                paragraphs.map((paragraph, idx) => {
+                  const lines = paragraph.split(/\n/)
+                  return (
+                    <p key={idx}>
+                      {lines.map((line, lineIdx) => (
+                        <span key={lineIdx}>
+                          {line}
+                          {lineIdx < lines.length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
+                  )
+                })
+              )}
             </div>
             <button onClick={onNext} className="continue-button">
               Continue
             </button>
           </div>
         )
+      }
 
       case 'course-end':
         return (

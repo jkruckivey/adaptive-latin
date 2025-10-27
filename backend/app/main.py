@@ -4,6 +4,7 @@ FastAPI Application for Latin Adaptive Learning System
 Main application with REST API endpoints for the adaptive learning tutor.
 """
 
+import importlib.util
 import logging
 from typing import Optional, List, Dict, Any
 from datetime import datetime
@@ -11,9 +12,6 @@ from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, ValidationError
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import uvicorn
@@ -39,6 +37,36 @@ from .conversations import (
 )
 from .tutor_agent import start_tutor_conversation, continue_tutor_conversation
 from .roman_agent import start_roman_conversation, continue_roman_conversation, load_scenarios
+
+
+class _NoOpLimiter:
+    """Fallback limiter used when slowapi is unavailable."""
+
+    def limit(self, *_args, **_kwargs):
+        def decorator(func):
+            return func
+
+        return decorator
+
+
+_slowapi_spec = importlib.util.find_spec("slowapi")
+if _slowapi_spec is not None:
+    from slowapi import Limiter, _rate_limit_exceeded_handler  # type: ignore
+    from slowapi.util import get_remote_address  # type: ignore
+    from slowapi.errors import RateLimitExceeded  # type: ignore
+else:
+    Limiter = None  # type: ignore
+    RateLimitExceeded = Exception  # type: ignore
+
+    def _rate_limit_exceeded_handler(request, exc):  # type: ignore
+        return JSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={"detail": "Rate limit exceeded"},
+        )
+
+    def get_remote_address(request):  # type: ignore
+        client = request.client
+        return client.host if client else "127.0.0.1"
 
 # Configure logging
 logging.basicConfig(
@@ -67,8 +95,11 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
             )
         return await call_next(request)
 
-# Initialize rate limiter
-limiter = Limiter(key_func=get_remote_address)
+# Initialize rate limiter (fallbacks to no-op if slowapi isn't installed)
+if Limiter is not None:
+    limiter = Limiter(key_func=get_remote_address)
+else:
+    limiter = _NoOpLimiter()
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -77,9 +108,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Add rate limiter state and exception handler
+# Add rate limiter state and exception handler when available
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+if Limiter is not None:
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Add validation exception handler for better debugging
 @app.exception_handler(RequestValidationError)

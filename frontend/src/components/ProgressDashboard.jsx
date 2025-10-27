@@ -5,6 +5,11 @@ import './ProgressDashboard.css'
 
 function ProgressDashboard({ learnerId, progress }) {
   const [concepts, setConcepts] = useState([])
+  const completedConcepts = progress
+    ? Object.entries(progress.concept_details || {})
+        .filter(([, data]) => data?.status === 'completed')
+        .map(([conceptId]) => conceptId)
+    : []
 
   useEffect(() => {
     loadConcepts()
@@ -34,11 +39,11 @@ function ProgressDashboard({ learnerId, progress }) {
             <div className="stat-label">Current Concept</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{progress.overall_progress?.concepts_completed || 0}</div>
+            <div className="stat-value">{progress.concepts_completed || 0}</div>
             <div className="stat-label">Concepts Completed</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{progress.overall_progress?.total_assessments || 0}</div>
+            <div className="stat-value">{progress.total_assessments || 0}</div>
             <div className="stat-label">Assessments Taken</div>
           </div>
         </div>
@@ -50,7 +55,7 @@ function ProgressDashboard({ learnerId, progress }) {
           <ul>
             {concepts.map((conceptId, index) => {
               const isCurrent = progress?.current_concept === conceptId
-              const isCompleted = progress?.completed_concepts?.includes(conceptId)
+              const isCompleted = completedConcepts.includes(conceptId)
 
               return (
                 <li key={conceptId} className={`concept-item ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}`}>
