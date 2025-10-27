@@ -17,13 +17,7 @@ function AssessmentResult({ score, feedback, correctAnswer, calibration, onConti
 
   return (
     <div className="assessment-result">
-      <div className={`result-score ${getScoreClass()}`}>
-        <div className="score-emoji">{getScoreEmoji()}</div>
-        <div className="score-value">{Math.round(score * 100)}%</div>
-      </div>
-
       <div className="result-feedback">
-        <h3>Feedback:</h3>
         <p>{feedback}</p>
       </div>
 

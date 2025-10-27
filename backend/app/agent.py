@@ -804,11 +804,13 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             if learning_style == 'narrative':
                 request = "Generate a brief 'example-set' preview (30-second read) showing the concept through story-based examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
             elif learning_style == 'varied':
-                # Vary preview format
-                preview_type = random.choice(['paradigm-table', 'example-set', 'lesson'])
+                # Vary preview format including interactive widgets
+                preview_type = random.choice(['paradigm-table', 'example-set', 'lesson', 'declension-explorer'])
                 logger.info(f"Varied learning style - preview with: {preview_type}")
                 if preview_type == 'paradigm-table':
                     request = "Generate a brief 'paradigm-table' preview (30-second scan) showing the key grammatical patterns for this concept. Include a very short explanation (2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the JSON object, no other text."
+                elif preview_type == 'declension-explorer':
+                    request = "Generate a 'declension-explorer' interactive widget preview for quick exploration of the concept. Show a relevant noun declension with brief explanation. This is a quick interactive preview before assessment. Respond ONLY with the JSON object, no other text."
                 elif preview_type == 'example-set':
                     request = "Generate a brief 'example-set' preview showing the concept through varied examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
                 else:
@@ -876,8 +878,8 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             if learning_style == 'narrative':
                 preferred_content_type = 'example-set'  # Story-based examples
             elif learning_style == 'varied':
-                # Vary content type - alternate between different formats
-                preferred_content_type = random.choice(['paradigm-table', 'example-set', 'lesson'])
+                # Vary content type - alternate between different formats including interactive widgets
+                preferred_content_type = random.choice(['paradigm-table', 'example-set', 'lesson', 'declension-explorer', 'word-order-manipulator'])
                 logger.info(f"Varied learning style - selected: {preferred_content_type}")
             elif learning_style == 'adaptive':
                 preferred_content_type = 'lesson'  # Brief lessons with exercises
@@ -886,24 +888,42 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             if remediation_type == "full_calibration":
                 if preferred_content_type == 'paradigm-table':
                     request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'paradigm-table' that: 1) Shows the complete declension table for the grammar concept they missed, 2) Highlights the specific form they should have chosen (in the correct_answer field), 3) Includes explanation text that STARTS with: 'You chose [their answer], but looking at the complete paradigm, the correct answer is [correct answer] because...' 4) Uses their interests in the explanation. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'declension-explorer':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'declension-explorer' interactive widget that: 1) Shows all forms for the noun/declension relevant to their mistake, 2) Sets highlightCase to the case they got wrong, 3) Includes explanation text that STARTS with: 'You chose [their answer], but let's explore the full paradigm. The correct answer is [correct answer] because...' Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'word-order-manipulator':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'word-order-manipulator' interactive widget that: 1) Uses Latin words from the question context, 2) Allows them to arrange words to practice the concept, 3) Includes explanation about word order flexibility and the grammar concept they missed. Provide 2-3 correct orders in correctOrders array. Respond ONLY with the JSON object, no other text."
                 elif preferred_content_type == 'fill-blank':
                     request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'fill-blank' exercise that: 1) Targets the SPECIFIC grammar concept they misunderstood, 2) Uses their interests in the sentence, 3) Includes helpful hints that address their misconception, 4) Has exactly 1 blank focusing on the concept they got wrong. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'example-set':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate an 'example-set' (NOT a lesson, NOT a table) that: 1) Shows 3-4 contextual examples demonstrating the correct grammar concept, 2) Each example includes Latin, translation, and notes explaining why it's correct, 3) Uses their interests from the Learner Profile in the examples, 4) Addresses their specific misconception. CRITICAL: type must be 'example-set'. Respond ONLY with the JSON object, no other text."
                 else:
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' that: 1) STARTS with: 'You chose [their answer], which suggests [what misconception this reveals]. However, the correct answer is [correct answer] because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 examples using their interests (see Learner Profile above - ACTUALLY use those topics in your examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the Learner Profile. Respond ONLY with the JSON object, no other text."
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' (NOT a table) that: 1) STARTS with: 'You chose [their answer], which suggests [what misconception this reveals]. However, the correct answer is [correct answer] because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 examples using their interests (see Learner Profile above - ACTUALLY use those topics in your examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the Learner Profile. Respond ONLY with the JSON object, no other text."
             elif remediation_type == "supportive":
                 if preferred_content_type == 'paradigm-table':
                     request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'paradigm-table' with: 1) Complete declension table, 2) Encouraging explanation that validates their awareness of difficulty, 3) Clear marking of the correct answer. Be gentle. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'declension-explorer':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'declension-explorer' interactive widget with: 1) All forms for the relevant noun, 2) highlightCase set to the case they got wrong, 3) Encouraging explanation that validates their awareness. Be gentle. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'word-order-manipulator':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate an encouraging 'word-order-manipulator' widget with: 1) Latin words from context, 2) Multiple correct orders to build confidence, 3) Supportive explanation about flexibility. Be gentle. Respond ONLY with the JSON object, no other text."
                 elif preferred_content_type == 'fill-blank':
                     request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate an encouraging 'fill-blank' exercise with: 1) Sentence using their interests, 2) Generous hints to build confidence, 3) Focus on the concept they missed. Be supportive. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'example-set':
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'example-set' (NOT a table) with: 1) 3-4 encouraging examples using their interests, 2) Each example shows correct usage with Latin, translation, and notes, 3) Validates their awareness of difficulty. CRITICAL: type must be 'example-set'. Be gentle. Respond ONLY with the JSON object, no other text."
                 else:
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' or 'example-set' that: 1) Explains: 'You chose [their answer], but the correct answer is [correct answer] because...' 2) Directly addresses why their specific choice was wrong, 3) Provides 2-3 encouraging examples using their interests from the Learner Profile (ACTUALLY use those topics!). Be gentle and encouraging. Respond ONLY with the JSON object, no other text."
+                    request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' (NOT a table) that: 1) Explains: 'You chose [their answer], but the correct answer is [correct answer] because...' 2) Directly addresses why their specific choice was wrong, 3) Provides 2-3 encouraging examples using their interests from the Learner Profile (ACTUALLY use those topics!). CRITICAL: type must be 'lesson'. Be gentle and encouraging. Respond ONLY with the JSON object, no other text."
             else:
                 if preferred_content_type == 'paradigm-table':
                     request = f"Generate a 'paradigm-table' showing the grammar concept from the most recent question.{last_question_context}Include brief explanation. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'declension-explorer':
+                    request = f"Generate a 'declension-explorer' interactive widget showing the grammar concept from the most recent question.{last_question_context}Set highlightCase to the relevant case. Include brief explanation. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'word-order-manipulator':
+                    request = f"Generate a 'word-order-manipulator' interactive widget to practice the concept from the most recent question.{last_question_context}Use Latin words from context. Provide 2-3 correct orders. Respond ONLY with the JSON object, no other text."
                 elif preferred_content_type == 'fill-blank':
                     request = f"Generate a 'fill-blank' exercise to practice the concept from the most recent question.{last_question_context}Use their interests. Include hints. Respond ONLY with the JSON object, no other text."
+                elif preferred_content_type == 'example-set':
+                    request = f"Generate an 'example-set' (NOT a table) to reinforce the concept from the most recent question.{last_question_context}Show 3-4 examples using their interests. Each example has Latin, translation, and notes. CRITICAL: type must be 'example-set'. Respond ONLY with the JSON object, no other text."
                 else:
-                    request = f"Generate a brief 'lesson' to clarify the concept tested in the most recent question.{last_question_context}Start by explaining: 'You chose [their answer], but the correct answer is [correct answer].' Then briefly explain the specific concept and provide 1-2 examples using their interests (see Learner Profile). Respond ONLY with the JSON object, no other text."
+                    request = f"Generate a brief 'lesson' (NOT a table) to clarify the concept tested in the most recent question.{last_question_context}Start by explaining: 'You chose [their answer], but the correct answer is [correct answer].' Then briefly explain the specific concept and provide 1-2 examples using their interests (see Learner Profile). CRITICAL: type must be 'lesson'. Respond ONLY with the JSON object, no other text."
 
         elif stage == "reinforce":
             # Get context about what they answered correctly but uncertainly
@@ -933,7 +953,7 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
             # Brief reinforcement for correct but uncertain answers - adapt format to preference
             if learning_style == 'narrative':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' with story-based examples that validates their answer and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) with story-based examples that validates their answer and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
             elif learning_style == 'varied':
                 # Vary content type for reinforcement too
                 reinforce_type = random.choice(['paradigm-table', 'example-set'])
@@ -941,11 +961,11 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                 if reinforce_type == 'paradigm-table':
                     request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'paradigm-table' showing the pattern they correctly identified. Include encouraging explanation. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
                 else:
-                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
             elif learning_style == 'adaptive':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer to THAT specific question and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
             else:
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer to THAT specific question and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
