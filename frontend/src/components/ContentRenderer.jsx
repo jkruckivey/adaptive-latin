@@ -63,6 +63,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
       )
     }
 
+    console.log('🎨 ContentRenderer rendering type:', content.type)
+
     switch (content.type) {
       case 'lesson':
         return (
