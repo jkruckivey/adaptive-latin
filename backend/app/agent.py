@@ -277,18 +277,23 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
                 style_map = {
                     "visual": "Prefers video explanations and visual structured displays (tables, charts)",
                     "connections": "Prefers written articles, guides, and connecting to English/other languages",
-                    "practice": "Prefers interactive practice exercises, drills, and hands-on activities"
+                    "practice": "Prefers interactive practice exercises, drills, and hands-on activities",
+                    "varied": "Enjoys variety - mix different content types (tables, examples, exercises)"
                 }
                 context += f"**Learning Style**: {style_map.get(profile['learningStyle'], profile['learningStyle'])}\n"
 
                 # Add specific teaching guidance based on learning style
                 context += f"\n**Content Format Preference**: "
                 if profile['learningStyle'] == "visual":
-                    context += "For remediation/reinforcement, generate 'paradigm-table' content showing structured grammar tables. Use visual organization.\n"
+                    context += "Generate 'paradigm-table' content showing structured grammar tables. Use visual organization. Avoid videos.\n"
                 elif profile['learningStyle'] == "connections":
-                    context += "For remediation/reinforcement, generate 'lesson' or 'example-set' content with written explanations and connections to English.\n"
+                    context += "Generate 'lesson' or 'example-set' content with written explanations and connections to English. Avoid videos.\n"
                 elif profile['learningStyle'] == "practice":
-                    context += "For remediation/reinforcement, generate 'fill-blank' exercises for hands-on practice. Include hints.\n"
+                    context += "Generate 'fill-blank' exercises for hands-on practice. Include hints. Avoid videos.\n"
+                elif profile['learningStyle'] == "varied":
+                    context += "Vary the content types - alternate between tables, written examples, and exercises. Avoid videos.\n"
+                else:
+                    context += "Use written text content. Avoid videos.\n"
 
             if profile.get("interests"):
                 context += f"**Interests**: {profile['interests']}\n"
