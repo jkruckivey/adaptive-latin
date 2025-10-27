@@ -17,5 +17,8 @@ pydantic>=2.5.3
 # CORS Support
 fastapi-cors==0.0.6
 
+# Rate Limiting
+slowapi==0.1.9
+
 # JSON handling (built-in but explicit for clarity)
 # json - built-in Python module
