@@ -221,9 +221,13 @@ class SubmitResponseRequest(BaseModel):
 class EvaluationResponse(BaseModel):
     """Response after evaluating a learner's answer."""
     is_correct: bool
-    confidence: int
-    calibration_type: str  # "calibrated", "overconfident", "underconfident"
+    confidence: Optional[int] = None  # Optional when confidence slider is disabled
+    calibration_type: Optional[str] = None  # Optional when no confidence rating
     feedback_message: str
+    mastery_score: float  # Add mastery tracking
+    mastery_threshold: float
+    assessments_count: int
+    concept_completed: bool
     next_content: dict  # The next piece of content to show
     debug_context: Optional[dict] = None  # Debug info showing what was sent to AI
 
