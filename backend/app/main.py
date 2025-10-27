@@ -817,9 +817,8 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             if 0 <= body.correct_answer < len(body.options):
                 correct_answer_display = body.options[body.correct_answer]
 
-        # Get language connection hint if applicable
-        from .tools import get_language_connection
-        language_connection = get_language_connection(body.learner_id, body.concept_id)
+        # Language connection hint - placeholder for future feature
+        language_connection = None
 
         # Create debug context
         debug_context = {
@@ -838,7 +837,7 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             "feedback": feedback_text,
             "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
             "calibration": calibration_type,
-            "languageConnection": language_connection,  # Add language connection
+            "languageConnection": language_connection,
             "_next_content": result["content"],  # Store for preloading, frontend will fetch on continue
             "debug_context": debug_context  # Add debug context to assessment result content
         }
