@@ -115,6 +115,38 @@ def validate_diagnostic_content(content_obj: Dict) -> Tuple[bool, str]:
     return True, ""
 
 
+def strip_video_content(content_obj: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Remove any video resources from content object.
+
+    This is a hard enforcement to prevent videos from appearing,
+    regardless of what the AI generates.
+
+    Args:
+        content_obj: The content object to clean
+
+    Returns:
+        Content object with videos removed
+    """
+    if 'external_resources' in content_obj and content_obj['external_resources']:
+        # Filter out any resources with type: "video"
+        original_count = len(content_obj['external_resources'])
+        content_obj['external_resources'] = [
+            res for res in content_obj['external_resources']
+            if res.get('type') != 'video'
+        ]
+        removed_count = original_count - len(content_obj['external_resources'])
+
+        if removed_count > 0:
+            logger.info(f"🚫 Stripped {removed_count} video resource(s) from content")
+
+        # If no resources left, remove the field entirely
+        if not content_obj['external_resources']:
+            del content_obj['external_resources']
+
+    return content_obj
+
+
 def evaluate_dialogue_response(question: str, context: str, student_answer: str, concept_id: str) -> Dict[str, Any]:
     """
     Evaluate an open-ended dialogue response using AI with rubric-based feedback.
@@ -987,6 +1019,9 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     show_confidence = True
 
             content_obj['show_confidence'] = show_confidence
+
+            # Strip any video content before returning (hard enforcement)
+            content_obj = strip_video_content(content_obj)
 
             return {
                 "success": True,
