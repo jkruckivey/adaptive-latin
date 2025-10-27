@@ -182,6 +182,15 @@ function App() {
   }
 
   const handleNext = async () => {
+    // Check if current content has pre-loaded next content (from assessment results)
+    if (currentContent?._next_content) {
+      // Use the adaptive next content that was already prepared based on performance
+      setCurrentContent(currentContent._next_content)
+      setContentIndex(i => i + 1)
+      return
+    }
+
+    // Otherwise, fetch new content from API
     setIsLoadingContent(true)
     try {
       // Determine stage based on content progression
