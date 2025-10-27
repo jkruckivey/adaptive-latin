@@ -157,14 +157,14 @@ function LearnerProfileReport({ learnerId }) {
                         {priorKnowledge.hasRomanceLanguage && (
                           <li>Connect Latin to Spanish/French you already know</li>
                         )}
-                        {profile.learningStyle === 'connections' && (
-                          <li>Show English words that come from Latin</li>
+                        {profile.learningStyle === 'narrative' && (
+                          <li>Use story-based examples and contextual scenarios</li>
                         )}
-                        {profile.learningStyle === 'stories' && (
-                          <li>Practice with real sentences from the start</li>
+                        {profile.learningStyle === 'varied' && (
+                          <li>Mix different content types - tables, examples, and exercises</li>
                         )}
-                        {profile.learningStyle === 'patterns' && (
-                          <li>Highlight patterns and systems to show logic</li>
+                        {profile.learningStyle === 'adaptive' && (
+                          <li>Adjust content difficulty based on your performance patterns</li>
                         )}
                         {profile.interests && (
                           <li>Use examples related to {profile.interests.split(',')[0].trim()}</li>

@@ -295,14 +295,14 @@ function OnboardingFlow({ learnerName, onComplete }) {
               {profile.priorKnowledge.hasRomanceLanguage && (
                 <li>✓ I'll connect Latin to the Spanish/French you know</li>
               )}
-              {profile.learningStyle === 'visual' && (
-                <li>✓ When you need help, I'll recommend video explanations</li>
+              {profile.learningStyle === 'narrative' && (
+                <li>✓ I'll use story-based examples and contextual explanations</li>
               )}
-              {profile.learningStyle === 'connections' && (
-                <li>✓ When you need help, I'll recommend written guides and articles</li>
+              {profile.learningStyle === 'varied' && (
+                <li>✓ I'll mix different formats - tables, stories, and exercises</li>
               )}
-              {profile.learningStyle === 'practice' && (
-                <li>✓ When you need help, I'll recommend interactive practice exercises</li>
+              {profile.learningStyle === 'adaptive' && (
+                <li>✓ I'll adjust difficulty based on your performance patterns</li>
               )}
               {profile.interests && profile.interests.trim() && (
                 <li>✓ Examples will feature {profile.interests.split(',')[0].trim()}</li>
