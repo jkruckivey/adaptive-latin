@@ -5,6 +5,7 @@ import OnboardingFlow from './components/OnboardingFlow'
 import ConfidenceSlider from './components/ConfidenceSlider'
 import FloatingTutorButton from './components/FloatingTutorButton'
 import MasteryProgressBar from './components/MasteryProgressBar'
+import ConceptMasteryModal from './components/ConceptMasteryModal'
 import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
@@ -24,6 +25,10 @@ function App() {
   const [masteryThreshold, setMasteryThreshold] = useState(0.85)
   const [assessmentsCount, setAssessmentsCount] = useState(0)
   const [currentConceptName, setCurrentConceptName] = useState('First Declension')
+
+  // Mastery celebration state
+  const [showMasteryModal, setShowMasteryModal] = useState(false)
+  const [completedConceptId, setCompletedConceptId] = useState(null)
 
   // Local loading/error state for content generation
   const [isLoadingContent, setIsLoadingContent] = useState(false)
@@ -233,6 +238,23 @@ function App() {
     }
   }
 
+  const handleMasteryContinue = () => {
+    // Dismiss the modal and reload progress to get next concept
+    setShowMasteryModal(false)
+    setCompletedConceptId(null)
+
+    // Reload progress from backend to get the new concept
+    if (learnerId) {
+      api.getProgress(learnerId).then((progressData) => {
+        if (progressData.success) {
+          setProgress(progressData.progress)
+          // Generate first content for the new concept
+          handleNext()
+        }
+      })
+    }
+  }
+
   const handleResponse = async (response) => {
     console.log('📝 User answered question:', response)
 
@@ -282,6 +304,13 @@ function App() {
             setMasteryScore(masteryData.masteryScore || 0)
             setMasteryThreshold(masteryData.masteryThreshold || 0.85)
             setAssessmentsCount(masteryData.assessmentsCount || 0)
+
+            // Check if concept was just completed
+            if (masteryData.conceptCompleted) {
+              console.log('🎉 Concept completed! Showing celebration modal')
+              setCompletedConceptId(progress?.current_concept || 'concept-001')
+              setShowMasteryModal(true)
+            }
           }
         }
       })
@@ -313,6 +342,13 @@ function App() {
           setMasteryScore(masteryData.masteryScore || 0)
           setMasteryThreshold(masteryData.masteryThreshold || 0.85)
           setAssessmentsCount(masteryData.assessmentsCount || 0)
+
+          // Check if concept was just completed
+          if (masteryData.conceptCompleted) {
+            console.log('🎉 Concept completed! Showing celebration modal')
+            setCompletedConceptId(progress?.current_concept || 'concept-001')
+            setShowMasteryModal(true)
+          }
         }
       }
     })
@@ -519,6 +555,15 @@ function App() {
         learnerId={learnerId}
         conceptId={progress?.current_concept || 'concept-001'}
       />
+
+      {/* Mastery celebration modal */}
+      {showMasteryModal && (
+        <ConceptMasteryModal
+          conceptId={completedConceptId}
+          masteryScore={masteryScore}
+          onContinue={handleMasteryContinue}
+        />
+      )}
     </div>
   )
 }

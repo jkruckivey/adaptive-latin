@@ -103,7 +103,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=config.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],  # Only allow needed HTTP methods
+    allow_methods=["GET", "POST", "PUT", "OPTIONS"],  # Allow GET, POST, PUT for updating resources
     allow_headers=["Content-Type", "Authorization", "Accept"],  # Only allow needed headers
 )
 

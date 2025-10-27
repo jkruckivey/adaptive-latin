@@ -52,6 +52,7 @@ class Config:
 
     # Assessment Settings
     MIN_ASSESSMENTS_FOR_MASTERY: int = int(os.getenv("MIN_ASSESSMENTS_FOR_MASTERY", "3"))
+    MASTERY_WINDOW_SIZE: int = int(os.getenv("MASTERY_WINDOW_SIZE", "10"))
 
     @classmethod
     def validate(cls) -> None:

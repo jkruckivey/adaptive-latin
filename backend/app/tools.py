@@ -520,8 +520,15 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
 
         # Calculate metrics
         scores = [a["score"] for a in assessments]
-        avg_score = sum(scores) / len(scores)
         num_assessments = len(assessments)
+
+        # Use sliding window for mastery calculation (recent performance matters most)
+        # This allows learners to recover from early mistakes
+        window_size = config.MASTERY_WINDOW_SIZE
+        recent_scores = scores[-window_size:] if len(scores) > window_size else scores
+        avg_score = sum(recent_scores) / len(recent_scores)
+
+        logger.info(f"Mastery calculation for {concept_id}: {len(recent_scores)} recent assessments, avg={avg_score:.2f}")
 
         # Check mastery criteria
         mastery_achieved = (
@@ -532,7 +539,7 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
         # Determine recommendation
         if mastery_achieved:
             recommendation = "progress"
-            reason = f"Mastery achieved: {avg_score:.2f} average across {num_assessments} assessments"
+            reason = f"Mastery achieved: {avg_score:.2f} average over last {len(recent_scores)} assessments"
         elif avg_score >= config.CONTINUE_THRESHOLD:
             recommendation = "continue"
             reason = f"Good progress ({avg_score:.2f}), continue practicing"
