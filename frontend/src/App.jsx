@@ -500,6 +500,7 @@ function App() {
                 onNext={handleNext}
                 isLoading={isLoading}
                 learnerId={learnerId}
+                learnerProfile={learnerProfile}
                 conceptId={progress?.current_concept || 'concept-001'}
               />
             </>

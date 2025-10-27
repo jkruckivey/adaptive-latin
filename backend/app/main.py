@@ -615,6 +615,70 @@ async def get_learner_model(learner_id: str):
         )
 
 
+@app.put("/learner/{learner_id}/learning-style")
+async def update_learning_style(learner_id: str, body: dict):
+    """
+    Update the learner's learning style preference.
+
+    This allows learners to change their preferred content format
+    (narrative, varied, adaptive) after experiencing the initial choice.
+    """
+    try:
+        from .tools import load_learner_model, save_learner_model
+
+        # Validate learning style
+        valid_styles = ["narrative", "varied", "adaptive"]
+        new_style = body.get("learningStyle")
+
+        if not new_style:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="learningStyle field is required"
+            )
+
+        if new_style not in valid_styles:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid learning style. Must be one of: {', '.join(valid_styles)}"
+            )
+
+        # Load learner model
+        model = load_learner_model(learner_id)
+
+        # Update learning style
+        if "profile" not in model:
+            model["profile"] = {}
+
+        old_style = model["profile"].get("learningStyle", "unknown")
+        model["profile"]["learningStyle"] = new_style
+
+        # Save updated model
+        save_learner_model(learner_id, model)
+
+        logger.info(f"✅ Updated learning style for {learner_id}: {old_style} → {new_style}")
+
+        return {
+            "success": True,
+            "message": f"Learning style updated to '{new_style}'",
+            "previous_style": old_style,
+            "new_style": new_style
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating learning style: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update learning style: {str(e)}"
+        )
+
+
 @app.post("/submit-response", response_model=EvaluationResponse)
 @limiter.limit("60/minute")  # Match content generation rate for smooth learning flow
 async def submit_response(request: Request, body: SubmitResponseRequest):

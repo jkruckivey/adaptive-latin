@@ -105,5 +105,17 @@ export const api = {
   async getReviewStats(learnerId) {
     const response = await fetch(`${API_BASE_URL}/review-stats/${learnerId}`);
     return response.json();
+  },
+
+  // Update learning style preference
+  async updateLearningStyle(learnerId, learningStyle) {
+    const response = await fetch(`${API_BASE_URL}/learner/${learnerId}/learning-style`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ learningStyle }),
+    });
+    return response.json();
   }
 };
