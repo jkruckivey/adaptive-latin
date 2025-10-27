@@ -690,27 +690,9 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
                 stage = "remediate"
                 remediation_type = "supportive"
 
-        # Check if we should transition to deeper assessment (dialogue questions)
-        # after sufficient multiple-choice practice
-        if stage == "practice":
-            try:
-                learner_model = load_learner_model(body.learner_id)
-                concept_data = learner_model.get("concepts", {}).get(body.current_concept, {})
-                assessments = concept_data.get("assessments", [])
-
-                # Count recent correct answers
-                recent_correct = sum(1 for a in assessments[-7:] if a.get("score", 0) >= 0.7)
-
-                # After 5+ correct answers, occasionally transition to dialogue for depth
-                # (30% chance to avoid being too predictable)
-                if len(assessments) >= 5 and recent_correct >= 5:
-                    import random
-                    if random.random() < 0.3:
-                        stage = "assess"
-                        logger.info(f"Transitioning to 'assess' stage after {len(assessments)} questions with {recent_correct} recent correct")
-            except Exception as e:
-                logger.warning(f"Could not check assessment history for stage transition: {e}")
-                # Keep stage as "practice" on error
+        # Dialogue questions disabled for now - keep using multiple-choice
+        # Will re-enable when dialogue evaluation is fully implemented
+        # (Commented out the dialogue transition logic)
 
         # Record assessment and check for concept completion
         from .tools import record_assessment_and_check_completion

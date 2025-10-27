@@ -486,15 +486,13 @@ function App() {
             <ConfidenceSlider onConfidenceSelect={handleConfidenceSelect} />
           ) : (
             <>
-              {/* Show mastery progress bar when we have assessment data */}
-              {assessmentsCount > 0 && (
-                <MasteryProgressBar
-                  masteryScore={masteryScore}
-                  masteryThreshold={masteryThreshold}
-                  conceptName={currentConceptName}
-                  assessmentsCount={assessmentsCount}
-                />
-              )}
+              {/* Always show mastery progress bar */}
+              <MasteryProgressBar
+                masteryScore={masteryScore}
+                masteryThreshold={masteryThreshold}
+                conceptName={currentConceptName}
+                assessmentsCount={assessmentsCount}
+              />
 
               <ContentRenderer
                 content={isLoading ? null : currentContent}
