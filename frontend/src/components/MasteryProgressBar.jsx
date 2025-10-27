@@ -26,7 +26,8 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
 
   const percentage = Math.round(masteryScore * 100)
   const thresholdPercentage = Math.round(masteryThreshold * 100)
-  const isComplete = masteryScore >= masteryThreshold
+  const MIN_ASSESSMENTS = 3  // Match backend requirement
+  const isComplete = masteryScore >= masteryThreshold && assessmentsCount >= MIN_ASSESSMENTS
 
   // Determine progress bar color based on mastery level
   let progressColor = '#667eea' // Default purple
@@ -78,7 +79,15 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
 
         {/* Helper text */}
         <div className="progress-hint">
-          {!isComplete && (
+          {!isComplete && assessmentsCount < MIN_ASSESSMENTS && (
+            <>
+              <span className="hint-icon">📊</span>
+              <span>
+                Complete at least {MIN_ASSESSMENTS} assessments to master this concept ({assessmentsCount}/{MIN_ASSESSMENTS} done)
+              </span>
+            </>
+          )}
+          {!isComplete && assessmentsCount >= MIN_ASSESSMENTS && (
             <>
               <span className="hint-icon">💡</span>
               <span>
