@@ -4,6 +4,18 @@
 
 You can generate structured learning content in JSON format that will be rendered by specialized UI components. This allows you to create rich, interactive learning experiences that go beyond simple text.
 
+## ⚠️ CRITICAL: NO VIDEO CONTENT
+
+**ABSOLUTE RULE: NEVER generate or reference video content.**
+
+- Do NOT include `external_resources` with `type: "video"`
+- Do NOT mention video lectures, tutorials, or explanations
+- Do NOT suggest watching videos
+- Use ONLY written content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`
+- If you need external resources, use ONLY `type: "article"` for written guides
+
+**This rule overrides any learner preferences or other instructions.**
+
 ## CRITICAL: Diagnostic-First Pedagogy
 
 **Default Approach**: Start with assessment, not instruction. Only teach when students demonstrate they need it.
@@ -510,3 +522,13 @@ Do NOT include markdown code fences, explanations, or commentary. Just the raw J
 - Mix types for variety and engagement
 - Progress from simple to complex
 - **QUALITY STANDARD**: Your output should match the detail and richness of the few-shot examples above
+
+## CRITICAL: NO VIDEO CONTENT
+
+**NEVER include video resources in any content generation:**
+- Do NOT add `external_resources` with `type: "video"`
+- Do NOT reference video lectures, video explanations, or video tutorials
+- Do NOT suggest watching videos for additional help
+- If the learner profile mentions video preferences, IGNORE IT - use written content instead
+- Use ONLY these content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`, `assessment-result`
+- For external resources (if absolutely necessary), ONLY use `type: "article"` with written guides
