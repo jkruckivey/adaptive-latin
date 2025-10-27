@@ -29,6 +29,27 @@ function OnboardingFlow({ learnerName, onComplete }) {
     onComplete(profile)
   }
 
+  const handleQuickStart = () => {
+    // Create a template profile for testing
+    const templateProfile = {
+      name: 'Tester',
+      background: 'Test user - exploring Latin grammar',
+      languages: 'Spanish',
+      grammarExperience: 'okay',
+      learningStyle: 'varied',
+      interests: 'mythology, Roman history',
+      priorKnowledge: {
+        hasRomanceLanguage: true,
+        hasInflectedLanguage: false,
+        languageDetails: 'Spanish',
+        understandsSubjectObject: 'partial',
+        subjectObjectConfidence: 'medium'
+      }
+    }
+    setIsStarting(true)
+    onComplete(templateProfile)
+  }
+
   // Discovery questions and interactions
   const steps = [
     {
@@ -41,6 +62,10 @@ function OnboardingFlow({ learnerName, onComplete }) {
           <button onClick={handleNext} className="continue-button">
             Let's get started →
           </button>
+          <button onClick={handleQuickStart} className="quick-start-button" disabled={isStarting}>
+            {isStarting ? 'Starting...' : 'Quick Start (Testing) ⚡'}
+          </button>
+          <p className="quick-start-hint">Skip onboarding with preset profile for testing</p>
         </div>
       )
     },
