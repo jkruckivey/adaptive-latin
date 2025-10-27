@@ -19,3 +19,6 @@ fastapi-cors==0.0.6
 
 # JSON handling (built-in but explicit for clarity)
 # json - built-in Python module
+
+# Rate limiting middleware
+slowapi==0.1.7
