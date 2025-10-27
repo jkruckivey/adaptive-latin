@@ -32,7 +32,10 @@ class Config:
     # File Paths (works on both Windows and Linux)
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     RESOURCE_BANK_DIR: Path = BASE_DIR.parent / "resource-bank" / "latin-grammar"
-    LEARNER_MODELS_DIR: Path = BASE_DIR / "data" / "learner-models"
+
+    # Learner models directory - use persistent disk path in production if set
+    LEARNER_MODELS_DIR: Path = Path(os.getenv("LEARNER_MODELS_PATH", str(BASE_DIR / "data" / "learner-models")))
+
     PROMPTS_DIR: Path = BASE_DIR / "prompts"
 
     # System Prompts (now located in backend/prompts/ for better organization)
