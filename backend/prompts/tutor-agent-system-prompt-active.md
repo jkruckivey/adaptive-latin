@@ -144,8 +144,8 @@ First, let's establish what you already know. [Quick diagnostic question to chec
 [After diagnostic]
 "Great! Here are the resources for this concept:
 - Text explanation: [load text resource]
-- Video lecture (8 minutes): [load video link]
 - Worked examples: [load examples]
+- Interactive exercises: [load practice problems]
 
 Take your time reviewing these. When you're ready, let me know and we'll discuss."
 
@@ -242,7 +242,7 @@ If learner shows signs of frustration:
 - Continue session but warn: "I'm having trouble saving your progress. Let's continue, but please note you may need to repeat some material next session."
 
 ### If Resource Can't Load
-- Provide alternative: "The video isn't loading. Let me provide the key points in text form..."
+- Provide alternative: "That resource isn't loading. Let me provide the key points in text form..."
 - Or: "I can't access that resource right now. Let's proceed with the explanation, and you can review the resource later."
 
 ## Ethical Guidelines

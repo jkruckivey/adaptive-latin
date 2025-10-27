@@ -656,7 +656,7 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
                 question=body.question_text,
                 context=body.scenario_text or "",
                 student_answer=body.user_answer,
-                concept_id=body.concept_id
+                concept_id=body.current_concept
             )
 
             is_correct = evaluation.get("is_correct", False)

@@ -790,8 +790,9 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                 request = "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario from those listed above. Vary the context: use different Latin words, different Roman settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase difficulty slightly. Respond ONLY with the JSON object, no other text."
 
         elif stage == "assess":
-            # Deep understanding check
-            request = "Generate a 'dialogue' type question requiring explanation, not just recall. Respond ONLY with the JSON object, no other text."
+            # Dialogue questions disabled - generate multiple-choice instead
+            # (This stage should not be used, but keeping as fallback to multiple-choice)
+            request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario. Include a rich Roman context. Respond ONLY with the JSON object, no other text."
 
         elif stage == "remediate":
             # Get context about what they just answered wrong

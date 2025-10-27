@@ -212,9 +212,9 @@ function App() {
     console.log('🔄 Fetching new content from API')
     setIsLoadingContent(true)
     try {
-      // Determine stage based on content progression
-      // For now, alternate between practice and assess
-      const stage = contentIndex % 2 === 0 ? 'practice' : 'assess'
+      // Always use 'practice' stage to generate multiple-choice questions
+      // (dialogue questions disabled - 'assess' stage not used)
+      const stage = 'practice'
 
       const result = await api.generateContent(learnerId, stage)
       if (result.success) {
