@@ -275,25 +275,22 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
 
             if profile.get("learningStyle"):
                 style_map = {
-                    "visual": "Prefers video explanations and visual structured displays (tables, charts)",
-                    "connections": "Prefers written articles, guides, and connecting to English/other languages",
-                    "practice": "Prefers interactive practice exercises, drills, and hands-on activities",
-                    "varied": "Enjoys variety - mix different content types (tables, examples, exercises)"
+                    "narrative": "Prefers story-based learning through scenarios, conversations, and contextual examples",
+                    "varied": "Enjoys variety - mix different content types (tables, examples, exercises)",
+                    "adaptive": "Prefers content that explicitly adapts based on performance with clear progression"
                 }
                 context += f"**Learning Style**: {style_map.get(profile['learningStyle'], profile['learningStyle'])}\n"
 
                 # Add specific teaching guidance based on learning style
                 context += f"\n**Content Format Preference**: "
-                if profile['learningStyle'] == "visual":
-                    context += "Generate 'paradigm-table' content showing structured grammar tables. Use visual organization. Avoid videos.\n"
-                elif profile['learningStyle'] == "connections":
-                    context += "Generate 'lesson' or 'example-set' content with written explanations and connections to English. Avoid videos.\n"
-                elif profile['learningStyle'] == "practice":
-                    context += "Generate 'fill-blank' exercises for hands-on practice. Include hints. Avoid videos.\n"
+                if profile['learningStyle'] == "narrative":
+                    context += "Generate 'example-set' content with rich contextual examples and stories. Include 'lesson' content with narrative explanations connecting grammar to real usage. Avoid videos.\n"
                 elif profile['learningStyle'] == "varied":
-                    context += "Vary the content types - alternate between tables, written examples, and exercises. Avoid videos.\n"
+                    context += "Vary the content types - alternate between paradigm tables, example sets with stories, and fill-blank exercises. Keep it diverse. Avoid videos.\n"
+                elif profile['learningStyle'] == "adaptive":
+                    context += "Focus on exercises ('fill-blank', 'multiple-choice') to gather performance data. Adjust difficulty based on mastery level. Include brief 'lesson' content when needed. Avoid videos.\n"
                 else:
-                    context += "Use written text content. Avoid videos.\n"
+                    context += "Use written text content with clear examples. Avoid videos.\n"
 
             if profile.get("interests"):
                 context += f"**Interests**: {profile['interests']}\n"
