@@ -52,11 +52,18 @@ function App() {
   // Generate or retrieve learner ID
   useEffect(() => {
     const storedLearnerId = localStorage.getItem('learnerId')
-    if (storedLearnerId) {
+    const storedProfile = localStorage.getItem('learnerProfile')
+
+    if (storedLearnerId && storedProfile) {
+      // Both ID and profile exist - skip onboarding
       setLearnerId(storedLearnerId)
+      setLearnerProfile(JSON.parse(storedProfile))
       setIsStarted(true)
       setOnboardingComplete(true)
       loadProgress(storedLearnerId)
+    } else if (storedLearnerId && !storedProfile) {
+      // ID exists but no profile - clear stale data and start fresh
+      localStorage.removeItem('learnerId')
     }
   }, [])
 
