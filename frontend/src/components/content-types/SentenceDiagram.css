@@ -1,0 +1,298 @@
+@import '../content-types/content-types.css';
+
+/* Sentence Diagram Container */
+.sentence-diagram-container {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 24px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.diagram-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Full Sentence Display */
+.full-sentence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.sentence-label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sentence-text {
+  font-family: 'Georgia', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #667eea;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Diagram Words Layout */
+.diagram-words {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 12px;
+}
+
+.diagram-word-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Connection Arrows */
+.connection-arrow {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+}
+
+.arrow-symbol {
+  font-size: 1.5rem;
+  color: #718096;
+  font-weight: bold;
+}
+
+/* Word Cards */
+.diagram-word {
+  position: relative;
+  min-width: 180px;
+  padding: 20px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.diagram-word:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Latin Word */
+.word-latin {
+  font-family: 'Georgia', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-style: italic;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* English Translation */
+.word-english {
+  font-size: 0.9rem;
+  color: #718096;
+  text-align: center;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+/* Grammar Information */
+.word-grammar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.grammar-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.grammar-label {
+  font-weight: 600;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.grammar-value {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Case Indicator */
+.case-indicator-wrapper {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+}
+
+.case-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Case-Specific Styling (matching ParadigmTable colors) */
+.diagram-word.case-nominative {
+  border-color: #3182CE;
+  background: linear-gradient(135deg, white 0%, #EBF8FF 100%);
+}
+
+.diagram-word.case-nominative .case-indicator {
+  background: #3182CE;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+.diagram-word.case-nominative .word-latin {
+  color: #2C5282;
+}
+
+.diagram-word.case-genitive {
+  border-color: #38A169;
+  background: linear-gradient(135deg, white 0%, #F0FFF4 100%);
+}
+
+.diagram-word.case-genitive .case-indicator {
+  background: #38A169;
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.2);
+}
+
+.diagram-word.case-genitive .word-latin {
+  color: #276749;
+}
+
+.diagram-word.case-dative {
+  border-color: #D69E2E;
+  background: linear-gradient(135deg, white 0%, #FFFAF0 100%);
+}
+
+.diagram-word.case-dative .case-indicator {
+  background: #D69E2E;
+  box-shadow: 0 0 0 3px rgba(214, 158, 46, 0.2);
+}
+
+.diagram-word.case-dative .word-latin {
+  color: #975A16;
+}
+
+.diagram-word.case-accusative {
+  border-color: #E53E3E;
+  background: linear-gradient(135deg, white 0%, #FFF5F5 100%);
+}
+
+.diagram-word.case-accusative .case-indicator {
+  background: #E53E3E;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2);
+}
+
+.diagram-word.case-accusative .word-latin {
+  color: #9B2C2C;
+}
+
+.diagram-word.case-ablative {
+  border-color: #805AD5;
+  background: linear-gradient(135deg, white 0%, #FAF5FF 100%);
+}
+
+.diagram-word.case-ablative .case-indicator {
+  background: #805AD5;
+  box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.2);
+}
+
+.diagram-word.case-ablative .word-latin {
+  color: #553C9A;
+}
+
+/* Explanation Section */
+.diagram-explanation {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 24px;
+  border-left: 4px solid #667eea;
+  margin-bottom: 24px;
+}
+
+.diagram-explanation h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.diagram-explanation p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #4a5568;
+  margin: 0;
+}
+
+/* Footer */
+.diagram-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .diagram-words {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .diagram-word-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .connection-arrow {
+    transform: rotate(90deg);
+  }
+
+  .diagram-word {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .full-sentence {
+    padding: 16px;
+  }
+
+  .sentence-text {
+    font-size: 1.4rem;
+  }
+}

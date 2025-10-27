@@ -1,22 +1,64 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import LessonView from './content-types/LessonView'
 import ParadigmTable from './content-types/ParadigmTable'
+import SentenceDiagram from './content-types/SentenceDiagram'
 import ExampleSet from './content-types/ExampleSet'
 import MultipleChoice from './content-types/MultipleChoice'
 import FillBlank from './content-types/FillBlank'
 import DialogueQuestion from './content-types/DialogueQuestion'
 import AssessmentResult from './content-types/AssessmentResult'
+import DeclensionExplorer from './widgets/DeclensionExplorer'
+import WordOrderManipulator from './widgets/WordOrderManipulator'
+import ScenarioWidget from './widgets/ScenarioWidget'
 import './ContentRenderer.css'
 
 function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, conceptId }) {
-  const [userAnswer, setUserAnswer] = useState(null)
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
+  const [dots, setDots] = useState('')
+
+  // Rotate through loading messages every 3 seconds
+  useEffect(() => {
+    if (!content) {
+      const interval = setInterval(() => {
+        setLoadingMessageIndex(prev => (prev + 1) % loadingMessages.length)
+      }, 3000)
+      return () => clearInterval(interval)
+    }
+  }, [content])
+
+  // Animate dots
+  useEffect(() => {
+    if (!content) {
+      const interval = setInterval(() => {
+        setDots(prev => prev.length >= 3 ? '' : prev + '.')
+      }, 500)
+      return () => clearInterval(interval)
+    }
+  }, [content])
+
+  const loadingMessages = [
+    { icon: '🎨', text: 'Crafting your personalized question' },
+    { icon: '🏛️', text: 'Building a Roman scenario' },
+    { icon: '📚', text: 'Selecting vocabulary from your interests' },
+    { icon: '🎯', text: 'Adapting to your skill level' },
+    { icon: '✨', text: 'Weaving in narrative context' },
+    { icon: '🧠', text: 'Analyzing your learning patterns' }
+  ]
 
   const renderContent = () => {
     if (!content) {
       return (
-        <div className="content-placeholder">
+        <div className="content-placeholder" role="status" aria-live="polite">
           <div className="spinner"></div>
-          <p>Loading your personalized content...</p>
+          <div className="loading-message">
+            <span className="loading-icon">{loadingMessages[loadingMessageIndex].icon}</span>
+            <p className="loading-text">
+              {loadingMessages[loadingMessageIndex].text}
+              <span className="loading-dots">{dots}</span>
+            </p>
+          </div>
+          <p className="loading-subtext">This usually takes 5-10 seconds</p>
         </div>
       )
     }
@@ -38,6 +80,17 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
             title={content.title}
             noun={content.noun}
             forms={content.forms}
+            explanation={content.explanation}
+            onContinue={onNext}
+          />
+        )
+
+      case 'sentence-diagram':
+        return (
+          <SentenceDiagram
+            title={content.title}
+            sentence={content.sentence}
+            words={content.words}
             explanation={content.explanation}
             onContinue={onNext}
           />
@@ -91,6 +144,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
             feedback={content.feedback}
             correctAnswer={content.correctAnswer}
             calibration={content.calibration}
+            languageConnection={content.languageConnection}
+            nextContent={content._next_content}
             onContinue={onNext}
             learnerId={learnerId}
             conceptId={conceptId}
@@ -100,7 +155,9 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
       case 'text':
         return (
           <div className="text-content">
-            <div className="text-body" dangerouslySetInnerHTML={{ __html: content.html }} />
+            <div className="text-body">
+              <ReactMarkdown>{content.html || content.text || ''}</ReactMarkdown>
+            </div>
             <button onClick={onNext} className="continue-button">
               Continue
             </button>
@@ -138,6 +195,49 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
               Return to Dashboard
             </button>
           </div>
+        )
+
+      case 'declension-explorer':
+        return (
+          <div>
+            <DeclensionExplorer
+              noun={content.noun}
+              forms={content.forms}
+              explanation={content.explanation}
+              highlightCase={content.highlightCase}
+            />
+            <button onClick={onNext} className="continue-button">
+              Continue
+            </button>
+          </div>
+        )
+
+      case 'word-order-manipulator':
+        return (
+          <div>
+            <WordOrderManipulator
+              sentence={content.sentence}
+              words={content.words}
+              explanation={content.explanation}
+              correctOrders={content.correctOrders}
+            />
+            <button onClick={onNext} className="continue-button">
+              Continue
+            </button>
+          </div>
+        )
+
+      case 'scenario':
+        return (
+          <ScenarioWidget
+            scenario={{
+              theme: content.theme,
+              title: content.title,
+              setting: content.setting,
+              steps: content.steps
+            }}
+            onComplete={onNext}
+          />
         )
 
       default:
@@ -178,6 +278,12 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
         </div>
         <div className="debug-section">
           <strong>Remediation Type:</strong> {content.debug_context.remediation_type || 'none'}
+        </div>
+        <div className="debug-section">
+          <strong>Mastery Score:</strong> {content.debug_context.mastery_score !== undefined ? `${Math.round(content.debug_context.mastery_score * 100)}%` : 'N/A'}
+        </div>
+        <div className="debug-section">
+          <strong>Assessments Count:</strong> {content.debug_context.assessments_count !== undefined ? content.debug_context.assessments_count : 'N/A'}
         </div>
         {content.debug_context.question_context_sent_to_ai ? (
           <div className="debug-section">

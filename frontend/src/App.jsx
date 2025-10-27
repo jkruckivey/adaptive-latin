@@ -4,6 +4,8 @@ import ProgressDashboard from './components/ProgressDashboard'
 import OnboardingFlow from './components/OnboardingFlow'
 import ConfidenceSlider from './components/ConfidenceSlider'
 import FloatingTutorButton from './components/FloatingTutorButton'
+import MasteryProgressBar from './components/MasteryProgressBar'
+import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
 
@@ -15,9 +17,28 @@ function App() {
   const [learnerProfile, setLearnerProfile] = useState(null)
   const [currentContent, setCurrentContent] = useState(null)
   const [contentIndex, setContentIndex] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState(null)
-  const [error, setError] = useState(null)
+
+  // Mastery progress state
+  const [masteryScore, setMasteryScore] = useState(0)
+  const [masteryThreshold, setMasteryThreshold] = useState(0.85)
+  const [assessmentsCount, setAssessmentsCount] = useState(0)
+  const [currentConceptName, setCurrentConceptName] = useState('First Declension')
+
+  // Local loading/error state for content generation
+  const [isLoadingContent, setIsLoadingContent] = useState(false)
+  const [contentError, setContentError] = useState(null)
+
+  // Use custom hook for submission logic
+  const { submitResponse, isLoading: isSubmitting, error: submitError, setError: setSubmitError } = useSubmitResponse()
+
+  // Combined loading and error state for UI
+  const isLoading = isLoadingContent || isSubmitting
+  const error = contentError || submitError
+  const setError = (err) => {
+    setContentError(err)
+    setSubmitError(err)
+  }
 
   // Confidence flow state
   const [waitingForConfidence, setWaitingForConfidence] = useState(false)
@@ -44,7 +65,8 @@ function App() {
     if (learnerId && onboardingComplete && !currentContent) {
       loadInitialContent()
     }
-  }, [learnerId, onboardingComplete])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [learnerId, onboardingComplete, currentContent])
 
   const loadProgress = async (id) => {
     try {
@@ -66,36 +88,37 @@ function App() {
       return
     }
 
-    setIsLoading(true)
+    setIsLoadingContent(true)
     try {
       const result = await api.generateContent(learnerId, 'start')
       if (result.success) {
         setCurrentContent(result.content)
       } else {
-        setError('Failed to load content. Please try again.')
+        setContentError('Failed to load content. Please try again.')
         console.error('Content generation error:', result.error)
       }
     } catch (err) {
-      setError('Connection error. Please try again.')
+      setContentError('Connection error. Please try again.')
       console.error('Failed to load content:', err)
     } finally {
-      setIsLoading(false)
+      setIsLoadingContent(false)
     }
   }
 
   const handleStart = async (e) => {
     e.preventDefault()
     if (!learnerName.trim()) {
-      setError('Please enter your name')
+      setContentError('Please enter your name')
       return
     }
 
     // Start onboarding
     setIsStarted(true)
-    setError(null)
+    setContentError(null)
   }
 
   const handleOnboardingComplete = async (profile) => {
+    setIsLoadingContent(true) // Show loading indicator during scenario generation
     try {
       const id = `learner-${Date.now()}`
       const response = await api.startLearner(id, learnerName, profile)
@@ -108,56 +131,58 @@ function App() {
         localStorage.setItem('learnerProfile', JSON.stringify(profile))
         // Content will be loaded by the useEffect hook watching learnerId and onboardingComplete
       } else {
-        setError(response.message || 'Failed to start learning session')
+        setContentError(response.message || 'Failed to start learning session')
+        setIsLoadingContent(false)
       }
     } catch (err) {
-      setError('Connection error. Please try again.')
+      setContentError('Connection error. Please try again.')
+      setIsLoadingContent(false)
       console.error('Start error:', err)
     }
   }
 
   const handleShowPreview = async () => {
     setShowPreviewChoice(false)
-    setIsLoading(true)
+    setIsLoadingContent(true)
     try {
       const result = await api.generateContent(learnerId, 'preview')
       if (result.success) {
         setCurrentContent(result.content)
         setPreviewShown(true)
       } else {
-        setError('Failed to load preview. Please try again.')
+        setContentError('Failed to load preview. Please try again.')
         console.error('Preview generation error:', result.error)
       }
     } catch (err) {
-      setError('Connection error. Please try again.')
+      setContentError('Connection error. Please try again.')
       console.error('Failed to load preview:', err)
     } finally {
-      setIsLoading(false)
+      setIsLoadingContent(false)
     }
   }
 
   const handleSkipPreview = async () => {
     setShowPreviewChoice(false)
     setPreviewShown(true)
-    setIsLoading(true)
+    setIsLoadingContent(true)
     try {
       const result = await api.generateContent(learnerId, 'start')
       if (result.success) {
         setCurrentContent(result.content)
       } else {
-        setError('Failed to load content. Please try again.')
+        setContentError('Failed to load content. Please try again.')
         console.error('Content generation error:', result.error)
       }
     } catch (err) {
-      setError('Connection error. Please try again.')
+      setContentError('Connection error. Please try again.')
       console.error('Failed to load content:', err)
     } finally {
-      setIsLoading(false)
+      setIsLoadingContent(false)
     }
   }
 
   const handleNext = async () => {
-    setIsLoading(true)
+    setIsLoadingContent(true)
     try {
       // Determine stage based on content progression
       // For now, alternate between practice and assess
@@ -166,16 +191,16 @@ function App() {
       const result = await api.generateContent(learnerId, stage)
       if (result.success) {
         setCurrentContent(result.content)
-        setContentIndex(contentIndex + 1)
+        setContentIndex(i => i + 1)
       } else {
-        setError('Failed to generate next content. Please try again.')
+        setContentError('Failed to generate next content. Please try again.')
         console.error('Content generation error:', result.error)
       }
     } catch (err) {
-      setError('Connection error. Please try again.')
+      setContentError('Connection error. Please try again.')
       console.error('Failed to generate content:', err)
     } finally {
-      setIsLoading(false)
+      setIsLoadingContent(false)
     }
   }
 
@@ -183,88 +208,81 @@ function App() {
     // Check if we should show confidence rating for this question
     const shouldShowConfidence = currentContent?.show_confidence !== false
 
+    // Extract answer based on question type
+    const userAnswer = response.type === 'fill-blank'
+      ? (response.answers?.[0] || '') // Fill-blank sends answers array, take first
+      : response.answer // Multiple-choice sends answer as number
+
+    // Extract correct answer based on question type
+    const correctAnswer = response.type === 'fill-blank'
+      ? (currentContent.correctAnswers || []) // Fill-blank: send all acceptable answers
+      : (currentContent.correctAnswer || 0) // Multiple-choice has correctAnswer number
+
     if (shouldShowConfidence) {
       // Store the answer and question data, then show confidence slider
-      setCurrentAnswer(response.answer)
+      setCurrentAnswer(userAnswer)
       setCurrentQuestionData({
         type: response.type || 'multiple-choice',
-        content: currentContent
+        content: currentContent,
+        correctAnswer: correctAnswer
       })
       setWaitingForConfidence(true)
     } else {
       // Skip confidence slider - submit directly with null confidence
-      setIsLoading(true)
-      try {
-        const result = await api.submitResponse(
-          learnerId,
-          response.type || 'multiple-choice',
-          response.answer,
-          currentContent.correctAnswer || 0,
-          null,  // No confidence rating
-          progress?.current_concept || 'concept-001',
-          currentContent.question,
-          currentContent.scenario,
-          currentContent.options || null
-        )
-
-        if (result.next_content) {
-          // Attach debug info to content for debugging display
-          const contentWithDebug = {
-            ...result.next_content,
-            debug_context: result.debug_context
-          }
+      await submitResponse({
+        learnerId,
+        questionType: response.type || 'multiple-choice',
+        answer: userAnswer,
+        correctAnswer: correctAnswer,
+        confidence: null, // No confidence rating
+        conceptId: progress?.current_concept || 'concept-001',
+        questionText: currentContent.question,
+        scenario: currentContent.scenario,
+        options: currentContent.options || null,
+        onSuccess: (contentWithDebug, masteryData) => {
           setCurrentContent(contentWithDebug)
-          setContentIndex(contentIndex + 1)
-        } else {
-          setError('Failed to get next content')
+          setContentIndex(i => i + 1)
+
+          // Update mastery progress
+          if (masteryData) {
+            setMasteryScore(masteryData.masteryScore || 0)
+            setMasteryThreshold(masteryData.masteryThreshold || 0.85)
+            setAssessmentsCount(masteryData.assessmentsCount || 0)
+          }
         }
-      } catch (err) {
-        setError('Connection error. Please try again.')
-        console.error('Failed to submit response:', err)
-      } finally {
-        setIsLoading(false)
-      }
+      })
     }
   }
 
   const handleConfidenceSelect = async (confidenceLevel) => {
-    setIsLoading(true)
     setWaitingForConfidence(false)
 
-    try {
-      // Call backend to evaluate with confidence
-      const result = await api.submitResponse(
-        learnerId,
-        currentQuestionData.type,
-        currentAnswer,
-        currentQuestionData.content.correctAnswer || 0, // Use correct answer from content
-        confidenceLevel,
-        'noun-declensions', // TODO: Get from learner state
-        currentQuestionData.content.question, // Pass question text
-        currentQuestionData.content.scenario, // Pass scenario text
-        currentQuestionData.content.options || null // Pass answer options for specific feedback
-      )
-
-      // Show the next content returned by the backend
-      if (result.next_content) {
-        // Attach debug info to content for debugging display
-        const contentWithDebug = {
-          ...result.next_content,
-          debug_context: result.debug_context
-        }
+    await submitResponse({
+      learnerId,
+      questionType: currentQuestionData.type,
+      answer: currentAnswer,
+      correctAnswer: currentQuestionData.correctAnswer, // Use pre-extracted correct answer
+      confidence: confidenceLevel,
+      conceptId: progress?.current_concept || 'concept-001',
+      questionText: currentQuestionData.content.question,
+      scenario: currentQuestionData.content.scenario,
+      options: currentQuestionData.content.options || null,
+      onSuccess: (contentWithDebug, masteryData) => {
         setCurrentContent(contentWithDebug)
-        setContentIndex(contentIndex + 1)
-      } else {
-        setError('Failed to get next content')
+        setContentIndex(i => i + 1)
+
+        // Update mastery progress
+        if (masteryData) {
+          setMasteryScore(masteryData.masteryScore || 0)
+          setMasteryThreshold(masteryData.masteryThreshold || 0.85)
+          setAssessmentsCount(masteryData.assessmentsCount || 0)
+        }
       }
-    } catch (err) {
-      setError('Connection error. Please try again.')
-      console.error('Failed to submit response:', err)
-    } finally {
-      setIsLoading(false)
-      setCurrentAnswer(null)
-      setCurrentQuestionData(null)
-    }
+    })
+
+    // Clear confidence state
+    setCurrentAnswer(null)
+    setCurrentQuestionData(null)
   }
 
   const handleReset = () => {
@@ -330,7 +348,7 @@ function App() {
               <span className="feature-icon">⚡</span>
               <div>
                 <h3>Varied Formats</h3>
-                <p>Multiple choice, fill-in-blank, open response, and more</p>
+                <p>Adaptive questions, visual diagrams, and interactive widgets</p>
               </div>
             </div>
           </div>
@@ -351,6 +369,35 @@ function App() {
     )
   }
 
+  // Show loading screen between onboarding and main content
+  if (onboardingComplete && !currentContent && isLoadingContent) {
+    return (
+      <div className="app">
+        <div className="initial-loading-screen">
+          <div className="loading-container">
+            <div className="spinner large"></div>
+            <h2 className="loading-title">Setting up your learning experience</h2>
+            <div className="loading-steps">
+              <div className="loading-step">
+                <span className="step-icon">🏛️</span>
+                <span className="step-text">Creating your personalized Roman scenario</span>
+              </div>
+              <div className="loading-step">
+                <span className="step-icon">🎭</span>
+                <span className="step-text">Introducing characters tailored to your interests</span>
+              </div>
+              <div className="loading-step">
+                <span className="step-icon">📚</span>
+                <span className="step-text">Preparing your first Latin exercise</span>
+              </div>
+            </div>
+            <p className="loading-patience">This may take 10-15 seconds...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -366,7 +413,9 @@ function App() {
           <span className="banner-text">
             <strong>Early Access:</strong> Currently featuring Concept 001 (First Declension). Additional concepts in development.
           </span>
-          <span className="banner-status">1/7 Complete</span>
+          <span className="banner-status">
+            {progress?.overall_progress?.concepts_completed || 0}/7 Complete
+          </span>
         </div>
       </header>
 
@@ -399,14 +448,26 @@ function App() {
           ) : waitingForConfidence ? (
             <ConfidenceSlider onConfidenceSelect={handleConfidenceSelect} />
           ) : (
-            <ContentRenderer
-              content={isLoading ? null : currentContent}
-              onResponse={handleResponse}
-              onNext={handleNext}
-              isLoading={isLoading}
-              learnerId={learnerId}
-              conceptId={progress?.current_concept || 'concept-001'}
-            />
+            <>
+              {/* Show mastery progress bar when we have assessment data */}
+              {assessmentsCount > 0 && (
+                <MasteryProgressBar
+                  masteryScore={masteryScore}
+                  masteryThreshold={masteryThreshold}
+                  conceptName={currentConceptName}
+                  assessmentsCount={assessmentsCount}
+                />
+              )}
+
+              <ContentRenderer
+                content={isLoading ? null : currentContent}
+                onResponse={handleResponse}
+                onNext={handleNext}
+                isLoading={isLoading}
+                learnerId={learnerId}
+                conceptId={progress?.current_concept || 'concept-001'}
+              />
+            </>
           )}
         </div>
         <div className="progress-column">

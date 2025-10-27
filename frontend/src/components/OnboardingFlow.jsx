@@ -13,6 +13,7 @@ function OnboardingFlow({ learnerName, onComplete }) {
     priorKnowledge: {}
   })
   const [currentAnswer, setCurrentAnswer] = useState('')
+  const [isStarting, setIsStarting] = useState(false)
 
   const updateProfile = (key, value) => {
     setProfile(prev => ({ ...prev, [key]: value }))
@@ -24,6 +25,7 @@ function OnboardingFlow({ learnerName, onComplete }) {
   }
 
   const handleComplete = () => {
+    setIsStarting(true)
     onComplete(profile)
   }
 
@@ -176,40 +178,40 @@ function OnboardingFlow({ learnerName, onComplete }) {
 
           <div className="option-buttons">
             <button onClick={() => {
-              updateProfile('learningStyle', 'visual')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">📺</div>
-                <div className="option-text">
-                  <div className="option-title">Videos with explanations</div>
-                  <div className="option-subtitle">Seeing someone walk through it step by step</div>
-                </div>
-              </div>
-            </button>
-
-            <button onClick={() => {
-              updateProfile('learningStyle', 'connections')
+              updateProfile('learningStyle', 'narrative')
               handleNext()
             }} className="assessment-option">
               <div className="option-content">
                 <div className="option-icon">📖</div>
                 <div className="option-text">
-                  <div className="option-title">Articles and written guides</div>
-                  <div className="option-subtitle">Reading explanations at my own pace</div>
+                  <div className="option-title">Story-based learning</div>
+                  <div className="option-subtitle">Learning through scenarios and conversations</div>
                 </div>
               </div>
             </button>
 
             <button onClick={() => {
-              updateProfile('learningStyle', 'practice')
+              updateProfile('learningStyle', 'varied')
+              handleNext()
+            }} className="assessment-option">
+              <div className="option-content">
+                <div className="option-icon">🔄</div>
+                <div className="option-text">
+                  <div className="option-title">Varied content types</div>
+                  <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
+                </div>
+              </div>
+            </button>
+
+            <button onClick={() => {
+              updateProfile('learningStyle', 'adaptive')
               handleNext()
             }} className="assessment-option">
               <div className="option-content">
                 <div className="option-icon">🎯</div>
                 <div className="option-text">
-                  <div className="option-title">Interactive practice exercises</div>
-                  <div className="option-subtitle">Quizzes, drills, and hands-on activities</div>
+                  <div className="option-title">Adaptive progression</div>
+                  <div className="option-subtitle">Content adjusts based on your performance</div>
                 </div>
               </div>
             </button>
@@ -269,9 +271,9 @@ function OnboardingFlow({ learnerName, onComplete }) {
               <div className="summary-content">
                 <div className="summary-label">Learning Preferences</div>
                 <div className="summary-value">
-                  {profile.learningStyle === 'visual' && 'Video explanations'}
-                  {profile.learningStyle === 'connections' && 'Written articles and guides'}
-                  {profile.learningStyle === 'practice' && 'Interactive practice exercises'}
+                  {profile.learningStyle === 'narrative' && 'Story-based learning'}
+                  {profile.learningStyle === 'varied' && 'Varied question types'}
+                  {profile.learningStyle === 'adaptive' && 'Adaptive progression'}
                 </div>
               </div>
             </div>
@@ -309,8 +311,8 @@ function OnboardingFlow({ learnerName, onComplete }) {
             </ul>
           </div>
 
-          <button onClick={handleComplete} className="continue-button big">
-            Start Learning! 🚀
+          <button onClick={handleComplete} className="continue-button big" disabled={isStarting}>
+            {isStarting ? 'Starting your journey...' : 'Start Learning! 🚀'}
           </button>
         </div>
       )

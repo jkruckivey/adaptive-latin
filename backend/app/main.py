@@ -7,9 +7,15 @@ Main application with REST API endpoints for the adaptive learning tutor.
 import logging
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from fastapi.exceptions import RequestValidationError
+from pydantic import BaseModel, Field, ValidationError
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 import uvicorn
 
 from .config import config
@@ -41,6 +47,29 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Request size limit middleware
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    """Middleware to limit request body size to prevent memory exhaustion."""
+
+    def __init__(self, app, max_size: int = 1024 * 1024):  # Default 1MB
+        super().__init__(app)
+        self.max_size = max_size
+
+    async def dispatch(self, request: Request, call_next):
+        # Check Content-Length header
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > self.max_size:
+            return JSONResponse(
+                status_code=413,
+                content={
+                    "detail": f"Request body too large. Maximum size is {self.max_size} bytes."
+                }
+            )
+        return await call_next(request)
+
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Latin Adaptive Learning API",
@@ -48,14 +77,65 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
+# Add rate limiter state and exception handler
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Add validation exception handler for better debugging
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Log validation errors with details for debugging."""
+    logger.error(f"Validation error on {request.url.path}:")
+    for error in exc.errors():
+        logger.error(f"  Field: {error['loc']}, Error: {error['msg']}, Input: {error.get('input', 'N/A')}")
+
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors()}
+    )
+
+# Add request size limit middleware (1MB max)
+app.add_middleware(RequestSizeLimitMiddleware, max_size=1024 * 1024)
+
+# Configure CORS - restrict to only necessary methods and headers
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],  # Only allow needed HTTP methods
+    allow_headers=["Content-Type", "Authorization", "Accept"],  # Only allow needed headers
 )
+
+
+# ============================================================================
+# Dependency Functions for Validation
+# ============================================================================
+
+async def validate_learner_exists(learner_id: str) -> str:
+    """
+    Validate that a learner exists before allowing operations.
+
+    This provides basic protection against unauthorized access to learner data.
+    For production, consider implementing JWT-based authentication.
+
+    Args:
+        learner_id: The learner ID to validate
+
+    Returns:
+        learner_id if valid
+
+    Raises:
+        HTTPException: If learner doesn't exist
+    """
+    try:
+        from .tools import load_learner_model
+        load_learner_model(learner_id)  # Will raise FileNotFoundError if not exists
+        return learner_id
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}. Please start a new session."
+        )
 
 
 # ============================================================================
@@ -217,8 +297,17 @@ async def startup_event():
         logger.info("Starting Latin Adaptive Learning API...")
         config.validate()
         config.ensure_directories()
+
+        # Validate CORS configuration for production safety
+        if "*" in config.CORS_ORIGINS:
+            if config.ENVIRONMENT == "production":
+                raise ValueError("CORS wildcard (*) is not allowed in production. Please specify explicit origins.")
+            else:
+                logger.warning("⚠️  CORS wildcard (*) detected - acceptable for development but NOT for production!")
+
         logger.info("Configuration validated successfully")
         logger.info(f"Environment: {config.ENVIRONMENT}")
+        logger.info(f"CORS Origins: {', '.join(config.CORS_ORIGINS)}")
         logger.info(f"Resource bank: {config.RESOURCE_BANK_DIR}")
         logger.info(f"Learner models: {config.LEARNER_MODELS_DIR}")
     except Exception as e:
@@ -251,7 +340,8 @@ async def health_check():
 
 
 @app.post("/start", status_code=status.HTTP_201_CREATED)
-async def start_learner(request: StartRequest):
+@limiter.limit("10/minute")  # Limit learner creation to prevent spam
+async def start_learner(request: Request, body: StartRequest):
     """
     Initialize a new learner.
 
@@ -259,15 +349,15 @@ async def start_learner(request: StartRequest):
     """
     try:
         learner_model = create_learner_model(
-            request.learner_id,
-            learner_name=request.learner_name,
-            profile=request.profile
+            body.learner_id,
+            learner_name=body.learner_name,
+            profile=body.profile
         )
-        logger.info(f"Started new learner: {request.learner_id}")
+        logger.info(f"Started new learner: {body.learner_id}")
 
         return {
             "success": True,
-            "learner_id": request.learner_id,
+            "learner_id": body.learner_id,
             "current_concept": learner_model["current_concept"],
             "message": "Learner initialized successfully. Ready to begin learning!"
         }
@@ -287,7 +377,8 @@ async def start_learner(request: StartRequest):
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
+@limiter.limit("30/minute")  # Reasonable limit for chat interactions
+async def chat_endpoint(request_obj: Request, request: ChatRequest):
     """
     Send a message to the AI tutor and get a response.
 
@@ -486,7 +577,8 @@ async def get_learner_model(learner_id: str):
 
 
 @app.post("/submit-response", response_model=EvaluationResponse)
-async def submit_response(request: SubmitResponseRequest):
+@limiter.limit("60/minute")  # Match content generation rate for smooth learning flow
+async def submit_response(request: Request, body: SubmitResponseRequest):
     """
     Evaluate a learner's response and generate adaptive next content.
 
@@ -499,14 +591,41 @@ async def submit_response(request: SubmitResponseRequest):
     try:
         # Evaluate correctness
         is_correct = False
-        if request.question_type == "multiple-choice":
-            is_correct = request.user_answer == request.correct_answer
-        elif request.question_type == "fill-blank":
-            is_correct = request.user_answer.lower().strip() == request.correct_answer.lower().strip()
-        # For dialogue, we'd need AI evaluation (future enhancement)
+        dialogue_feedback = None  # Initialize for use later
+        dialogue_score = 0.0
+
+        if body.question_type == "multiple-choice":
+            is_correct = body.user_answer == body.correct_answer
+        elif body.question_type == "fill-blank":
+            # For fill-blank, correct_answer can be a string or list of acceptable answers
+            user_answer_normalized = body.user_answer.lower().strip()
+
+            if isinstance(body.correct_answer, list):
+                # Multiple acceptable answers - check if user's answer matches any
+                is_correct = any(
+                    user_answer_normalized == acceptable.lower().strip()
+                    for acceptable in body.correct_answer
+                )
+            else:
+                # Single acceptable answer (backward compatibility)
+                is_correct = user_answer_normalized == body.correct_answer.lower().strip()
+        elif body.question_type == "dialogue":
+            # Use AI to evaluate open-ended dialogue responses with rubric-based explanation
+            from .agent import evaluate_dialogue_response
+
+            evaluation = evaluate_dialogue_response(
+                question=body.question_text,
+                context=body.scenario_text or "",
+                student_answer=body.user_answer,
+                concept_id=body.concept_id
+            )
+
+            is_correct = evaluation.get("is_correct", False)
+            dialogue_feedback = evaluation.get("feedback", "")
+            dialogue_score = evaluation.get("score", 0.0)
 
         # Determine calibration type and next content stage
-        if request.confidence is None:
+        if body.confidence is None:
             # No confidence rating - skip calibration, decide based on correctness only
             calibration_type = None
             if is_correct:
@@ -517,7 +636,7 @@ async def submit_response(request: SubmitResponseRequest):
                 remediation_type = "supportive"
         else:
             # Has confidence rating - use confidence × correctness matrix
-            high_confidence = request.confidence >= 3
+            high_confidence = body.confidence >= 3
 
             if is_correct and high_confidence:
                 calibration_type = "calibrated"
@@ -536,25 +655,64 @@ async def submit_response(request: SubmitResponseRequest):
                 stage = "remediate"
                 remediation_type = "supportive"
 
+        # Check if we should transition to deeper assessment (dialogue questions)
+        # after sufficient multiple-choice practice
+        if stage == "practice":
+            try:
+                learner_model = load_learner_model(body.learner_id)
+                concept_data = learner_model.get("concepts", {}).get(body.current_concept, {})
+                assessments = concept_data.get("assessments", [])
+
+                # Count recent correct answers
+                recent_correct = sum(1 for a in assessments[-7:] if a.get("score", 0) >= 0.7)
+
+                # After 5+ correct answers, occasionally transition to dialogue for depth
+                # (30% chance to avoid being too predictable)
+                if len(assessments) >= 5 and recent_correct >= 5:
+                    import random
+                    if random.random() < 0.3:
+                        stage = "assess"
+                        logger.info(f"Transitioning to 'assess' stage after {len(assessments)} questions with {recent_correct} recent correct")
+            except Exception as e:
+                logger.warning(f"Could not check assessment history for stage transition: {e}")
+                # Keep stage as "practice" on error
+
+        # Record assessment and check for concept completion
+        from .tools import record_assessment_and_check_completion
+
+        completion_result = record_assessment_and_check_completion(
+            learner_id=body.learner_id,
+            concept_id=body.current_concept,
+            is_correct=is_correct,
+            confidence=body.confidence,
+            question_type=body.question_type
+        )
+
+        if completion_result["concept_completed"]:
+            logger.info(
+                f"🎉 Learner {body.learner_id} completed {body.current_concept}! "
+                f"Total concepts: {completion_result['concepts_completed_total']}/7"
+            )
+
         # Build question context for specific feedback
         question_context = None
-        if (stage in ["remediate", "reinforce"]) and (request.question_text or request.scenario_text):
+        if (stage in ["remediate", "reinforce"]) and (body.question_text or body.scenario_text):
             # We're providing feedback on a specific question - pass the details to AI
             question_context = {
-                "scenario": request.scenario_text or "",
-                "question": request.question_text or "",
-                "user_answer": request.user_answer,
-                "correct_answer": request.correct_answer,
-                "options": request.options or []
+                "scenario": body.scenario_text or "",
+                "question": body.question_text or "",
+                "user_answer": body.user_answer,
+                "correct_answer": body.correct_answer,
+                "options": body.options or []
             }
             logger.info(f"Passing question context to AI for {stage} feedback")
 
         # Generate next content using the AI
         result = generate_content(
-            request.learner_id,
+            body.learner_id,
             stage,
             correctness=is_correct,
-            confidence=request.confidence,
+            confidence=body.confidence,
             remediation_type=remediation_type,
             question_context=question_context
         )
@@ -566,22 +724,22 @@ async def submit_response(request: SubmitResponseRequest):
             )
 
         # Save question to history to avoid repetition
-        if request.question_text or request.scenario_text:
+        if body.question_text or body.scenario_text:
             try:
                 from .tools import load_learner_model, save_learner_model
                 from datetime import datetime
 
-                learner_model = load_learner_model(request.learner_id)
+                learner_model = load_learner_model(body.learner_id)
 
                 # Add current question to history
                 question_entry = {
-                    "scenario": request.scenario_text or "",
-                    "question": request.question_text or "",
-                    "user_answer": request.user_answer,
-                    "correct_answer": request.correct_answer,
+                    "scenario": body.scenario_text or "",
+                    "question": body.question_text or "",
+                    "user_answer": body.user_answer,
+                    "correct_answer": body.correct_answer,
                     "timestamp": datetime.now().isoformat(),
                     "was_correct": is_correct,
-                    "confidence": request.confidence
+                    "confidence": body.confidence
                 }
 
                 # Initialize question_history if it doesn't exist (for older learner models)
@@ -596,8 +754,8 @@ async def submit_response(request: SubmitResponseRequest):
                 # Update timestamp
                 learner_model["updated_at"] = datetime.now().isoformat()
 
-                save_learner_model(request.learner_id, learner_model)
-                logger.info(f"Saved question to history for {request.learner_id}")
+                save_learner_model(body.learner_id, learner_model)
+                logger.info(f"Saved question to history for {body.learner_id}")
             except Exception as e:
                 logger.warning(f"Failed to save question history: {e}")
                 # Don't fail the request if history saving fails
@@ -610,17 +768,57 @@ async def submit_response(request: SubmitResponseRequest):
             "calibrated_low": "You weren't sure, and this is tricky. Let's work through it."
         }
 
+        # For dialogue questions, use the AI-generated rubric-based feedback
+        if body.question_type == "dialogue":
+            feedback_text = dialogue_feedback
+        else:
+            feedback_text = feedback_messages.get(calibration_type, "Thank you for your response.")
+
+        # Build assessment-result content to show feedback
+        # Convert correct answer to human-readable text
+        correct_answer_display = body.correct_answer
+        if body.question_type == "multiple-choice" and body.options and isinstance(body.correct_answer, int):
+            # For multiple-choice, show the actual option text, not just the index
+            if 0 <= body.correct_answer < len(body.options):
+                correct_answer_display = body.options[body.correct_answer]
+
+        # Get language connection hint if applicable
+        from .tools import get_language_connection
+        language_connection = get_language_connection(body.learner_id, body.concept_id)
+
+        # Create debug context
+        debug_context = {
+            "stage": stage,
+            "remediation_type": remediation_type,
+            "question_context_sent_to_ai": question_context,
+            "mastery_score": completion_result.get("mastery_score", 0.0),
+            "assessments_count": completion_result.get("assessments_count", 0)
+        }
+
+        logger.info(f"Debug context being sent: {debug_context}")
+
+        assessment_result = {
+            "type": "assessment-result",
+            "score": 1.0 if is_correct else 0.0,
+            "feedback": feedback_text,
+            "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
+            "calibration": calibration_type,
+            "languageConnection": language_connection,  # Add language connection
+            "_next_content": result["content"],  # Store for preloading, frontend will fetch on continue
+            "debug_context": debug_context  # Add debug context to assessment result content
+        }
+
         return {
             "is_correct": is_correct,
-            "confidence": request.confidence,
+            "confidence": body.confidence,
             "calibration_type": calibration_type,
-            "feedback_message": feedback_messages[calibration_type],
-            "next_content": result["content"],
-            "debug_context": {
-                "stage": stage,
-                "remediation_type": remediation_type,
-                "question_context_sent_to_ai": question_context
-            }
+            "feedback_message": feedback_messages.get(calibration_type, "Thank you for your response."),
+            "mastery_score": completion_result["mastery_score"],
+            "mastery_threshold": config.MASTERY_THRESHOLD,
+            "assessments_count": completion_result["assessments_count"],
+            "concept_completed": completion_result["concept_completed"],
+            "next_content": assessment_result,
+            "debug_context": debug_context
         }
 
     except Exception as e:
@@ -632,7 +830,8 @@ async def submit_response(request: SubmitResponseRequest):
 
 
 @app.post("/generate-content")
-async def generate_content_endpoint(learner_id: str, stage: str = "start"):
+@limiter.limit("60/minute")  # Allow frequent content generation during active learning
+async def generate_content_endpoint(request: Request, learner_id: str, stage: str = "start"):
     """
     Generate personalized learning content using AI.
 
@@ -653,6 +852,33 @@ async def generate_content_endpoint(learner_id: str, stage: str = "start"):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=result.get("error", "Content generation failed")
             )
+
+        # Add mastery data to debug context
+        try:
+            from .tools import load_learner_model
+            learner_model = load_learner_model(learner_id)
+            current_concept = learner_model.get("current_concept", "concept-001")
+
+            mastery_score = 0.0
+            assessments_count = 0
+
+            if current_concept in learner_model.get("concepts", {}):
+                concept_data = learner_model["concepts"][current_concept]
+                mastery_score = concept_data.get("mastery_score", 0.0)
+                assessments_count = len(concept_data.get("assessments", []))
+
+            # Add debug context if it doesn't exist
+            if "content" in result and isinstance(result["content"], dict):
+                if "debug_context" not in result["content"]:
+                    result["content"]["debug_context"] = {}
+
+                result["content"]["debug_context"]["mastery_score"] = mastery_score
+                result["content"]["debug_context"]["assessments_count"] = assessments_count
+                result["content"]["debug_context"]["stage"] = stage
+                result["content"]["debug_context"]["remediation_type"] = "none"
+                result["content"]["debug_context"]["question_context_sent_to_ai"] = None
+        except Exception as e:
+            logger.warning(f"Could not add mastery data to debug context: {e}")
 
         return result
 

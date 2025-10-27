@@ -1,0 +1,263 @@
+.scenario-widget {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 3px solid #dee2e6;
+  border-radius: 16px;
+  padding: 32px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.scenario-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.scenario-icon {
+  font-size: 3em;
+  line-height: 1;
+}
+
+.scenario-title-section {
+  flex: 1;
+}
+
+.scenario-title {
+  color: #495057;
+  margin: 0 0 4px 0;
+  font-size: 1.8em;
+  font-weight: 700;
+}
+
+.scenario-subtitle {
+  color: #6c757d;
+  margin: 0;
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+.scenario-progress {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.progress-label {
+  font-size: 0.9em;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+  transition: width 0.4s ease;
+  border-radius: 6px;
+}
+
+.scenario-content {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  min-height: 300px;
+}
+
+.step-title {
+  color: #495057;
+  font-size: 1.4em;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+}
+
+/* Narrative styles */
+.scenario-narrative {
+  line-height: 1.7;
+}
+
+.narrative-image {
+  font-size: 4em;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.narrative-text p {
+  font-size: 1.1em;
+  color: #495057;
+  margin-bottom: 16px;
+}
+
+.narrative-dialogue {
+  background: #fff8e1;
+  border-left: 4px solid #ffc107;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.dialogue-label {
+  font-size: 0.85em;
+  color: #856404;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.dialogue-text {
+  font-size: 1.3em;
+  color: #495057;
+  font-weight: 600;
+  font-family: 'Georgia', serif;
+  margin-bottom: 8px;
+}
+
+.dialogue-translation {
+  font-size: 1em;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Challenge styles */
+.scenario-challenge {
+  padding: 20px 0;
+}
+
+.challenge-prompt {
+  font-size: 1.2em;
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.challenge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.challenge-option {
+  padding: 16px 20px;
+  background: white;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.challenge-option:hover {
+  border-color: #0066cc;
+  background: #f0f7ff;
+  transform: translateX(4px);
+}
+
+.challenge-option:active {
+  transform: translateX(2px);
+}
+
+/* Navigation */
+.scenario-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 2px solid #dee2e6;
+}
+
+.nav-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.prev-button {
+  background: #6c757d;
+  color: white;
+}
+
+.prev-button:hover {
+  background: #5a6268;
+  transform: translateX(-2px);
+}
+
+.next-button {
+  background: #0066cc;
+  color: white;
+  margin-left: auto;
+}
+
+.next-button:hover {
+  background: #0052a3;
+  transform: translateX(2px);
+}
+
+/* Embedded widget styles - ensure widgets fit within scenario */
+.scenario-content .declension-explorer,
+.scenario-content .word-order-manipulator {
+  margin: 0;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .scenario-widget {
+    padding: 20px;
+  }
+
+  .scenario-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .scenario-icon {
+    font-size: 2.5em;
+  }
+
+  .scenario-title {
+    font-size: 1.4em;
+  }
+
+  .scenario-content {
+    padding: 20px;
+  }
+
+  .challenge-options {
+    gap: 10px;
+  }
+
+  .scenario-navigation {
+    flex-direction: column;
+  }
+
+  .next-button {
+    margin-left: 0;
+  }
+}
