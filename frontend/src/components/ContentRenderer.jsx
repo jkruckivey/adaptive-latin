@@ -13,7 +13,7 @@ import WordOrderManipulator from './widgets/WordOrderManipulator'
 import ScenarioWidget from './widgets/ScenarioWidget'
 import './ContentRenderer.css'
 
-function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, conceptId }) {
+function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, learnerProfile, conceptId }) {
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
   const [dots, setDots] = useState('')
 
@@ -147,9 +147,10 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, co
             correctAnswer={content.correctAnswer}
             calibration={content.calibration}
             languageConnection={content.languageConnection}
+            learnerId={learnerId}
+            learnerProfile={learnerProfile}
             nextContent={content._next_content}
             onContinue={onNext}
-            learnerId={learnerId}
             conceptId={conceptId}
           />
         )

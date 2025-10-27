@@ -1,1 +1,77 @@
 @import '../content-types/content-types.css';
+
+.learning-style-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--neutral-100);
+  border-radius: 8px;
+  border: 1px solid var(--neutral-300);
+}
+
+.current-style {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.style-label {
+  color: var(--neutral-600);
+  font-size: 0.9rem;
+}
+
+.change-style-button {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  background: var(--neutral-200);
+  border: 1px solid var(--neutral-400);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.change-style-button:hover {
+  background: var(--neutral-300);
+}
+
+.style-picker {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--neutral-300);
+}
+
+.style-picker-hint {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--neutral-600);
+}
+
+.style-option {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  background: white;
+  border: 2px solid var(--neutral-300);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.style-option:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  background: var(--primary-50);
+}
+
+.style-option.active {
+  border-color: var(--primary-color);
+  background: var(--primary-100);
+  font-weight: 600;
+}
+
+.style-option:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
