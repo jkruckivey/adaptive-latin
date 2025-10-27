@@ -54,8 +54,15 @@ function App() {
     const storedLearnerId = localStorage.getItem('learnerId')
     const storedProfile = localStorage.getItem('learnerProfile')
 
+    console.log('🔍 Initial load check:', {
+      hasLearnerId: !!storedLearnerId,
+      hasProfile: !!storedProfile,
+      learnerId: storedLearnerId
+    })
+
     if (storedLearnerId && storedProfile) {
       // Both ID and profile exist - skip onboarding
+      console.log('✅ Restoring existing session')
       setLearnerId(storedLearnerId)
       setLearnerProfile(JSON.parse(storedProfile))
       setIsStarted(true)
@@ -63,7 +70,10 @@ function App() {
       loadProgress(storedLearnerId)
     } else if (storedLearnerId && !storedProfile) {
       // ID exists but no profile - clear stale data and start fresh
+      console.log('🧹 Clearing stale learnerId without profile')
       localStorage.removeItem('learnerId')
+    } else {
+      console.log('👋 New user - showing welcome screen')
     }
   }, [])
 
@@ -192,12 +202,14 @@ function App() {
     // Check if current content has pre-loaded next content (from assessment results)
     if (currentContent?._next_content) {
       // Use the adaptive next content that was already prepared based on performance
+      console.log('📦 Using pre-loaded adaptive content:', currentContent._next_content.type)
       setCurrentContent(currentContent._next_content)
       setContentIndex(i => i + 1)
       return
     }
 
     // Otherwise, fetch new content from API
+    console.log('🔄 Fetching new content from API')
     setIsLoadingContent(true)
     try {
       // Determine stage based on content progression
@@ -206,6 +218,7 @@ function App() {
 
       const result = await api.generateContent(learnerId, stage)
       if (result.success) {
+        console.log('✅ Got new content:', result.content.type)
         setCurrentContent(result.content)
         setContentIndex(i => i + 1)
       } else {
@@ -221,6 +234,8 @@ function App() {
   }
 
   const handleResponse = async (response) => {
+    console.log('📝 User answered question:', response)
+
     // Check if we should show confidence rating for this question
     const shouldShowConfidence = currentContent?.show_confidence !== false
 
@@ -235,6 +250,7 @@ function App() {
       : (currentContent.correctAnswer || 0) // Multiple-choice has correctAnswer number
 
     if (shouldShowConfidence) {
+      console.log('🤔 Showing confidence slider')
       // Store the answer and question data, then show confidence slider
       setCurrentAnswer(userAnswer)
       setCurrentQuestionData({
@@ -244,6 +260,7 @@ function App() {
       })
       setWaitingForConfidence(true)
     } else {
+      console.log('⏭️ Skipping confidence, submitting directly')
       // Skip confidence slider - submit directly with null confidence
       await submitResponse({
         learnerId,
@@ -256,6 +273,7 @@ function App() {
         scenario: currentContent.scenario,
         options: currentContent.options || null,
         onSuccess: (contentWithDebug, masteryData) => {
+          console.log('✅ Got response, setting content:', contentWithDebug.type)
           setCurrentContent(contentWithDebug)
           setContentIndex(i => i + 1)
 
@@ -271,6 +289,7 @@ function App() {
   }
 
   const handleConfidenceSelect = async (confidenceLevel) => {
+    console.log('🎯 Confidence selected:', confidenceLevel)
     setWaitingForConfidence(false)
 
     await submitResponse({
@@ -284,6 +303,8 @@ function App() {
       scenario: currentQuestionData.content.scenario,
       options: currentQuestionData.content.options || null,
       onSuccess: (contentWithDebug, masteryData) => {
+        console.log('✅ Got response with confidence, setting content:', contentWithDebug.type)
+        console.log('📦 Next content attached:', !!contentWithDebug._next_content)
         setCurrentContent(contentWithDebug)
         setContentIndex(i => i + 1)
 
