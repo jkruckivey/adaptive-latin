@@ -7,6 +7,7 @@ system prompt management, and conversation handling.
 
 import json
 import logging
+import random
 from typing import Dict, List, Any, Optional, Tuple
 from anthropic import Anthropic
 from .config import config
@@ -798,14 +799,24 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             # PREVIEW MODE: Quick conceptual foundation before diagnostic (addresses audit feedback)
             # Adapt preview format to learning style
             learner_model = load_learner_model(learner_id)
-            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
 
-            if learning_style == 'visual':
-                request = "Generate a brief 'paradigm-table' preview (30-second scan) showing the key grammatical patterns for this concept. Include a very short explanation (2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'practice':
-                request = "Generate a single 'fill-blank' exercise preview with generous hints showing the key pattern for this concept. This is a quick guided practice before assessment. Respond ONLY with the JSON object, no other text."
-            else:  # connections
-                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept and how it connects to familiar ideas (English grammar, etc.). Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
+            if learning_style == 'narrative':
+                request = "Generate a brief 'example-set' preview (30-second read) showing the concept through story-based examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'varied':
+                # Vary preview format
+                preview_type = random.choice(['paradigm-table', 'example-set', 'lesson'])
+                logger.info(f"Varied learning style - preview with: {preview_type}")
+                if preview_type == 'paradigm-table':
+                    request = "Generate a brief 'paradigm-table' preview (30-second scan) showing the key grammatical patterns for this concept. Include a very short explanation (2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the JSON object, no other text."
+                elif preview_type == 'example-set':
+                    request = "Generate a brief 'example-set' preview showing the concept through varied examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
+                else:
+                    request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'adaptive':
+                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept and key patterns. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
+            else:
+                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
 
         elif stage == "start":
             # DIAGNOSTIC-FIRST: Always start with a question
@@ -858,16 +869,18 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
             # Determine preferred content format based on learner style
             learner_model = load_learner_model(learner_id)
-            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
 
             # Map learning style to content type
             preferred_content_type = 'lesson'  # default
-            if learning_style == 'visual':
-                preferred_content_type = 'paradigm-table'
-            elif learning_style == 'practice':
-                preferred_content_type = 'fill-blank'
-            elif learning_style == 'connections':
-                preferred_content_type = 'lesson'
+            if learning_style == 'narrative':
+                preferred_content_type = 'example-set'  # Story-based examples
+            elif learning_style == 'varied':
+                # Vary content type - alternate between different formats
+                preferred_content_type = random.choice(['paradigm-table', 'example-set', 'lesson'])
+                logger.info(f"Varied learning style - selected: {preferred_content_type}")
+            elif learning_style == 'adaptive':
+                preferred_content_type = 'lesson'  # Brief lessons with exercises
 
             # Adaptive remediation based on confidence
             if remediation_type == "full_calibration":
@@ -916,13 +929,21 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
             # Determine preferred content format based on learner style
             learner_model = load_learner_model(learner_id)
-            learning_style = learner_model.get('profile', {}).get('learningStyle', 'connections')
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
 
             # Brief reinforcement for correct but uncertain answers - adapt format to preference
-            if learning_style == 'visual':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'paradigm-table' showing the pattern they correctly identified. Include encouraging explanation. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'practice':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a quick 'fill-blank' exercise to reinforce what they got right. Include positive hints. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            if learning_style == 'narrative':
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' with story-based examples that validates their answer and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'varied':
+                # Vary content type for reinforcement too
+                reinforce_type = random.choice(['paradigm-table', 'example-set'])
+                logger.info(f"Varied learning style - reinforce with: {reinforce_type}")
+                if reinforce_type == 'paradigm-table':
+                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'paradigm-table' showing the pattern they correctly identified. Include encouraging explanation. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+                else:
+                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            elif learning_style == 'adaptive':
+                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
             else:
                 request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' that validates their answer to THAT specific question and builds confidence. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
 
