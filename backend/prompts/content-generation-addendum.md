@@ -180,7 +180,68 @@ Use for open-ended explanations and deeper thinking.
 
 **When to use:** Assessing understanding, requiring explanation, checking for misconceptions
 
-### 7. Assessment Result (`type: "assessment-result"`)
+### 7. Declension Explorer (`type: "declension-explorer"`)
+
+Interactive widget for exploring noun declensions hands-on.
+
+**Structure:**
+```json
+{
+  "type": "declension-explorer",
+  "noun": "puella, puellae (f.)",
+  "forms": {
+    "nominative_singular": "puella",
+    "nominative_plural": "puellae",
+    "genitive_singular": "puellae",
+    "genitive_plural": "puellarum",
+    "dative_singular": "puellae",
+    "dative_plural": "puellis",
+    "accusative_singular": "puellam",
+    "accusative_plural": "puellas",
+    "ablative_singular": "puella",
+    "ablative_plural": "puellis"
+  },
+  "explanation": "First declension nouns end in -a (nominative singular)",
+  "highlightCase": "genitive"
+}
+```
+
+**When to use:** Visual/interactive learners, showing systematic patterns, remediation with hands-on exploration
+
+### 8. Word Order Manipulator (`type: "word-order-manipulator"`)
+
+Interactive drag-and-drop widget for arranging Latin words.
+
+**Structure:**
+```json
+{
+  "type": "word-order-manipulator",
+  "sentence": "The girl sees the road",
+  "words": [
+    {"word": "Puella", "case": "nominative", "role": "subject"},
+    {"word": "viam", "case": "accusative", "role": "object"},
+    {"word": "videt", "role": "verb"}
+  ],
+  "explanation": "Latin word order is flexible. Try different arrangements!",
+  "correctOrders": [
+    [
+      {"word": "Puella"},
+      {"word": "viam"},
+      {"word": "videt"}
+    ],
+    [
+      {"word": "Puella"},
+      {"word": "videt"},
+      {"word": "viam"}
+    ]
+  ]
+}
+```
+
+**When to use:** Practice/kinesthetic learners, teaching word order flexibility, hands-on reinforcement
+
+### 9. Assessment Result (`type: "assessment-result"`)
+
 
 Use ONLY in response to user answers, not for generating initial content.
 
