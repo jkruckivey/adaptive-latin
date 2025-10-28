@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import CurriculumRoadmap from './CurriculumRoadmap'
 import './ConceptEditor.css'
 
 function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
   const [currentConceptIndex, setCurrentConceptIndex] = useState(0)
   const [concepts, setConcepts] = useState(courseData.concepts || [])
   const [errors, setErrors] = useState({})
+  const [showRoadmap, setShowRoadmap] = useState(false)
 
   const currentConcept = concepts[currentConceptIndex] || {}
 
@@ -75,10 +77,15 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
         setCurrentConceptIndex(currentConceptIndex + 1)
         setErrors({})
       } else {
-        // All concepts done, move to next wizard step
-        onNext({ concepts })
+        // All concepts done, show roadmap before final review
+        setShowRoadmap(true)
       }
     }
+  }
+
+  const handleRoadmapClose = () => {
+    setShowRoadmap(false)
+    onNext({ concepts })
   }
 
   const handlePrevConcept = () => {
@@ -213,11 +220,23 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
           <button onClick={handleNextConcept} className="wizard-button primary">
             {currentConceptIndex < concepts.length - 1
               ? 'Next Concept →'
-              : 'Review & Publish →'
+              : 'View Curriculum Roadmap →'
             }
           </button>
         </div>
       </div>
+
+      {/* Curriculum Roadmap Modal */}
+      {showRoadmap && (
+        <div className="roadmap-modal-overlay">
+          <div className="roadmap-modal">
+            <CurriculumRoadmap
+              courseData={{ ...courseData, concepts }}
+              onClose={handleRoadmapClose}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
