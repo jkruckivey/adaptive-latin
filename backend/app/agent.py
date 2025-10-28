@@ -510,6 +510,24 @@ TOOL_DEFINITIONS = [
             },
             "required": ["current_concept_id"]
         }
+    },
+    {
+        "name": "load_external_source",
+        "description": "Load full content from an external source (website, PDF, video transcript, etc.) that has been added to the course. Use this to reference external materials when creating content.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "source_id": {
+                    "type": "string",
+                    "description": "The source identifier"
+                },
+                "concept_id": {
+                    "type": "string",
+                    "description": "Concept ID if this is a concept-specific source, omit for course-level sources"
+                }
+            },
+            "required": ["source_id"]
+        }
     }
 ]
 
@@ -598,6 +616,42 @@ def execute_tool(tool_name: str, tool_input: Dict[str, Any], learner_id: Optiona
                 course_id=course_id
             )
             return {"success": True, "data": {"next_concept": result}}
+
+        elif tool_name == "load_external_source":
+            from .source_extraction import load_full_source_content
+            from .config import config as app_config
+            import json
+
+            # Load metadata to find source URL and type
+            source_id = tool_input["source_id"]
+            concept_id = tool_input.get("concept_id")
+
+            if concept_id:
+                # Concept-level source
+                concept_dir = app_config.get_concept_dir(concept_id, course_id)
+                metadata_file = concept_dir / "metadata.json"
+            else:
+                # Course-level source
+                course_dir = app_config.get_course_dir(course_id or app_config.DEFAULT_COURSE_ID)
+                metadata_file = course_dir / "metadata.json"
+
+            if not metadata_file.exists():
+                return {"success": False, "error": "Metadata file not found"}
+
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+
+            # Find source
+            sources = metadata.get("sources", [])
+            source = next((s for s in sources if s.get("id") == source_id), None)
+
+            if not source:
+                return {"success": False, "error": f"Source {source_id} not found"}
+
+            # Load full content
+            content_data = load_full_source_content(source["url"], source["type"])
+
+            return {"success": True, "data": content_data}
 
         else:
             return {"success": False, "error": f"Unknown tool: {tool_name}"}

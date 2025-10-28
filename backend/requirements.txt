@@ -20,5 +20,8 @@ fastapi-cors==0.0.6
 # Rate Limiting
 slowapi==0.1.9
 
+# HTTP Requests for external source fetching
+requests==2.31.0
+
 # JSON handling (built-in but explicit for clarity)
 # json - built-in Python module

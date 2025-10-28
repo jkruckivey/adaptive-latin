@@ -320,6 +320,36 @@ class CoursesListResponse(BaseModel):
     total: int
 
 
+class AddSourceRequest(BaseModel):
+    """Request to add an external source to a course or concept."""
+    url: str = Field(..., description="Source URL")
+    source_type: Optional[str] = Field(None, description="Source type (auto-detected if not provided)")
+    title: Optional[str] = Field(None, description="Optional custom title")
+    description: Optional[str] = Field(None, description="Optional custom description")
+
+
+class SourceResponse(BaseModel):
+    """Response with source metadata."""
+    source_id: str
+    type: str
+    url: str
+    title: str
+    description: str
+    metadata: dict
+    added_at: str
+    status: str
+    error_message: Optional[str] = None
+
+
+class SourceContentResponse(BaseModel):
+    """Response with full source content."""
+    success: bool
+    content: Optional[str] = None
+    content_type: str
+    length: Optional[int] = None
+    error: Optional[str] = None
+
+
 # ============================================================================
 # Startup/Shutdown Events
 # ============================================================================
@@ -1648,6 +1678,286 @@ async def create_course(body: CreateCourseRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create course: {str(e)}"
+        )
+
+
+# ============================================================================
+# Source Management Endpoints
+# ============================================================================
+
+@app.post("/courses/{course_id}/sources", response_model=SourceResponse, status_code=status.HTTP_201_CREATED)
+async def add_course_source(course_id: str, body: AddSourceRequest):
+    """
+    Add an external source to a course (course-level resource).
+
+    Args:
+        course_id: Course identifier
+        body: Source URL and optional metadata
+
+    Returns:
+        Extracted source metadata
+    """
+    try:
+        from .source_extraction import extract_source_metadata
+        import uuid
+
+        # Get course directory
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        # Load course metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            course_metadata = json.load(f)
+
+        # Extract source metadata
+        source_data = extract_source_metadata(body.url, body.source_type)
+
+        # Override with custom title/description if provided
+        if body.title:
+            source_data["title"] = body.title
+        if body.description:
+            source_data["description"] = body.description
+
+        # Generate unique source ID
+        source_id = f"source-{uuid.uuid4().hex[:8]}"
+        source_data["id"] = source_id
+
+        # Add to course metadata
+        if "sources" not in course_metadata:
+            course_metadata["sources"] = []
+
+        course_metadata["sources"].append(source_data)
+        course_metadata["updated_at"] = datetime.now().isoformat()
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(course_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Added source {source_id} to course {course_id}")
+
+        return {
+            "source_id": source_id,
+            "type": source_data["type"],
+            "url": source_data["url"],
+            "title": source_data["title"],
+            "description": source_data["description"],
+            "metadata": source_data["metadata"],
+            "added_at": source_data["added_at"],
+            "status": source_data["status"],
+            "error_message": source_data.get("error_message")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding source to course {course_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add source: {str(e)}"
+        )
+
+
+@app.post("/courses/{course_id}/concepts/{concept_id}/sources", response_model=SourceResponse, status_code=status.HTTP_201_CREATED)
+async def add_concept_source(course_id: str, concept_id: str, body: AddSourceRequest):
+    """
+    Add an external source to a specific concept.
+
+    Args:
+        course_id: Course identifier
+        concept_id: Concept identifier
+        body: Source URL and optional metadata
+
+    Returns:
+        Extracted source metadata
+    """
+    try:
+        from .source_extraction import extract_source_metadata
+        import uuid
+
+        # Get concept directory
+        concept_dir = config.get_concept_dir(concept_id, course_id)
+        metadata_file = concept_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Concept {concept_id} not found in course {course_id}"
+            )
+
+        # Load concept metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            concept_metadata = json.load(f)
+
+        # Extract source metadata
+        source_data = extract_source_metadata(body.url, body.source_type)
+
+        # Override with custom title/description if provided
+        if body.title:
+            source_data["title"] = body.title
+        if body.description:
+            source_data["description"] = body.description
+
+        # Generate unique source ID
+        source_id = f"source-{uuid.uuid4().hex[:8]}"
+        source_data["id"] = source_id
+
+        # Add to concept metadata
+        if "sources" not in concept_metadata:
+            concept_metadata["sources"] = []
+
+        concept_metadata["sources"].append(source_data)
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(concept_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Added source {source_id} to concept {concept_id} in course {course_id}")
+
+        return {
+            "source_id": source_id,
+            "type": source_data["type"],
+            "url": source_data["url"],
+            "title": source_data["title"],
+            "description": source_data["description"],
+            "metadata": source_data["metadata"],
+            "added_at": source_data["added_at"],
+            "status": source_data["status"],
+            "error_message": source_data.get("error_message")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding source to concept {concept_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add source: {str(e)}"
+        )
+
+
+@app.get("/sources/{source_id}/content", response_model=SourceContentResponse)
+async def get_source_content(source_id: str, course_id: str, concept_id: Optional[str] = None):
+    """
+    Load full content from a source on-demand.
+
+    Args:
+        source_id: Source identifier
+        course_id: Course identifier
+        concept_id: Optional concept identifier (for concept-specific sources)
+
+    Returns:
+        Full source content
+    """
+    try:
+        from .source_extraction import load_full_source_content
+
+        # Find the source in metadata
+        if concept_id:
+            # Concept-level source
+            concept_dir = config.get_concept_dir(concept_id, course_id)
+            metadata_file = concept_dir / "metadata.json"
+        else:
+            # Course-level source
+            course_dir = config.get_course_dir(course_id)
+            metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Metadata file not found"
+            )
+
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        # Find source
+        sources = metadata.get("sources", [])
+        source = next((s for s in sources if s.get("id") == source_id), None)
+
+        if not source:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Source {source_id} not found"
+            )
+
+        # Load full content
+        content_data = load_full_source_content(source["url"], source["type"])
+
+        return content_data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error loading source content for {source_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to load source content: {str(e)}"
+        )
+
+
+@app.delete("/courses/{course_id}/sources/{source_id}")
+async def delete_course_source(course_id: str, source_id: str):
+    """
+    Remove a source from a course.
+
+    Args:
+        course_id: Course identifier
+        source_id: Source identifier
+
+    Returns:
+        Success message
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        # Load course metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            course_metadata = json.load(f)
+
+        # Remove source
+        sources = course_metadata.get("sources", [])
+        original_count = len(sources)
+        course_metadata["sources"] = [s for s in sources if s.get("id") != source_id]
+
+        if len(course_metadata["sources"]) == original_count:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Source {source_id} not found"
+            )
+
+        course_metadata["updated_at"] = datetime.now().isoformat()
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(course_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Deleted source {source_id} from course {course_id}")
+
+        return {
+            "success": True,
+            "message": f"Source {source_id} deleted successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting source {source_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete source: {str(e)}"
         )
 
 
