@@ -484,7 +484,7 @@ function App() {
         <div className="development-banner">
           <span className="banner-icon">🚧</span>
           <span className="banner-text">
-            <strong>Early Access:</strong> Currently featuring Concept 001 (First Declension). Additional concepts in development.
+            <strong>Early Access:</strong> Concepts 001-002 available. Additional concepts in development.
           </span>
           <span className="banner-status">
             {progress?.overall_progress?.concepts_completed || 0}/7 Complete
