@@ -518,35 +518,48 @@ TOOL_DEFINITIONS = [
 # Tool Execution Handler
 # ============================================================================
 
-def execute_tool(tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
+def execute_tool(tool_name: str, tool_input: Dict[str, Any], learner_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Execute a tool call and return the result.
 
     Args:
         tool_name: Name of the tool to execute
         tool_input: Input parameters for the tool
+        learner_id: Learner ID for course context (optional)
 
     Returns:
         Tool execution result
     """
     try:
+        # Get course_id from learner model if available
+        course_id = None
+        if learner_id:
+            try:
+                learner_model = load_learner_model(learner_id)
+                course_id = learner_model.get("current_course")
+            except Exception as e:
+                logger.warning(f"Could not load learner model for {learner_id}: {e}")
+
         if tool_name == "load_resource":
             result = load_resource(
                 concept_id=tool_input["concept_id"],
-                resource_type=tool_input["resource_type"]
+                resource_type=tool_input["resource_type"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
         elif tool_name == "load_assessment":
             result = load_assessment(
                 concept_id=tool_input["concept_id"],
-                assessment_type=tool_input["assessment_type"]
+                assessment_type=tool_input["assessment_type"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
         elif tool_name == "load_concept_metadata":
             result = load_concept_metadata(
-                concept_id=tool_input["concept_id"]
+                concept_id=tool_input["concept_id"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
@@ -581,7 +594,8 @@ def execute_tool(tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
 
         elif tool_name == "get_next_concept":
             result = get_next_concept(
-                current_concept_id=tool_input["current_concept_id"]
+                current_concept_id=tool_input["current_concept_id"],
+                course_id=course_id
             )
             return {"success": True, "data": {"next_concept": result}}
 
@@ -658,7 +672,7 @@ def chat(
                     logger.debug(f"Tool input: {tool_input}")
 
                     # Execute the tool
-                    tool_result = execute_tool(tool_name, tool_input)
+                    tool_result = execute_tool(tool_name, tool_input, learner_id)
 
                     # Add tool result
                     tool_results.append({
