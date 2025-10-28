@@ -170,23 +170,53 @@ def extract_pdf_metadata(url: str) -> Dict[str, Any]:
         Metadata dictionary
     """
     try:
-        # HEAD request to get file info without downloading
+        import pdfplumber
+        import io
+
+        # HEAD request to get file info without downloading full file
         response = requests.head(url, timeout=10, allow_redirects=True)
         response.raise_for_status()
 
         file_size = response.headers.get('Content-Length', 'Unknown')
+        file_size_bytes = None
         if file_size != 'Unknown':
-            file_size_mb = int(file_size) / (1024 * 1024)
+            file_size_bytes = int(file_size)
+            file_size_mb = file_size_bytes / (1024 * 1024)
             file_size = f"{file_size_mb:.2f} MB"
 
         # Extract filename from URL
         filename = urlparse(url).path.split('/')[-1]
 
+        # Try to extract PDF metadata (only if file is small enough for quick preview)
+        page_count = None
+        if file_size_bytes and file_size_bytes < 5 * 1024 * 1024:  # Less than 5MB
+            try:
+                # Download first few KB to extract metadata
+                response = requests.get(url, timeout=15, headers={'Range': 'bytes=0-102400'}, stream=True)
+                if response.status_code in [200, 206]:  # Full or partial content
+                    # Get full file if partial didn't work
+                    if response.status_code == 200:
+                        pdf_data = response.content
+                    else:
+                        # If Range was supported, get full file
+                        full_response = requests.get(url, timeout=15)
+                        pdf_data = full_response.content
+
+                    with pdfplumber.open(io.BytesIO(pdf_data)) as pdf:
+                        page_count = len(pdf.pages)
+            except Exception as e:
+                logger.debug(f"Could not extract PDF page count: {e}")
+
+        description = f"PDF document ({file_size})"
+        if page_count:
+            description = f"PDF document ({file_size}, {page_count} pages)"
+
         return {
             "title": filename or "PDF Document",
-            "description": f"PDF document ({file_size})",
+            "description": description,
             "file_size": file_size,
             "filename": filename,
+            "page_count": page_count,
             "content_preview": f"PDF: {filename}"
         }
 
@@ -300,12 +330,69 @@ def load_full_source_content(url: str, source_type: str) -> Dict[str, Any]:
             }
 
         elif source_type == 'pdf':
-            # For PDFs, we'd need PyPDF2 or similar
-            # For now, return placeholder
+            # Download and extract text from PDF
+            import pdfplumber
+            import io
+
+            # Check file size before downloading (limit to 50MB)
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (compatible; EducationalBot/1.0)'
+            }
+            head_response = requests.head(url, timeout=10, headers=headers, allow_redirects=True)
+            head_response.raise_for_status()
+
+            content_length = head_response.headers.get('Content-Length')
+            if content_length:
+                size_mb = int(content_length) / (1024 * 1024)
+                if size_mb > 50:
+                    return {
+                        "success": False,
+                        "error": f"PDF file is too large ({size_mb:.1f} MB). Maximum supported size is 50 MB.",
+                        "content_type": "pdf"
+                    }
+
+            # Download PDF
+            response = requests.get(url, timeout=120, headers=headers)
+            response.raise_for_status()
+
+            # Extract text using pdfplumber
+            text_content = []
+            page_count = 0
+
+            with pdfplumber.open(io.BytesIO(response.content)) as pdf:
+                page_count = len(pdf.pages)
+
+                # Extract text from each page
+                for page_num, page in enumerate(pdf.pages, 1):
+                    page_text = page.extract_text()
+                    if page_text:
+                        text_content.append(f"--- Page {page_num} ---\n{page_text}")
+                    else:
+                        # Some pages might be image-based or empty
+                        logger.debug(f"No text extracted from page {page_num}")
+
+                    # Limit to first 100 pages to avoid memory issues
+                    if page_num >= 100:
+                        text_content.append(f"\n... (PDF has {page_count} total pages, showing first 100)")
+                        break
+
+            full_text = "\n\n".join(text_content)
+
+            if not full_text.strip():
+                return {
+                    "success": False,
+                    "error": "Could not extract text from PDF. The PDF might be image-based or protected.",
+                    "content_type": "pdf",
+                    "page_count": page_count
+                }
+
             return {
-                "success": False,
-                "error": "PDF content extraction requires additional setup. Please install PyPDF2 or pdfplumber.",
-                "content_type": "pdf"
+                "success": True,
+                "content": full_text,
+                "content_type": "pdf",
+                "length": len(full_text),
+                "page_count": page_count,
+                "pages_extracted": min(page_count, 100)
             }
 
         else:
