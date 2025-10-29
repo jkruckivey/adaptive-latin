@@ -20,6 +20,10 @@ build/
 backend/data/learner-models/*.json
 !backend/data/learner-models/.gitkeep
 
+# Content cache database (dynamically generated)
+backend/content_cache.db
+backend/content_cache.db-journal
+
 # IDE
 .vscode/
 .idea/
