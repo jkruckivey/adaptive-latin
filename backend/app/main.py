@@ -362,6 +362,15 @@ async def startup_event():
         config.validate()
         config.ensure_directories()
 
+        # Initialize content cache database
+        try:
+            from .content_cache import init_database
+            init_database()
+            logger.info("✅ Content cache database initialized")
+        except Exception as e:
+            logger.warning(f"⚠️  Content cache initialization failed: {e}")
+            logger.warning("⚠️  Content caching will not be available")
+
         # Log directory status for debugging
         logger.info(f"Learner models directory: {config.LEARNER_MODELS_DIR}")
         logger.info(f"Directory exists: {config.LEARNER_MODELS_DIR.exists()}")
@@ -1958,6 +1967,39 @@ async def delete_course_source(course_id: str, source_id: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to delete source: {str(e)}"
+        )
+
+
+# ============================================================================
+# Content Cache Statistics Endpoints
+# ============================================================================
+
+@app.get("/cache/stats")
+async def get_cache_statistics(course_id: Optional[str] = None):
+    """
+    Get statistics about content cache usage and cost savings.
+
+    Args:
+        course_id: Optional course filter
+
+    Returns:
+        Cache statistics including hits, effectiveness, and cost savings
+    """
+    try:
+        from .content_cache import get_cache_stats
+
+        stats = get_cache_stats(course_id)
+
+        return {
+            "success": True,
+            "stats": stats
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting cache stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get cache statistics: {str(e)}"
         )
 
 
