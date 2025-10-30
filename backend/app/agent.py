@@ -204,6 +204,72 @@ def evaluate_dialogue_response(question: str, context: str, student_answer: str,
 client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
 
+def call_anthropic_with_retry(system_prompt: str, user_message: str, max_retries: int = 3, timeout: int = 30) -> Any:
+    """
+    Call Anthropic API with retry logic and timeout.
+
+    Args:
+        system_prompt: System prompt text
+        user_message: User message text
+        max_retries: Maximum number of retry attempts (default: 3)
+        timeout: Timeout in seconds for each attempt (default: 30)
+
+    Returns:
+        Anthropic API response object
+
+    Raises:
+        Exception: If all retries fail
+    """
+    import time
+    from anthropic import APIError, APIConnectionError, RateLimitError, APITimeoutError
+
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            logger.info(f"API call attempt {attempt + 1}/{max_retries}")
+
+            response = client.messages.create(
+                model=config.ANTHROPIC_MODEL,
+                max_tokens=4096,
+                timeout=timeout,
+                system=system_prompt,
+                messages=[{
+                    "role": "user",
+                    "content": user_message
+                }]
+            )
+
+            logger.info(f"API call successful on attempt {attempt + 1}")
+            return response
+
+        except (APIConnectionError, APITimeoutError, RateLimitError) as e:
+            # Transient errors - retry with exponential backoff
+            last_error = e
+            wait_time = 2 ** attempt  # 1s, 2s, 4s
+            logger.warning(f"Transient API error on attempt {attempt + 1}: {type(e).__name__}: {str(e)}")
+
+            if attempt < max_retries - 1:
+                logger.info(f"Retrying in {wait_time} seconds...")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"All {max_retries} attempts failed")
+                raise Exception(f"API call failed after {max_retries} attempts: {type(e).__name__}: {str(e)}")
+
+        except APIError as e:
+            # Non-transient API errors - don't retry
+            logger.error(f"Non-transient API error: {type(e).__name__}: {str(e)}")
+            raise Exception(f"API error: {type(e).__name__}: {str(e)}")
+
+        except Exception as e:
+            # Unexpected errors - don't retry
+            logger.error(f"Unexpected error during API call: {type(e).__name__}: {str(e)}")
+            raise Exception(f"Unexpected error: {type(e).__name__}: {str(e)}")
+
+    # Should never reach here, but just in case
+    raise Exception(f"API call failed: {last_error}")
+
+
 # ============================================================================
 # System Prompt Management
 # ============================================================================
@@ -1038,15 +1104,12 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
 
-        # Make API call
-        response = client.messages.create(
-            model=config.ANTHROPIC_MODEL,
-            max_tokens=4096,
-            system=system_prompt,
-            messages=[{
-                "role": "user",
-                "content": request
-            }]
+        # Make API call with retry logic
+        response = call_anthropic_with_retry(
+            system_prompt=system_prompt,
+            user_message=request,
+            max_retries=3,
+            timeout=30
         )
 
         logger.info(f"Content generation API call completed. Stop reason: {response.stop_reason}")
@@ -1147,8 +1210,18 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             }
 
     except Exception as e:
-        logger.error(f"Error generating content: {e}")
+        import traceback
+        error_details = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "stage": stage,
+            "learner_id": learner_id,
+            "traceback": traceback.format_exc()
+        }
+        logger.error(f"Error generating content: {error_details['error_type']}: {error_details['error_message']}")
+        logger.error(f"Full traceback:\n{error_details['traceback']}")
         return {
             "success": False,
-            "error": str(e)
+            "error": f"{error_details['error_type']}: {error_details['error_message']}",
+            "error_details": error_details
         }

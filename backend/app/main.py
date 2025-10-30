@@ -880,9 +880,13 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
         )
 
         if not result["success"]:
+            error_detail = result.get("error", "Unknown error")
+            logger.error(f"Content generation failed: {error_detail}")
+            if "error_details" in result:
+                logger.error(f"Error details: {result['error_details']}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to generate next content"
+                detail=f"Failed to generate next content: {error_detail}"
             )
 
         # Save question to history to avoid repetition
