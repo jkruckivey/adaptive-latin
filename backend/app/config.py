@@ -117,6 +117,13 @@ class Config:
         """Get the file path for a learner's model."""
         return cls.LEARNER_MODELS_DIR / f"{learner_id}.json"
 
-
 # Singleton instance
 config = Config()
+
+# Database
+config.DATABASE_FILE = config.LEARNER_MODELS_DIR.parent / "latin_learner.db"
+
+# Security
+config.SECRET_KEY = os.environ.get("SECRET_KEY", "a_super_secret_key")
+config.ALGORITHM = "HS256"
+config.ACCESS_TOKEN_EXPIRE_MINUTES = 30
