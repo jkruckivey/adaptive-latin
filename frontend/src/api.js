@@ -117,5 +117,133 @@ export const api = {
       body: JSON.stringify({ learningStyle }),
     });
     return response.json();
+  },
+
+  // ========================================
+  // Course Management APIs
+  // ========================================
+
+  // List all courses
+  async listCourses() {
+    const response = await fetch(`${API_BASE_URL}/courses`);
+    if (!response.ok) {
+      throw new Error(`Failed to list courses: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  // Get course details
+  async getCourse(courseId) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to get course: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  // Create a new course
+  async createCourse(courseData) {
+    // Generate course ID from title
+    const courseId = courseData.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const response = await fetch(`${API_BASE_URL}/courses`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        course_id: courseId,
+        title: courseData.title,
+        domain: courseData.domain,
+        taxonomy: courseData.taxonomy || 'blooms',
+        course_learning_outcomes: courseData.courseLearningOutcomes || [],
+        // Backward compatibility
+        description: courseData.description || null,
+        target_audience: courseData.targetAudience || null,
+        concepts: (courseData.concepts || []).map(concept => ({
+          title: concept.title,
+          moduleLearningOutcomes: concept.moduleLearningOutcomes || concept.learningObjectives || [],
+          prerequisites: concept.prerequisites || [],
+          teachingContent: concept.teachingContent || '',
+          vocabulary: concept.vocabulary || []
+        }))
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to create course: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Add source to course
+  async addCourseSource(courseId, sourceData) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}/sources`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: sourceData.url,
+        source_type: sourceData.type,
+        title: sourceData.title,
+        description: sourceData.description,
+        requirement_level: sourceData.requirementLevel || 'optional',
+        verification_method: sourceData.verificationMethod || 'none',
+        verification_data: sourceData.verificationData || null
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to add source: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Add source to concept
+  async addConceptSource(courseId, conceptId, sourceData) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}/concepts/${conceptId}/sources`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: sourceData.url,
+        source_type: sourceData.type,
+        title: sourceData.title,
+        description: sourceData.description,
+        requirement_level: sourceData.requirementLevel || 'optional',
+        verification_method: sourceData.verificationMethod || 'none',
+        verification_data: sourceData.verificationData || null
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to add source: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Delete source
+  async deleteSource(courseId, sourceId) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}/sources/${sourceId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to delete source: ${response.statusText}`);
+    }
+
+    return response.json();
   }
 };

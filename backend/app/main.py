@@ -1752,6 +1752,12 @@ async def add_course_source(course_id: str, body: AddSourceRequest):
         if body.description:
             source_data["description"] = body.description
 
+        # Add requirement and verification data
+        source_data["requirement_level"] = body.requirement_level
+        source_data["verification_method"] = body.verification_method
+        if body.verification_data:
+            source_data["verification_data"] = body.verification_data
+
         # Generate unique source ID
         source_id = f"source-{uuid.uuid4().hex[:8]}"
         source_data["id"] = source_id
@@ -1830,6 +1836,12 @@ async def add_concept_source(course_id: str, concept_id: str, body: AddSourceReq
             source_data["title"] = body.title
         if body.description:
             source_data["description"] = body.description
+
+        # Add requirement and verification data
+        source_data["requirement_level"] = body.requirement_level
+        source_data["verification_method"] = body.verification_method
+        if body.verification_data:
+            source_data["verification_data"] = body.verification_data
 
         # Generate unique source ID
         source_id = f"source-{uuid.uuid4().hex[:8]}"
