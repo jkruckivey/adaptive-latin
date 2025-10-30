@@ -188,13 +188,26 @@
   min-width: 0;
 }
 
+.source-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+}
+
 .source-title {
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 0.25rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex: 1;
+}
+
+.source-badges {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .source-url {
@@ -211,6 +224,76 @@
   font-size: 0.9rem;
   color: #555;
   margin-top: 0.5rem;
+}
+
+.quiz-info {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+  padding: 6px 10px;
+  background: #e3f2fd;
+  border-left: 3px solid #2196f3;
+  border-radius: 4px;
+}
+
+/* Requirement Badges */
+.requirement-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.badge-required {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+.badge-recommended {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #17a2b8;
+}
+
+.badge-optional {
+  background: #e7f5e7;
+  color: #2e7d32;
+  border: 1px solid #4caf50;
+}
+
+/* Verification Badge */
+.verification-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #2196f3;
+  white-space: nowrap;
+}
+
+/* Source card border colors based on requirement level */
+.source-card.requirement-required {
+  border-left: 4px solid #ffc107;
+}
+
+.source-card.requirement-recommended {
+  border-left: 4px solid #17a2b8;
+}
+
+.source-card.requirement-optional {
+  border-left: 4px solid #4caf50;
+}
+
+/* Verification Section */
+.verification-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #e3f2fd;
 }
 
 .remove-source-button {

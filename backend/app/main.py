@@ -297,8 +297,11 @@ class CourseMetadata(BaseModel):
     course_id: str
     title: str
     domain: str
-    description: str
-    target_audience: str
+    taxonomy: Optional[str] = "blooms"
+    course_learning_outcomes: List[str] = []
+    # Keep these for backward compatibility with old courses
+    description: Optional[str] = None
+    target_audience: Optional[str] = None
     created_at: str
     updated_at: str
     concepts: List[dict] = []
@@ -309,9 +312,12 @@ class CreateCourseRequest(BaseModel):
     course_id: str = Field(..., description="Unique course identifier (e.g., 'spanish-101')")
     title: str = Field(..., description="Course title")
     domain: str = Field(..., description="Subject area")
-    description: str = Field(..., description="Course description")
-    target_audience: str = Field(..., description="Target audience")
-    concepts: List[dict] = Field(default=[], description="Course concepts")
+    taxonomy: str = Field(default="blooms", description="Learning outcome framework (blooms, finks, or both)")
+    course_learning_outcomes: List[str] = Field(default=[], description="Course-level learning outcomes (CLOs)")
+    # Keep these for backward compatibility with old courses
+    description: Optional[str] = Field(default=None, description="Course description (deprecated)")
+    target_audience: Optional[str] = Field(default=None, description="Target audience (deprecated)")
+    concepts: List[dict] = Field(default=[], description="Course concepts/modules")
 
 
 class CoursesListResponse(BaseModel):
@@ -326,6 +332,9 @@ class AddSourceRequest(BaseModel):
     source_type: Optional[str] = Field(None, description="Source type (auto-detected if not provided)")
     title: Optional[str] = Field(None, description="Optional custom title")
     description: Optional[str] = Field(None, description="Optional custom description")
+    requirement_level: Optional[str] = Field(default="optional", description="Requirement level: optional, recommended, or required")
+    verification_method: Optional[str] = Field(default="none", description="Verification method: none, self-attestation, comprehension-quiz, or discussion-prompt")
+    verification_data: Optional[dict] = Field(default=None, description="Verification data (quiz questions, discussion prompts, etc.)")
 
 
 class SourceResponse(BaseModel):
@@ -871,9 +880,13 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
         )
 
         if not result["success"]:
+            error_detail = result.get("error", "Unknown error")
+            logger.error(f"Content generation failed: {error_detail}")
+            if "error_details" in result:
+                logger.error(f"Error details: {result['error_details']}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to generate next content"
+                detail=f"Failed to generate next content: {error_detail}"
             )
 
         # Save question to history to avoid repetition
@@ -1612,12 +1625,18 @@ async def create_course(body: CreateCourseRequest):
             "course_id": body.course_id,
             "title": body.title,
             "domain": body.domain,
-            "description": body.description,
-            "target_audience": body.target_audience,
+            "taxonomy": body.taxonomy,
+            "course_learning_outcomes": body.course_learning_outcomes,
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
             "type": "user-created"
         }
+
+        # Add optional fields for backward compatibility
+        if body.description:
+            metadata["description"] = body.description
+        if body.target_audience:
+            metadata["target_audience"] = body.target_audience
 
         # Save metadata
         metadata_file = course_dir / "metadata.json"
@@ -1634,9 +1653,13 @@ async def create_course(body: CreateCourseRequest):
             concept_metadata = {
                 "concept_id": concept_id,
                 "title": concept_data.get("title", f"Concept {i + 1}"),
-                "learning_objectives": concept_data.get("learningObjectives", []),
+                "module_learning_outcomes": concept_data.get("moduleLearningOutcomes", []),
                 "prerequisites": concept_data.get("prerequisites", [])
             }
+
+            # Support old field name for backward compatibility
+            if not concept_metadata["module_learning_outcomes"] and "learningObjectives" in concept_data:
+                concept_metadata["module_learning_outcomes"] = concept_data.get("learningObjectives", [])
 
             concept_metadata_file = concept_dir / "metadata.json"
             with open(concept_metadata_file, "w", encoding="utf-8") as f:
@@ -1733,6 +1756,12 @@ async def add_course_source(course_id: str, body: AddSourceRequest):
         if body.description:
             source_data["description"] = body.description
 
+        # Add requirement and verification data
+        source_data["requirement_level"] = body.requirement_level
+        source_data["verification_method"] = body.verification_method
+        if body.verification_data:
+            source_data["verification_data"] = body.verification_data
+
         # Generate unique source ID
         source_id = f"source-{uuid.uuid4().hex[:8]}"
         source_data["id"] = source_id
@@ -1811,6 +1840,12 @@ async def add_concept_source(course_id: str, concept_id: str, body: AddSourceReq
             source_data["title"] = body.title
         if body.description:
             source_data["description"] = body.description
+
+        # Add requirement and verification data
+        source_data["requirement_level"] = body.requirement_level
+        source_data["verification_method"] = body.verification_method
+        if body.verification_data:
+            source_data["verification_data"] = body.verification_data
 
         # Generate unique source ID
         source_id = f"source-{uuid.uuid4().hex[:8]}"

@@ -6,6 +6,32 @@
   margin-bottom: 24px;
 }
 
+.clo-reference {
+  margin: 20px 0;
+  padding: 15px;
+  background: #e3f2fd;
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
+}
+
+.clo-reference h4 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.clo-reference ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.clo-reference li {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
 .concept-navigation {
   display: flex;
   gap: 8px;

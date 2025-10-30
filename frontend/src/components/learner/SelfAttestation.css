@@ -1,0 +1,160 @@
+.self-attestation {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.attestation-header {
+  margin-bottom: 25px;
+}
+
+.attestation-header h3 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.attestation-instruction {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.attestation-box {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  transition: all 0.2s;
+}
+
+.attestation-box:has(input:checked) {
+  background: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.attestation-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  cursor: pointer;
+}
+
+.attestation-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.attestation-text {
+  flex: 1;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.attestation-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 25px;
+}
+
+.confirm-button {
+  padding: 12px 30px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.confirm-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.attestation-notice {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.attestation-notice p {
+  margin: 0;
+  color: #856404;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.attestation-notice strong {
+  font-weight: 700;
+}
+
+/* Submitted State */
+.attestation-submitted {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.attestation-submitted .success-icon {
+  width: 80px;
+  height: 80px;
+  background: #4caf50;
+  color: white;
+  font-size: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.attestation-submitted h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.attestation-submitted p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .self-attestation,
+  .attestation-submitted {
+    padding: 20px;
+  }
+
+  .attestation-label {
+    gap: 10px;
+  }
+
+  .attestation-text {
+    font-size: 1rem;
+  }
+}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ComprehensionQuizBuilder from './ComprehensionQuizBuilder'
 import './ResourceLibrary.css'
 
 function ResourceLibrary({ courseData, onNext, onBack }) {
@@ -6,6 +7,13 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
   const [newSourceUrl, setNewSourceUrl] = useState('')
   const [newSourceTitle, setNewSourceTitle] = useState('')
   const [newSourceDescription, setNewSourceDescription] = useState('')
+  const [requirementLevel, setRequirementLevel] = useState('optional')
+  const [verificationMethod, setVerificationMethod] = useState('none')
+  const [verificationData, setVerificationData] = useState({
+    comprehensionQuestions: [],
+    discussionPrompt: '',
+    attestationText: 'I have read and understood this material'
+  })
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState(null)
   const [selectedConcept, setSelectedConcept] = useState('course') // 'course' or concept index
@@ -14,6 +22,26 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
     if (!newSourceUrl.trim()) {
       setError('URL is required')
       return
+    }
+
+    // Validate verification requirements
+    if (requirementLevel === 'required' && verificationMethod === 'comprehension-quiz') {
+      if (verificationData.comprehensionQuestions.length === 0) {
+        setError('Please add at least one comprehension question for required materials')
+        return
+      }
+      const hasEmptyQuestions = verificationData.comprehensionQuestions.some(q => !q.question.trim())
+      if (hasEmptyQuestions) {
+        setError('All comprehension questions must have question text')
+        return
+      }
+    }
+
+    if (requirementLevel === 'required' && verificationMethod === 'discussion-prompt') {
+      if (!verificationData.discussionPrompt.trim()) {
+        setError('Please provide a discussion prompt for required materials')
+        return
+      }
     }
 
     setIsAdding(true)
@@ -30,7 +58,12 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
         type: detectSourceType(newSourceUrl),
         added_at: new Date().toISOString(),
         status: 'ready',
-        scope: selectedConcept === 'course' ? 'course' : `concept-${selectedConcept}`
+        scope: selectedConcept === 'course' ? 'course' : `concept-${selectedConcept}`,
+        requirementLevel: requirementLevel,
+        verificationMethod: requirementLevel === 'required' ? verificationMethod : 'none',
+        verificationData: requirementLevel === 'required' && verificationMethod !== 'none'
+          ? { ...verificationData }
+          : null
       }
 
       setSources([...sources, mockMetadata])
@@ -39,6 +72,13 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
       setNewSourceUrl('')
       setNewSourceTitle('')
       setNewSourceDescription('')
+      setRequirementLevel('optional')
+      setVerificationMethod('none')
+      setVerificationData({
+        comprehensionQuestions: [],
+        discussionPrompt: '',
+        attestationText: 'I have read and understood this material'
+      })
       setError(null)
     } catch (err) {
       setError('Failed to add source. Please check the URL and try again.')
@@ -91,6 +131,32 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
 
   const getSourcesByScope = (scope) => {
     return sources.filter(s => s.scope === scope)
+  }
+
+  const getRequirementBadge = (level) => {
+    switch (level) {
+      case 'required':
+        return { text: '⭐ Required', className: 'badge-required' }
+      case 'recommended':
+        return { text: '💡 Recommended', className: 'badge-recommended' }
+      case 'optional':
+        return { text: '📌 Optional', className: 'badge-optional' }
+      default:
+        return { text: '📌 Optional', className: 'badge-optional' }
+    }
+  }
+
+  const getVerificationBadge = (method) => {
+    switch (method) {
+      case 'comprehension-quiz':
+        return '✓ Quiz Required'
+      case 'discussion-prompt':
+        return '💬 Discussion Required'
+      case 'self-attestation':
+        return '✋ Self-Attestation'
+      default:
+        return null
+    }
   }
 
   const courseSources = getSourcesByScope('course')
@@ -157,6 +223,101 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
             />
           </div>
 
+          {/* Requirement Level */}
+          <div className="form-group">
+            <label>Requirement Level</label>
+            <select
+              value={requirementLevel}
+              onChange={(e) => {
+                setRequirementLevel(e.target.value)
+                if (e.target.value !== 'required') {
+                  setVerificationMethod('none')
+                }
+              }}
+              className="requirement-select"
+            >
+              <option value="optional">Optional - Supplementary material</option>
+              <option value="recommended">Recommended - Strongly suggested</option>
+              <option value="required">Required - Must complete before accessing module</option>
+            </select>
+            <div className="input-hint">
+              {requirementLevel === 'required' && 'Students must complete this before proceeding'}
+              {requirementLevel === 'recommended' && 'Students will see this as recommended reading'}
+              {requirementLevel === 'optional' && 'Students can access this at their discretion'}
+            </div>
+          </div>
+
+          {/* Verification Method (only for required materials) */}
+          {requirementLevel === 'required' && (
+            <div className="form-group verification-section">
+              <label>Verification Method *</label>
+              <select
+                value={verificationMethod}
+                onChange={(e) => setVerificationMethod(e.target.value)}
+                className="verification-select"
+              >
+                <option value="none">No Verification (honor system)</option>
+                <option value="self-attestation">Self-Attestation (checkbox)</option>
+                <option value="comprehension-quiz">Comprehension Quiz</option>
+                <option value="discussion-prompt">Discussion Prompt</option>
+              </select>
+              <div className="input-hint">
+                How will you verify that students have engaged with this material?
+              </div>
+            </div>
+          )}
+
+          {/* Self-Attestation Text */}
+          {requirementLevel === 'required' && verificationMethod === 'self-attestation' && (
+            <div className="form-group">
+              <label>Attestation Text</label>
+              <input
+                type="text"
+                value={verificationData.attestationText}
+                onChange={(e) => setVerificationData({
+                  ...verificationData,
+                  attestationText: e.target.value
+                })}
+                placeholder="I have read and understood this material"
+                className="attestation-input"
+              />
+              <div className="input-hint">
+                Students will check a box confirming this statement
+              </div>
+            </div>
+          )}
+
+          {/* Discussion Prompt */}
+          {requirementLevel === 'required' && verificationMethod === 'discussion-prompt' && (
+            <div className="form-group">
+              <label>Discussion Prompt *</label>
+              <textarea
+                value={verificationData.discussionPrompt}
+                onChange={(e) => setVerificationData({
+                  ...verificationData,
+                  discussionPrompt: e.target.value
+                })}
+                placeholder="What are the key strategic issues facing the company in this case? How would you prioritize them?"
+                rows={4}
+                className="discussion-input"
+              />
+              <div className="input-hint">
+                Students must respond to this prompt before continuing
+              </div>
+            </div>
+          )}
+
+          {/* Comprehension Quiz */}
+          {requirementLevel === 'required' && verificationMethod === 'comprehension-quiz' && (
+            <ComprehensionQuizBuilder
+              questions={verificationData.comprehensionQuestions}
+              onChange={(questions) => setVerificationData({
+                ...verificationData,
+                comprehensionQuestions: questions
+              })}
+            />
+          )}
+
           {error && <div className="error-message">{error}</div>}
 
           <button
@@ -184,13 +345,30 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
                 <div className="source-group">
                   <h4>Course-Wide Sources</h4>
                   {courseSources.map((source) => (
-                    <div key={source.id} className="source-card">
+                    <div key={source.id} className={`source-card requirement-${source.requirementLevel || 'optional'}`}>
                       <div className="source-icon">{getSourceIcon(source.type)}</div>
                       <div className="source-info">
-                        <div className="source-title">{source.title}</div>
+                        <div className="source-header">
+                          <div className="source-title">{source.title}</div>
+                          <div className="source-badges">
+                            <span className={`requirement-badge ${getRequirementBadge(source.requirementLevel || 'optional').className}`}>
+                              {getRequirementBadge(source.requirementLevel || 'optional').text}
+                            </span>
+                            {source.verificationMethod && source.verificationMethod !== 'none' && (
+                              <span className="verification-badge">
+                                {getVerificationBadge(source.verificationMethod)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                         <div className="source-url">{source.url}</div>
                         {source.description && (
                           <div className="source-description">{source.description}</div>
+                        )}
+                        {source.requirementLevel === 'required' && source.verificationMethod === 'comprehension-quiz' && (
+                          <div className="quiz-info">
+                            {source.verificationData?.comprehensionQuestions?.length || 0} comprehension question(s)
+                          </div>
                         )}
                       </div>
                       <button
@@ -214,13 +392,30 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
                   <div key={index} className="source-group">
                     <h4>{concept.title || `Concept ${index + 1}`}</h4>
                     {conceptSources.map((source) => (
-                      <div key={source.id} className="source-card">
+                      <div key={source.id} className={`source-card requirement-${source.requirementLevel || 'optional'}`}>
                         <div className="source-icon">{getSourceIcon(source.type)}</div>
                         <div className="source-info">
-                          <div className="source-title">{source.title}</div>
+                          <div className="source-header">
+                            <div className="source-title">{source.title}</div>
+                            <div className="source-badges">
+                              <span className={`requirement-badge ${getRequirementBadge(source.requirementLevel || 'optional').className}`}>
+                                {getRequirementBadge(source.requirementLevel || 'optional').text}
+                              </span>
+                              {source.verificationMethod && source.verificationMethod !== 'none' && (
+                                <span className="verification-badge">
+                                  {getVerificationBadge(source.verificationMethod)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                           <div className="source-url">{source.url}</div>
                           {source.description && (
                             <div className="source-description">{source.description}</div>
+                          )}
+                          {source.requirementLevel === 'required' && source.verificationMethod === 'comprehension-quiz' && (
+                            <div className="quiz-info">
+                              {source.verificationData?.comprehensionQuestions?.length || 0} comprehension question(s)
+                            </div>
                           )}
                         </div>
                         <button
