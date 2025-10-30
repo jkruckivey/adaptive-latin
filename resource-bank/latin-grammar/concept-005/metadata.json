@@ -11,6 +11,13 @@
     "Distinguish meanings: amāvī (I loved / I have loved), amāveram (I had loved), amāverō (I will have loved)",
     "Translate sentences using perfect system tenses"
   ],
+  "module_learning_outcomes": [
+    "Identify perfect, pluperfect, and future perfect tenses by their stems and endings",
+    "Explain the difference between present system (uses present stem) and perfect system (uses perfect stem)",
+    "Form perfect active tenses using perfect stem + endings (-ī, -istī, -it, -imus, -istis, -ērunt)",
+    "Distinguish temporal meanings: amāvī (I loved / I have loved), amāveram (I had loved), amāverō (I will have loved)",
+    "Translate sentences using perfect system tenses in context"
+  ],
   "estimated_mastery_time": "90-120 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],

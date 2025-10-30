@@ -11,6 +11,13 @@
     "Translate sentences with mixed first and second declension nouns",
     "Identify grammatical gender vs. natural gender"
   ],
+  "module_learning_outcomes": [
+    "Identify second declension masculine nouns (-us, -er) and neuter nouns (-um)",
+    "Decline second declension nouns in all cases (singular and plural)",
+    "Explain the neuter rule (nominative = accusative)",
+    "Translate sentences with mixed first and second declension nouns",
+    "Distinguish between grammatical gender and natural gender"
+  ],
   "estimated_mastery_time": "75-90 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],

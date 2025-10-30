@@ -11,6 +11,13 @@
     "Translate sentences with adjectives modifying nouns",
     "Explain why bonus -a -um has three different forms"
   ],
+  "module_learning_outcomes": [
+    "Decline adjectives using first declension (feminine) and second declension (masculine/neuter) endings",
+    "Apply the agreement rule (adjective matches noun in gender, number, case - NOT ending)",
+    "Distinguish between attributive and predicate adjectives",
+    "Translate sentences with adjectives modifying nouns",
+    "Explain why bonus -a -um has three different forms based on grammatical gender"
+  ],
   "estimated_mastery_time": "90-120 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],

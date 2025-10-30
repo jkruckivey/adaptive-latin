@@ -11,6 +11,13 @@
     "Distinguish between nominative and accusative in neuter third declension",
     "Translate sentences with all three declensions mixed"
   ],
+  "module_learning_outcomes": [
+    "Identify third declension nouns by their genitive singular ending (-is)",
+    "Determine the stem by removing -is from genitive singular",
+    "Decline third declension consonant-stem nouns in all cases (masculine, feminine, neuter)",
+    "Distinguish between nominative and accusative forms in neuter third declension",
+    "Translate complex sentences with mixed declensions (first, second, and third)"
+  ],
   "estimated_mastery_time": "90-120 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],

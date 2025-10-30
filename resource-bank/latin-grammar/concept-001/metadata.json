@@ -11,6 +11,13 @@
     "Conjugate sum, esse in the present tense",
     "Translate simple sentences using first declension nouns and forms of sum"
   ],
+  "module_learning_outcomes": [
+    "Identify first declension nouns by their nominative singular ending (-a)",
+    "Decline first declension nouns in all cases (singular and plural)",
+    "Explain the function of each case (nominative, genitive, dative, accusative, ablative)",
+    "Conjugate sum, esse in the present tense",
+    "Translate simple sentences using first declension nouns and forms of sum"
+  ],
   "estimated_mastery_time": "60-90 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],
