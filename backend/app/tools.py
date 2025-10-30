@@ -30,13 +30,14 @@ logger = logging.getLogger(__name__)
 # Resource Loading Functions
 # ============================================================================
 
-def load_resource(concept_id: str, resource_type: str) -> Dict[str, Any]:
+def load_resource(concept_id: str, resource_type: str, course_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Load a resource from the resource bank.
 
     Args:
         concept_id: Concept identifier (e.g., "concept-001")
         resource_type: Type of resource ("text-explainer" or "examples")
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
         Resource data as dictionary
@@ -46,7 +47,7 @@ def load_resource(concept_id: str, resource_type: str) -> Dict[str, Any]:
         ValueError: If resource type is invalid
     """
     try:
-        concept_dir = config.get_concept_dir(concept_id)
+        concept_dir = config.get_concept_dir(concept_id, course_id)
 
         if resource_type == "text-explainer":
             resource_path = concept_dir / "resources" / "text-explainer.md"
@@ -86,13 +87,14 @@ def load_resource(concept_id: str, resource_type: str) -> Dict[str, Any]:
         raise
 
 
-def load_assessment(concept_id: str, assessment_type: str) -> Dict[str, Any]:
+def load_assessment(concept_id: str, assessment_type: str, course_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Load an assessment from the resource bank.
 
     Args:
         concept_id: Concept identifier (e.g., "concept-001")
         assessment_type: Type of assessment ("dialogue", "written", or "applied")
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
         Assessment data as dictionary
@@ -102,7 +104,7 @@ def load_assessment(concept_id: str, assessment_type: str) -> Dict[str, Any]:
         ValueError: If assessment type is invalid
     """
     try:
-        concept_dir = config.get_concept_dir(concept_id)
+        concept_dir = config.get_concept_dir(concept_id, course_id)
 
         if assessment_type not in ["dialogue", "written", "applied"]:
             raise ValueError(f"Invalid assessment_type: {assessment_type}. Must be 'dialogue', 'written', or 'applied'")
@@ -124,12 +126,13 @@ def load_assessment(concept_id: str, assessment_type: str) -> Dict[str, Any]:
         raise
 
 
-def load_concept_metadata(concept_id: str) -> Dict[str, Any]:
+def load_concept_metadata(concept_id: str, course_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Load metadata for a concept.
 
     Args:
         concept_id: Concept identifier (e.g., "concept-001")
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
         Metadata dictionary
@@ -138,7 +141,7 @@ def load_concept_metadata(concept_id: str) -> Dict[str, Any]:
         FileNotFoundError: If metadata doesn't exist
     """
     try:
-        concept_dir = config.get_concept_dir(concept_id)
+        concept_dir = config.get_concept_dir(concept_id, course_id)
         metadata_path = concept_dir / "metadata.json"
 
         if not metadata_path.exists():
@@ -191,6 +194,7 @@ def create_learner_model(
             "profile": profile or {},
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
+            "current_course": config.DEFAULT_COURSE_ID,  # Support for multiple courses
             "current_concept": "concept-001",
             "concepts": {},
             "question_history": [],  # Track recent questions to avoid repetition
@@ -565,7 +569,7 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
         raise
 
 
-def validate_concept_completeness(concept_id: str) -> bool:
+def validate_concept_completeness(concept_id: str, course_id: Optional[str] = None) -> bool:
     """
     Validate that a concept has minimum viable resources for learning.
 
@@ -574,12 +578,13 @@ def validate_concept_completeness(concept_id: str) -> bool:
 
     Args:
         concept_id: Concept identifier (e.g., "concept-001")
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
         True if concept has all required resources, False otherwise
     """
     try:
-        concept_dir = config.get_concept_dir(concept_id)
+        concept_dir = config.get_concept_dir(concept_id, course_id)
 
         # Check that concept directory exists
         if not concept_dir.exists():
@@ -612,12 +617,13 @@ def validate_concept_completeness(concept_id: str) -> bool:
         return False
 
 
-def get_next_concept(current_concept_id: str) -> Optional[str]:
+def get_next_concept(current_concept_id: str, course_id: Optional[str] = None) -> Optional[str]:
     """
     Determine the next concept in the learning path.
 
     Args:
         current_concept_id: Current concept ID (e.g., "concept-001")
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
         Next concept ID or None if at the end
@@ -633,8 +639,8 @@ def get_next_concept(current_concept_id: str) -> Optional[str]:
 
             # Verify it exists in resource bank AND has complete content
             # (Based on peer review: prevent crashes from empty concept directories)
-            next_concept_dir = config.get_concept_dir(next_concept_id)
-            if next_concept_dir.exists() and validate_concept_completeness(next_concept_id):
+            next_concept_dir = config.get_concept_dir(next_concept_id, course_id)
+            if next_concept_dir.exists() and validate_concept_completeness(next_concept_id, course_id):
                 logger.info(f"Next concept after {current_concept_id} is {next_concept_id}")
                 return next_concept_id
             else:

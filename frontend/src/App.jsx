@@ -6,6 +6,7 @@ import ConfidenceSlider from './components/ConfidenceSlider'
 import FloatingTutorButton from './components/FloatingTutorButton'
 import MasteryProgressBar from './components/MasteryProgressBar'
 import ConceptMasteryModal from './components/ConceptMasteryModal'
+import CourseCreationWizard from './components/course-creation/CourseCreationWizard'
 import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
@@ -53,6 +54,9 @@ function App() {
   // Preview mode state
   const [showPreviewChoice, setShowPreviewChoice] = useState(false)
   const [previewShown, setPreviewShown] = useState(false)
+
+  // Course creation state
+  const [showCourseCreation, setShowCourseCreation] = useState(false)
 
   // Generate or retrieve learner ID
   useEffect(() => {
@@ -430,6 +434,23 @@ function App() {
     )
   }
 
+  // Show course creation wizard
+  if (showCourseCreation) {
+    return (
+      <div className="app">
+        <CourseCreationWizard
+          onComplete={async (courseData) => {
+            console.log('Course created:', courseData)
+            // TODO: Send to backend API
+            alert('Course created successfully! (Backend integration pending)')
+            setShowCourseCreation(false)
+          }}
+          onCancel={() => setShowCourseCreation(false)}
+        />
+      </div>
+    )
+  }
+
   // Show onboarding flow
   if (isStarted && !onboardingComplete) {
     return (
@@ -476,15 +497,20 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <h1>🏛️ Adaptive Latin</h1>
-          <button onClick={handleReset} className="reset-button">
-            Reset Progress
-          </button>
+          <div className="header-buttons">
+            <button onClick={() => setShowCourseCreation(true)} className="create-course-button">
+              + Create Course
+            </button>
+            <button onClick={handleReset} className="reset-button">
+              Reset Progress
+            </button>
+          </div>
         </div>
         {/* Development Status Banner */}
         <div className="development-banner">
           <span className="banner-icon">🚧</span>
           <span className="banner-text">
-            <strong>Early Access:</strong> Currently featuring Concept 001 (First Declension). Additional concepts in development.
+            <strong>Early Access:</strong> Concepts 001-002 available. Additional concepts in development.
           </span>
           <span className="banner-status">
             {progress?.overall_progress?.concepts_completed || 0}/7 Complete

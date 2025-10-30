@@ -180,7 +180,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
                 <h3>Development Status</h3>
                 <ul>
                   <li>✅ Concept 001: First Declension & Present Tense of "Sum" (Complete)</li>
-                  <li>🚧 Concepts 002-007: In Development</li>
+                  <li>✅ Concept 002: First Conjugation Verbs - Present System (Complete)</li>
+                  <li>🚧 Concepts 003-007: In Development</li>
                 </ul>
               </div>
 

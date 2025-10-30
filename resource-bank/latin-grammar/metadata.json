@@ -1,0 +1,12 @@
+{
+  "course_id": "latin-grammar",
+  "title": "Latin Grammar Fundamentals",
+  "domain": "Language Learning",
+  "description": "Master the fundamentals of Latin grammar through an adaptive learning approach. This course covers noun declensions, verb conjugations, and essential vocabulary for reading classical Latin texts.",
+  "target_audience": "high-school",
+  "created_at": "2024-10-01T00:00:00",
+  "updated_at": "2024-10-27T12:21:00",
+  "type": "built-in",
+  "concepts_count": 7,
+  "estimated_hours": 20
+}

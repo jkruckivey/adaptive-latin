@@ -29,9 +29,13 @@ class Config:
     # CORS Settings
     CORS_ORIGINS: list = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
 
+    # Course Settings
+    DEFAULT_COURSE_ID: str = os.getenv("DEFAULT_COURSE_ID", "latin-grammar")
+
     # File Paths (works on both Windows and Linux)
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
-    RESOURCE_BANK_DIR: Path = BASE_DIR.parent / "resource-bank" / "latin-grammar"
+    RESOURCE_BANK_DIR: Path = BASE_DIR.parent / "resource-bank"
+    USER_COURSES_DIR: Path = RESOURCE_BANK_DIR / "user-courses"
 
     # Learner models directory - use persistent disk path in production if set
     LEARNER_MODELS_DIR: Path = Path(os.getenv("LEARNER_MODELS_PATH", str(BASE_DIR / "data" / "learner-models")))
@@ -81,11 +85,32 @@ class Config:
     def ensure_directories(cls) -> None:
         """Ensure all required directories exist."""
         cls.LEARNER_MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        cls.USER_COURSES_DIR.mkdir(parents=True, exist_ok=True)
 
     @classmethod
-    def get_concept_dir(cls, concept_id: str) -> Path:
-        """Get the directory path for a specific concept."""
-        return cls.RESOURCE_BANK_DIR / concept_id
+    def get_course_dir(cls, course_id: str) -> Path:
+        """Get the directory path for a specific course."""
+        # Check if it's a user-created course
+        user_course_path = cls.USER_COURSES_DIR / course_id
+        if user_course_path.exists():
+            return user_course_path
+
+        # Otherwise, check built-in courses in resource bank
+        builtin_course_path = cls.RESOURCE_BANK_DIR / course_id
+        if builtin_course_path.exists():
+            return builtin_course_path
+
+        # Default to built-in path (for new course creation)
+        return builtin_course_path
+
+    @classmethod
+    def get_concept_dir(cls, concept_id: str, course_id: Optional[str] = None) -> Path:
+        """Get the directory path for a specific concept within a course."""
+        if course_id is None:
+            course_id = cls.DEFAULT_COURSE_ID
+
+        course_dir = cls.get_course_dir(course_id)
+        return course_dir / concept_id
 
     @classmethod
     def get_learner_file(cls, learner_id: str) -> Path:

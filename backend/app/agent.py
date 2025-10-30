@@ -510,6 +510,24 @@ TOOL_DEFINITIONS = [
             },
             "required": ["current_concept_id"]
         }
+    },
+    {
+        "name": "load_external_source",
+        "description": "Load full content from an external source (website, PDF, video transcript, etc.) that has been added to the course. Use this to reference external materials when creating content.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "source_id": {
+                    "type": "string",
+                    "description": "The source identifier"
+                },
+                "concept_id": {
+                    "type": "string",
+                    "description": "Concept ID if this is a concept-specific source, omit for course-level sources"
+                }
+            },
+            "required": ["source_id"]
+        }
     }
 ]
 
@@ -518,35 +536,48 @@ TOOL_DEFINITIONS = [
 # Tool Execution Handler
 # ============================================================================
 
-def execute_tool(tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
+def execute_tool(tool_name: str, tool_input: Dict[str, Any], learner_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Execute a tool call and return the result.
 
     Args:
         tool_name: Name of the tool to execute
         tool_input: Input parameters for the tool
+        learner_id: Learner ID for course context (optional)
 
     Returns:
         Tool execution result
     """
     try:
+        # Get course_id from learner model if available
+        course_id = None
+        if learner_id:
+            try:
+                learner_model = load_learner_model(learner_id)
+                course_id = learner_model.get("current_course")
+            except Exception as e:
+                logger.warning(f"Could not load learner model for {learner_id}: {e}")
+
         if tool_name == "load_resource":
             result = load_resource(
                 concept_id=tool_input["concept_id"],
-                resource_type=tool_input["resource_type"]
+                resource_type=tool_input["resource_type"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
         elif tool_name == "load_assessment":
             result = load_assessment(
                 concept_id=tool_input["concept_id"],
-                assessment_type=tool_input["assessment_type"]
+                assessment_type=tool_input["assessment_type"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
         elif tool_name == "load_concept_metadata":
             result = load_concept_metadata(
-                concept_id=tool_input["concept_id"]
+                concept_id=tool_input["concept_id"],
+                course_id=course_id
             )
             return {"success": True, "data": result}
 
@@ -581,9 +612,46 @@ def execute_tool(tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
 
         elif tool_name == "get_next_concept":
             result = get_next_concept(
-                current_concept_id=tool_input["current_concept_id"]
+                current_concept_id=tool_input["current_concept_id"],
+                course_id=course_id
             )
             return {"success": True, "data": {"next_concept": result}}
+
+        elif tool_name == "load_external_source":
+            from .source_extraction import load_full_source_content
+            from .config import config as app_config
+            import json
+
+            # Load metadata to find source URL and type
+            source_id = tool_input["source_id"]
+            concept_id = tool_input.get("concept_id")
+
+            if concept_id:
+                # Concept-level source
+                concept_dir = app_config.get_concept_dir(concept_id, course_id)
+                metadata_file = concept_dir / "metadata.json"
+            else:
+                # Course-level source
+                course_dir = app_config.get_course_dir(course_id or app_config.DEFAULT_COURSE_ID)
+                metadata_file = course_dir / "metadata.json"
+
+            if not metadata_file.exists():
+                return {"success": False, "error": "Metadata file not found"}
+
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+
+            # Find source
+            sources = metadata.get("sources", [])
+            source = next((s for s in sources if s.get("id") == source_id), None)
+
+            if not source:
+                return {"success": False, "error": f"Source {source_id} not found"}
+
+            # Load full content
+            content_data = load_full_source_content(source["url"], source["type"])
+
+            return {"success": True, "data": content_data}
 
         else:
             return {"success": False, "error": f"Unknown tool: {tool_name}"}
@@ -658,7 +726,7 @@ def chat(
                     logger.debug(f"Tool input: {tool_input}")
 
                     # Execute the tool
-                    tool_result = execute_tool(tool_name, tool_input)
+                    tool_result = execute_tool(tool_name, tool_input, learner_id)
 
                     # Add tool result
                     tool_results.append({

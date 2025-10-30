@@ -5,6 +5,7 @@ Main application with REST API endpoints for the adaptive learning tutor.
 """
 
 import os
+import json
 import logging
 from typing import Optional, List, Dict, Any
 from datetime import datetime
@@ -291,6 +292,64 @@ class ScenariosListResponse(BaseModel):
     scenarios: List[dict]
 
 
+class CourseMetadata(BaseModel):
+    """Course metadata structure."""
+    course_id: str
+    title: str
+    domain: str
+    description: str
+    target_audience: str
+    created_at: str
+    updated_at: str
+    concepts: List[dict] = []
+
+
+class CreateCourseRequest(BaseModel):
+    """Request to create a new course."""
+    course_id: str = Field(..., description="Unique course identifier (e.g., 'spanish-101')")
+    title: str = Field(..., description="Course title")
+    domain: str = Field(..., description="Subject area")
+    description: str = Field(..., description="Course description")
+    target_audience: str = Field(..., description="Target audience")
+    concepts: List[dict] = Field(default=[], description="Course concepts")
+
+
+class CoursesListResponse(BaseModel):
+    """Response with list of available courses."""
+    courses: List[dict]
+    total: int
+
+
+class AddSourceRequest(BaseModel):
+    """Request to add an external source to a course or concept."""
+    url: str = Field(..., description="Source URL")
+    source_type: Optional[str] = Field(None, description="Source type (auto-detected if not provided)")
+    title: Optional[str] = Field(None, description="Optional custom title")
+    description: Optional[str] = Field(None, description="Optional custom description")
+
+
+class SourceResponse(BaseModel):
+    """Response with source metadata."""
+    source_id: str
+    type: str
+    url: str
+    title: str
+    description: str
+    metadata: dict
+    added_at: str
+    status: str
+    error_message: Optional[str] = None
+
+
+class SourceContentResponse(BaseModel):
+    """Response with full source content."""
+    success: bool
+    content: Optional[str] = None
+    content_type: str
+    length: Optional[int] = None
+    error: Optional[str] = None
+
+
 # ============================================================================
 # Startup/Shutdown Events
 # ============================================================================
@@ -302,6 +361,15 @@ async def startup_event():
         logger.info("Starting Latin Adaptive Learning API...")
         config.validate()
         config.ensure_directories()
+
+        # Initialize content cache database
+        try:
+            from .content_cache import init_database
+            init_database()
+            logger.info("✅ Content cache database initialized")
+        except Exception as e:
+            logger.warning(f"⚠️  Content cache initialization failed: {e}")
+            logger.warning("⚠️  Content caching will not be available")
 
         # Log directory status for debugging
         logger.info(f"Learner models directory: {config.LEARNER_MODELS_DIR}")
@@ -1384,6 +1452,554 @@ async def get_stats(learner_id: str, concept_id: Optional[str] = None):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get conversation stats: {str(e)}"
+        )
+
+
+# ============================================================================
+# Course Management Endpoints
+# ============================================================================
+
+@app.get("/courses", response_model=CoursesListResponse)
+async def list_courses():
+    """
+    List all available courses (built-in and user-created).
+
+    Returns:
+        List of course metadata for all available courses
+    """
+    try:
+        courses = []
+
+        # Check for built-in courses in resource-bank
+        if config.RESOURCE_BANK_DIR.exists():
+            for item in config.RESOURCE_BANK_DIR.iterdir():
+                if item.is_dir() and item.name not in ["user-courses"]:
+                    metadata_file = item / "metadata.json"
+                    if metadata_file.exists():
+                        try:
+                            with open(metadata_file, "r", encoding="utf-8") as f:
+                                metadata = json.load(f)
+                                courses.append({
+                                    "course_id": item.name,
+                                    "title": metadata.get("title", item.name),
+                                    "domain": metadata.get("domain", "Unknown"),
+                                    "description": metadata.get("description", ""),
+                                    "type": "built-in"
+                                })
+                        except Exception as e:
+                            logger.warning(f"Could not load metadata for {item.name}: {e}")
+
+        # Check for user-created courses
+        if config.USER_COURSES_DIR.exists():
+            for item in config.USER_COURSES_DIR.iterdir():
+                if item.is_dir():
+                    metadata_file = item / "metadata.json"
+                    if metadata_file.exists():
+                        try:
+                            with open(metadata_file, "r", encoding="utf-8") as f:
+                                metadata = json.load(f)
+                                courses.append({
+                                    "course_id": item.name,
+                                    "title": metadata.get("title", item.name),
+                                    "domain": metadata.get("domain", "Unknown"),
+                                    "description": metadata.get("description", ""),
+                                    "type": "user-created"
+                                })
+                        except Exception as e:
+                            logger.warning(f"Could not load metadata for user course {item.name}: {e}")
+
+        return {
+            "courses": courses,
+            "total": len(courses)
+        }
+
+    except Exception as e:
+        logger.error(f"Error listing courses: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to list courses: {str(e)}"
+        )
+
+
+@app.get("/courses/{course_id}", response_model=CourseMetadata)
+async def get_course(course_id: str):
+    """
+    Get detailed metadata for a specific course.
+
+    Args:
+        course_id: Course identifier
+
+    Returns:
+        Course metadata including concepts
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        # Load concepts list
+        concepts = []
+        if course_dir.exists():
+            for item in sorted(course_dir.iterdir()):
+                if item.is_dir() and item.name.startswith("concept-"):
+                    concept_metadata_file = item / "metadata.json"
+                    if concept_metadata_file.exists():
+                        try:
+                            with open(concept_metadata_file, "r", encoding="utf-8") as f:
+                                concept_meta = json.load(f)
+                                concepts.append({
+                                    "concept_id": item.name,
+                                    "title": concept_meta.get("title", item.name)
+                                })
+                        except Exception as e:
+                            logger.warning(f"Could not load concept metadata for {item.name}: {e}")
+
+        return {
+            "course_id": course_id,
+            "title": metadata.get("title", course_id),
+            "domain": metadata.get("domain", "Unknown"),
+            "description": metadata.get("description", ""),
+            "target_audience": metadata.get("target_audience", "general"),
+            "created_at": metadata.get("created_at", ""),
+            "updated_at": metadata.get("updated_at", ""),
+            "concepts": concepts
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting course {course_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get course: {str(e)}"
+        )
+
+
+@app.post("/courses", status_code=status.HTTP_201_CREATED)
+async def create_course(body: CreateCourseRequest):
+    """
+    Create a new user course.
+
+    Args:
+        body: Course creation request with metadata and concepts
+
+    Returns:
+        Created course metadata
+    """
+    try:
+        # Course will be created in user-courses directory
+        course_dir = config.USER_COURSES_DIR / body.course_id
+
+        if course_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Course {body.course_id} already exists"
+            )
+
+        # Create course directory
+        course_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create metadata
+        metadata = {
+            "course_id": body.course_id,
+            "title": body.title,
+            "domain": body.domain,
+            "description": body.description,
+            "target_audience": body.target_audience,
+            "created_at": datetime.now().isoformat(),
+            "updated_at": datetime.now().isoformat(),
+            "type": "user-created"
+        }
+
+        # Save metadata
+        metadata_file = course_dir / "metadata.json"
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+        # Create concepts if provided
+        for i, concept_data in enumerate(body.concepts):
+            concept_id = f"concept-{str(i + 1).zfill(3)}"
+            concept_dir = course_dir / concept_id
+            concept_dir.mkdir(parents=True, exist_ok=True)
+
+            # Create concept metadata
+            concept_metadata = {
+                "concept_id": concept_id,
+                "title": concept_data.get("title", f"Concept {i + 1}"),
+                "learning_objectives": concept_data.get("learningObjectives", []),
+                "prerequisites": concept_data.get("prerequisites", [])
+            }
+
+            concept_metadata_file = concept_dir / "metadata.json"
+            with open(concept_metadata_file, "w", encoding="utf-8") as f:
+                json.dump(concept_metadata, f, indent=2, ensure_ascii=False)
+
+            # Create resources directory
+            resources_dir = concept_dir / "resources"
+            resources_dir.mkdir(parents=True, exist_ok=True)
+
+            # Create text-explainer.md
+            text_explainer_file = resources_dir / "text-explainer.md"
+            teaching_content = concept_data.get("teachingContent", "")
+            with open(text_explainer_file, "w", encoding="utf-8") as f:
+                f.write(teaching_content)
+
+            # Create examples.json
+            examples_file = resources_dir / "examples.json"
+            vocabulary = concept_data.get("vocabulary", [])
+            examples_data = {
+                "examples": [
+                    {
+                        "term": v.get("term", ""),
+                        "definition": v.get("definition", ""),
+                        "example": v.get("example", "")
+                    }
+                    for v in vocabulary
+                ]
+            }
+            with open(examples_file, "w", encoding="utf-8") as f:
+                json.dump(examples_data, f, indent=2, ensure_ascii=False)
+
+            # Create assessments directory (placeholder for now)
+            assessments_dir = concept_dir / "assessments"
+            assessments_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info(f"Created new course: {body.course_id}")
+
+        return {
+            "success": True,
+            "message": f"Course {body.course_id} created successfully",
+            "course_id": body.course_id
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating course: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create course: {str(e)}"
+        )
+
+
+# ============================================================================
+# Source Management Endpoints
+# ============================================================================
+
+@app.post("/courses/{course_id}/sources", response_model=SourceResponse, status_code=status.HTTP_201_CREATED)
+async def add_course_source(course_id: str, body: AddSourceRequest):
+    """
+    Add an external source to a course (course-level resource).
+
+    Args:
+        course_id: Course identifier
+        body: Source URL and optional metadata
+
+    Returns:
+        Extracted source metadata
+    """
+    try:
+        from .source_extraction import extract_source_metadata
+        import uuid
+
+        # Get course directory
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        # Load course metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            course_metadata = json.load(f)
+
+        # Extract source metadata
+        source_data = extract_source_metadata(body.url, body.source_type)
+
+        # Override with custom title/description if provided
+        if body.title:
+            source_data["title"] = body.title
+        if body.description:
+            source_data["description"] = body.description
+
+        # Generate unique source ID
+        source_id = f"source-{uuid.uuid4().hex[:8]}"
+        source_data["id"] = source_id
+
+        # Add to course metadata
+        if "sources" not in course_metadata:
+            course_metadata["sources"] = []
+
+        course_metadata["sources"].append(source_data)
+        course_metadata["updated_at"] = datetime.now().isoformat()
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(course_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Added source {source_id} to course {course_id}")
+
+        return {
+            "source_id": source_id,
+            "type": source_data["type"],
+            "url": source_data["url"],
+            "title": source_data["title"],
+            "description": source_data["description"],
+            "metadata": source_data["metadata"],
+            "added_at": source_data["added_at"],
+            "status": source_data["status"],
+            "error_message": source_data.get("error_message")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding source to course {course_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add source: {str(e)}"
+        )
+
+
+@app.post("/courses/{course_id}/concepts/{concept_id}/sources", response_model=SourceResponse, status_code=status.HTTP_201_CREATED)
+async def add_concept_source(course_id: str, concept_id: str, body: AddSourceRequest):
+    """
+    Add an external source to a specific concept.
+
+    Args:
+        course_id: Course identifier
+        concept_id: Concept identifier
+        body: Source URL and optional metadata
+
+    Returns:
+        Extracted source metadata
+    """
+    try:
+        from .source_extraction import extract_source_metadata
+        import uuid
+
+        # Get concept directory
+        concept_dir = config.get_concept_dir(concept_id, course_id)
+        metadata_file = concept_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Concept {concept_id} not found in course {course_id}"
+            )
+
+        # Load concept metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            concept_metadata = json.load(f)
+
+        # Extract source metadata
+        source_data = extract_source_metadata(body.url, body.source_type)
+
+        # Override with custom title/description if provided
+        if body.title:
+            source_data["title"] = body.title
+        if body.description:
+            source_data["description"] = body.description
+
+        # Generate unique source ID
+        source_id = f"source-{uuid.uuid4().hex[:8]}"
+        source_data["id"] = source_id
+
+        # Add to concept metadata
+        if "sources" not in concept_metadata:
+            concept_metadata["sources"] = []
+
+        concept_metadata["sources"].append(source_data)
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(concept_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Added source {source_id} to concept {concept_id} in course {course_id}")
+
+        return {
+            "source_id": source_id,
+            "type": source_data["type"],
+            "url": source_data["url"],
+            "title": source_data["title"],
+            "description": source_data["description"],
+            "metadata": source_data["metadata"],
+            "added_at": source_data["added_at"],
+            "status": source_data["status"],
+            "error_message": source_data.get("error_message")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding source to concept {concept_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add source: {str(e)}"
+        )
+
+
+@app.get("/sources/{source_id}/content", response_model=SourceContentResponse)
+async def get_source_content(source_id: str, course_id: str, concept_id: Optional[str] = None):
+    """
+    Load full content from a source on-demand.
+
+    Args:
+        source_id: Source identifier
+        course_id: Course identifier
+        concept_id: Optional concept identifier (for concept-specific sources)
+
+    Returns:
+        Full source content
+    """
+    try:
+        from .source_extraction import load_full_source_content
+
+        # Find the source in metadata
+        if concept_id:
+            # Concept-level source
+            concept_dir = config.get_concept_dir(concept_id, course_id)
+            metadata_file = concept_dir / "metadata.json"
+        else:
+            # Course-level source
+            course_dir = config.get_course_dir(course_id)
+            metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Metadata file not found"
+            )
+
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        # Find source
+        sources = metadata.get("sources", [])
+        source = next((s for s in sources if s.get("id") == source_id), None)
+
+        if not source:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Source {source_id} not found"
+            )
+
+        # Load full content
+        content_data = load_full_source_content(source["url"], source["type"])
+
+        return content_data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error loading source content for {source_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to load source content: {str(e)}"
+        )
+
+
+@app.delete("/courses/{course_id}/sources/{source_id}")
+async def delete_course_source(course_id: str, source_id: str):
+    """
+    Remove a source from a course.
+
+    Args:
+        course_id: Course identifier
+        source_id: Source identifier
+
+    Returns:
+        Success message
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        # Load course metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            course_metadata = json.load(f)
+
+        # Remove source
+        sources = course_metadata.get("sources", [])
+        original_count = len(sources)
+        course_metadata["sources"] = [s for s in sources if s.get("id") != source_id]
+
+        if len(course_metadata["sources"]) == original_count:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Source {source_id} not found"
+            )
+
+        course_metadata["updated_at"] = datetime.now().isoformat()
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(course_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Deleted source {source_id} from course {course_id}")
+
+        return {
+            "success": True,
+            "message": f"Source {source_id} deleted successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting source {source_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete source: {str(e)}"
+        )
+
+
+# ============================================================================
+# Content Cache Statistics Endpoints
+# ============================================================================
+
+@app.get("/cache/stats")
+async def get_cache_statistics(course_id: Optional[str] = None):
+    """
+    Get statistics about content cache usage and cost savings.
+
+    Args:
+        course_id: Optional course filter
+
+    Returns:
+        Cache statistics including hits, effectiveness, and cost savings
+    """
+    try:
+        from .content_cache import get_cache_stats
+
+        stats = get_cache_stats(course_id)
+
+        return {
+            "success": True,
+            "stats": stats
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting cache stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get cache statistics: {str(e)}"
         )
 
 
