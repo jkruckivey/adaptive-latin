@@ -297,8 +297,11 @@ class CourseMetadata(BaseModel):
     course_id: str
     title: str
     domain: str
-    description: str
-    target_audience: str
+    taxonomy: Optional[str] = "blooms"
+    course_learning_outcomes: List[str] = []
+    # Keep these for backward compatibility with old courses
+    description: Optional[str] = None
+    target_audience: Optional[str] = None
     created_at: str
     updated_at: str
     concepts: List[dict] = []
@@ -309,9 +312,12 @@ class CreateCourseRequest(BaseModel):
     course_id: str = Field(..., description="Unique course identifier (e.g., 'spanish-101')")
     title: str = Field(..., description="Course title")
     domain: str = Field(..., description="Subject area")
-    description: str = Field(..., description="Course description")
-    target_audience: str = Field(..., description="Target audience")
-    concepts: List[dict] = Field(default=[], description="Course concepts")
+    taxonomy: str = Field(default="blooms", description="Learning outcome framework (blooms, finks, or both)")
+    course_learning_outcomes: List[str] = Field(default=[], description="Course-level learning outcomes (CLOs)")
+    # Keep these for backward compatibility with old courses
+    description: Optional[str] = Field(default=None, description="Course description (deprecated)")
+    target_audience: Optional[str] = Field(default=None, description="Target audience (deprecated)")
+    concepts: List[dict] = Field(default=[], description="Course concepts/modules")
 
 
 class CoursesListResponse(BaseModel):
@@ -1612,12 +1618,18 @@ async def create_course(body: CreateCourseRequest):
             "course_id": body.course_id,
             "title": body.title,
             "domain": body.domain,
-            "description": body.description,
-            "target_audience": body.target_audience,
+            "taxonomy": body.taxonomy,
+            "course_learning_outcomes": body.course_learning_outcomes,
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
             "type": "user-created"
         }
+
+        # Add optional fields for backward compatibility
+        if body.description:
+            metadata["description"] = body.description
+        if body.target_audience:
+            metadata["target_audience"] = body.target_audience
 
         # Save metadata
         metadata_file = course_dir / "metadata.json"
@@ -1634,9 +1646,13 @@ async def create_course(body: CreateCourseRequest):
             concept_metadata = {
                 "concept_id": concept_id,
                 "title": concept_data.get("title", f"Concept {i + 1}"),
-                "learning_objectives": concept_data.get("learningObjectives", []),
+                "module_learning_outcomes": concept_data.get("moduleLearningOutcomes", []),
                 "prerequisites": concept_data.get("prerequisites", [])
             }
+
+            # Support old field name for backward compatibility
+            if not concept_metadata["module_learning_outcomes"] and "learningObjectives" in concept_data:
+                concept_metadata["module_learning_outcomes"] = concept_data.get("learningObjectives", [])
 
             concept_metadata_file = concept_dir / "metadata.json"
             with open(concept_metadata_file, "w", encoding="utf-8") as f:

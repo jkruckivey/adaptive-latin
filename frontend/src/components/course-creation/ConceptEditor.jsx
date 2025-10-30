@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CurriculumRoadmap from './CurriculumRoadmap'
+import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 import './ConceptEditor.css'
 
 function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
@@ -10,27 +11,15 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
 
   const currentConcept = concepts[currentConceptIndex] || {}
 
+  // Get taxonomy from course data
+  const taxonomy = courseData.taxonomy || 'blooms'
+  const courseCLOs = courseData.courseLearningOutcomes || []
+
   const updateConcept = (field, value) => {
     const updated = concepts.map((c, i) =>
       i === currentConceptIndex ? { ...c, [field]: value } : c
     )
     setConcepts(updated)
-  }
-
-  const addObjective = () => {
-    const objectives = currentConcept.learningObjectives || []
-    updateConcept('learningObjectives', [...objectives, ''])
-  }
-
-  const updateObjective = (index, value) => {
-    const objectives = [...(currentConcept.learningObjectives || [])]
-    objectives[index] = value
-    updateConcept('learningObjectives', objectives)
-  }
-
-  const removeObjective = (index) => {
-    const objectives = (currentConcept.learningObjectives || []).filter((_, i) => i !== index)
-    updateConcept('learningObjectives', objectives)
   }
 
   const addVocabulary = () => {
@@ -51,12 +40,12 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
 
   const validateConcept = () => {
     const newErrors = {}
-    const objectives = currentConcept.learningObjectives || []
+    const outcomes = (currentConcept.moduleLearningOutcomes || []).filter(o => o.trim())
     const content = currentConcept.teachingContent || ''
     const vocab = currentConcept.vocabulary || []
 
-    if (objectives.length < 3) {
-      newErrors.objectives = 'At least 3 learning objectives required'
+    if (outcomes.length < 3) {
+      newErrors.outcomes = 'At least 3 module learning outcomes required'
     }
 
     if (content.length < 500) {
@@ -117,30 +106,32 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
         ))}
       </div>
 
-      {/* Learning Objectives */}
+      {/* Display Course Learning Outcomes for reference */}
+      {courseCLOs.length > 0 && (
+        <div className="clo-reference">
+          <h4>📚 Course Learning Outcomes (for alignment)</h4>
+          <ul>
+            {courseCLOs.filter(clo => clo.trim()).map((clo, i) => (
+              <li key={i}>{clo}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Module Learning Outcomes */}
       <div className="editor-section">
-        <h3>Learning Objectives</h3>
-        <p className="section-description">
-          What should students be able to do after completing this concept?
-        </p>
-
-        {(currentConcept.learningObjectives || []).map((objective, i) => (
-          <div key={i} className="objective-item">
-            <input
-              type="text"
-              value={objective}
-              onChange={(e) => updateObjective(i, e.target.value)}
-              placeholder={`Objective ${i + 1}: e.g., "Identify variables in algebraic expressions"`}
-            />
-            <button onClick={() => removeObjective(i)} className="remove-button">×</button>
-          </div>
-        ))}
-
-        <button onClick={addObjective} className="add-button">
-          + Add Objective
-        </button>
-
-        {errors.objectives && <div className="validation-error">{errors.objectives}</div>}
+        <LearningOutcomeBuilder
+          outcomes={currentConcept.moduleLearningOutcomes || ['', '', '']}
+          onChange={(outcomes) => updateConcept('moduleLearningOutcomes', outcomes)}
+          taxonomy={taxonomy}
+          domain={courseData.domain}
+          courseTitle={`${currentConcept.title} (Module ${currentConceptIndex + 1})`}
+          minOutcomes={3}
+          maxOutcomes={7}
+          label="Module Learning Outcomes (MLOs)"
+          description="What will students be able to do after completing this module? These should support the course-level outcomes above."
+        />
+        {errors.outcomes && <div className="validation-error">{errors.outcomes}</div>}
       </div>
 
       {/* Teaching Content */}

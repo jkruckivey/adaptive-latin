@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
+import TaxonomySelector from './TaxonomySelector'
+import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 
 function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
   const [formData, setFormData] = useState({
     title: courseData.title || '',
     domain: courseData.domain || '',
-    description: courseData.description || '',
-    targetAudience: courseData.targetAudience || ''
+    taxonomy: courseData.taxonomy || 'blooms',
+    courseLearningOutcomes: courseData.courseLearningOutcomes || ['', '', '']
   })
 
   const [errors, setErrors] = useState({})
+  const [generatingSuggestions, setGeneratingSuggestions] = useState(false)
 
   const domains = [
     'Mathematics',
@@ -22,24 +25,6 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
     'Health & Medicine',
     'Other'
   ]
-
-  const targetAudiences = [
-    'middle-school',
-    'high-school',
-    'college',
-    'adult-learners',
-    'professionals',
-    'self-learners'
-  ]
-
-  const audienceLabels = {
-    'middle-school': 'Middle School',
-    'high-school': 'High School',
-    'college': 'College/University',
-    'adult-learners': 'Adult Learners',
-    'professionals': 'Professionals',
-    'self-learners': 'Self-Directed Learners'
-  }
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -62,18 +47,39 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
       newErrors.domain = 'Please select a subject area'
     }
 
-    if (!formData.description.trim()) {
-      newErrors.description = 'Course description is required'
-    } else if (formData.description.length < 50) {
-      newErrors.description = 'Description must be at least 50 characters'
-    }
-
-    if (!formData.targetAudience) {
-      newErrors.targetAudience = 'Please select a target audience'
+    // Validate Course Learning Outcomes
+    const validOutcomes = formData.courseLearningOutcomes.filter(o => o.trim())
+    if (validOutcomes.length < 3) {
+      newErrors.courseLearningOutcomes = 'At least 3 course learning outcomes are required'
+    } else if (validOutcomes.length > 5) {
+      newErrors.courseLearningOutcomes = 'Maximum 5 course learning outcomes allowed'
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+  }
+
+  const handleGenerateSuggestions = async () => {
+    if (!formData.title || !formData.domain) {
+      alert('Please enter a course title and select a domain first')
+      return
+    }
+
+    setGeneratingSuggestions(true)
+    try {
+      // TODO: Integrate with backend AI service
+      // For now, show a placeholder message
+      alert('AI suggestion feature coming soon! This will generate learning outcomes based on your course title and domain.')
+
+      // Mock implementation - remove when backend is ready
+      setTimeout(() => {
+        setGeneratingSuggestions(false)
+      }, 1000)
+    } catch (error) {
+      console.error('Error generating suggestions:', error)
+      alert('Failed to generate suggestions. Please try again.')
+      setGeneratingSuggestions(false)
+    }
   }
 
   const handleNext = () => {
@@ -86,7 +92,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
     <div className="wizard-form">
       <h2>Create Your Course</h2>
       <p className="subtitle">
-        Let's start with the basics. What are you teaching, and who are you teaching it to?
+        Let's start by defining your course and its learning outcomes using Quality Matters standards.
       </p>
 
       <div className="form-group">
@@ -120,42 +126,29 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
         {errors.domain && <div className="validation-error">{errors.domain}</div>}
       </div>
 
-      <div className="form-group">
-        <label>
-          Course Description <span className="required">*</span>
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) => handleChange('description', e.target.value)}
-          placeholder="Describe what students will learn in this course. What skills will they gain? What topics will you cover?"
-          rows={5}
-          maxLength={1000}
-        />
-        {errors.description && <div className="validation-error">{errors.description}</div>}
-        <div className="hint">
-          {formData.description.length}/1000 characters (minimum 50)
-        </div>
-      </div>
+      {/* Taxonomy Selection */}
+      <TaxonomySelector
+        selectedTaxonomy={formData.taxonomy}
+        onSelect={(taxonomy) => handleChange('taxonomy', taxonomy)}
+      />
 
+      {/* Course Learning Outcomes */}
       <div className="form-group">
-        <label>
-          Target Audience <span className="required">*</span>
-        </label>
-        <div className="radio-group">
-          {targetAudiences.map(audience => (
-            <label key={audience} className="radio-option">
-              <input
-                type="radio"
-                name="targetAudience"
-                value={audience}
-                checked={formData.targetAudience === audience}
-                onChange={(e) => handleChange('targetAudience', e.target.value)}
-              />
-              <span>{audienceLabels[audience]}</span>
-            </label>
-          ))}
-        </div>
-        {errors.targetAudience && <div className="validation-error">{errors.targetAudience}</div>}
+        <LearningOutcomeBuilder
+          outcomes={formData.courseLearningOutcomes}
+          onChange={(outcomes) => handleChange('courseLearningOutcomes', outcomes)}
+          taxonomy={formData.taxonomy}
+          domain={formData.domain}
+          courseTitle={formData.title}
+          minOutcomes={3}
+          maxOutcomes={5}
+          label="Course Learning Outcomes (CLOs)"
+          description="What will students be able to do after completing this entire course? Write 3-5 broad, measurable outcomes."
+          onGenerateSuggestions={handleGenerateSuggestions}
+        />
+        {errors.courseLearningOutcomes && (
+          <div className="validation-error">{errors.courseLearningOutcomes}</div>
+        )}
       </div>
 
       <div className="wizard-actions">
