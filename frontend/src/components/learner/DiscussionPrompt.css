@@ -1,0 +1,212 @@
+.discussion-prompt {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.prompt-header {
+  margin-bottom: 25px;
+}
+
+.prompt-header h3 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.prompt-instruction {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+.prompt-box {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.prompt-text {
+  margin: 0;
+  color: #1976d2;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.response-section {
+  margin-bottom: 25px;
+}
+
+.response-section label {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.response-textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.response-textarea:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.char-counter {
+  text-align: right;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.char-counter .valid {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.char-counter .invalid {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 25px;
+}
+
+.submit-response-button {
+  padding: 12px 30px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submit-response-button:hover:not(:disabled) {
+  background: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.submit-response-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.prompt-hints {
+  background: #fffbf0;
+  border-left: 4px solid #ffc107;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.prompt-hints p {
+  margin: 0 0 10px 0;
+  color: #856404;
+  font-weight: 600;
+}
+
+.prompt-hints ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.prompt-hints li {
+  color: #856404;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Submitted State */
+.discussion-submitted {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: #4caf50;
+  color: white;
+  font-size: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.discussion-submitted h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.discussion-submitted > p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.submitted-response {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 30px;
+  text-align: left;
+}
+
+.submitted-response h4 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.submitted-response p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+  .discussion-prompt,
+  .discussion-submitted {
+    padding: 20px;
+  }
+
+  .response-textarea {
+    font-size: 0.95rem;
+  }
+}
