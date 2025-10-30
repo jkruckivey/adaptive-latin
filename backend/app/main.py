@@ -332,6 +332,9 @@ class AddSourceRequest(BaseModel):
     source_type: Optional[str] = Field(None, description="Source type (auto-detected if not provided)")
     title: Optional[str] = Field(None, description="Optional custom title")
     description: Optional[str] = Field(None, description="Optional custom description")
+    requirement_level: Optional[str] = Field(default="optional", description="Requirement level: optional, recommended, or required")
+    verification_method: Optional[str] = Field(default="none", description="Verification method: none, self-attestation, comprehension-quiz, or discussion-prompt")
+    verification_data: Optional[dict] = Field(default=None, description="Verification data (quiz questions, discussion prompts, etc.)")
 
 
 class SourceResponse(BaseModel):

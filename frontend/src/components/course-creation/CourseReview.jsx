@@ -77,6 +77,46 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
         </div>
       )}
 
+      {/* Required Materials */}
+      {courseData.sources && courseData.sources.filter(s => s.requirementLevel === 'required').length > 0 && (
+        <div className="review-section required-materials-section">
+          <h3>⭐ Required Materials ({courseData.sources.filter(s => s.requirementLevel === 'required').length})</h3>
+          <p className="section-note">Students must complete these materials before accessing modules</p>
+          <div className="required-materials-list">
+            {courseData.sources.filter(s => s.requirementLevel === 'required').map((source, i) => (
+              <div key={i} className="required-material-card">
+                <div className="material-header">
+                  <span className="material-icon">{
+                    source.type === 'pdf' ? '📄' :
+                    source.type === 'video' ? '🎥' :
+                    source.type === 'image' ? '🖼️' : '🌐'
+                  }</span>
+                  <div className="material-info">
+                    <div className="material-title">{source.title}</div>
+                    <div className="material-url">{source.url}</div>
+                    {source.scope !== 'course' && (
+                      <div className="material-scope">
+                        📍 Attached to: {courseData.concepts && courseData.concepts[parseInt(source.scope.replace('concept-', ''))]?.title || source.scope}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {source.verificationMethod && source.verificationMethod !== 'none' && (
+                  <div className="verification-info">
+                    <strong>Verification:</strong> {
+                      source.verificationMethod === 'comprehension-quiz' ? `Comprehension Quiz (${source.verificationData?.comprehensionQuestions?.length || 0} questions)` :
+                      source.verificationMethod === 'discussion-prompt' ? 'Discussion Prompt Required' :
+                      source.verificationMethod === 'self-attestation' ? 'Self-Attestation' :
+                      'None'
+                    }
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Concepts Summary */}
       <div className="review-section">
         <h3>Concepts ({(courseData.concepts || []).length})</h3>
