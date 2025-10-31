@@ -1,1 +1,268 @@
 @import '../content-types/content-types.css';
+
+/* Paradigm Table Container */
+.paradigm-table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 24px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.paradigm-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Noun Display */
+.paradigm-noun {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.noun-label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.noun-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #667eea;
+  font-style: italic;
+}
+
+/* Table Styling */
+.paradigm-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.paradigm-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1.5fr 2fr;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.paradigm-row:hover:not(.paradigm-header) {
+  background: #f7fafc;
+  transform: scale(1.01);
+}
+
+.paradigm-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.paradigm-cell {
+  padding: 16px 20px;
+  text-align: left;
+  border-right: 1px solid #e2e8f0;
+}
+
+.paradigm-cell:last-child {
+  border-right: none;
+}
+
+.paradigm-header .paradigm-cell {
+  border-right-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Case Name Styling with Color Indicators */
+.case-name {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.05rem;
+}
+
+.case-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Latin Forms Styling */
+.form-singular, .form-plural {
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.function-desc {
+  font-size: 0.95rem;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+/* Case-Specific Color Coding */
+.case-nominative {
+  border-left: 4px solid #3182CE;
+  background: linear-gradient(90deg, #EBF8FF 0%, transparent 10%);
+}
+
+.case-nominative .case-indicator {
+  background: #3182CE;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+.case-nominative .case-name {
+  color: #2C5282;
+}
+
+.case-genitive {
+  border-left: 4px solid #38A169;
+  background: linear-gradient(90deg, #F0FFF4 0%, transparent 10%);
+}
+
+.case-genitive .case-indicator {
+  background: #38A169;
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.2);
+}
+
+.case-genitive .case-name {
+  color: #276749;
+}
+
+.case-dative {
+  border-left: 4px solid #D69E2E;
+  background: linear-gradient(90deg, #FFFAF0 0%, transparent 10%);
+}
+
+.case-dative .case-indicator {
+  background: #D69E2E;
+  box-shadow: 0 0 0 3px rgba(214, 158, 46, 0.2);
+}
+
+.case-dative .case-name {
+  color: #975A16;
+}
+
+.case-accusative {
+  border-left: 4px solid #E53E3E;
+  background: linear-gradient(90deg, #FFF5F5 0%, transparent 10%);
+}
+
+.case-accusative .case-indicator {
+  background: #E53E3E;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2);
+}
+
+.case-accusative .case-name {
+  color: #9B2C2C;
+}
+
+.case-ablative {
+  border-left: 4px solid #805AD5;
+  background: linear-gradient(90deg, #FAF5FF 0%, transparent 10%);
+}
+
+.case-ablative .case-indicator {
+  background: #805AD5;
+  box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.2);
+}
+
+.case-ablative .case-name {
+  color: #553C9A;
+}
+
+/* Explanation Section */
+.paradigm-explanation {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 24px;
+  border-left: 4px solid #667eea;
+  margin-bottom: 24px;
+}
+
+.paradigm-explanation h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.paradigm-explanation p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #4a5568;
+  margin: 0;
+}
+
+/* Footer */
+.paradigm-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .paradigm-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .paradigm-cell {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+  }
+
+  .paradigm-cell:last-child {
+    border-bottom: none;
+  }
+
+  .paradigm-header {
+    display: none; /* Hide header row on mobile, show labels inline instead */
+  }
+
+  .case-name::before {
+    content: 'Case: ';
+    font-weight: 400;
+    color: #718096;
+  }
+
+  .form-singular::before {
+    content: 'Singular: ';
+    font-weight: 400;
+    color: #718096;
+    font-family: inherit;
+    font-style: normal;
+  }
+
+  .form-plural::before {
+    content: 'Plural: ';
+    font-weight: 400;
+    color: #718096;
+    font-family: inherit;
+    font-style: normal;
+  }
+
+  .function-desc::before {
+    content: 'Function: ';
+    font-weight: 600;
+    color: #718096;
+  }
+}

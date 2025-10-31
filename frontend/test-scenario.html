@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario Widget Test - At the Roman Market</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #e9ecef;
+    }
+
+    h1 {
+      text-align: center;
+      color: #495057;
+    }
+
+    /* Scenario Widget Styles */
+    .scenario-widget {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 3px solid #dee2e6;
+      border-radius: 16px;
+      padding: 32px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .scenario-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .scenario-icon {
+      font-size: 3em;
+      line-height: 1;
+    }
+
+    .scenario-title-section {
+      flex: 1;
+    }
+
+    .scenario-title {
+      color: #495057;
+      margin: 0 0 4px 0;
+      font-size: 1.8em;
+      font-weight: 700;
+    }
+
+    .scenario-subtitle {
+      color: #6c757d;
+      margin: 0;
+      font-size: 1.1em;
+      font-style: italic;
+    }
+
+    .scenario-progress {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .progress-label {
+      font-size: 0.9em;
+      color: #6c757d;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+      transition: width 0.4s ease;
+      border-radius: 6px;
+    }
+
+    .scenario-content {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      min-height: 300px;
+    }
+
+    .step-title {
+      color: #495057;
+      font-size: 1.4em;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+    }
+
+    /* Narrative styles */
+    .scenario-narrative {
+      line-height: 1.7;
+    }
+
+    .narrative-image {
+      font-size: 4em;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .narrative-text p {
+      font-size: 1.1em;
+      color: #495057;
+      margin-bottom: 16px;
+    }
+
+    .narrative-dialogue {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .dialogue-label {
+      font-size: 0.85em;
+      color: #856404;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .dialogue-text {
+      font-size: 1.3em;
+      color: #495057;
+      font-weight: 600;
+      font-family: 'Georgia', serif;
+      margin-bottom: 8px;
+    }
+
+    .dialogue-translation {
+      font-size: 1em;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    /* Challenge styles */
+    .scenario-challenge {
+      padding: 20px 0;
+    }
+
+    .challenge-prompt {
+      font-size: 1.2em;
+      color: #495057;
+      font-weight: 500;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .challenge-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .challenge-option {
+      padding: 16px 20px;
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .challenge-option:hover {
+      border-color: #0066cc;
+      background: #f0f7ff;
+      transform: translateX(4px);
+    }
+
+    .challenge-option.selected {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+
+    /* Navigation */
+    .scenario-navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 2px solid #dee2e6;
+    }
+
+    .nav-button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .prev-button {
+      background: #6c757d;
+      color: white;
+    }
+
+    .prev-button:hover {
+      background: #5a6268;
+      transform: translateX(-2px);
+    }
+
+    .next-button {
+      background: #0066cc;
+      color: white;
+      margin-left: auto;
+    }
+
+    .next-button:hover {
+      background: #0052a3;
+      transform: translateX(2px);
+    }
+
+    .next-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Word Order Manipulator (embedded) */
+    .word-tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 20px;
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      min-height: 80px;
+      margin: 20px 0;
+    }
+
+    .word-tile {
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: move;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+
+    .word-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .word-tile.dragging {
+      opacity: 0.5;
+    }
+
+    .word-text {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #495057;
+      font-family: 'Georgia', serif;
+    }
+
+    .word-role {
+      font-size: 0.7em;
+      color: #6c757d;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .role-subject { border-color: #4caf50; }
+    .role-subject .word-text { color: #2e7d32; }
+    .role-verb { border-color: #ff9800; }
+    .role-verb .word-text { color: #e65100; }
+    .role-object { border-color: #2196f3; }
+    .role-object .word-text { color: #0d47a1; }
+
+    .feedback-box {
+      padding: 14px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-weight: 500;
+    }
+
+    .feedback-box.success {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      color: #155724;
+    }
+
+    .feedback-box.info {
+      background: #d1ecf1;
+      border: 2px solid #17a2b8;
+      color: #0c5460;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scenario Widget Test: At the Roman Market</h1>
+
+  <div class="scenario-widget" id="scenario-widget">
+    <div class="scenario-header">
+      <div class="scenario-icon">🏛️</div>
+      <div class="scenario-title-section">
+        <h2 class="scenario-title">At the Roman Market</h2>
+        <p class="scenario-subtitle">Forum Romanum - Early Morning</p>
+      </div>
+    </div>
+
+    <div class="scenario-progress">
+      <div class="progress-label" id="progress-label">Step 1 of 5</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+      </div>
+    </div>
+
+    <div class="scenario-content" id="scenario-content">
+      <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <div class="scenario-navigation">
+      <button class="nav-button prev-button" id="prev-btn" style="display: none;">
+        ← Previous
+      </button>
+      <button class="nav-button next-button" id="next-btn">
+        Continue →
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const scenario = {
+      theme: 'market',
+      title: 'At the Roman Market',
+      setting: 'Forum Romanum - Early Morning',
+      steps: [
+        {
+          type: 'narrative',
+          stepTitle: 'Arriving at the Forum',
+          image: '🏛️',
+          paragraphs: [
+            "You enter the bustling Forum Romanum just as the sun rises over the seven hills of Rome. Merchants are setting up their stalls, and the air is filled with the aroma of fresh bread and spices.",
+            "As you walk past the vegetable vendor's stall, you notice a young girl speaking to the merchant."
+          ],
+          dialogue: "Puella mercatori pecuniam dat.",
+          translation: "The girl gives money to the merchant."
+        },
+        {
+          type: 'narrative',
+          stepTitle: 'Understanding the Exchange',
+          paragraphs: [
+            "You just heard: 'Puella mercatori pecuniam dat' - The girl gives money to the merchant.",
+            "Notice the word 'mercatori' - it ends in -i, which shows the dative case. This tells us the merchant is receiving something (the money).",
+            "Let's explore how the word 'mercator' (merchant) changes in different cases."
+          ]
+        },
+        {
+          type: 'word-order',
+          stepTitle: 'Explore: Word Order Flexibility',
+          explanation: "Because Latin uses case endings, the word order is flexible. Try rearranging the words - the meaning stays the same, but the emphasis changes!",
+          words: [
+            { word: 'Puella', role: 'subject', case: 'nominative' },
+            { word: 'mercatori', role: 'indirect', case: 'dative' },
+            { word: 'pecuniam', role: 'object', case: 'accusative' },
+            { word: 'dat', role: 'verb' }
+          ]
+        },
+        {
+          type: 'challenge',
+          stepTitle: 'Test Your Understanding',
+          prompt: "Now you see another transaction. A merchant is handing roses to a woman. How would you say 'The merchant gives roses to the woman' in Latin?",
+          options: [
+            "Mercator rosam feminae dat",
+            "Mercator rosas feminae dat",
+            "Mercator rosarum feminam dat",
+            "Mercatori rosae femina dat"
+          ],
+          correctIndex: 1
+        },
+        {
+          type: 'narrative',
+          stepTitle: 'Well Done!',
+          image: '✓',
+          paragraphs: [
+            "Excellent work! You correctly identified that 'roses' (accusative plural: rosas) are being given to 'the woman' (dative: feminae).",
+            "You've learned how the dative case shows who receives something, and you've seen how Latin word order can be flexible because the case endings tell you each word's function.",
+            "You're ready to continue exploring the Roman market!"
+          ]
+        }
+      ]
+    };
+
+    let currentStep = 0;
+
+    function renderStep() {
+      const step = scenario.steps[currentStep];
+      const content = document.getElementById('scenario-content');
+      const progressLabel = document.getElementById('progress-label');
+      const progressFill = document.getElementById('progress-fill');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      // Update progress
+      progressLabel.textContent = `Step ${currentStep + 1} of ${scenario.steps.length}`;
+      progressFill.style.width = `${((currentStep + 1) / scenario.steps.length) * 100}%`;
+
+      // Show/hide prev button
+      prevBtn.style.display = currentStep > 0 ? 'block' : 'none';
+
+      // Update next button text
+      nextBtn.textContent = currentStep < scenario.steps.length - 1 ? 'Continue →' : 'Complete ✓';
+
+      // Render step content
+      let html = '';
+      if (step.stepTitle) {
+        html += `<h3 class="step-title">${step.stepTitle}</h3>`;
+      }
+
+      switch (step.type) {
+        case 'narrative':
+          html += '<div class="scenario-narrative">';
+          if (step.image) {
+            html += `<div class="narrative-image">${step.image}</div>`;
+          }
+          html += '<div class="narrative-text">';
+          step.paragraphs.forEach(p => {
+            html += `<p>${p}</p>`;
+          });
+          html += '</div>';
+          if (step.dialogue) {
+            html += `
+              <div class="narrative-dialogue">
+                <div class="dialogue-label">You hear:</div>
+                <div class="dialogue-text">"${step.dialogue}"</div>
+                ${step.translation ? `<div class="dialogue-translation">(${step.translation})</div>` : ''}
+              </div>
+            `;
+          }
+          html += '</div>';
+          break;
+
+        case 'word-order':
+          html += `
+            <p style="margin-bottom: 20px; color: #6c757d;">${step.explanation}</p>
+            <div class="word-tiles" id="word-tiles"></div>
+            <div id="feedback" style="display: none;"></div>
+          `;
+          break;
+
+        case 'challenge':
+          html += `
+            <div class="scenario-challenge">
+              <div class="challenge-prompt">${step.prompt}</div>
+              <div class="challenge-options" id="challenge-options"></div>
+            </div>
+          `;
+          break;
+      }
+
+      content.innerHTML = html;
+
+      // Special handling for interactive steps
+      if (step.type === 'word-order') {
+        renderWordOrder(step);
+      } else if (step.type === 'challenge') {
+        renderChallenge(step);
+      }
+    }
+
+    function renderWordOrder(step) {
+      const container = document.getElementById('word-tiles');
+      let currentWords = [...step.words];
+      let draggedIndex = null;
+
+      function renderTiles() {
+        container.innerHTML = '';
+        currentWords.forEach((word, index) => {
+          const tile = document.createElement('div');
+          tile.className = `word-tile role-${word.role}`;
+          tile.draggable = true;
+          tile.innerHTML = `
+            <div class="word-text">${word.word}</div>
+            <div class="word-role">${word.role}</div>
+          `;
+
+          tile.addEventListener('dragstart', () => {
+            draggedIndex = index;
+            tile.classList.add('dragging');
+          });
+
+          tile.addEventListener('dragend', () => {
+            tile.classList.remove('dragging');
+          });
+
+          tile.addEventListener('dragover', (e) => e.preventDefault());
+
+          tile.addEventListener('drop', () => {
+            if (draggedIndex !== null && draggedIndex !== index) {
+              const draggedWord = currentWords[draggedIndex];
+              currentWords.splice(draggedIndex, 1);
+              currentWords.splice(index, 0, draggedWord);
+              renderTiles();
+              showFeedback();
+            }
+          });
+
+          container.appendChild(tile);
+        });
+      }
+
+      function showFeedback() {
+        const feedback = document.getElementById('feedback');
+        feedback.className = 'feedback-box success';
+        feedback.textContent = '✓ Great! Notice how the meaning stays the same even when you rearrange the words - the case endings tell you each word\'s function!';
+        feedback.style.display = 'block';
+      }
+
+      renderTiles();
+    }
+
+    function renderChallenge(step) {
+      const container = document.getElementById('challenge-options');
+      step.options.forEach((option, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'challenge-option';
+        btn.textContent = option;
+        btn.onclick = () => {
+          document.querySelectorAll('.challenge-option').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          if (i === step.correctIndex) {
+            btn.style.borderColor = '#28a745';
+            btn.style.background = '#d4edda';
+          } else {
+            btn.style.borderColor = '#dc3545';
+            btn.style.background = '#f8d7da';
+          }
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    document.getElementById('prev-btn').onclick = () => {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
+      }
+    };
+
+    document.getElementById('next-btn').onclick = () => {
+      if (currentStep < scenario.steps.length - 1) {
+        currentStep++;
+        renderStep();
+      } else {
+        alert('Scenario complete! 🎉');
+      }
+    };
+
+    renderStep();
+  </script>
+</body>
+</html>

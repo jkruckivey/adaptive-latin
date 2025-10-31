@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Declension Explorer Widget Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .declension-explorer {
+      background: #f8f9fa;
+      border: 2px solid #dee2e6;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .explorer-header h3 {
+      color: #495057;
+      margin: 0 0 8px 0;
+      font-size: 1.4em;
+    }
+
+    .explorer-explanation {
+      color: #6c757d;
+      font-size: 0.95em;
+      margin: 0 0 20px 0;
+    }
+
+    .explorer-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .control-group label {
+      font-weight: 600;
+      color: #495057;
+      min-width: 60px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .case-button, .number-button {
+      padding: 8px 16px;
+      border: 2px solid #dee2e6;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .case-button:hover, .number-button:hover {
+      border-color: #0066cc;
+      background: #f0f7ff;
+    }
+
+    .case-button.active, .number-button.active {
+      background: #0066cc;
+      color: white;
+      border-color: #0066cc;
+    }
+
+    .case-button.highlight {
+      border-color: #ffc107;
+      background: #fff8e1;
+    }
+
+    .explorer-display {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #dee2e6;
+    }
+
+    .form-label, .function-label {
+      font-size: 0.85em;
+      color: #6c757d;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-value {
+      font-size: 2em;
+      color: #0066cc;
+      font-weight: bold;
+      font-family: 'Georgia', serif;
+    }
+
+    .function-value {
+      font-size: 1.1em;
+      color: #495057;
+      font-style: italic;
+    }
+
+    .explorer-table {
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .explorer-table table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .explorer-table th {
+      background: #495057;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .explorer-table td {
+      padding: 12px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .explorer-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .explorer-table tr:hover {
+      background: #f8f9fa;
+      cursor: pointer;
+    }
+
+    .explorer-table tr.selected-row {
+      background: #e3f2fd;
+    }
+
+    .explorer-table td.selected-cell {
+      background: #bbdefb;
+      font-weight: bold;
+      color: #0066cc;
+    }
+
+    .case-name {
+      font-weight: 600;
+      color: #495057;
+      text-transform: capitalize;
+    }
+
+    .case-function {
+      color: #6c757d;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    .explorer-hint {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 12px;
+      color: #856404;
+      font-size: 0.9em;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Declension Explorer Widget Test</h1>
+
+  <div class="declension-explorer">
+    <div class="explorer-header">
+      <h3>Explore: puella (girl)</h3>
+      <p class="explorer-explanation">Click each case to see how the form changes and what it means. This is first declension.</p>
+    </div>
+
+    <div class="explorer-controls">
+      <div class="control-group">
+        <label>Case:</label>
+        <div class="button-group">
+          <button class="case-button active" data-case="nominative">Nominative</button>
+          <button class="case-button" data-case="genitive">Genitive</button>
+          <button class="case-button highlight" data-case="dative">Dative</button>
+          <button class="case-button" data-case="accusative">Accusative</button>
+          <button class="case-button" data-case="ablative">Ablative</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Number:</label>
+        <div class="button-group">
+          <button class="number-button active" data-number="singular">Singular</button>
+          <button class="number-button" data-number="plural">Plural</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="explorer-display">
+      <div class="form-display">
+        <div class="form-label">Form:</div>
+        <div class="form-value" id="current-form">puella</div>
+      </div>
+      <div class="function-display">
+        <div class="function-label">Function:</div>
+        <div class="function-value" id="current-function">Subject of the verb</div>
+      </div>
+    </div>
+
+    <div class="explorer-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Case</th>
+            <th>Singular</th>
+            <th>Plural</th>
+            <th>Function</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="explorer-hint">
+      💡 Click a case or number to explore how the form changes and what it means
+    </div>
+  </div>
+
+  <script>
+    const forms = {
+      nominative_singular: 'puella',
+      nominative_plural: 'puellae',
+      genitive_singular: 'puellae',
+      genitive_plural: 'puellarum',
+      dative_singular: 'puellae',
+      dative_plural: 'puellis',
+      accusative_singular: 'puellam',
+      accusative_plural: 'puellas',
+      ablative_singular: 'puellā',
+      ablative_plural: 'puellis'
+    };
+
+    const functions = {
+      nominative: 'Subject of the verb',
+      genitive: 'Possession (of/\'s)',
+      dative: 'Indirect object (to/for)',
+      accusative: 'Direct object',
+      ablative: 'Means, manner, place (by/with/from)'
+    };
+
+    const cases = ['nominative', 'genitive', 'dative', 'accusative', 'ablative'];
+
+    let selectedCase = 'nominative';
+    let selectedNumber = 'singular';
+
+    function updateDisplay() {
+      const formKey = `${selectedCase}_${selectedNumber}`;
+      document.getElementById('current-form').textContent = forms[formKey];
+      document.getElementById('current-function').textContent = functions[selectedCase];
+
+      updateTable();
+    }
+
+    function updateTable() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      cases.forEach(c => {
+        const row = document.createElement('tr');
+        if (c === selectedCase) row.classList.add('selected-row');
+
+        row.innerHTML = `
+          <td class="case-name">${c.charAt(0).toUpperCase() + c.slice(1)}</td>
+          <td class="${c === selectedCase && selectedNumber === 'singular' ? 'selected-cell' : ''}">${forms[c + '_singular']}</td>
+          <td class="${c === selectedCase && selectedNumber === 'plural' ? 'selected-cell' : ''}">${forms[c + '_plural']}</td>
+          <td class="case-function">${functions[c]}</td>
+        `;
+
+        row.addEventListener('click', () => {
+          selectedCase = c;
+          document.querySelectorAll('.case-button').forEach(btn => btn.classList.remove('active'));
+          document.querySelector(`[data-case="${c}"]`).classList.add('active');
+          updateDisplay();
+        });
+
+        tbody.appendChild(row);
+      });
+    }
+
+    document.querySelectorAll('.case-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedCase = btn.dataset.case;
+        document.querySelectorAll('.case-button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateDisplay();
+      });
+    });
+
+    document.querySelectorAll('.number-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedNumber = btn.dataset.number;
+        document.querySelectorAll('.number-button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateDisplay();
+      });
+    });
+
+    updateTable();
+  </script>
+</body>
+</html>

@@ -12,9 +12,42 @@
       "Bash(uvicorn:*)",
       "Bash(curl:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git log:*)",
+      "Bash(venvScriptsactivate)",
+      "Bash(cp:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 3 bash:*)",
+      "Read(//c/Users/james/.claude/plugins/marketplaces/education-toolkit/agents/**)",
+      "Bash(npm install:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell \"(Get-Item app/agent.py).LastWriteTime = Get-Date\")",
+      "Bash(powershell \"(Get-Item ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\frontend\\src\\components\\content-types\\AssessmentResult.jsx'').LastWriteTime = Get-Date\")",
+      "Bash(powershell \"Get-ChildItem ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\data\\learner-models'' | Select-Object Name\")",
+      "Bash(powershell \"(Get-Item ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\app\\agent.py'').LastWriteTime = Get-Date\")",
+      "Bash(python -m json.tool:*)",
+      "Bash(powershell \"Get-Content ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\frontend\\src\\App.css'' | Measure-Object -Line\")",
+      "Bash(powershell \"Add-Content ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\frontend\\src\\App.css'' @''\n\n/* Initial Loading Screen (between onboarding and main content) */\n.initial-loading-screen {\n  width: 100%;\n  min-height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);\n  padding: 40px;\n}\n\n.loading-container {\n  max-width: 500px;\n  background: white;\n  border-radius: 16px;\n  padding: 60px 40px;\n  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);\n  text-align: center;\n}\n\n.spinner.large {\n  width: 80px;\n  height: 80px;\n  margin: 0 auto 40px;\n  border: 6px solid #f3f3f3;\n  border-top: 6px solid #667eea;\n  border-right: 6px solid #764ba2;\n  border-radius: 50%;\n  animation: spin 1s linear infinite;\n}\n\n.loading-title {\n  font-size: 1.5rem;\n  color: #2d3748;\n  font-weight: 600;\n  margin-bottom: 32px;\n  letter-spacing: -0.02em;\n}\n\n.loading-steps {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n  margin-bottom: 32px;\n  text-align: left;\n}\n\n.loading-step {\n  display: flex;\n  align-items: center;\n  gap: 16px;\n  padding: 16px;\n  background: #f8f9fa;\n  border-radius: 8px;\n  animation: slideIn 0.5s ease-out;\n}\n\n@keyframes slideIn {\n  from {\n    opacity: 0;\n    transform: translateX(-20px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n.step-icon {\n  font-size: 1.75rem;\n  flex-shrink: 0;\n}\n\n.step-text {\n  color: #4a5568;\n  font-size: 0.95rem;\n  line-height: 1.5;\n}\n\n.loading-patience {\n  font-size: 0.9rem;\n  color: #a0aec0;\n  font-style: italic;\n  margin: 0;\n}\n\n''@\")",
+      "Bash(npx claude-code-templates@latest --skill=creative-design/canvas-design --yes)",
+      "Bash(powershell \"Get-Content ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\app\\tools.py'' | Measure-Object -Line\")",
+      "Bash(powershell \"Add-Content ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\app\\tools.py'' @''\n\n\ndef get_language_connection(learner_id: str, concept_id: str) -> Optional[str]:\n    \"\"\"\"\"\"\n    Generate template-based language connections to Spanish/French for learners\n    with Romance language background.\n    \n    Args:\n        learner_id: Unique identifier for the learner\n        concept_id: The concept being taught\n        \n    Returns:\n        Language connection hint string, or None if not applicable\n    \"\"\"\"\"\"\n    try:\n        learner_model = load_learner_model(learner_id)\n        profile = learner_model.get(\"\"profile\"\", {})\n        prior_knowledge = profile.get(\"\"priorKnowledge\"\", {})\n        \n        # Check if learner knows Romance languages\n        has_romance = prior_knowledge.get(\"\"hasRomanceLanguage\"\", False)\n        \n        if not has_romance:\n            return None\n            \n        # Template connections for concept-001 (First Declension)\n        if concept_id == \"\"concept-001\"\":\n            connections = [\n                \"\"💡 Connection: Latin endings work like Spanish/French articles! ''puella'' (nominative) = ''la chica/la fille'', while ''puellae'' (genitive) = ''de la chica/de la fille'' (possession).\"\",\n                \"\"💡 Connection: Just like Spanish ''de la filosofía'' or French ''de la philosophie'', Latin uses the genitive case (ending -ae) to show possession and relationships.\"\",\n                \"\"💡 Connection: The accusative ending -am is like ''a la'' in Spanish or ''à la'' in French - it shows the direct object of the action.\"\",\n                \"\"💡 Connection: Notice how Latin ''rosa, rosae'' follows a pattern - just like Spanish feminine nouns ''rosa, rosas'' or French ''rose, roses'', but Latin uses endings instead of articles.\"\"\n            ]\n            \n            # Return a random connection\n            import random\n            return random.choice(connections)\n            \n        # More connections can be added for other concepts\n        return None\n        \n    except Exception as e:\n        logger.error(f\"\"Error generating language connection: {e}\"\")\n        return None\n''@\")",
+      "Bash(powershell \"Add-Content ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\frontend\\src\\components\\content-types\\AssessmentResult.css'' @''\n\n/* Language Connection Hint */\n.language-connection {\n  margin: 20px 0;\n  padding: 16px 20px;\n  background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);\n  border-left: 4px solid #F59E0B;\n  border-radius: 8px;\n  animation: slideIn 0.4s ease-out;\n}\n\n.language-connection p {\n  margin: 0;\n  color: #92400E;\n  font-size: 0.95rem;\n  line-height: 1.6;\n  font-weight: 500;\n}\n\n@keyframes slideIn {\n  from {\n    opacity: 0;\n    transform: translateX(-10px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n''@\")",
+      "Bash(powershell \"Get-ChildItem ''.claude'' -Recurse | Select-Object FullName\")",
+      "Bash(python:*)",
+      "Bash(powershell \"Get-ChildItem ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\data\\learner-models'' | Select-Object Name | Select-Object -First 3\")",
+      "Bash(powershell \"(Get-Item ''C:\\Users\\james\\OneDrive\\Documents2\\GitHub\\adaptive-latin\\backend\\app\\main.py'').LastWriteTime = Get-Date\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "github"
+  ]
 }

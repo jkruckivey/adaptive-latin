@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Order Manipulator Widget Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .word-order-manipulator {
+      background: #f8f9fa;
+      border: 2px solid #dee2e6;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .manipulator-header h3 {
+      color: #495057;
+      margin: 0 0 8px 0;
+      font-size: 1.4em;
+    }
+
+    .manipulator-explanation {
+      color: #6c757d;
+      font-size: 0.95em;
+      margin: 0 0 20px 0;
+    }
+
+    .sentence-display {
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .display-label {
+      font-size: 0.85em;
+      color: #6c757d;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .display-sentence {
+      font-size: 1.8em;
+      color: #495057;
+      font-weight: bold;
+      font-family: 'Georgia', serif;
+      margin-bottom: 12px;
+    }
+
+    .display-translation {
+      font-size: 1.1em;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    .word-tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 20px;
+      background: white;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      min-height: 100px;
+      margin-bottom: 16px;
+    }
+
+    .word-tile {
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: move;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+
+    .word-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .word-tile.dragging {
+      opacity: 0.5;
+    }
+
+    .word-text {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #495057;
+      font-family: 'Georgia', serif;
+      margin-bottom: 4px;
+    }
+
+    .word-role {
+      font-size: 0.75em;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .word-case {
+      font-size: 0.75em;
+      color: #0066cc;
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .role-subject {
+      border-color: #4caf50;
+    }
+    .role-subject .word-text {
+      color: #2e7d32;
+    }
+
+    .role-verb {
+      border-color: #ff9800;
+    }
+    .role-verb .word-text {
+      color: #e65100;
+    }
+
+    .role-object {
+      border-color: #2196f3;
+    }
+    .role-object .word-text {
+      color: #0d47a1;
+    }
+
+    .role-indirect {
+      border-color: #9c27b0;
+    }
+    .role-indirect .word-text {
+      color: #6a1b9a;
+    }
+
+    .feedback-box {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .feedback-box.success {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      color: #155724;
+    }
+
+    .feedback-box.info {
+      background: #d1ecf1;
+      border: 2px solid #17a2b8;
+      color: #0c5460;
+    }
+
+    .reset-button {
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .reset-button:hover {
+      background: #5a6268;
+    }
+
+    .manipulator-hint {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 16px;
+      color: #856404;
+      font-size: 0.9em;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .manipulator-hint strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .role-legend {
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .legend-title {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 12px;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .legend-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid;
+    }
+
+    .legend-color.role-subject {
+      background: #e8f5e9;
+      border-color: #4caf50;
+    }
+
+    .legend-color.role-verb {
+      background: #fff3e0;
+      border-color: #ff9800;
+    }
+
+    .legend-color.role-object {
+      background: #e3f2fd;
+      border-color: #2196f3;
+    }
+
+    .legend-color.role-indirect {
+      background: #f3e5f5;
+      border-color: #9c27b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Word Order Manipulator Widget Test</h1>
+
+  <div class="word-order-manipulator">
+    <div class="manipulator-header">
+      <h3>Explore Word Order</h3>
+      <p class="manipulator-explanation">Latin word order is flexible! Drag the words to rearrange them - the case endings tell you each word's function.</p>
+    </div>
+
+    <div class="sentence-display">
+      <div class="display-label">Current Sentence:</div>
+      <div class="display-sentence" id="current-sentence">Puella rosam amicae dat</div>
+      <div class="display-translation">"The girl gives the rose to the friend"</div>
+    </div>
+
+    <div class="word-tiles" id="word-tiles"></div>
+
+    <div id="feedback" style="display: none;"></div>
+
+    <button class="reset-button" onclick="resetOrder()">Reset to Original</button>
+
+    <div class="manipulator-hint">
+      <strong>💡 Try this:</strong> Drag words to rearrange them. Latin word order is flexible because
+      the case endings tell you each word's function. Try putting the most important word first -
+      that's often where Romans put emphasis!
+    </div>
+
+    <div class="role-legend">
+      <div class="legend-title">Word Functions:</div>
+      <div class="legend-items">
+        <div class="legend-item">
+          <span class="legend-color role-subject"></span>
+          <span>Subject (nominative)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color role-verb"></span>
+          <span>Verb</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color role-object"></span>
+          <span>Object (accusative)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color role-indirect"></span>
+          <span>Indirect Object (dative)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const originalWords = [
+      {word: 'Puella', role: 'subject', case: 'nominative'},
+      {word: 'rosam', role: 'object', case: 'accusative'},
+      {word: 'amicae', role: 'indirect', case: 'dative'},
+      {word: 'dat', role: 'verb'}
+    ];
+
+    const validOrders = [
+      {words: ['Puella', 'rosam', 'amicae', 'dat'], emphasis: 'who is giving (normal order)'},
+      {words: ['Rosam', 'puella', 'amicae', 'dat'], emphasis: 'what is being given (emphasize object)'},
+      {words: ['Amicae', 'puella', 'rosam', 'dat'], emphasis: 'to whom (emphasize recipient)'},
+      {words: ['Puella', 'amicae', 'rosam', 'dat'], emphasis: 'alternative neutral order'},
+      {words: ['Dat', 'puella', 'rosam', 'amicae'], emphasis: 'verb-first (poetic emphasis)'}
+    ];
+
+    let currentWords = [...originalWords];
+    let draggedIndex = null;
+
+    function renderWords() {
+      const container = document.getElementById('word-tiles');
+      container.innerHTML = '';
+
+      currentWords.forEach((word, index) => {
+        const tile = document.createElement('div');
+        tile.className = `word-tile role-${word.role}`;
+        tile.draggable = true;
+        tile.innerHTML = `
+          <div class="word-text">${word.word}</div>
+          <div class="word-role">${word.role}</div>
+          ${word.case ? `<div class="word-case">${word.case}</div>` : ''}
+        `;
+
+        tile.addEventListener('dragstart', () => {
+          draggedIndex = index;
+          tile.classList.add('dragging');
+        });
+
+        tile.addEventListener('dragend', () => {
+          tile.classList.remove('dragging');
+        });
+
+        tile.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+
+        tile.addEventListener('drop', () => {
+          if (draggedIndex !== null && draggedIndex !== index) {
+            const draggedWord = currentWords[draggedIndex];
+            currentWords.splice(draggedIndex, 1);
+            currentWords.splice(index, 0, draggedWord);
+            renderWords();
+            updateSentence();
+            checkOrder();
+          }
+        });
+
+        container.appendChild(tile);
+      });
+    }
+
+    function updateSentence() {
+      const sentence = currentWords.map(w => w.word).join(' ');
+      document.getElementById('current-sentence').textContent = sentence;
+    }
+
+    function checkOrder() {
+      const currentOrder = currentWords.map(w => w.word.toLowerCase());
+      const feedback = document.getElementById('feedback');
+
+      const match = validOrders.find(order =>
+        order.words.length === currentOrder.length &&
+        order.words.every((w, i) => w.toLowerCase() === currentOrder[i])
+      );
+
+      if (match) {
+        feedback.className = 'feedback-box success';
+        feedback.textContent = `✓ Valid! This order emphasizes: ${match.emphasis}`;
+        feedback.style.display = 'block';
+      } else {
+        feedback.className = 'feedback-box info';
+        feedback.textContent = 'Try a different arrangement - Latin word order is flexible!';
+        feedback.style.display = 'block';
+      }
+    }
+
+    function resetOrder() {
+      currentWords = [...originalWords];
+      renderWords();
+      updateSentence();
+      document.getElementById('feedback').style.display = 'none';
+    }
+
+    renderWords();
+  </script>
+</body>
+</html>

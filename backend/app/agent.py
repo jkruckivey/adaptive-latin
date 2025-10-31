@@ -200,6 +200,44 @@ def evaluate_dialogue_response(question: str, context: str, student_answer: str,
         }
 
 
+def sanitize_user_input(text: str, max_length: int = 1000) -> str:
+    """
+    Sanitize user input before including in AI prompts to prevent prompt injection.
+
+    Args:
+        text: The user input text to sanitize
+        max_length: Maximum allowed length (default 1000 chars)
+
+    Returns:
+        Sanitized text safe for inclusion in prompts
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    # Limit length to prevent prompt flooding
+    text = text[:max_length]
+
+    # Remove null bytes and control characters (except newlines/tabs)
+    text = ''.join(char for char in text if char == '\n' or char == '\t' or (ord(char) >= 32 and ord(char) != 127))
+
+    # Escape common prompt injection patterns
+    # Replace potential instruction delimiters
+    text = text.replace('```', '\\`\\`\\`')  # Code fences
+    text = text.replace('###', '\\#\\#\\#')  # Markdown headers that could start instructions
+
+    # Escape XML-like tags that could be confused with prompt structure
+    text = text.replace('<|', '\\<\\|')
+    text = text.replace('|>', '\\|\\>')
+    text = text.replace('[INST]', '\\[INST\\]')
+    text = text.replace('[/INST]', '\\[/INST\\]')
+
+    # Limit consecutive special characters to prevent pattern-based attacks
+    import re
+    text = re.sub(r'([!@#$%^&*()_+=\[\]{}|\\:;"\'<>,.?/~`-])\1{4,}', r'\1\1\1', text)
+
+    return text
+
+
 # Initialize Anthropic client
 client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
@@ -980,28 +1018,32 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             # Prioritize question_context parameter (passed directly from current question)
             if question_context:
                 # Build detailed context with the actual question and answer choices
-                scenario = question_context.get('scenario', '')
-                question = question_context.get('question', '')
+                # Sanitize all user-facing content to prevent prompt injection
+                scenario = sanitize_user_input(question_context.get('scenario', ''))
+                question = sanitize_user_input(question_context.get('question', ''))
                 user_ans_idx = question_context.get('user_answer', 'unknown')
                 correct_ans_idx = question_context.get('correct_answer', 'unknown')
                 options = question_context.get('options', [])
 
                 # Get the actual text of what they chose vs correct answer
-                user_answer_text = options[user_ans_idx] if isinstance(user_ans_idx, int) and options and user_ans_idx < len(options) else str(user_ans_idx)
-                correct_answer_text = options[correct_ans_idx] if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
+                user_answer_text = sanitize_user_input(options[user_ans_idx]) if isinstance(user_ans_idx, int) and options and user_ans_idx < len(options) else str(user_ans_idx)
+                correct_answer_text = sanitize_user_input(options[correct_ans_idx]) if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
 
                 last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED INCORRECTLY ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEY CHOSE: '{user_answer_text}' (Option {user_ans_idx})\n\nCORRECT ANSWER: '{correct_answer_text}' (Option {correct_ans_idx})\n\nAll Options:\n"
                 for i, opt in enumerate(options):
                     marker = "✓ CORRECT" if i == correct_ans_idx else ("✗ THEY CHOSE THIS" if i == user_ans_idx else "")
-                    last_question_context += f"{i}. {opt} {marker}\n"
+                    sanitized_opt = sanitize_user_input(opt)
+                    last_question_context += f"{i}. {sanitized_opt} {marker}\n"
                 last_question_context += "\n"
 
             # Fallback to question history if no direct context provided
             elif question_history and len(question_history) > 0:
                 last_q = question_history[-1]
-                user_ans = last_q.get('user_answer', 'unknown')
-                correct_ans = last_q.get('correct_answer', 'unknown')
-                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED INCORRECTLY:\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\nThey chose: {user_ans}\nCorrect answer: {correct_ans}\n"
+                user_ans = sanitize_user_input(str(last_q.get('user_answer', 'unknown')))
+                correct_ans = sanitize_user_input(str(last_q.get('correct_answer', 'unknown')))
+                scenario = sanitize_user_input(last_q.get('scenario', ''))
+                question = sanitize_user_input(last_q.get('question', ''))
+                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED INCORRECTLY:\nScenario: {scenario}\nQuestion: {question}\nThey chose: {user_ans}\nCorrect answer: {correct_ans}\n"
 
             # Determine preferred content format based on learner style
             learner_model = load_learner_model(learner_id)
@@ -1065,21 +1107,24 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
             # Prioritize question_context parameter (passed directly from current question)
             if question_context:
-                scenario = question_context.get('scenario', '')
-                question = question_context.get('question', '')
+                # Sanitize all user-facing content to prevent prompt injection
+                scenario = sanitize_user_input(question_context.get('scenario', ''))
+                question = sanitize_user_input(question_context.get('question', ''))
                 user_ans_idx = question_context.get('user_answer', 'unknown')
                 correct_ans_idx = question_context.get('correct_answer', 'unknown')
                 options = question_context.get('options', [])
 
                 # Get the actual text of the correct answer they chose
-                correct_answer_text = options[correct_ans_idx] if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
+                correct_answer_text = sanitize_user_input(options[correct_ans_idx]) if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
 
                 last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence) ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEIR ANSWER: '{correct_answer_text}' (Option {correct_ans_idx}) ✓ CORRECT\n\n"
 
             # Fallback to question history
             elif question_history and len(question_history) > 0:
                 last_q = question_history[-1]
-                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence):\nScenario: {last_q.get('scenario', '')}\nQuestion: {last_q.get('question', '')}\n"
+                scenario = sanitize_user_input(last_q.get('scenario', ''))
+                question = sanitize_user_input(last_q.get('question', ''))
+                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence):\nScenario: {scenario}\nQuestion: {question}\n"
 
             # Determine preferred content format based on learner style
             learner_model = load_learner_model(learner_id)
