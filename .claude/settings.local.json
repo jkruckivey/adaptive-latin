@@ -41,7 +41,9 @@
       "Bash(git push:*)",
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git branch:*)",
+      "Bash(git merge origin/claude/update-create-flow-011CUdKnxEXyTZmXr84ba7Y8 --no-ff -m \"$(cat <<''EOF''\nMerge syllabus/concept map visualization feature\n\nAdds comprehensive course syllabus component:\n- New Syllabus.jsx component with interactive course overview\n- 484 lines of polished CSS for syllabus display\n- Updated metadata for all 7 Latin grammar concepts\n- Course-level metadata with learning outcomes\n- Syllabus route integration in App.jsx\n\nThis provides learners with a clear roadmap of the entire course\nand helps visualize concept progression and dependencies.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
