@@ -7,6 +7,7 @@ import FloatingTutorButton from './components/FloatingTutorButton'
 import MasteryProgressBar from './components/MasteryProgressBar'
 import ConceptMasteryModal from './components/ConceptMasteryModal'
 import CourseCreationWizard from './components/course-creation/CourseCreationWizard'
+import Syllabus from './components/Syllabus'
 import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
@@ -57,6 +58,9 @@ function App() {
 
   // Course creation state
   const [showCourseCreation, setShowCourseCreation] = useState(false)
+
+  // Syllabus state
+  const [showSyllabus, setShowSyllabus] = useState(false)
 
   // Generate or retrieve learner ID
   useEffect(() => {
@@ -531,6 +535,11 @@ function App() {
         <div className="header-content">
           <h1>🏛️ Adaptive Latin</h1>
           <div className="header-buttons">
+            {learnerId && (
+              <button onClick={() => setShowSyllabus(true)} className="syllabus-button">
+                📚 View Syllabus
+              </button>
+            )}
             <button onClick={() => setShowCourseCreation(true)} className="create-course-button">
               + Create Course
             </button>
@@ -621,6 +630,15 @@ function App() {
           conceptId={completedConceptId}
           masteryScore={masteryScore}
           onContinue={handleMasteryContinue}
+        />
+      )}
+
+      {/* Syllabus modal */}
+      {showSyllabus && learnerId && (
+        <Syllabus
+          learnerId={learnerId}
+          courseId="latin-grammar"
+          onClose={() => setShowSyllabus(false)}
         />
       )}
     </div>

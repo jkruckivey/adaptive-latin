@@ -11,6 +11,13 @@
     "Distinguish between present, imperfect, and future time",
     "Translate sentences using first conjugation verbs with first declension nouns"
   ],
+  "module_learning_outcomes": [
+    "Identify first conjugation verbs by their infinitive ending (-āre)",
+    "Conjugate first conjugation verbs in present, imperfect, and future tenses",
+    "Explain the function of personal endings (-ō, -s, -t, -mus, -tis, -nt)",
+    "Distinguish between present, imperfect, and future time",
+    "Translate sentences using first conjugation verbs with first declension nouns"
+  ],
   "estimated_mastery_time": "75-90 minutes",
   "available_resource_types": ["text", "examples"],
   "assessment_types": ["dialogue", "written", "applied"],

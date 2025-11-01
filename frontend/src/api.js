@@ -50,6 +50,12 @@ export const api = {
     return response.json();
   },
 
+  // Get individual concept metadata
+  async getConceptMetadata(conceptId) {
+    const response = await fetch(`${API_BASE_URL}/concept/${conceptId}`);
+    return response.json();
+  },
+
   // Get mastery score
   async getMastery(learnerId, conceptId) {
     const response = await fetch(`${API_BASE_URL}/mastery/${learnerId}/${conceptId}`);
