@@ -115,58 +115,107 @@ def generate_preview_request(learning_style: str) -> str:
         )
 
 
-def generate_diagnostic_request(is_cumulative: bool, cumulative_concepts: List[str] = None) -> str:
+def generate_diagnostic_request(
+    is_cumulative: bool,
+    cumulative_concepts: List[str] = None,
+    difficulty: str = "appropriate"
+) -> str:
     """
     Generate request for diagnostic multiple-choice question.
 
     Args:
         is_cumulative: Whether this is a cumulative review question
         cumulative_concepts: List of concept IDs to integrate (for cumulative review)
+        difficulty: Question difficulty level ('easier', 'appropriate', 'harder')
 
     Returns:
         Prompt string for Claude
     """
+    # Build difficulty instruction
+    difficulty_instructions = {
+        "easier": (
+            "Use FUNDAMENTAL vocabulary and the most BASIC forms. "
+            "Provide clearer context clues. Focus on recognition over production. "
+            "Make distractors obviously wrong. "
+        ),
+        "appropriate": "",
+        "harder": (
+            "Use more complex vocabulary and varied forms. "
+            "Require deeper grammatical analysis. Include subtle distractors. "
+            "Challenge the learner with authentic Latin constructions. "
+        )
+    }
+
+    difficulty_instruction = difficulty_instructions.get(difficulty, "")
+
     if is_cumulative and cumulative_concepts:
         return (
             f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates the concepts "
             f"listed above. The scenario should naturally require applying knowledge from at least "
             f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
+            f"{difficulty_instruction}"
             f"Include a rich Roman context. Mark this as is_cumulative: true in the metadata. "
             f"Respond ONLY with the JSON object, no other text."
         )
     else:
         return (
-            "Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from "
-            "any shown above). Include a rich Roman context (inscription, letter, etc.). Respond "
-            "ONLY with the JSON object, no other text."
+            f"Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from "
+            f"any shown above). {difficulty_instruction}"
+            f"Include a rich Roman context (inscription, letter, etc.). Respond "
+            f"ONLY with the JSON object, no other text."
         )
 
 
-def generate_practice_request(is_cumulative: bool, cumulative_concepts: List[str] = None) -> str:
+def generate_practice_request(
+    is_cumulative: bool,
+    cumulative_concepts: List[str] = None,
+    difficulty: str = "appropriate"
+) -> str:
     """
     Generate request for practice question (next diagnostic after correct answer).
 
     Args:
         is_cumulative: Whether this is a cumulative review question
         cumulative_concepts: List of concept IDs to integrate (for cumulative review)
+        difficulty: Question difficulty level ('easier', 'appropriate', 'harder')
 
     Returns:
         Prompt string for Claude
     """
+    # Build difficulty instruction
+    difficulty_instructions = {
+        "easier": (
+            "Use FUNDAMENTAL vocabulary and the most BASIC forms. "
+            "Provide clearer context clues. Focus on recognition over production. "
+            "Make distractors obviously wrong. "
+        ),
+        "appropriate": "Increase difficulty slightly. ",
+        "harder": (
+            "Use more complex vocabulary and varied forms. "
+            "Require deeper grammatical analysis. Include subtle distractors. "
+            "Challenge the learner with authentic Latin constructions. "
+            "Significantly increase difficulty. "
+        )
+    }
+
+    difficulty_instruction = difficulty_instructions.get(difficulty, "Increase difficulty slightly. ")
+
     if is_cumulative and cumulative_concepts:
         return (
             f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates concepts from "
             f"the list above. Create a scenario that requires applying knowledge from at least "
             f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
+            f"{difficulty_instruction}"
             f"Use a different Roman setting. Mark this as is_cumulative: true in the metadata. "
             f"Respond ONLY with the JSON object, no other text."
         )
     else:
         return (
-            "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario "
-            "from those listed above. Vary the context: use different Latin words, different Roman "
-            "settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase "
-            "difficulty slightly. Respond ONLY with the JSON object, no other text."
+            f"Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario "
+            f"from those listed above. {difficulty_instruction}"
+            f"Vary the context: use different Latin words, different Roman "
+            f"settings (forum, bath, temple, road sign, etc.), different grammatical cases. "
+            f"Respond ONLY with the JSON object, no other text."
         )
 
 

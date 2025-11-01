@@ -165,3 +165,55 @@ VERIFICATION_METHOD_NONE = "none"
 VERIFICATION_METHOD_SELF_ATTESTATION = "self-attestation"
 VERIFICATION_METHOD_COMPREHENSION_QUIZ = "comprehension-quiz"
 VERIFICATION_METHOD_DISCUSSION_PROMPT = "discussion-prompt"
+
+# ============================================================================
+# Adaptive Scaffolding & Difficulty
+# ============================================================================
+
+# Difficulty levels
+DIFFICULTY_EASIER = "easier"
+DIFFICULTY_APPROPRIATE = "appropriate"
+DIFFICULTY_HARDER = "harder"
+
+# Performance thresholds for difficulty adjustment
+DIFFICULTY_DOWN_THRESHOLD = 0.40  # Below 40% recent performance -> easier questions
+DIFFICULTY_UP_THRESHOLD = 0.85    # Above 85% recent performance -> harder questions
+
+# Sliding window for recent performance calculation
+DIFFICULTY_ASSESSMENT_WINDOW = 5  # Look at last 5 questions
+
+# Adaptive mastery thresholds (lower when struggling)
+MASTERY_THRESHOLD_STRUGGLING = 0.70  # When recent performance < 40%
+MASTERY_THRESHOLD_NORMAL = 0.75      # Default (lowered from 0.85)
+MASTERY_THRESHOLD_EXCELLING = 0.85   # When recent performance > 85%
+
+# ============================================================================
+# Choice & Agency (Practice Mode)
+# ============================================================================
+
+# Practice mode settings
+PRACTICE_MODE_ENABLED = True
+PRACTICE_MODE_DEFAULT = False  # Learners start in graded mode by default
+
+# Practice mode features
+PRACTICE_MODE_SHOWS_ANSWERS = True
+PRACTICE_MODE_ALLOWS_HINTS = True
+PRACTICE_MODE_COUNTS_TOWARD_MASTERY = False
+
+# Starting point choices
+ALLOW_PREVIEW_SKIP = True  # Let learners skip directly to diagnostic
+ALLOW_DIAGNOSTIC_RETRY = True  # Let learners restart diagnostic if unsure
+
+# ============================================================================
+# Encouragement & Motivation
+# ============================================================================
+
+# Struggle detection thresholds
+STRUGGLE_THRESHOLD_MILD = 0.60      # 40-60% performance
+STRUGGLE_THRESHOLD_MODERATE = 0.40  # Below 40% performance
+
+# Recent questions to analyze for struggle detection
+STRUGGLE_DETECTION_WINDOW = 5
+
+# Encouragement message frequency
+ENCOURAGEMENT_AFTER_N_INCORRECT = 2  # Show encouragement after 2+ wrong in a row

@@ -42,7 +42,9 @@ from .tools import (
     get_next_concept,
     load_learner_model,
     should_show_cumulative_review,
-    select_concepts_for_cumulative
+    select_concepts_for_cumulative,
+    select_question_difficulty,
+    detect_struggle
 )
 from .confidence import (
     calculate_calibration,
@@ -964,11 +966,17 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
         elif stage == STAGE_START:
             # DIAGNOSTIC-FIRST: Always start with a question
-            request = generate_diagnostic_request(is_cumulative, cumulative_concepts)
+            # Use adaptive difficulty based on recent performance
+            difficulty = select_question_difficulty(learner_id, concept_id)
+            logger.info(f"Selected difficulty for START stage: {difficulty}")
+            request = generate_diagnostic_request(is_cumulative, cumulative_concepts, difficulty)
 
         elif stage == STAGE_PRACTICE:
             # Generate next diagnostic question
-            request = generate_practice_request(is_cumulative, cumulative_concepts)
+            # Use adaptive difficulty based on recent performance
+            difficulty = select_question_difficulty(learner_id, concept_id)
+            logger.info(f"Selected difficulty for PRACTICE stage: {difficulty}")
+            request = generate_practice_request(is_cumulative, cumulative_concepts, difficulty)
 
         elif stage == STAGE_ASSESS:
             # Dialogue questions disabled - generate multiple-choice instead

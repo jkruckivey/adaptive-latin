@@ -756,6 +756,66 @@ async def update_learning_style(learner_id: str, body: dict):
         )
 
 
+@app.put("/learner/{learner_id}/practice-mode")
+async def toggle_practice_mode(learner_id: str, body: dict):
+    """
+    Toggle practice mode for the learner.
+
+    Practice mode allows learners to explore questions without affecting their mastery score.
+    This provides choice and agency - learners can practice stress-free or work toward mastery.
+    """
+    try:
+        from .tools import load_learner_model, save_learner_model
+
+        # Get the practice mode value
+        practice_mode = body.get("practiceMode")
+
+        if practice_mode is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="practiceMode field is required (boolean)"
+            )
+
+        if not isinstance(practice_mode, bool):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="practiceMode must be a boolean value"
+            )
+
+        # Load learner model
+        model = load_learner_model(learner_id)
+
+        # Update practice mode
+        old_mode = model.get("practice_mode", False)
+        model["practice_mode"] = practice_mode
+
+        # Save updated model
+        save_learner_model(learner_id, model)
+
+        logger.info(f"✅ Updated practice mode for {learner_id}: {old_mode} → {practice_mode}")
+
+        return {
+            "success": True,
+            "message": f"Practice mode {'enabled' if practice_mode else 'disabled'}",
+            "previous_mode": old_mode,
+            "new_mode": practice_mode
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating practice mode: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update practice mode: {str(e)}"
+        )
+
+
 @app.post("/submit-response", response_model=EvaluationResponse)
 @limiter.limit("60/minute")  # Match content generation rate for smooth learning flow
 async def submit_response(request: Request, body: SubmitResponseRequest):
@@ -839,16 +899,24 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
         # Will re-enable when dialogue evaluation is fully implemented
         # (Commented out the dialogue transition logic)
 
-        # Record assessment and check for concept completion
-        from .tools import record_assessment_and_check_completion
+        # Load learner model to check practice mode and detect struggle
+        from .tools import record_assessment_and_check_completion, load_learner_model, detect_struggle
 
+        learner_model = load_learner_model(body.learner_id)
+        practice_mode = learner_model.get("practice_mode", False)
+
+        # Record assessment and check for concept completion
         completion_result = record_assessment_and_check_completion(
             learner_id=body.learner_id,
             concept_id=body.current_concept,
             is_correct=is_correct,
             confidence=body.confidence,
-            question_type=body.question_type
+            question_type=body.question_type,
+            practice_mode=practice_mode
         )
+
+        # Detect if learner is struggling and provide encouragement
+        struggle_info = detect_struggle(body.learner_id, body.current_concept) if not is_correct else None
 
         if completion_result["concept_completed"]:
             logger.info(
@@ -962,6 +1030,12 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
 
         logger.info(f"Debug context being sent: {debug_context}")
 
+        # Add encouragement message if learner is struggling
+        encouragement_message = None
+        if struggle_info:
+            encouragement_message = struggle_info.get("encouragement_message")
+            logger.info(f"Encouragement message: {encouragement_message}")
+
         assessment_result = {
             "type": "assessment-result",
             "score": 1.0 if is_correct else 0.0,
@@ -969,6 +1043,8 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
             "calibration": calibration_type,
             "languageConnection": language_connection,
+            "encouragement": encouragement_message,  # Add encouragement for struggling learners
+            "practiceMode": practice_mode,  # Indicate if this was practice mode
             "_next_content": result["content"],  # Store for preloading, frontend will fetch on continue
             "debug_context": debug_context  # Add debug context to assessment result content
         }
@@ -982,6 +1058,7 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             "mastery_threshold": config.MASTERY_THRESHOLD,
             "assessments_count": completion_result["assessments_count"],
             "concept_completed": completion_result["concept_completed"],
+            "practice_mode": practice_mode,  # Add to main response
             "next_content": assessment_result,
             "debug_context": debug_context
         }
