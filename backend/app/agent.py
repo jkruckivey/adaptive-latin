@@ -912,8 +912,10 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
             from .tools import load_learner_model
             learner_model = load_learner_model(learner_id)
             question_history = learner_model.get("question_history", [])
+            concept_id = learner_model.get("current_concept", "concept-001")  # Get current concept for difficulty selection
         except Exception:
             question_history = []
+            concept_id = "concept-001"  # Default fallback
 
         # Combine prompts
         system_prompt = f"{content_prompt}\n\n{learner_context}"
