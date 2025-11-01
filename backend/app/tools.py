@@ -188,6 +188,8 @@ def create_learner_model(
             raise ValueError(f"Learner {learner_id} already exists")
 
         # Initialize learner model
+        from .constants import PRACTICE_MODE_DEFAULT
+
         learner_model = {
             "learner_id": learner_id,
             "learner_name": learner_name,
@@ -198,6 +200,7 @@ def create_learner_model(
             "current_concept": "concept-001",
             "concepts": {},
             "question_history": [],  # Track recent questions to avoid repetition
+            "practice_mode": PRACTICE_MODE_DEFAULT,  # Choice & agency: learners can toggle practice mode
             "overall_progress": {
                 "concepts_completed": 0,
                 "concepts_in_progress": 1,
@@ -380,6 +383,7 @@ def record_assessment_and_check_completion(
     is_correct: bool,
     confidence: Optional[int],
     question_type: str,
+    practice_mode: bool = False,
 ) -> Dict[str, Any]:
     """Record an assessment attempt and determine mastery completion.
 
@@ -389,15 +393,30 @@ def record_assessment_and_check_completion(
         is_correct: Whether the learner's answer was correct
         confidence: Self-reported confidence rating (1-5) or None
         question_type: Type of question answered (multiple-choice, fill-blank, dialogue)
+        practice_mode: Whether this is practice mode (doesn't count toward mastery)
 
     Returns:
         Dictionary with mastery tracking details including updated mastery score,
         assessment count, completion flag, and total concepts completed.
+        In practice mode, returns simplified response without updating mastery.
     """
 
     try:
         # Translate correctness into a mastery score contribution
         score = 1.0 if is_correct else 0.0
+
+        # In practice mode, don't record or update mastery
+        if practice_mode:
+            logger.info(f"Practice mode: Not recording assessment for {learner_id}, {concept_id}")
+            return {
+                "concept_completed": False,
+                "concepts_completed_total": 0,
+                "mastery_score": 0.0,
+                "assessments_count": 0,
+                "next_concept": None,
+                "calibration": None,
+                "practice_mode": True  # Flag to frontend that this was practice
+            }
 
         # Build assessment payload for the learner model helper
         assessment_data: Dict[str, Any] = {
@@ -522,17 +541,49 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
                 "reason": "No assessments completed yet"
             }
 
-        # Calculate metrics
+        # Calculate metrics with spaced repetition forgiveness
+        from .constants import LEARNING_PHASE_QUESTIONS, LEARNING_PHASE_WEIGHT, MASTERY_PHASE_WEIGHT
+
         scores = [a["score"] for a in assessments]
         num_assessments = len(assessments)
 
-        # Use sliding window for mastery calculation (recent performance matters most)
-        # This allows learners to recover from early mistakes
+        # Apply forgiveness weighting: early questions (learning phase) weighted less
+        # This prevents early mistakes from permanently hurting mastery score
+        weighted_scores = []
+        total_weight = 0
+
+        for i, score in enumerate(scores):
+            # First N questions are "learning phase" with reduced weight
+            if i < LEARNING_PHASE_QUESTIONS:
+                weight = LEARNING_PHASE_WEIGHT  # 50% weight
+            else:
+                weight = MASTERY_PHASE_WEIGHT   # 100% weight
+
+            weighted_scores.append(score * weight)
+            total_weight += weight
+
+        # Calculate weighted average
+        weighted_avg = sum(weighted_scores) / total_weight if total_weight > 0 else 0.0
+
+        # Use sliding window for recent performance (with weighting applied)
         window_size = config.MASTERY_WINDOW_SIZE
         recent_scores = scores[-window_size:] if len(scores) > window_size else scores
-        avg_score = sum(recent_scores) / len(recent_scores)
 
-        logger.info(f"Mastery calculation for {concept_id}: {len(recent_scores)} recent assessments, avg={avg_score:.2f}")
+        # Also calculate recent weighted average for display
+        recent_weighted = []
+        recent_weight = 0
+        for i, score in enumerate(scores[-window_size:]):
+            actual_index = len(scores) - window_size + i if len(scores) > window_size else i
+            if actual_index < LEARNING_PHASE_QUESTIONS:
+                weight = LEARNING_PHASE_WEIGHT
+            else:
+                weight = MASTERY_PHASE_WEIGHT
+            recent_weighted.append(score * weight)
+            recent_weight += weight
+
+        avg_score = sum(recent_weighted) / recent_weight if recent_weight > 0 else 0.0
+
+        logger.info(f"Mastery calculation for {concept_id}: {len(recent_scores)} recent assessments, weighted_avg={avg_score:.2f}, overall_weighted={weighted_avg:.2f}")
 
         # Check mastery criteria
         mastery_achieved = (
@@ -907,3 +958,367 @@ def should_show_confidence_rating(learner_id: str, current_concept_id: str) -> b
         logger.error(f"Error determining confidence rating for {learner_id}: {e}")
         # Default to showing confidence on error
         return True
+
+
+# ============================================================================
+# Adaptive Scaffolding & Difficulty Adjustment
+# ============================================================================
+
+def calculate_recent_performance(learner_id: str, concept_id: str, window_size: int = 5) -> float:
+    """
+    Calculate learner's performance over recent questions.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+        window_size: Number of recent questions to consider (default 5)
+
+    Returns:
+        Performance ratio (0.0 to 1.0) representing proportion of correct answers
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import DIFFICULTY_ASSESSMENT_WINDOW
+
+        model = load_learner_model(learner_id)
+        concept_data = model.get("concepts", {}).get(concept_id, {})
+        assessments = concept_data.get("assessments", [])
+
+        if not assessments:
+            # No history yet, return neutral performance
+            return 0.5
+
+        # Use provided window size or constant
+        window = window_size if window_size else DIFFICULTY_ASSESSMENT_WINDOW
+        recent_assessments = assessments[-window:]
+
+        # Calculate correctness ratio
+        correct_count = sum(1 for a in recent_assessments if a.get("score", 0) >= 1.0)
+        performance = correct_count / len(recent_assessments)
+
+        logger.info(f"Recent performance for {concept_id}: {correct_count}/{len(recent_assessments)} = {performance:.2f}")
+        return performance
+
+    except Exception as e:
+        logger.error(f"Error calculating recent performance for {learner_id}: {e}")
+        return 0.5  # Return neutral on error
+
+
+def select_question_difficulty(learner_id: str, concept_id: str) -> str:
+    """
+    Determine appropriate question difficulty based on recent performance.
+
+    Implements adaptive scaffolding:
+    - Below 40% recent performance -> easier questions (back to fundamentals)
+    - 40-85% performance -> appropriate level (maintain challenge)
+    - Above 85% performance -> harder questions (increase difficulty)
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+
+    Returns:
+        Difficulty level string: "easier", "appropriate", or "harder"
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import (
+            DIFFICULTY_DOWN_THRESHOLD,
+            DIFFICULTY_UP_THRESHOLD,
+            DIFFICULTY_EASIER,
+            DIFFICULTY_APPROPRIATE,
+            DIFFICULTY_HARDER
+        )
+
+        recent_performance = calculate_recent_performance(learner_id, concept_id)
+
+        if recent_performance < DIFFICULTY_DOWN_THRESHOLD:
+            difficulty = DIFFICULTY_EASIER
+            logger.info(f"Performance {recent_performance:.2f} < {DIFFICULTY_DOWN_THRESHOLD} -> {difficulty}")
+        elif recent_performance > DIFFICULTY_UP_THRESHOLD:
+            difficulty = DIFFICULTY_HARDER
+            logger.info(f"Performance {recent_performance:.2f} > {DIFFICULTY_UP_THRESHOLD} -> {difficulty}")
+        else:
+            difficulty = DIFFICULTY_APPROPRIATE
+            logger.info(f"Performance {recent_performance:.2f} in normal range -> {difficulty}")
+
+        return difficulty
+
+    except Exception as e:
+        logger.error(f"Error selecting difficulty for {learner_id}: {e}")
+        return "appropriate"  # Default to appropriate on error
+
+
+def get_adaptive_mastery_threshold(learner_id: str, concept_id: str) -> float:
+    """
+    Get adaptive mastery threshold based on recent performance.
+
+    Implements growth mindset by adjusting expectations:
+    - Struggling learners (< 40%): lower threshold to 0.70 for achievable wins
+    - Normal performance (40-85%): standard threshold 0.75
+    - Excelling learners (> 85%): higher threshold 0.85 for challenge
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+
+    Returns:
+        Mastery threshold (0.0 to 1.0)
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import (
+            DIFFICULTY_DOWN_THRESHOLD,
+            DIFFICULTY_UP_THRESHOLD,
+            MASTERY_THRESHOLD_STRUGGLING,
+            MASTERY_THRESHOLD_NORMAL,
+            MASTERY_THRESHOLD_EXCELLING
+        )
+
+        recent_performance = calculate_recent_performance(learner_id, concept_id)
+
+        if recent_performance < DIFFICULTY_DOWN_THRESHOLD:
+            threshold = MASTERY_THRESHOLD_STRUGGLING
+            logger.info(f"Struggling (performance={recent_performance:.2f}) -> threshold={threshold}")
+        elif recent_performance > DIFFICULTY_UP_THRESHOLD:
+            threshold = MASTERY_THRESHOLD_EXCELLING
+            logger.info(f"Excelling (performance={recent_performance:.2f}) -> threshold={threshold}")
+        else:
+            threshold = MASTERY_THRESHOLD_NORMAL
+            logger.info(f"Normal performance ({recent_performance:.2f}) -> threshold={threshold}")
+
+        return threshold
+
+    except Exception as e:
+        logger.error(f"Error getting adaptive mastery threshold for {learner_id}: {e}")
+        return 0.75  # Default to normal threshold on error
+
+
+def detect_struggle(learner_id: str, concept_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Detect if learner is struggling and provide encouragement.
+
+    Returns encouragement message if learner has answered incorrectly
+    multiple times in a row or is below performance thresholds.
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+
+    Returns:
+        Dictionary with struggle detection info and encouragement message, or None
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import (
+            STRUGGLE_THRESHOLD_MILD,
+            STRUGGLE_THRESHOLD_MODERATE,
+            ENCOURAGEMENT_AFTER_N_INCORRECT,
+            STRUGGLE_DETECTION_WINDOW
+        )
+
+        model = load_learner_model(learner_id)
+        concept_data = model.get("concepts", {}).get(concept_id, {})
+        assessments = concept_data.get("assessments", [])
+
+        if len(assessments) < 2:
+            # Not enough data to detect struggle
+            return None
+
+        # Check recent consecutive incorrect answers
+        recent_assessments = assessments[-STRUGGLE_DETECTION_WINDOW:]
+        consecutive_incorrect = 0
+        for a in reversed(recent_assessments):
+            if a.get("score", 0) < 1.0:
+                consecutive_incorrect += 1
+            else:
+                break
+
+        # Calculate recent performance
+        recent_performance = calculate_recent_performance(learner_id, concept_id, STRUGGLE_DETECTION_WINDOW)
+
+        # Determine struggle level and message
+        if consecutive_incorrect >= ENCOURAGEMENT_AFTER_N_INCORRECT:
+            struggle_level = "consecutive_incorrect"
+            message = (
+                "💪 Learning is a journey! These mistakes are valuable feedback. "
+                "Each wrong answer helps you understand better. Keep going!"
+            )
+        elif recent_performance < STRUGGLE_THRESHOLD_MODERATE:
+            struggle_level = "moderate"
+            message = (
+                "🌟 This is challenging, but you're making progress! "
+                "Consider trying the preview mode or practice mode to explore without pressure. "
+                "Remember: struggle means your brain is growing!"
+            )
+        elif recent_performance < STRUGGLE_THRESHOLD_MILD:
+            struggle_level = "mild"
+            message = (
+                "👍 You're working through some tricky material. That's exactly how learning happens! "
+                "Take your time, and remember you can always review the preview."
+            )
+        else:
+            # No struggle detected
+            return None
+
+        logger.info(f"Struggle detected for {learner_id} on {concept_id}: level={struggle_level}, performance={recent_performance:.2f}")
+
+        return {
+            "struggle_level": struggle_level,
+            "recent_performance": recent_performance,
+            "consecutive_incorrect": consecutive_incorrect,
+            "encouragement_message": message
+        }
+
+    except Exception as e:
+        logger.error(f"Error detecting struggle for {learner_id}: {e}")
+        return None
+
+
+# ============================================================================
+# Celebration Milestones
+# ============================================================================
+
+def detect_celebration_milestones(
+    learner_id: str,
+    concept_id: str,
+    is_correct: bool,
+    concept_completed: bool = False,
+    concepts_completed_total: int = 0
+) -> Optional[Dict[str, Any]]:
+    """
+    Detect celebration-worthy milestones and generate motivational messages.
+
+    Celebrates:
+    - Streaks (3, 5, 10 correct in a row)
+    - Concept completion (first, halfway, final)
+    - Comeback victories (recovered from struggle)
+    - Mastery achievement
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+        is_correct: Whether the current answer was correct
+        concept_completed: Whether this question completed the concept
+        concepts_completed_total: Total concepts completed so far
+
+    Returns:
+        Dictionary with celebration info and message, or None
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import (
+            CELEBRATION_STREAK_SHORT,
+            CELEBRATION_STREAK_MEDIUM,
+            CELEBRATION_STREAK_LONG,
+            CELEBRATE_FIRST_CONCEPT,
+            CELEBRATE_HALFWAY_POINT,
+            CELEBRATE_FINAL_CONCEPT,
+            CELEBRATION_COMEBACK
+        )
+
+        model = load_learner_model(learner_id)
+        concept_data = model.get("concepts", {}).get(concept_id, {})
+        assessments = concept_data.get("assessments", [])
+
+        celebration_message = None
+        celebration_type = None
+
+        # Check for concept completion milestones
+        if concept_completed:
+            if concepts_completed_total == 1 and CELEBRATE_FIRST_CONCEPT:
+                celebration_type = "first_concept"
+                celebration_message = (
+                    "🎉 Congratulations! You've completed your first concept! "
+                    "This is a major milestone. Keep up the great work!"
+                )
+            elif concepts_completed_total == 4 and CELEBRATE_HALFWAY_POINT:  # Halfway through 7 concepts
+                celebration_type = "halfway"
+                celebration_message = (
+                    "⭐ Halfway there! You've completed 4 out of 7 concepts. "
+                    "You're making excellent progress on your Latin journey!"
+                )
+            elif concepts_completed_total == 7 and CELEBRATE_FINAL_CONCEPT:
+                celebration_type = "course_complete"
+                celebration_message = (
+                    "🏆 AMAZING! You've completed ALL 7 concepts! "
+                    "You've mastered the fundamentals of Latin grammar. Congratulations!"
+                )
+            elif concept_completed:
+                celebration_type = "concept_complete"
+                celebration_message = (
+                    f"✅ Concept mastered! That's {concepts_completed_total} down. "
+                    "Ready for the next challenge?"
+                )
+
+        # Check for streak milestones (only if currently correct)
+        if is_correct and not celebration_message:
+            # Count consecutive correct answers
+            consecutive_correct = 0
+            for assessment in reversed(assessments):
+                if assessment.get("score", 0) >= 1.0:
+                    consecutive_correct += 1
+                else:
+                    break
+
+            if consecutive_correct >= CELEBRATION_STREAK_LONG:
+                celebration_type = "long_streak"
+                celebration_message = (
+                    f"🔥 {consecutive_correct} in a row! You're unstoppable! "
+                    "This kind of consistency shows real mastery."
+                )
+            elif consecutive_correct >= CELEBRATION_STREAK_MEDIUM:
+                celebration_type = "medium_streak"
+                celebration_message = (
+                    f"⚡ {consecutive_correct} correct in a row! You're on fire! "
+                    "Keep this momentum going!"
+                )
+            elif consecutive_correct >= CELEBRATION_STREAK_SHORT:
+                celebration_type = "short_streak"
+                celebration_message = (
+                    f"✨ {consecutive_correct} in a row! Nice streak! "
+                    "You're really getting the hang of this."
+                )
+
+        # Check for comeback victory (recovered from struggle)
+        if is_correct and not celebration_message and CELEBRATION_COMEBACK and len(assessments) >= 6:
+            # Look at last 10 questions
+            recent_window = assessments[-10:] if len(assessments) >= 10 else assessments
+
+            # Check if they struggled earlier but are doing well now
+            first_half = recent_window[:len(recent_window)//2]
+            second_half = recent_window[len(recent_window)//2:]
+
+            first_half_score = sum(a.get("score", 0) for a in first_half) / len(first_half) if first_half else 0
+            second_half_score = sum(a.get("score", 0) for a in second_half) / len(second_half) if second_half else 0
+
+            # Comeback = was struggling (< 40%) but now excelling (> 70%)
+            if first_half_score < 0.40 and second_half_score > 0.70:
+                celebration_type = "comeback"
+                celebration_message = (
+                    "💪 Incredible comeback! You struggled at first but you didn't give up. "
+                    "This shows real growth mindset - you're learning from mistakes!"
+                )
+
+        if celebration_message:
+            logger.info(f"Celebration milestone for {learner_id}: {celebration_type}")
+            return {
+                "celebration_type": celebration_type,
+                "celebration_message": celebration_message
+            }
+
+        return None
+
+    except Exception as e:
+        logger.error(f"Error detecting celebration for {learner_id}: {e}")
+        return None

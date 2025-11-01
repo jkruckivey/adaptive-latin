@@ -756,6 +756,171 @@ async def update_learning_style(learner_id: str, body: dict):
         )
 
 
+@app.put("/learner/{learner_id}/practice-mode")
+async def toggle_practice_mode(learner_id: str, body: dict):
+    """
+    Toggle practice mode for the learner.
+
+    Practice mode allows learners to explore questions without affecting their mastery score.
+    This provides choice and agency - learners can practice stress-free or work toward mastery.
+    """
+    try:
+        from .tools import load_learner_model, save_learner_model
+
+        # Get the practice mode value
+        practice_mode = body.get("practiceMode")
+
+        if practice_mode is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="practiceMode field is required (boolean)"
+            )
+
+        if not isinstance(practice_mode, bool):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="practiceMode must be a boolean value"
+            )
+
+        # Load learner model
+        model = load_learner_model(learner_id)
+
+        # Update practice mode
+        old_mode = model.get("practice_mode", False)
+        model["practice_mode"] = practice_mode
+
+        # Save updated model
+        save_learner_model(learner_id, model)
+
+        logger.info(f"✅ Updated practice mode for {learner_id}: {old_mode} → {practice_mode}")
+
+        return {
+            "success": True,
+            "message": f"Practice mode {'enabled' if practice_mode else 'disabled'}",
+            "previous_mode": old_mode,
+            "new_mode": practice_mode
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating practice mode: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update practice mode: {str(e)}"
+        )
+
+
+@app.post("/request-hint")
+async def request_hint(request: Request, body: dict):
+    """
+    Generate a hint for the current question (practice mode only).
+
+    Provides graduated hints:
+    - Level 1 (gentle): Indirect nudge toward the concept
+    - Level 2 (direct): Specific guidance on what to look for
+    - Level 3 (answer): Show answer with explanation
+
+    Args:
+        body: Must include learner_id, concept_id, question_context, hint_level
+    """
+    try:
+        from .tools import load_learner_model
+        from .content_generators import generate_hint_request
+        from .agent import call_claude_api
+        from .constants import (
+            HINTS_ENABLED_IN_PRACTICE,
+            HINTS_ENABLED_IN_GRADED,
+            HINT_LEVEL_GENTLE,
+            HINT_LEVEL_DIRECT,
+            HINT_LEVEL_ANSWER
+        )
+
+        learner_id = body.get("learner_id")
+        concept_id = body.get("concept_id")
+        question_context = body.get("question_context")  # scenario, question, options, correct_answer
+        hint_level = body.get("hint_level", HINT_LEVEL_GENTLE)
+
+        if not all([learner_id, concept_id, question_context]):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="learner_id, concept_id, and question_context are required"
+            )
+
+        # Validate hint level
+        valid_levels = [HINT_LEVEL_GENTLE, HINT_LEVEL_DIRECT, HINT_LEVEL_ANSWER]
+        if hint_level not in valid_levels:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"hint_level must be one of: {', '.join(valid_levels)}"
+            )
+
+        # Load learner model to check practice mode
+        learner_model = load_learner_model(learner_id)
+        practice_mode = learner_model.get("practice_mode", False)
+
+        # Check if hints are allowed in current mode
+        if practice_mode and not HINTS_ENABLED_IN_PRACTICE:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Hints are disabled in practice mode"
+            )
+
+        if not practice_mode and not HINTS_ENABLED_IN_GRADED:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Hints are only available in practice mode. Enable practice mode to request hints."
+            )
+
+        # Generate hint prompt
+        hint_prompt = generate_hint_request(question_context, hint_level, concept_id)
+
+        # Call Claude API for hint
+        response = call_claude_api(
+            system_prompt="You are a patient Latin tutor providing hints to a struggling student in practice mode. Be encouraging and educational.",
+            user_message=hint_prompt,
+            model=config.CLAUDE_MODEL,
+            max_tokens=500  # Hints should be brief
+        )
+
+        # Extract hint text (response should be plain text, not JSON)
+        hint_text = response.get("content", [{}])[0].get("text", "")
+
+        if not hint_text:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to generate hint"
+            )
+
+        logger.info(f"Generated {hint_level} hint for {learner_id}, {concept_id}")
+
+        return {
+            "success": True,
+            "hint_level": hint_level,
+            "hint_text": hint_text,
+            "practice_mode": practice_mode
+        }
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Learner not found: {learner_id}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating hint: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate hint: {str(e)}"
+        )
+
+
 @app.post("/submit-response", response_model=EvaluationResponse)
 @limiter.limit("60/minute")  # Match content generation rate for smooth learning flow
 async def submit_response(request: Request, body: SubmitResponseRequest):
@@ -839,16 +1004,38 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
         # Will re-enable when dialogue evaluation is fully implemented
         # (Commented out the dialogue transition logic)
 
-        # Record assessment and check for concept completion
-        from .tools import record_assessment_and_check_completion
+        # Load learner model to check practice mode and detect struggle/celebration
+        from .tools import (
+            record_assessment_and_check_completion,
+            load_learner_model,
+            detect_struggle,
+            detect_celebration_milestones
+        )
 
+        learner_model = load_learner_model(body.learner_id)
+        practice_mode = learner_model.get("practice_mode", False)
+
+        # Record assessment and check for concept completion
         completion_result = record_assessment_and_check_completion(
             learner_id=body.learner_id,
             concept_id=body.current_concept,
             is_correct=is_correct,
             confidence=body.confidence,
-            question_type=body.question_type
+            question_type=body.question_type,
+            practice_mode=practice_mode
         )
+
+        # Detect if learner is struggling and provide encouragement
+        struggle_info = detect_struggle(body.learner_id, body.current_concept) if not is_correct else None
+
+        # Detect celebration-worthy milestones (streaks, completions, comebacks)
+        celebration_info = detect_celebration_milestones(
+            learner_id=body.learner_id,
+            concept_id=body.current_concept,
+            is_correct=is_correct,
+            concept_completed=completion_result.get("concept_completed", False),
+            concepts_completed_total=completion_result.get("concepts_completed_total", 0)
+        ) if is_correct else None
 
         if completion_result["concept_completed"]:
             logger.info(
@@ -962,6 +1149,18 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
 
         logger.info(f"Debug context being sent: {debug_context}")
 
+        # Add encouragement message if learner is struggling
+        encouragement_message = None
+        if struggle_info:
+            encouragement_message = struggle_info.get("encouragement_message")
+            logger.info(f"Encouragement message: {encouragement_message}")
+
+        # Add celebration message if milestone achieved
+        celebration_message = None
+        if celebration_info:
+            celebration_message = celebration_info.get("celebration_message")
+            logger.info(f"Celebration message: {celebration_message}")
+
         assessment_result = {
             "type": "assessment-result",
             "score": 1.0 if is_correct else 0.0,
@@ -969,6 +1168,9 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
             "calibration": calibration_type,
             "languageConnection": language_connection,
+            "encouragement": encouragement_message,  # Add encouragement for struggling learners
+            "celebration": celebration_message,  # Add celebration for milestones
+            "practiceMode": practice_mode,  # Indicate if this was practice mode
             "_next_content": result["content"],  # Store for preloading, frontend will fetch on continue
             "debug_context": debug_context  # Add debug context to assessment result content
         }
@@ -982,6 +1184,7 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             "mastery_threshold": config.MASTERY_THRESHOLD,
             "assessments_count": completion_result["assessments_count"],
             "concept_completed": completion_result["concept_completed"],
+            "practice_mode": practice_mode,  # Add to main response
             "next_content": assessment_result,
             "debug_context": debug_context
         }
