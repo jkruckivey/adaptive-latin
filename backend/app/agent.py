@@ -11,6 +11,28 @@ import random
 from typing import Dict, List, Any, Optional, Tuple
 from anthropic import Anthropic
 from .config import config
+from .constants import (
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_API_TIMEOUT_SECONDS,
+    RETRY_BACKOFF_BASE,
+    RECENT_QUESTIONS_DISPLAY_COUNT,
+    MAX_QUESTIONS_IN_HISTORY,
+    CUMULATIVE_REVIEW_CONCEPTS_COUNT,
+    MAX_EXTERNAL_RESOURCES_TO_ATTACH,
+    STAGE_PREVIEW,
+    STAGE_START,
+    STAGE_PRACTICE,
+    STAGE_ASSESS,
+    STAGE_REMEDIATE,
+    STAGE_REINFORCE
+)
+from .content_generators import (
+    generate_preview_request,
+    generate_diagnostic_request,
+    generate_practice_request,
+    generate_remediation_request,
+    generate_reinforcement_request
+)
 from .tools import (
     load_resource,
     load_assessment,
@@ -200,49 +222,16 @@ def evaluate_dialogue_response(question: str, context: str, student_answer: str,
         }
 
 
-def sanitize_user_input(text: str, max_length: int = 1000) -> str:
-    """
-    Sanitize user input before including in AI prompts to prevent prompt injection.
-
-    Args:
-        text: The user input text to sanitize
-        max_length: Maximum allowed length (default 1000 chars)
-
-    Returns:
-        Sanitized text safe for inclusion in prompts
-    """
-    if not isinstance(text, str):
-        text = str(text)
-
-    # Limit length to prevent prompt flooding
-    text = text[:max_length]
-
-    # Remove null bytes and control characters (except newlines/tabs)
-    text = ''.join(char for char in text if char == '\n' or char == '\t' or (ord(char) >= 32 and ord(char) != 127))
-
-    # Escape common prompt injection patterns
-    # Replace potential instruction delimiters
-    text = text.replace('```', '\\`\\`\\`')  # Code fences
-    text = text.replace('###', '\\#\\#\\#')  # Markdown headers that could start instructions
-
-    # Escape XML-like tags that could be confused with prompt structure
-    text = text.replace('<|', '\\<\\|')
-    text = text.replace('|>', '\\|\\>')
-    text = text.replace('[INST]', '\\[INST\\]')
-    text = text.replace('[/INST]', '\\[/INST\\]')
-
-    # Limit consecutive special characters to prevent pattern-based attacks
-    import re
-    text = re.sub(r'([!@#$%^&*()_+=\[\]{}|\\:;"\'<>,.?/~`-])\1{4,}', r'\1\1\1', text)
-
-    return text
+# sanitize_user_input has been moved to content_generators.py
+# Import it if needed in this module for other functions
+from .content_generators import sanitize_user_input
 
 
 # Initialize Anthropic client
 client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
 
-def call_anthropic_with_retry(system_prompt: str, user_message: str, max_retries: int = 3, timeout: int = 30) -> Any:
+def call_anthropic_with_retry(system_prompt: str, user_message: str, max_retries: int = DEFAULT_MAX_RETRIES, timeout: int = DEFAULT_API_TIMEOUT_SECONDS) -> Any:
     """
     Call Anthropic API with retry logic and timeout.
 
@@ -284,7 +273,7 @@ def call_anthropic_with_retry(system_prompt: str, user_message: str, max_retries
         except (APIConnectionError, APITimeoutError, RateLimitError) as e:
             # Transient errors - retry with exponential backoff
             last_error = e
-            wait_time = 2 ** attempt  # 1s, 2s, 4s
+            wait_time = RETRY_BACKOFF_BASE ** attempt  # 2^0=1s, 2^1=2s, 2^2=4s
             logger.warning(f"Transient API error on attempt {attempt + 1}: {type(e).__name__}: {str(e)}")
 
             if attempt < max_retries - 1:
@@ -930,18 +919,18 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         # Add question history context if available
         if question_history:
             history_text = "\n\nRECENT QUESTIONS ASKED (do NOT repeat these):\n"
-            for i, q in enumerate(question_history[-5:], 1):  # Show last 5 questions
+            for i, q in enumerate(question_history[-RECENT_QUESTIONS_DISPLAY_COUNT:], 1):
                 history_text += f"{i}. {q.get('scenario', '')} {q.get('question', '')}\n"
             system_prompt += history_text
 
         # Check if cumulative review should be shown (only for practice stage)
         is_cumulative = False
         cumulative_concepts = []
-        if stage in ["start", "practice"]:
+        if stage in [STAGE_START, STAGE_PRACTICE]:
             try:
                 is_cumulative = should_show_cumulative_review(learner_id)
                 if is_cumulative:
-                    cumulative_concepts = select_concepts_for_cumulative(learner_id, count=3)
+                    cumulative_concepts = select_concepts_for_cumulative(learner_id, count=CUMULATIVE_REVIEW_CONCEPTS_COUNT)
                     logger.info(f"Generating cumulative review across concepts: {cumulative_concepts}")
 
                     # Load metadata for all selected concepts
@@ -967,184 +956,45 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                 is_cumulative = False
 
         # Build generation request based on stage
-        if stage == "preview":
-            # PREVIEW MODE: Quick conceptual foundation before diagnostic (addresses audit feedback)
-            # Adapt preview format to learning style
+        if stage == STAGE_PREVIEW:
+            # PREVIEW MODE: Quick conceptual foundation before diagnostic
             learner_model = load_learner_model(learner_id)
             learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
+            request = generate_preview_request(learning_style)
 
-            if learning_style == 'narrative':
-                request = "Generate a brief 'example-set' preview (30-second read) showing the concept through story-based examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'varied':
-                # Vary preview format including interactive widgets
-                preview_type = random.choice(['paradigm-table', 'example-set', 'lesson', 'declension-explorer'])
-                logger.info(f"Varied learning style - preview with: {preview_type}")
-                if preview_type == 'paradigm-table':
-                    request = "Generate a brief 'paradigm-table' preview (30-second scan) showing the key grammatical patterns for this concept. Include a very short explanation (2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the JSON object, no other text."
-                elif preview_type == 'declension-explorer':
-                    request = "Generate a 'declension-explorer' interactive widget preview for quick exploration of the concept. Show a relevant noun declension with brief explanation. This is a quick interactive preview before assessment. Respond ONLY with the JSON object, no other text."
-                elif preview_type == 'example-set':
-                    request = "Generate a brief 'example-set' preview showing the concept through varied examples. Keep it short - this is just a quick preview before assessment. Respond ONLY with the JSON object, no other text."
-                else:
-                    request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'adaptive':
-                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept and key patterns. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
-            else:
-                request = "Generate a brief 'lesson' preview (30-second read) explaining the core concept. Keep it short - this is just a conceptual foundation before assessment. Respond ONLY with the JSON object, no other text."
-
-        elif stage == "start":
+        elif stage == STAGE_START:
             # DIAGNOSTIC-FIRST: Always start with a question
-            if is_cumulative:
-                request = f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates the concepts listed above. The scenario should naturally require applying knowledge from at least 2 of those concepts. Include a rich Roman context. Mark this as is_cumulative: true in the metadata. Respond ONLY with the JSON object, no other text."
-            else:
-                request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from any shown above). This is the first question for the current concept. Include a rich Roman context (inscription, letter, etc.). Respond ONLY with the JSON object, no other text."
+            request = generate_diagnostic_request(is_cumulative, cumulative_concepts)
 
-        elif stage == "practice":
+        elif stage == STAGE_PRACTICE:
             # Generate next diagnostic question
-            if is_cumulative:
-                request = f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates concepts from the list above. Create a scenario that requires applying knowledge from at least 2 of those concepts together. Use a different Roman setting. Mark this as is_cumulative: true in the metadata. Respond ONLY with the JSON object, no other text."
-            else:
-                request = "Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario from those listed above. Vary the context: use different Latin words, different Roman settings (forum, bath, temple, road sign, etc.), different grammatical cases. Increase difficulty slightly. Respond ONLY with the JSON object, no other text."
+            request = generate_practice_request(is_cumulative, cumulative_concepts)
 
-        elif stage == "assess":
+        elif stage == STAGE_ASSESS:
             # Dialogue questions disabled - generate multiple-choice instead
             # (This stage should not be used, but keeping as fallback to multiple-choice)
-            request = "Generate a 'multiple-choice' diagnostic question with a NEW scenario. Include a rich Roman context. Respond ONLY with the JSON object, no other text."
+            request = generate_diagnostic_request(is_cumulative=False)
 
-        elif stage == "remediate":
-            # Get context about what they just answered wrong
-            last_question_context = ""
-
-            # Prioritize question_context parameter (passed directly from current question)
-            if question_context:
-                # Build detailed context with the actual question and answer choices
-                # Sanitize all user-facing content to prevent prompt injection
-                scenario = sanitize_user_input(question_context.get('scenario', ''))
-                question = sanitize_user_input(question_context.get('question', ''))
-                user_ans_idx = question_context.get('user_answer', 'unknown')
-                correct_ans_idx = question_context.get('correct_answer', 'unknown')
-                options = question_context.get('options', [])
-
-                # Get the actual text of what they chose vs correct answer
-                user_answer_text = sanitize_user_input(options[user_ans_idx]) if isinstance(user_ans_idx, int) and options and user_ans_idx < len(options) else str(user_ans_idx)
-                correct_answer_text = sanitize_user_input(options[correct_ans_idx]) if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
-
-                last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED INCORRECTLY ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEY CHOSE: '{user_answer_text}' (Option {user_ans_idx})\n\nCORRECT ANSWER: '{correct_answer_text}' (Option {correct_ans_idx})\n\nAll Options:\n"
-                for i, opt in enumerate(options):
-                    marker = "✓ CORRECT" if i == correct_ans_idx else ("✗ THEY CHOSE THIS" if i == user_ans_idx else "")
-                    sanitized_opt = sanitize_user_input(opt)
-                    last_question_context += f"{i}. {sanitized_opt} {marker}\n"
-                last_question_context += "\n"
-
-            # Fallback to question history if no direct context provided
-            elif question_history and len(question_history) > 0:
-                last_q = question_history[-1]
-                user_ans = sanitize_user_input(str(last_q.get('user_answer', 'unknown')))
-                correct_ans = sanitize_user_input(str(last_q.get('correct_answer', 'unknown')))
-                scenario = sanitize_user_input(last_q.get('scenario', ''))
-                question = sanitize_user_input(last_q.get('question', ''))
-                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED INCORRECTLY:\nScenario: {scenario}\nQuestion: {question}\nThey chose: {user_ans}\nCorrect answer: {correct_ans}\n"
-
-            # Determine preferred content format based on learner style
+        elif stage == STAGE_REMEDIATE:
+            # Generate remediation content after incorrect answer
             learner_model = load_learner_model(learner_id)
             learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
+            request = generate_remediation_request(
+                question_context,
+                confidence,
+                remediation_type,
+                learning_style
+            )
 
-            # Map learning style to content type
-            preferred_content_type = 'lesson'  # default
-            if learning_style == 'narrative':
-                preferred_content_type = 'example-set'  # Story-based examples
-            elif learning_style == 'varied':
-                # Vary content type - alternate between different formats including interactive widgets
-                preferred_content_type = random.choice(['paradigm-table', 'example-set', 'lesson', 'declension-explorer', 'word-order-manipulator'])
-                logger.info(f"Varied learning style - selected: {preferred_content_type}")
-            elif learning_style == 'adaptive':
-                preferred_content_type = 'lesson'  # Brief lessons with exercises
-
-            # Adaptive remediation based on confidence
-            if remediation_type == "full_calibration":
-                if preferred_content_type == 'paradigm-table':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'paradigm-table' that: 1) Shows the complete declension table for the grammar concept they missed, 2) Highlights the specific form they should have chosen (in the correct_answer field), 3) Includes explanation text that STARTS with: 'You chose [their answer], but looking at the complete paradigm, the correct answer is [correct answer] because...' 4) Uses their interests in the explanation. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'declension-explorer':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'declension-explorer' interactive widget that: 1) Shows all forms for the noun/declension relevant to their mistake, 2) Sets highlightCase to the case they got wrong, 3) Includes explanation text that STARTS with: 'You chose [their answer], but let's explore the full paradigm. The correct answer is [correct answer] because...' Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'word-order-manipulator':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'word-order-manipulator' interactive widget that: 1) Uses Latin words from the question context, 2) Allows them to arrange words to practice the concept, 3) Includes explanation about word order flexibility and the grammar concept they missed. Provide 2-3 correct orders in correctOrders array. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'fill-blank':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'fill-blank' exercise that: 1) Targets the SPECIFIC grammar concept they misunderstood, 2) Uses their interests in the sentence, 3) Includes helpful hints that address their misconception, 4) Has exactly 1 blank focusing on the concept they got wrong. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'example-set':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate an 'example-set' (NOT a lesson, NOT a table) that: 1) Shows 3-4 contextual examples demonstrating the correct grammar concept, 2) Each example includes Latin, translation, and notes explaining why it's correct, 3) Uses their interests from the Learner Profile in the examples, 4) Addresses their specific misconception. CRITICAL: type must be 'example-set'. Respond ONLY with the JSON object, no other text."
-                else:
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (overconfident).{last_question_context}Generate a 'lesson' (NOT a table) that: 1) STARTS with: 'You chose [their answer], which suggests [what misconception this reveals]. However, the correct answer is [correct answer] because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 examples using their interests (see Learner Profile above - ACTUALLY use those topics in your examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the Learner Profile. Respond ONLY with the JSON object, no other text."
-            elif remediation_type == "supportive":
-                if preferred_content_type == 'paradigm-table':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'paradigm-table' with: 1) Complete declension table, 2) Encouraging explanation that validates their awareness of difficulty, 3) Clear marking of the correct answer. Be gentle. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'declension-explorer':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'declension-explorer' interactive widget with: 1) All forms for the relevant noun, 2) highlightCase set to the case they got wrong, 3) Encouraging explanation that validates their awareness. Be gentle. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'word-order-manipulator':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate an encouraging 'word-order-manipulator' widget with: 1) Latin words from context, 2) Multiple correct orders to build confidence, 3) Supportive explanation about flexibility. Be gentle. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'fill-blank':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate an encouraging 'fill-blank' exercise with: 1) Sentence using their interests, 2) Generous hints to build confidence, 3) Focus on the concept they missed. Be supportive. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'example-set':
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (aware of uncertainty).{last_question_context}Generate a supportive 'example-set' (NOT a table) with: 1) 3-4 encouraging examples using their interests, 2) Each example shows correct usage with Latin, translation, and notes, 3) Validates their awareness of difficulty. CRITICAL: type must be 'example-set'. Be gentle. Respond ONLY with the JSON object, no other text."
-                else:
-                    request = f"The student answered incorrectly with {confidence}/4 confidence (low confidence, aware of uncertainty).{last_question_context}Generate a supportive 'lesson' (NOT a table) that: 1) Explains: 'You chose [their answer], but the correct answer is [correct answer] because...' 2) Directly addresses why their specific choice was wrong, 3) Provides 2-3 encouraging examples using their interests from the Learner Profile (ACTUALLY use those topics!). CRITICAL: type must be 'lesson'. Be gentle and encouraging. Respond ONLY with the JSON object, no other text."
-            else:
-                if preferred_content_type == 'paradigm-table':
-                    request = f"Generate a 'paradigm-table' showing the grammar concept from the most recent question.{last_question_context}Include brief explanation. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'declension-explorer':
-                    request = f"Generate a 'declension-explorer' interactive widget showing the grammar concept from the most recent question.{last_question_context}Set highlightCase to the relevant case. Include brief explanation. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'word-order-manipulator':
-                    request = f"Generate a 'word-order-manipulator' interactive widget to practice the concept from the most recent question.{last_question_context}Use Latin words from context. Provide 2-3 correct orders. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'fill-blank':
-                    request = f"Generate a 'fill-blank' exercise to practice the concept from the most recent question.{last_question_context}Use their interests. Include hints. Respond ONLY with the JSON object, no other text."
-                elif preferred_content_type == 'example-set':
-                    request = f"Generate an 'example-set' (NOT a table) to reinforce the concept from the most recent question.{last_question_context}Show 3-4 examples using their interests. Each example has Latin, translation, and notes. CRITICAL: type must be 'example-set'. Respond ONLY with the JSON object, no other text."
-                else:
-                    request = f"Generate a brief 'lesson' (NOT a table) to clarify the concept tested in the most recent question.{last_question_context}Start by explaining: 'You chose [their answer], but the correct answer is [correct answer].' Then briefly explain the specific concept and provide 1-2 examples using their interests (see Learner Profile). CRITICAL: type must be 'lesson'. Respond ONLY with the JSON object, no other text."
-
-        elif stage == "reinforce":
-            # Get context about what they answered correctly but uncertainly
-            last_question_context = ""
-
-            # Prioritize question_context parameter (passed directly from current question)
-            if question_context:
-                # Sanitize all user-facing content to prevent prompt injection
-                scenario = sanitize_user_input(question_context.get('scenario', ''))
-                question = sanitize_user_input(question_context.get('question', ''))
-                user_ans_idx = question_context.get('user_answer', 'unknown')
-                correct_ans_idx = question_context.get('correct_answer', 'unknown')
-                options = question_context.get('options', [])
-
-                # Get the actual text of the correct answer they chose
-                correct_answer_text = sanitize_user_input(options[correct_ans_idx]) if isinstance(correct_ans_idx, int) and options and correct_ans_idx < len(options) else str(correct_ans_idx)
-
-                last_question_context = f"\n\n=== THE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence) ===\n\nScenario: {scenario}\n\nQuestion: {question}\n\nTHEIR ANSWER: '{correct_answer_text}' (Option {correct_ans_idx}) ✓ CORRECT\n\n"
-
-            # Fallback to question history
-            elif question_history and len(question_history) > 0:
-                last_q = question_history[-1]
-                scenario = sanitize_user_input(last_q.get('scenario', ''))
-                question = sanitize_user_input(last_q.get('question', ''))
-                last_question_context = f"\n\nTHE QUESTION THEY JUST ANSWERED CORRECTLY (but with low confidence):\nScenario: {scenario}\nQuestion: {question}\n"
-
-            # Determine preferred content format based on learner style
+        elif stage == STAGE_REINFORCE:
+            # Generate reinforcement content after correct but uncertain answer
             learner_model = load_learner_model(learner_id)
             learning_style = learner_model.get('profile', {}).get('learningStyle', 'narrative')
-
-            # Brief reinforcement for correct but uncertain answers - adapt format to preference
-            if learning_style == 'narrative':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) with story-based examples that validates their answer and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'varied':
-                # Vary content type for reinforcement too
-                reinforce_type = random.choice(['paradigm-table', 'example-set'])
-                logger.info(f"Varied learning style - reinforce with: {reinforce_type}")
-                if reinforce_type == 'paradigm-table':
-                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'paradigm-table' showing the pattern they correctly identified. Include encouraging explanation. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
-                else:
-                    request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
-            elif learning_style == 'adaptive':
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer to THAT specific question and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
-            else:
-                request = f"The student answered CORRECTLY but with only {confidence}/4 confidence (underconfident).{last_question_context}Generate a brief 'example-set' (NOT a table) that validates their answer to THAT specific question and builds confidence. CRITICAL: type must be 'example-set'. Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
+            request = generate_reinforcement_request(
+                question_context,
+                confidence,
+                learning_style
+            )
 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
@@ -1210,8 +1060,8 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     external_resources = load_external_resources(current_concept, learner_profile)
 
                     if external_resources:
-                        # Add top 2 resources to the content
-                        content_obj['external_resources'] = external_resources[:2]
+                        # Add top resources to the content
+                        content_obj['external_resources'] = external_resources[:MAX_EXTERNAL_RESOURCES_TO_ATTACH]
                         logger.info(f"Attached {len(content_obj['external_resources'])} external resources")
                 except Exception as e:
                     logger.warning(f"Failed to attach external resources: {e}")
