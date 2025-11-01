@@ -448,11 +448,48 @@ async def start_learner(request: Request, body: StartRequest):
     Initialize a new learner.
 
     Creates a new learner model and returns the initial state.
+    Includes content moderation for user-provided interests.
     """
     try:
         logger.info(f"📝 Creating new learner: {body.learner_id}")
         logger.info(f"   Name: {body.learner_name}")
         logger.info(f"   Has profile: {body.profile is not None}")
+
+        # Content moderation: Check user-provided text for inappropriate content
+        if body.profile:
+            from .content_generators import moderate_user_interests
+
+            # Check interests field
+            if "interests" in body.profile:
+                moderation_result = moderate_user_interests(body.profile["interests"])
+
+                if not moderation_result["is_safe"]:
+                    logger.warning(f"🚫 Content moderation rejected learner (interests): {body.learner_id}")
+                    logger.warning(f"   Reason: {moderation_result['reason']}")
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=moderation_result["reason"]
+                    )
+
+                # Replace with sanitized version
+                body.profile["interests"] = moderation_result["sanitized"]
+
+            # Check background field
+            if "background" in body.profile:
+                moderation_result = moderate_user_interests(body.profile["background"])
+
+                if not moderation_result["is_safe"]:
+                    logger.warning(f"🚫 Content moderation rejected learner (background): {body.learner_id}")
+                    logger.warning(f"   Reason: {moderation_result['reason']}")
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=moderation_result["reason"]
+                    )
+
+                # Replace with sanitized version
+                body.profile["background"] = moderation_result["sanitized"]
+
+            logger.info(f"✅ Content moderation passed for learner: {body.learner_id}")
 
         learner_model = create_learner_model(
             body.learner_id,

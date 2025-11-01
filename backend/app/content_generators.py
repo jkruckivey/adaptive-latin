@@ -17,6 +17,83 @@ from .constants import (
 logger = logging.getLogger(__name__)
 
 
+# ============================================================================
+# Content Moderation
+# ============================================================================
+
+# Blocklist for inappropriate content (case-insensitive matching)
+INAPPROPRIATE_TERMS = [
+    # Violence
+    "kill", "murder", "death", "blood", "gore", "torture", "weapon", "gun", "knife",
+    "stab", "shoot", "harm", "hurt", "attack", "assault",
+
+    # Sexual content
+    "sex", "porn", "naked", "nude", "erotic", "sexual", "rape", "molest", "abuse",
+
+    # Drugs
+    "drug", "cocaine", "heroin", "meth", "marijuana", "cannabis",
+
+    # Concerning combinations with children (matches plurals too)
+    "eat bab", "eating bab", "kill bab", "hurt bab", "dead bab",  # Catches baby/babies
+    "eat child", "eating child", "kill child", "hurt child", "dead child",
+    "eat infant", "eating infant", "kill infant",
+
+    # Hate speech
+    "nazi", "genocide", "supremacist",
+
+    # Profanity (common ones)
+    "fuck", "shit", "bitch", "damn", "bastard",
+    "piss", "cock", "dick", "pussy", "whore", "slut"
+]
+
+
+def moderate_user_interests(interests: str) -> Dict[str, Any]:
+    """
+    Moderate user-provided interests for inappropriate content.
+
+    Uses a blocklist approach to detect and reject inappropriate interests.
+    Designed to prevent obscene, violent, sexual, or otherwise inappropriate
+    content from being used in educational examples.
+
+    Args:
+        interests: User-provided interests string
+
+    Returns:
+        Dict with moderation results:
+        - is_safe (bool): Whether content passed moderation
+        - sanitized (str): Cleaned version of interests
+        - reason (str|None): Why it was flagged (if unsafe)
+    """
+    if not interests or not isinstance(interests, str):
+        return {
+            "is_safe": True,
+            "sanitized": "",
+            "reason": None
+        }
+
+    interests_lower = interests.lower().strip()
+
+    # Check against blocklist
+    for term in INAPPROPRIATE_TERMS:
+        if term in interests_lower:
+            logger.warning(f"Content moderation flagged interests: '{interests[:50]}...' (term: '{term}')")
+            return {
+                "is_safe": False,
+                "sanitized": "",
+                "reason": f"Inappropriate content detected. Please use appropriate topics."
+            }
+
+    # Basic sanitization: remove excessive characters and limit length
+    sanitized = interests[:500]  # Max 500 chars
+    sanitized = ' '.join(sanitized.split())  # Normalize whitespace
+
+    return {
+        "is_safe": True,
+        "sanitized": sanitized,
+        "reason": None
+    }
+
+
 def sanitize_user_input(text: str, max_length: int = 1000) -> str:
     """
     Sanitize user input before including in AI prompts to prevent prompt injection.
