@@ -1,15 +1,21 @@
-# Pedagogical Features - Adaptive Scaffolding & Choice/Agency
+# Pedagogical Features - Complete Guide
 
 **Date:** 2025-11-01
-**Version:** 0.4.0
+**Version:** 0.5.0 (Phase 2 Complete)
 
 ## Overview
 
 This document describes the pedagogical improvements implemented to address learner discouragement and enhance motivation. These features implement evidence-based learning science principles:
 
+### Phase 1 Features ✅
 1. **Adaptive Scaffolding** - Adjusting difficulty based on performance
 2. **Choice & Agency** - Practice mode for stress-free exploration
 3. **Growth Mindset** - Encouragement messages during struggle
+
+### Phase 2 Features ✅ (NEW)
+4. **Spaced Repetition with Forgiveness** - Early mistakes weighted less
+5. **Celebration Milestones** - Positive reinforcement for achievements
+6. **Hint System** - Graduated hints in practice mode
 
 ## Feature 1: Adaptive Scaffolding
 
@@ -342,12 +348,259 @@ curl -X POST http://localhost:8000/submit-response \
 5. **Preview Skip Option** - Let learners skip directly to assessment
 6. **Restart Diagnostic** - Ability to restart if learner feels unprepared
 
+## Feature 4: Spaced Repetition with Forgiveness (Phase 2)
+
+### What is Spaced Repetition with Forgiveness?
+
+This feature prevents early mistakes from permanently hurting a learner's mastery score. The first few questions are weighted less, recognizing that initial attempts are part of the learning process.
+
+### How It Works
+
+**Weighted Mastery Calculation:**
+- **Learning Phase** (first 3 questions): 50% weight
+- **Mastery Phase** (questions 4+): 100% weight
+
+**Example:**
+```
+Question 1: ❌ (score: 0, weight: 0.5) → weighted: 0.0
+Question 2: ❌ (score: 0, weight: 0.5) → weighted: 0.0
+Question 3: ✅ (score: 1, weight: 0.5) → weighted: 0.5
+Question 4: ✅ (score: 1, weight: 1.0) → weighted: 1.0
+Question 5: ✅ (score: 1, weight: 1.0) → weighted: 1.0
+
+Total weight: 0.5 + 0.5 + 0.5 + 1.0 + 1.0 = 3.5
+Total weighted score: 0.0 + 0.0 + 0.5 + 1.0 + 1.0 = 2.5
+Mastery: 2.5 / 3.5 = 71.4%
+
+Without forgiveness: 3/5 = 60% (would fail)
+With forgiveness: 71.4% (passing!)
+```
+
+### Benefits
+
+- **Reduces discouragement** from initial fumbling
+- **Encourages exploration** without fear of permanent damage
+- **Reflects learning reality** - we all struggle at first
+- **Still maintains standards** - later questions count fully
+
+### Implementation
+
+**Backend Function (backend/app/tools.py:544-586):**
+```python
+# In calculate_mastery()
+for i, score in enumerate(scores):
+    if i < LEARNING_PHASE_QUESTIONS:  # First 3 questions
+        weight = LEARNING_PHASE_WEIGHT  # 50% weight
+    else:
+        weight = MASTERY_PHASE_WEIGHT   # 100% weight
+
+    weighted_scores.append(score * weight)
+    total_weight += weight
+
+weighted_avg = sum(weighted_scores) / total_weight
+```
+
+**Constants:**
+```python
+LEARNING_PHASE_QUESTIONS = 3  # First 3 questions
+LEARNING_PHASE_WEIGHT = 0.5   # 50% weight
+MASTERY_PHASE_WEIGHT = 1.0    # 100% weight
+```
+
+---
+
+## Feature 5: Celebration Milestones (Phase 2)
+
+### What are Celebration Milestones?
+
+Automatic detection of achievements with motivational messages. Celebrates both big and small wins to maintain engagement and motivation.
+
+### Milestone Types
+
+**1. Streak Achievements:**
+- ✨ **3 in a row:** "Nice streak! You're really getting the hang of this."
+- ⚡ **5 in a row:** "You're on fire! Keep this momentum going!"
+- 🔥 **10 in a row:** "Unstoppable! This kind of consistency shows real mastery."
+
+**2. Concept Completion:**
+- 🎉 **First concept:** "You've completed your first concept! This is a major milestone."
+- ⭐ **Halfway** (4/7): "Halfway there! You're making excellent progress!"
+- 🏆 **Course complete** (7/7): "AMAZING! You've mastered the fundamentals of Latin grammar!"
+
+**3. Comeback Victory:**
+- 💪 **Recovered from struggle:** "Incredible comeback! You struggled at first but didn't give up. This shows real growth mindset!"
+  - Detected when: < 40% performance → > 70% performance in recent window
+
+### How It Works
+
+**Detection Logic:**
+```python
+# Check consecutive correct answers
+consecutive_correct = 0
+for assessment in reversed(assessments):
+    if assessment["score"] >= 1.0:
+        consecutive_correct += 1
+    else:
+        break
+
+if consecutive_correct >= 10:
+    show_long_streak_message()
+elif consecutive_correct >= 5:
+    show_medium_streak_message()
+elif consecutive_correct >= 3:
+    show_short_streak_message()
+```
+
+**Comeback Detection:**
+```python
+# Split recent window into halves
+first_half_score = calculate_avg(first_half)
+second_half_score = calculate_avg(second_half)
+
+# Comeback = struggled → excelled
+if first_half_score < 0.40 and second_half_score > 0.70:
+    show_comeback_message()
+```
+
+### Implementation
+
+**Backend Function (backend/app/tools.py:1190-1325):**
+```python
+celebration_info = detect_celebration_milestones(
+    learner_id=learner_id,
+    concept_id=concept_id,
+    is_correct=is_correct,
+    concept_completed=concept_completed,
+    concepts_completed_total=concepts_completed_total
+)
+
+if celebration_info:
+    celebration_message = celebration_info["celebration_message"]
+    # Add to assessment result response
+```
+
+**Response Format:**
+```json
+{
+  "type": "assessment-result",
+  "celebration": "🎉 Congratulations! You've completed your first concept!",
+  "celebration_type": "first_concept"
+}
+```
+
+---
+
+## Feature 6: Hint System (Phase 2)
+
+### What is the Hint System?
+
+Graduated hints available in practice mode only. Provides three levels of support without giving away the answer immediately.
+
+### Hint Levels
+
+**Level 1 - Gentle Hint:**
+- Indirect nudge toward the concept
+- Asks guiding questions
+- Example: "What case ending do you see in 'puellae'? Think about possession..."
+
+**Level 2 - Direct Hint:**
+- More specific guidance
+- Narrows to grammatical feature
+- Example: "The -ae ending indicates the genitive case, which shows possession or relationship..."
+
+**Level 3 - Show Answer:**
+- Reveals correct answer
+- Explains reasoning
+- Example: "The correct answer is 'genitive' (Option 1). The -ae ending is the signature of the genitive singular in the first declension, showing possession like 'of the girl'..."
+
+### How It Works
+
+**Usage Flow:**
+1. Learner enables **practice mode**
+2. Learner gets stuck on question
+3. Learner clicks **"Request Hint"**
+4. System generates gentle hint
+5. If still stuck, learner requests **direct hint**
+6. If still stuck, learner can **show answer**
+
+**API Endpoint:**
+```http
+POST /request-hint
+Content-Type: application/json
+
+{
+  "learner_id": "test-learner",
+  "concept_id": "concept-001",
+  "hint_level": "gentle",  // "gentle", "direct", or "answer"
+  "question_context": {
+    "scenario": "You see an inscription...",
+    "question": "What case is 'puellae'?",
+    "options": ["nominative", "genitive", "dative", "accusative"],
+    "correct_answer": 1
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "hint_level": "gentle",
+  "hint_text": "Look at the ending of 'puellae'. What does the -ae tell you about its grammatical function?",
+  "practice_mode": true
+}
+```
+
+### Implementation
+
+**Hint Generation (backend/app/content_generators.py:503-583):**
+```python
+def generate_hint_request(question_context, hint_level, concept_id):
+    if hint_level == "gentle":
+        return "Generate a gentle hint that points toward the concept WITHOUT revealing the answer..."
+    elif hint_level == "direct":
+        return "Generate a direct hint that narrows to the specific grammatical feature..."
+    else:  # answer
+        return "Show the correct answer with explanation..."
+```
+
+**Endpoint (backend/app/main.py:819-921):**
+```python
+@app.post("/request-hint")
+async def request_hint(request: Request, body: dict):
+    # Check practice mode enabled
+    if not practice_mode and not HINTS_ENABLED_IN_GRADED:
+        raise HTTPException(403, "Hints only in practice mode")
+
+    # Generate hint using Claude
+    hint_text = call_claude_api(hint_prompt)
+
+    return {"hint_text": hint_text}
+```
+
+### Frontend Integration (To Be Implemented)
+
+**UI Component:**
+```jsx
+{practiceMode && (
+  <HintButton
+    onRequestHint={(level) => requestHint(level)}
+    hintsUsed={hintsUsed}
+    maxHints={2}
+  />
+)}
+```
+
+---
+
 ## Research References
 
 - **Zone of Proximal Development** (Vygotsky, 1978) - Adaptive scaffolding
 - **Self-Determination Theory** (Deci & Ryan, 1985) - Autonomy/choice
 - **Growth Mindset** (Dweck, 2006) - Reframing mistakes
 - **Flow Theory** (Csikszentmihalyi, 1990) - Optimal challenge
+- **Spaced Repetition** (Ebbinghaus, 1885) - Forgiveness in early learning
+- **Positive Psychology** (Seligman, 2011) - Celebration of small wins
 
 ## Questions?
 
@@ -369,6 +622,27 @@ MASTERY_THRESHOLD_NORMAL = 0.75   # Adjust this
 
 ---
 
-*Implementation completed: 2025-11-01*
-*Backend features tested and ready ✅*
-*Frontend integration pending 🔄*
+## Implementation Status
+
+**Phase 1 (v0.4.0):** ✅ Complete
+- Adaptive scaffolding (difficulty adjustment)
+- Practice mode toggle
+- Encouragement messages
+
+**Phase 2 (v0.5.0):** ✅ Complete
+- Spaced repetition with forgiveness
+- Celebration milestones
+- Hint system
+
+**Frontend Integration:** 🔄 Pending
+- Practice mode toggle UI
+- Celebration/encouragement display
+- Hint request buttons
+
+**Testing:** ⚠️ Manual testing recommended before production
+
+---
+
+*Phase 2 implementation completed: 2025-11-01*
+*All backend features implemented and ready ✅*
+*Frontend UI components pending 🔄*

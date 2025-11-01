@@ -217,3 +217,44 @@ STRUGGLE_DETECTION_WINDOW = 5
 
 # Encouragement message frequency
 ENCOURAGEMENT_AFTER_N_INCORRECT = 2  # Show encouragement after 2+ wrong in a row
+
+# ============================================================================
+# Spaced Repetition with Forgiveness
+# ============================================================================
+
+# Learning phase settings (early attempts weighted less)
+LEARNING_PHASE_QUESTIONS = 3  # First 3 questions are "learning phase"
+LEARNING_PHASE_WEIGHT = 0.5   # Early questions weighted at 50%
+MASTERY_PHASE_WEIGHT = 1.0    # Later questions weighted at 100%
+
+# ============================================================================
+# Celebration Milestones
+# ============================================================================
+
+# Streak detection
+CELEBRATION_STREAK_SHORT = 3   # "3 in a row!"
+CELEBRATION_STREAK_MEDIUM = 5  # "5 in a row - you're on fire!"
+CELEBRATION_STREAK_LONG = 10   # "10 in a row - unstoppable!"
+
+# Milestone events
+CELEBRATE_FIRST_CONCEPT = True
+CELEBRATE_HALFWAY_POINT = True  # 50% of concepts completed
+CELEBRATE_FINAL_CONCEPT = True
+
+# Performance milestones
+CELEBRATION_MASTERY_ACHIEVED = True
+CELEBRATION_COMEBACK = True  # Recovered from struggle (< 40% → > 70%)
+
+# ============================================================================
+# Hint System (Practice Mode)
+# ============================================================================
+
+# Hint availability
+HINTS_ENABLED_IN_PRACTICE = True
+HINTS_ENABLED_IN_GRADED = False  # Only in practice mode
+MAX_HINTS_PER_QUESTION = 2      # Two-level hints (gentle → direct)
+
+# Hint types
+HINT_LEVEL_GENTLE = "gentle"      # Indirect hint (e.g., "Think about case endings...")
+HINT_LEVEL_DIRECT = "direct"      # Direct hint (e.g., "The -ae ending indicates...")
+HINT_LEVEL_ANSWER = "answer"      # Show answer with explanation

@@ -541,17 +541,49 @@ def calculate_mastery(learner_id: str, concept_id: str) -> Dict[str, Any]:
                 "reason": "No assessments completed yet"
             }
 
-        # Calculate metrics
+        # Calculate metrics with spaced repetition forgiveness
+        from .constants import LEARNING_PHASE_QUESTIONS, LEARNING_PHASE_WEIGHT, MASTERY_PHASE_WEIGHT
+
         scores = [a["score"] for a in assessments]
         num_assessments = len(assessments)
 
-        # Use sliding window for mastery calculation (recent performance matters most)
-        # This allows learners to recover from early mistakes
+        # Apply forgiveness weighting: early questions (learning phase) weighted less
+        # This prevents early mistakes from permanently hurting mastery score
+        weighted_scores = []
+        total_weight = 0
+
+        for i, score in enumerate(scores):
+            # First N questions are "learning phase" with reduced weight
+            if i < LEARNING_PHASE_QUESTIONS:
+                weight = LEARNING_PHASE_WEIGHT  # 50% weight
+            else:
+                weight = MASTERY_PHASE_WEIGHT   # 100% weight
+
+            weighted_scores.append(score * weight)
+            total_weight += weight
+
+        # Calculate weighted average
+        weighted_avg = sum(weighted_scores) / total_weight if total_weight > 0 else 0.0
+
+        # Use sliding window for recent performance (with weighting applied)
         window_size = config.MASTERY_WINDOW_SIZE
         recent_scores = scores[-window_size:] if len(scores) > window_size else scores
-        avg_score = sum(recent_scores) / len(recent_scores)
 
-        logger.info(f"Mastery calculation for {concept_id}: {len(recent_scores)} recent assessments, avg={avg_score:.2f}")
+        # Also calculate recent weighted average for display
+        recent_weighted = []
+        recent_weight = 0
+        for i, score in enumerate(scores[-window_size:]):
+            actual_index = len(scores) - window_size + i if len(scores) > window_size else i
+            if actual_index < LEARNING_PHASE_QUESTIONS:
+                weight = LEARNING_PHASE_WEIGHT
+            else:
+                weight = MASTERY_PHASE_WEIGHT
+            recent_weighted.append(score * weight)
+            recent_weight += weight
+
+        avg_score = sum(recent_weighted) / recent_weight if recent_weight > 0 else 0.0
+
+        logger.info(f"Mastery calculation for {concept_id}: {len(recent_scores)} recent assessments, weighted_avg={avg_score:.2f}, overall_weighted={weighted_avg:.2f}")
 
         # Check mastery criteria
         mastery_achieved = (
@@ -1148,4 +1180,145 @@ def detect_struggle(learner_id: str, concept_id: str) -> Optional[Dict[str, Any]
 
     except Exception as e:
         logger.error(f"Error detecting struggle for {learner_id}: {e}")
+        return None
+
+
+# ============================================================================
+# Celebration Milestones
+# ============================================================================
+
+def detect_celebration_milestones(
+    learner_id: str,
+    concept_id: str,
+    is_correct: bool,
+    concept_completed: bool = False,
+    concepts_completed_total: int = 0
+) -> Optional[Dict[str, Any]]:
+    """
+    Detect celebration-worthy milestones and generate motivational messages.
+
+    Celebrates:
+    - Streaks (3, 5, 10 correct in a row)
+    - Concept completion (first, halfway, final)
+    - Comeback victories (recovered from struggle)
+    - Mastery achievement
+
+    Args:
+        learner_id: Unique identifier for the learner
+        concept_id: Current concept being practiced
+        is_correct: Whether the current answer was correct
+        concept_completed: Whether this question completed the concept
+        concepts_completed_total: Total concepts completed so far
+
+    Returns:
+        Dictionary with celebration info and message, or None
+
+    Raises:
+        FileNotFoundError: If learner doesn't exist
+    """
+    try:
+        from .constants import (
+            CELEBRATION_STREAK_SHORT,
+            CELEBRATION_STREAK_MEDIUM,
+            CELEBRATION_STREAK_LONG,
+            CELEBRATE_FIRST_CONCEPT,
+            CELEBRATE_HALFWAY_POINT,
+            CELEBRATE_FINAL_CONCEPT,
+            CELEBRATION_COMEBACK
+        )
+
+        model = load_learner_model(learner_id)
+        concept_data = model.get("concepts", {}).get(concept_id, {})
+        assessments = concept_data.get("assessments", [])
+
+        celebration_message = None
+        celebration_type = None
+
+        # Check for concept completion milestones
+        if concept_completed:
+            if concepts_completed_total == 1 and CELEBRATE_FIRST_CONCEPT:
+                celebration_type = "first_concept"
+                celebration_message = (
+                    "🎉 Congratulations! You've completed your first concept! "
+                    "This is a major milestone. Keep up the great work!"
+                )
+            elif concepts_completed_total == 4 and CELEBRATE_HALFWAY_POINT:  # Halfway through 7 concepts
+                celebration_type = "halfway"
+                celebration_message = (
+                    "⭐ Halfway there! You've completed 4 out of 7 concepts. "
+                    "You're making excellent progress on your Latin journey!"
+                )
+            elif concepts_completed_total == 7 and CELEBRATE_FINAL_CONCEPT:
+                celebration_type = "course_complete"
+                celebration_message = (
+                    "🏆 AMAZING! You've completed ALL 7 concepts! "
+                    "You've mastered the fundamentals of Latin grammar. Congratulations!"
+                )
+            elif concept_completed:
+                celebration_type = "concept_complete"
+                celebration_message = (
+                    f"✅ Concept mastered! That's {concepts_completed_total} down. "
+                    "Ready for the next challenge?"
+                )
+
+        # Check for streak milestones (only if currently correct)
+        if is_correct and not celebration_message:
+            # Count consecutive correct answers
+            consecutive_correct = 0
+            for assessment in reversed(assessments):
+                if assessment.get("score", 0) >= 1.0:
+                    consecutive_correct += 1
+                else:
+                    break
+
+            if consecutive_correct >= CELEBRATION_STREAK_LONG:
+                celebration_type = "long_streak"
+                celebration_message = (
+                    f"🔥 {consecutive_correct} in a row! You're unstoppable! "
+                    "This kind of consistency shows real mastery."
+                )
+            elif consecutive_correct >= CELEBRATION_STREAK_MEDIUM:
+                celebration_type = "medium_streak"
+                celebration_message = (
+                    f"⚡ {consecutive_correct} correct in a row! You're on fire! "
+                    "Keep this momentum going!"
+                )
+            elif consecutive_correct >= CELEBRATION_STREAK_SHORT:
+                celebration_type = "short_streak"
+                celebration_message = (
+                    f"✨ {consecutive_correct} in a row! Nice streak! "
+                    "You're really getting the hang of this."
+                )
+
+        # Check for comeback victory (recovered from struggle)
+        if is_correct and not celebration_message and CELEBRATION_COMEBACK and len(assessments) >= 6:
+            # Look at last 10 questions
+            recent_window = assessments[-10:] if len(assessments) >= 10 else assessments
+
+            # Check if they struggled earlier but are doing well now
+            first_half = recent_window[:len(recent_window)//2]
+            second_half = recent_window[len(recent_window)//2:]
+
+            first_half_score = sum(a.get("score", 0) for a in first_half) / len(first_half) if first_half else 0
+            second_half_score = sum(a.get("score", 0) for a in second_half) / len(second_half) if second_half else 0
+
+            # Comeback = was struggling (< 40%) but now excelling (> 70%)
+            if first_half_score < 0.40 and second_half_score > 0.70:
+                celebration_type = "comeback"
+                celebration_message = (
+                    "💪 Incredible comeback! You struggled at first but you didn't give up. "
+                    "This shows real growth mindset - you're learning from mistakes!"
+                )
+
+        if celebration_message:
+            logger.info(f"Celebration milestone for {learner_id}: {celebration_type}")
+            return {
+                "celebration_type": celebration_type,
+                "celebration_message": celebration_message
+            }
+
+        return None
+
+    except Exception as e:
+        logger.error(f"Error detecting celebration for {learner_id}: {e}")
         return None

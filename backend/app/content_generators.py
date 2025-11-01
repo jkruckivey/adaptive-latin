@@ -498,3 +498,86 @@ def generate_reinforcement_request(
             f"answer to THAT specific question and builds confidence. CRITICAL: type must be 'example-set'. "
             f"Keep it short - they already know this! Respond ONLY with the JSON object, no other text."
         )
+
+
+def generate_hint_request(
+    question_context: Dict[str, Any],
+    hint_level: str,
+    concept_id: str
+) -> str:
+    """
+    Generate request for a hint (practice mode only).
+
+    Args:
+        question_context: Details about the current question
+        hint_level: 'gentle' (indirect), 'direct' (more specific), or 'answer' (show solution)
+        concept_id: Current concept ID for context
+
+    Returns:
+        Prompt string for Claude
+    """
+    scenario = sanitize_user_input(question_context.get('scenario', ''))
+    question = sanitize_user_input(question_context.get('question', ''))
+    options = question_context.get('options', [])
+    correct_answer = question_context.get('correct_answer', None)
+
+    # Build options text
+    options_text = ""
+    if options:
+        options_text = "\nOptions:\n"
+        for i, opt in enumerate(options):
+            options_text += f"{i}. {sanitize_user_input(opt)}\n"
+
+    question_info = (
+        f"Concept: {concept_id}\n\n"
+        f"Scenario: {scenario}\n\n"
+        f"Question: {question}"
+        f"{options_text}"
+    )
+
+    if hint_level == "gentle":
+        # Gentle hint - nudge in right direction without revealing answer
+        return (
+            f"PRACTICE MODE HINT REQUEST (Gentle Level)\n\n"
+            f"The learner is stuck on this question and requested a gentle hint:\n\n"
+            f"{question_info}\n\n"
+            f"Generate a gentle hint that:\n"
+            f"- Points them toward the right concept WITHOUT revealing the answer\n"
+            f"- Asks a guiding question (e.g., 'What case ending do you see here?')\n"
+            f"- Reminds them of a relevant pattern\n"
+            f"- Keeps them thinking actively\n\n"
+            f"Return ONLY plain text (not JSON), max 2-3 sentences."
+        )
+
+    elif hint_level == "direct":
+        # Direct hint - more specific guidance
+        return (
+            f"PRACTICE MODE HINT REQUEST (Direct Level)\n\n"
+            f"The learner is stuck on this question and requested a more direct hint:\n\n"
+            f"{question_info}\n\n"
+            f"Generate a direct hint that:\n"
+            f"- Narrows down to the specific grammatical feature\n"
+            f"- Explains what to look for (e.g., 'The -ae ending tells you...')\n"
+            f"- Eliminates clearly wrong options if multiple choice\n"
+            f"- Still lets them make the final connection\n\n"
+            f"Return ONLY plain text (not JSON), max 3-4 sentences."
+        )
+
+    else:  # answer
+        # Show answer with explanation
+        correct_text = ""
+        if isinstance(correct_answer, int) and options and correct_answer < len(options):
+            correct_text = sanitize_user_input(options[correct_answer])
+
+        return (
+            f"PRACTICE MODE ANSWER REVEAL\n\n"
+            f"The learner requested to see the answer:\n\n"
+            f"{question_info}\n\n"
+            f"The correct answer is: {correct_text} (Option {correct_answer})\n\n"
+            f"Generate a clear explanation (plain text, not JSON) that:\n"
+            f"- States why this is the correct answer\n"
+            f"- Explains the grammatical reasoning\n"
+            f"- Shows how to identify this pattern in future\n"
+            f"- Encourages them to try another practice question\n\n"
+            f"Return ONLY plain text (not JSON), max 4-5 sentences."
+        )
