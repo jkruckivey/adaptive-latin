@@ -80,23 +80,19 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
       {/* Required Materials */}
       {courseData.sources && courseData.sources.filter(s => s.requirementLevel === 'required').length > 0 && (
         <div className="review-section required-materials-section">
-          <h3>⭐ Required Materials ({courseData.sources.filter(s => s.requirementLevel === 'required').length})</h3>
+          <h3>Required Materials ({courseData.sources.filter(s => s.requirementLevel === 'required').length})</h3>
           <p className="section-note">Students must complete these materials before accessing modules</p>
           <div className="required-materials-list">
             {courseData.sources.filter(s => s.requirementLevel === 'required').map((source, i) => (
               <div key={i} className="required-material-card">
                 <div className="material-header">
-                  <span className="material-icon">{
-                    source.type === 'pdf' ? '📄' :
-                    source.type === 'video' ? '🎥' :
-                    source.type === 'image' ? '🖼️' : '🌐'
-                  }</span>
+                  <span className="material-icon"></span>
                   <div className="material-info">
                     <div className="material-title">{source.title}</div>
                     <div className="material-url">{source.url}</div>
                     {source.scope !== 'course' && (
                       <div className="material-scope">
-                        📍 Attached to: {courseData.concepts && courseData.concepts[parseInt(source.scope.replace('concept-', ''))]?.title || source.scope}
+                        Attached to: {courseData.concepts && courseData.concepts[parseInt(source.scope.replace('concept-', ''))]?.title || source.scope}
                       </div>
                     )}
                   </div>
@@ -164,7 +160,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               onChange={(e) => setVisibility(e.target.value)}
             />
             <div className="option-content">
-              <div className="option-title">🔒 Private</div>
+              <div className="option-title">Private</div>
               <div className="option-description">Only you can access this course</div>
             </div>
           </label>
@@ -178,7 +174,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               onChange={(e) => setVisibility(e.target.value)}
             />
             <div className="option-content">
-              <div className="option-title">🔗 Unlisted</div>
+              <div className="option-title">Unlisted</div>
               <div className="option-description">Anyone with the link can access</div>
             </div>
           </label>
@@ -193,7 +189,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               disabled
             />
             <div className="option-content">
-              <div className="option-title">🌍 Public (Coming Soon)</div>
+              <div className="option-title">Public (Coming Soon)</div>
               <div className="option-description">Searchable in course library</div>
             </div>
           </label>
@@ -202,7 +198,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
 
       {/* Preview Note */}
       <div className="preview-note">
-        <p>💡 After publishing, you can preview your course and make edits before sharing with learners.</p>
+        <p>After publishing, you can preview your course and make edits before sharing with learners.</p>
       </div>
 
       <div className="wizard-actions">
@@ -220,7 +216,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
             className="wizard-button primary"
             disabled={isPublishing}
           >
-            {isPublishing ? 'Publishing...' : 'Publish Course 🚀'}
+            {isPublishing ? 'Publishing...' : 'Publish Course'}
           </button>
         </div>
       </div>

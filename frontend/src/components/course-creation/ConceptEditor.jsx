@@ -4,8 +4,40 @@ import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 import './ConceptEditor.css'
 
 function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
+  // Flatten concepts from modules for editing
+  const flattenConcepts = (modules) => {
+    return modules?.flatMap(module =>
+      module.concepts.map(concept => ({
+        ...concept,
+        moduleId: module.moduleId,
+        moduleTitle: module.title
+      }))
+    ) || []
+  }
+
+  // Restructure flat concepts back into modules
+  const reconstructModules = (flatConcepts) => {
+    const modules = {}
+
+    flatConcepts.forEach(concept => {
+      const { moduleId, moduleTitle, ...conceptData } = concept
+
+      if (!modules[moduleId]) {
+        const originalModule = courseData.modules?.find(m => m.moduleId === moduleId)
+        modules[moduleId] = {
+          ...originalModule,
+          concepts: []
+        }
+      }
+
+      modules[moduleId].concepts.push(conceptData)
+    })
+
+    return Object.values(modules)
+  }
+
   const [currentConceptIndex, setCurrentConceptIndex] = useState(0)
-  const [concepts, setConcepts] = useState(courseData.concepts || [])
+  const [concepts, setConcepts] = useState(flattenConcepts(courseData.modules))
   const [errors, setErrors] = useState({})
   const [showRoadmap, setShowRoadmap] = useState(false)
 
@@ -74,7 +106,8 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
 
   const handleRoadmapClose = () => {
     setShowRoadmap(false)
-    onNext({ concepts })
+    const reconstructedModules = reconstructModules(concepts)
+    onNext({ modules: reconstructedModules })
   }
 
   const handlePrevConcept = () => {
@@ -109,7 +142,7 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
       {/* Display Course Learning Outcomes for reference */}
       {courseCLOs.length > 0 && (
         <div className="clo-reference">
-          <h4>📚 Course Learning Outcomes (for alignment)</h4>
+          <h4>Course Learning Outcomes (for alignment)</h4>
           <ul>
             {courseCLOs.filter(clo => clo.trim()).map((clo, i) => (
               <li key={i}>{clo}</li>

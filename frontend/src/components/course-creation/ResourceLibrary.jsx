@@ -121,11 +121,11 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
 
   const getSourceIcon = (type) => {
     switch (type) {
-      case 'video': return '🎥'
-      case 'pdf': return '📄'
-      case 'image': return '🖼️'
-      case 'website': return '🌐'
-      default: return '📎'
+      case 'video': return ''
+      case 'pdf': return ''
+      case 'image': return ''
+      case 'website': return ''
+      default: return ''
     }
   }
 
@@ -136,24 +136,24 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
   const getRequirementBadge = (level) => {
     switch (level) {
       case 'required':
-        return { text: '⭐ Required', className: 'badge-required' }
+        return { text: 'Required', className: 'badge-required' }
       case 'recommended':
-        return { text: '💡 Recommended', className: 'badge-recommended' }
+        return { text: 'Recommended', className: 'badge-recommended' }
       case 'optional':
-        return { text: '📌 Optional', className: 'badge-optional' }
+        return { text: 'Optional', className: 'badge-optional' }
       default:
-        return { text: '📌 Optional', className: 'badge-optional' }
+        return { text: 'Optional', className: 'badge-optional' }
     }
   }
 
   const getVerificationBadge = (method) => {
     switch (method) {
       case 'comprehension-quiz':
-        return '✓ Quiz Required'
+        return 'Quiz Required'
       case 'discussion-prompt':
-        return '💬 Discussion Required'
+        return 'Discussion Required'
       case 'self-attestation':
-        return '✋ Self-Attestation'
+        return 'Self-Attestation'
       default:
         return null
     }

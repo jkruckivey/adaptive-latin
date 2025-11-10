@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '../../api'
 import TaxonomySelector from './TaxonomySelector'
 import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 
@@ -67,17 +68,23 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
 
     setGeneratingSuggestions(true)
     try {
-      // TODO: Integrate with backend AI service
-      // For now, show a placeholder message
-      alert('AI suggestion feature coming soon! This will generate learning outcomes based on your course title and domain.')
+      const response = await api.generateLearningOutcomes(
+        formData.title,
+        formData.domain,
+        formData.taxonomy
+      )
 
-      // Mock implementation - remove when backend is ready
-      setTimeout(() => {
-        setGeneratingSuggestions(false)
-      }, 1000)
+      if (response.success && response.outcomes) {
+        // Update the courseLearningOutcomes with the generated suggestions
+        setFormData(prev => ({
+          ...prev,
+          courseLearningOutcomes: response.outcomes
+        }))
+      }
     } catch (error) {
       console.error('Error generating suggestions:', error)
-      alert('Failed to generate suggestions. Please try again.')
+      alert(`Failed to generate suggestions: ${error.message}`)
+    } finally {
       setGeneratingSuggestions(false)
     }
   }
@@ -145,6 +152,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
           label="Course Learning Outcomes (CLOs)"
           description="What will students be able to do after completing this entire course? Write 3-5 broad, measurable outcomes."
           onGenerateSuggestions={handleGenerateSuggestions}
+          isGenerating={generatingSuggestions}
         />
         {errors.courseLearningOutcomes && (
           <div className="validation-error">{errors.courseLearningOutcomes}</div>

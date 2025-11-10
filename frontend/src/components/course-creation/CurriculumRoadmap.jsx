@@ -293,9 +293,7 @@ function CurriculumRoadmap({ courseData, onClose }) {
               {analysis.gaps.map((gap, i) => (
                 <div key={i} className={`gap-item ${gap.severity || 'info'}`}>
                   <div className="gap-icon">
-                    {gap.type === 'incomplete_sequence' && '📊'}
-                    {gap.type === 'too_few_concepts' && '📚'}
-                  </div>
+                </div>
                   <div className="gap-content">
                     <div className="gap-message">{gap.message}</div>
                     {gap.expected && (
@@ -314,7 +312,7 @@ function CurriculumRoadmap({ courseData, onClose }) {
         {analysis.gaps.length === 0 && analysis.progressionScore >= 70 && (
           <div className="roadmap-section">
             <div className="success-message">
-              ✅ Your curriculum looks well-structured! Learners will progress through {concepts.length} concepts
+              Your curriculum looks well-structured! Learners will progress through {concepts.length} concepts
               with clear learning objectives.
             </div>
           </div>

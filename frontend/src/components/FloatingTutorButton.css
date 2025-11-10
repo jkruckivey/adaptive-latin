@@ -5,11 +5,11 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   border: none;
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,8 +19,9 @@
 }
 
 .floating-tutor-button:hover {
+  background: #1a202c;
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   width: 140px;
   border-radius: 30px;
 }
@@ -57,10 +58,10 @@
 /* Pulsing animation to draw attention */
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   50% {
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 }
 

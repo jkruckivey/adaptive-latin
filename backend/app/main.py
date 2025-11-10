@@ -149,6 +149,7 @@ class StartRequest(BaseModel):
     learner_id: str = Field(..., description="Unique identifier for the learner")
     learner_name: Optional[str] = Field(None, description="Learner's name")
     profile: Optional[Dict[str, Any]] = Field(None, description="Learner profile from onboarding")
+    course_id: Optional[str] = Field(None, description="Course ID to enroll in")
 
 
 class ChatRequest(BaseModel):
@@ -182,7 +183,7 @@ class ConceptResponse(BaseModel):
     """Response with concept information."""
     concept_id: str
     title: str
-    difficulty: int
+    difficulty: str  # Can be string like "medium" or "easy"
     prerequisites: List[str]
     learning_objectives: List[str]
     estimated_mastery_time: str
@@ -317,7 +318,9 @@ class CreateCourseRequest(BaseModel):
     # Keep these for backward compatibility with old courses
     description: Optional[str] = Field(default=None, description="Course description (deprecated)")
     target_audience: Optional[str] = Field(default=None, description="Target audience (deprecated)")
-    concepts: List[dict] = Field(default=[], description="Course concepts/modules")
+    # Support both flat concepts (old) and module-based structure (new)
+    concepts: List[dict] = Field(default=[], description="Flat list of course concepts (deprecated - use modules)")
+    modules: List[dict] = Field(default=[], description="Module-based course structure (each module contains concepts)")
 
 
 class CoursesListResponse(BaseModel):
@@ -457,7 +460,8 @@ async def start_learner(request: Request, body: StartRequest):
         learner_model = create_learner_model(
             body.learner_id,
             learner_name=body.learner_name,
-            profile=body.profile
+            profile=body.profile,
+            course_id=body.course_id
         )
 
         # Verify the file was actually created
@@ -579,22 +583,36 @@ async def get_progress(learner_id: str):
 
 
 @app.get("/concept/{concept_id}", response_model=ConceptResponse)
-async def get_concept_info(concept_id: str):
+async def get_concept_info(concept_id: str, course_id: Optional[str] = None, learner_id: Optional[str] = None):
     """
     Get information about a specific concept.
+
+    Args:
+        concept_id: Concept identifier
+        course_id: Optional course ID
+        learner_id: Optional learner ID to use their current course
 
     Returns metadata including title, objectives, vocabulary, etc.
     """
     try:
-        metadata = load_concept_metadata(concept_id)
+        # If learner_id is provided, use their current course
+        if learner_id and not course_id:
+            try:
+                learner_model = load_learner_model(learner_id)
+                course_id = learner_model.get("current_course")
+                logger.info(f"Using learner {learner_id}'s current course: {course_id}")
+            except Exception as e:
+                logger.warning(f"Could not load learner {learner_id}'s course: {e}")
+
+        metadata = load_concept_metadata(concept_id, course_id)
 
         return {
-            "concept_id": metadata["id"],
-            "title": metadata["title"],
-            "difficulty": metadata["difficulty"],
-            "prerequisites": metadata["prerequisites"],
-            "learning_objectives": metadata["learning_objectives"],
-            "estimated_mastery_time": metadata["estimated_mastery_time"],
+            "concept_id": metadata.get("concept_id", concept_id),
+            "title": metadata.get("title", concept_id),
+            "difficulty": metadata.get("difficulty", "medium"),
+            "prerequisites": metadata.get("prerequisites", []),
+            "learning_objectives": metadata.get("learning_objectives", metadata.get("module_learning_outcomes", [])),
+            "estimated_mastery_time": metadata.get("estimated_mastery_time", "unknown"),
             "vocabulary": metadata.get("vocabulary", [])
         }
 
@@ -642,18 +660,32 @@ async def get_mastery(learner_id: str, concept_id: str):
 
 
 @app.get("/concepts")
-async def list_concepts():
+async def list_concepts(course_id: Optional[str] = None, learner_id: Optional[str] = None):
     """
     List all available concepts.
 
-    Returns a list of all concept IDs in the resource bank.
+    Args:
+        course_id: Optional course ID to list concepts for
+        learner_id: Optional learner ID to use their current course
+
+    Returns a list of all concept IDs for the specified or default course.
     """
     try:
-        concepts = list_all_concepts()
+        # If learner_id is provided, use their current course
+        if learner_id and not course_id:
+            try:
+                learner_model = load_learner_model(learner_id)
+                course_id = learner_model.get("current_course")
+                logger.info(f"Using learner {learner_id}'s current course: {course_id}")
+            except Exception as e:
+                logger.warning(f"Could not load learner {learner_id}'s course: {e}")
+
+        concepts = list_all_concepts(course_id)
         return {
             "success": True,
             "concepts": concepts,
-            "total": len(concepts)
+            "total": len(concepts),
+            "course_id": course_id or config.DEFAULT_COURSE_ID
         }
 
     except Exception as e:
@@ -661,6 +693,44 @@ async def list_concepts():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to list concepts: {str(e)}"
+        )
+
+
+@app.get("/modules")
+async def list_modules(course_id: Optional[str] = None, learner_id: Optional[str] = None):
+    """
+    List all modules in a course with their concepts.
+
+    Args:
+        course_id: Optional course ID to list modules for
+        learner_id: Optional learner ID to use their current course
+
+    Returns a list of modules with their metadata and concepts.
+    """
+    try:
+        # If learner_id is provided, use their current course
+        if learner_id and not course_id:
+            try:
+                learner_model = load_learner_model(learner_id)
+                course_id = learner_model.get("current_course")
+                logger.info(f"Using learner {learner_id}'s current course: {course_id}")
+            except Exception as e:
+                logger.warning(f"Could not load learner {learner_id}'s course: {e}")
+
+        from .tools import list_all_modules
+        modules = list_all_modules(course_id)
+        return {
+            "success": True,
+            "modules": modules,
+            "total": len(modules),
+            "course_id": course_id or config.DEFAULT_COURSE_ID
+        }
+
+    except Exception as e:
+        logger.error(f"Error listing modules: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to list modules: {str(e)}"
         )
 
 
@@ -1161,11 +1231,18 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             celebration_message = celebration_info.get("celebration_message")
             logger.info(f"Celebration message: {celebration_message}")
 
+        # Get user's answer display text
+        user_answer_display = body.user_answer
+        if body.question_type == "multiple-choice" and body.options and isinstance(body.user_answer, int):
+            if 0 <= body.user_answer < len(body.options):
+                user_answer_display = body.options[body.user_answer]
+
         assessment_result = {
             "type": "assessment-result",
             "score": 1.0 if is_correct else 0.0,
             "feedback": feedback_text,
             "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
+            "userAnswer": user_answer_display,
             "calibration": calibration_type,
             "languageConnection": language_connection,
             "encouragement": encouragement_message,  # Add encouragement for struggling learners
@@ -1737,7 +1814,7 @@ async def list_courses():
         )
 
 
-@app.get("/courses/{course_id}", response_model=CourseMetadata)
+@app.get("/courses/{course_id}")
 async def get_course(course_id: str):
     """
     Get detailed metadata for a specific course.
@@ -1761,32 +1838,33 @@ async def get_course(course_id: str):
         with open(metadata_file, "r", encoding="utf-8") as f:
             metadata = json.load(f)
 
-        # Load concepts list
+        # Load concepts list using the helper function (handles both module and flat structures)
+        concept_ids = list_all_concepts(course_id)
         concepts = []
-        if course_dir.exists():
-            for item in sorted(course_dir.iterdir()):
-                if item.is_dir() and item.name.startswith("concept-"):
-                    concept_metadata_file = item / "metadata.json"
-                    if concept_metadata_file.exists():
-                        try:
-                            with open(concept_metadata_file, "r", encoding="utf-8") as f:
-                                concept_meta = json.load(f)
-                                concepts.append({
-                                    "concept_id": item.name,
-                                    "title": concept_meta.get("title", item.name)
-                                })
-                        except Exception as e:
-                            logger.warning(f"Could not load concept metadata for {item.name}: {e}")
+
+        for concept_id in concept_ids:
+            try:
+                concept_meta = load_concept_metadata(concept_id, course_id)
+                concepts.append({
+                    "concept_id": concept_id,
+                    "title": concept_meta.get("title", concept_id)
+                })
+            except Exception as e:
+                logger.warning(f"Could not load concept metadata for {concept_id}: {e}")
 
         return {
-            "course_id": course_id,
-            "title": metadata.get("title", course_id),
-            "domain": metadata.get("domain", "Unknown"),
-            "description": metadata.get("description", ""),
-            "target_audience": metadata.get("target_audience", "general"),
-            "created_at": metadata.get("created_at", ""),
-            "updated_at": metadata.get("updated_at", ""),
-            "concepts": concepts
+            "success": True,
+            "course": {
+                "course_id": course_id,
+                "title": metadata.get("title", course_id),
+                "domain": metadata.get("domain", "Unknown"),
+                "description": metadata.get("description", ""),
+                "target_audience": metadata.get("target_audience", "general"),
+                "course_learning_outcomes": metadata.get("course_learning_outcomes", []),
+                "created_at": metadata.get("created_at", ""),
+                "updated_at": metadata.get("updated_at", ""),
+                "concepts": concepts
+            }
         }
 
     except HTTPException:
@@ -1846,11 +1924,79 @@ async def create_course(body: CreateCourseRequest):
         with open(metadata_file, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-        # Create concepts if provided
-        for i, concept_data in enumerate(body.concepts):
-            concept_id = f"concept-{str(i + 1).zfill(3)}"
-            concept_dir = course_dir / concept_id
-            concept_dir.mkdir(parents=True, exist_ok=True)
+        # Create module-based structure if modules are provided, otherwise fall back to flat concepts
+        if body.modules and len(body.modules) > 0:
+            # Module-based structure
+            for module_index, module_data in enumerate(body.modules):
+                module_id = module_data.get("moduleId", f"module-{str(module_index + 1).zfill(3)}")
+                module_dir = course_dir / module_id
+                module_dir.mkdir(parents=True, exist_ok=True)
+
+                # Create module metadata
+                module_metadata = {
+                    "id": module_id,
+                    "title": module_data.get("title", f"Module {module_index + 1}"),
+                    "module_learning_outcomes": module_data.get("moduleLearningOutcomes", [])
+                }
+
+                module_metadata_file = module_dir / "metadata.json"
+                with open(module_metadata_file, "w", encoding="utf-8") as f:
+                    json.dump(module_metadata, f, indent=2, ensure_ascii=False)
+
+                # Create concepts within this module
+                for concept_index, concept_data in enumerate(module_data.get("concepts", [])):
+                    concept_id = concept_data.get("conceptId", f"concept-{str(concept_index + 1).zfill(3)}")
+                    concept_dir = module_dir / concept_id
+                    concept_dir.mkdir(parents=True, exist_ok=True)
+
+                    # Create concept metadata
+                    concept_metadata = {
+                        "concept_id": concept_id,
+                        "title": concept_data.get("title", f"Concept {concept_index + 1}"),
+                        "learning_objectives": concept_data.get("learningObjectives", concept_data.get("moduleLearningOutcomes", [])),
+                        "prerequisites": concept_data.get("prerequisites", [])
+                    }
+
+                    concept_metadata_file = concept_dir / "metadata.json"
+                    with open(concept_metadata_file, "w", encoding="utf-8") as f:
+                        json.dump(concept_metadata, f, indent=2, ensure_ascii=False)
+
+                    # Create resources directory
+                    resources_dir = concept_dir / "resources"
+                    resources_dir.mkdir(parents=True, exist_ok=True)
+
+                    # Create text-explainer.md
+                    text_explainer_file = resources_dir / "text-explainer.md"
+                    teaching_content = concept_data.get("teachingContent", "")
+                    with open(text_explainer_file, "w", encoding="utf-8") as f:
+                        f.write(teaching_content)
+
+                    # Create examples.json
+                    examples_file = resources_dir / "examples.json"
+                    vocabulary = concept_data.get("vocabulary", [])
+                    examples_data = {
+                        "examples": [
+                            {
+                                "term": v.get("term", ""),
+                                "definition": v.get("definition", ""),
+                                "example": v.get("example", "")
+                            }
+                            for v in vocabulary
+                        ]
+                    }
+                    with open(examples_file, "w", encoding="utf-8") as f:
+                        json.dump(examples_data, f, indent=2, ensure_ascii=False)
+
+                    # Create assessments directory (placeholder for now)
+                    assessments_dir = concept_dir / "assessments"
+                    assessments_dir.mkdir(parents=True, exist_ok=True)
+
+        else:
+            # Flat concept structure (backward compatibility)
+            for i, concept_data in enumerate(body.concepts):
+                concept_id = f"concept-{str(i + 1).zfill(3)}"
+                concept_dir = course_dir / concept_id
+                concept_dir.mkdir(parents=True, exist_ok=True)
 
             # Create concept metadata
             concept_metadata = {
@@ -2238,6 +2384,2112 @@ async def get_cache_statistics(course_id: Optional[str] = None):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get cache statistics: {str(e)}"
+        )
+
+
+# ============================================================================
+# AI Course Generation Endpoints
+# ============================================================================
+
+class GenerateLearningOutcomesRequest(BaseModel):
+    title: str
+    domain: str
+    taxonomy: str = "blooms"
+
+@app.post("/generate-learning-outcomes")
+async def generate_learning_outcomes(body: GenerateLearningOutcomesRequest):
+    """
+    Generate course learning outcomes using AI based on course title and domain.
+
+    Args:
+        title: Course title
+        domain: Subject area/domain
+        taxonomy: Learning taxonomy (blooms or finks)
+
+    Returns:
+        List of suggested learning outcomes
+    """
+    try:
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        # Build taxonomy-specific guidance
+        taxonomy_guidance = ""
+        if body.taxonomy == "blooms":
+            taxonomy_guidance = """
+Use Bloom's Taxonomy action verbs at appropriate levels:
+- Remember: define, identify, list, recall, recognize
+- Understand: classify, describe, discuss, explain, summarize
+- Apply: demonstrate, execute, implement, solve, use
+- Analyze: categorize, compare, differentiate, examine, test
+- Evaluate: appraise, critique, defend, judge, justify
+- Create: compose, construct, design, develop, formulate
+"""
+        elif body.taxonomy == "finks":
+            taxonomy_guidance = """
+Use Fink's Taxonomy of Significant Learning dimensions:
+- Foundational Knowledge: understanding and remembering information
+- Application: skills, critical/creative thinking, managing projects
+- Integration: connecting ideas, people, realms of life
+- Human Dimension: learning about oneself and others
+- Caring: developing new feelings, interests, values
+- Learning How to Learn: becoming a better student, inquiring, self-directing
+"""
+
+        system_prompt = f"""You are an expert instructional designer specializing in creating measurable learning outcomes.
+
+Generate exactly 5 high-quality Course Learning Outcomes (CLOs) for the following course:
+
+Title: {body.title}
+Domain: {body.domain}
+Taxonomy: {body.taxonomy}
+
+{taxonomy_guidance}
+
+Guidelines:
+1. Each outcome should be specific, measurable, and achievable
+2. Use appropriate action verbs from the taxonomy
+3. Focus on what learners will be able to DO after completing the course
+4. Cover different cognitive levels
+5. Be concise and clear (one sentence each)
+6. Make them relevant to real-world application in the {body.domain} domain
+
+Return ONLY a JSON array of outcome strings, no other text or explanation:
+["outcome 1", "outcome 2", ...]"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=1024,
+            temperature=0.7,
+            system=system_prompt,
+            messages=[{
+                "role": "user",
+                "content": f"Generate learning outcomes for: {body.title}"
+            }]
+        )
+
+        # Parse response
+        content_text = response.content[0].text.strip()
+
+        # Try to extract JSON if wrapped in markdown code blocks
+        if content_text.startswith("```"):
+            lines = content_text.split("\n")
+            content_text = "\n".join(lines[1:-1])
+
+        outcomes = json.loads(content_text)
+
+        # Ensure we don't exceed the maximum (5 outcomes for UI validation)
+        MAX_OUTCOMES = 5
+        if len(outcomes) > MAX_OUTCOMES:
+            logger.warning(f"AI generated {len(outcomes)} outcomes, truncating to {MAX_OUTCOMES}")
+            outcomes = outcomes[:MAX_OUTCOMES]
+
+        logger.info(f"Generated {len(outcomes)} learning outcomes for '{body.title}'")
+
+        return {
+            "success": True,
+            "outcomes": outcomes
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse AI response as JSON: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to parse AI response"
+        )
+    except Exception as e:
+        logger.error(f"Error generating learning outcomes: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate learning outcomes: {str(e)}"
+        )
+
+
+class GenerateModuleLearningOutcomesRequest(BaseModel):
+    module_title: str
+    course_title: str
+    course_learning_outcomes: list
+    domain: str
+    taxonomy: str = "blooms"
+
+@app.post("/generate-module-learning-outcomes")
+async def generate_module_learning_outcomes(body: GenerateModuleLearningOutcomesRequest):
+    """
+    Generate module learning outcomes using AI based on module context and course CLOs.
+
+    Args:
+        module_title: Module title
+        course_title: Parent course title
+        course_learning_outcomes: List of course-level learning outcomes for context
+        domain: Subject area/domain
+        taxonomy: Learning taxonomy (blooms or finks)
+
+    Returns:
+        List of suggested module learning outcomes
+    """
+    try:
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        # Build taxonomy-specific guidance
+        taxonomy_guidance = ""
+        if body.taxonomy == "blooms":
+            taxonomy_guidance = """
+Use Bloom's Taxonomy action verbs at appropriate levels:
+- Remember: define, identify, list, recall, recognize
+- Understand: classify, describe, discuss, explain, summarize
+- Apply: demonstrate, execute, implement, solve, use
+- Analyze: categorize, compare, differentiate, examine, test
+- Evaluate: appraise, critique, defend, judge, justify
+- Create: compose, construct, design, develop, formulate
+"""
+        elif body.taxonomy == "finks":
+            taxonomy_guidance = """
+Use Fink's Taxonomy of Significant Learning dimensions:
+- Foundational Knowledge: understanding and remembering information
+- Application: skills, critical/creative thinking, managing projects
+- Integration: connecting ideas, people, realms of life
+- Human Dimension: learning about oneself and others
+- Caring: developing new feelings, interests, values
+- Learning How to Learn: becoming a better student, inquiring, self-directing
+"""
+
+        # Format CLOs for context
+        clos_context = "\n".join([f"- {clo}" for clo in body.course_learning_outcomes])
+
+        system_prompt = f"""You are an expert instructional designer specializing in creating measurable learning outcomes.
+
+Generate exactly 3 high-quality Module Learning Outcomes (MLOs) for the following module:
+
+Course: {body.course_title}
+Module: {body.module_title}
+Domain: {body.domain}
+Taxonomy: {body.taxonomy}
+
+Course Learning Outcomes (CLOs):
+{clos_context}
+
+{taxonomy_guidance}
+
+Guidelines:
+1. Each MLO should support one or more CLOs (be a building block toward course goals)
+2. MLOs are narrower in scope than CLOs - focus on what this specific module covers
+3. Use appropriate action verbs from the taxonomy
+4. Focus on what learners will be able to DO after completing this module
+5. Be specific and measurable
+6. Be concise and clear (one sentence each)
+7. Make them relevant to the module topic within the {body.domain} domain
+
+Return ONLY a JSON array of outcome strings, no other text or explanation:
+["outcome 1", "outcome 2", "outcome 3"]"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=1024,
+            temperature=0.7,
+            system=system_prompt,
+            messages=[{
+                "role": "user",
+                "content": f"Generate module learning outcomes for: {body.module_title}"
+            }]
+        )
+
+        # Parse response
+        content_text = response.content[0].text.strip()
+
+        # Try to extract JSON if wrapped in markdown code blocks
+        if content_text.startswith("```"):
+            lines = content_text.split("\n")
+            content_text = "\n".join(lines[1:-1])
+
+        outcomes = json.loads(content_text)
+
+        # Ensure we don't exceed the maximum
+        MAX_OUTCOMES = 3
+        if len(outcomes) > MAX_OUTCOMES:
+            logger.warning(f"AI generated {len(outcomes)} module outcomes, truncating to {MAX_OUTCOMES}")
+            outcomes = outcomes[:MAX_OUTCOMES]
+
+        logger.info(f"Generated {len(outcomes)} module learning outcomes for '{body.module_title}'")
+
+        return {
+            "success": True,
+            "outcomes": outcomes
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse AI response as JSON: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to parse AI response"
+        )
+    except Exception as e:
+        logger.error(f"Error generating module learning outcomes: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate module learning outcomes: {str(e)}"
+        )
+
+
+class GenerateConceptLearningObjectivesRequest(BaseModel):
+    concept_title: str
+    module_title: str
+    module_learning_outcomes: list
+    course_title: str
+    domain: str
+    taxonomy: str = "blooms"
+
+@app.post("/generate-concept-learning-objectives")
+async def generate_concept_learning_objectives(body: GenerateConceptLearningObjectivesRequest):
+    """
+    Generate concept learning objectives using AI based on concept and module context.
+    """
+    logger.info(f"Generating learning objectives for concept: {body.concept_title} in module: {body.module_title}")
+
+    # Build context from module learning outcomes
+    mlos_context = "\n".join([f"- {mlo}" for mlo in body.module_learning_outcomes if mlo.strip()])
+
+    # Taxonomy guidance
+    taxonomy_guidance = ""
+    if body.taxonomy == "blooms":
+        taxonomy_guidance = """
+Use Bloom's Taxonomy action verbs at appropriate levels:
+- Remember: identify, recall, list, define, describe
+- Understand: explain, summarize, interpret, compare, classify
+- Apply: demonstrate, solve, use, implement, execute
+- Analyze: differentiate, organize, attribute, examine, deconstruct
+- Evaluate: critique, judge, assess, defend, justify
+- Create: design, construct, develop, formulate, compose
+"""
+    elif body.taxonomy == "finks":
+        taxonomy_guidance = """
+Use Fink's Taxonomy of Significant Learning:
+- Foundational Knowledge: understand key concepts, remember information
+- Application: develop skills, think critically, manage projects
+- Integration: connect ideas, see relationships, transfer learning
+- Human Dimension: learn about self and others
+- Caring: develop interests, values, feelings
+- Learning How to Learn: become better learners, inquire, self-direct
+"""
+
+    system_prompt = f"""You are an expert instructional designer specializing in creating measurable learning objectives.
+
+Generate exactly 3 high-quality Learning Objectives for the following concept:
+
+Course: {body.course_title}
+Module: {body.module_title}
+Concept: {body.concept_title}
+Domain: {body.domain}
+Taxonomy: {body.taxonomy}
+
+Module Learning Outcomes (MLOs):
+{mlos_context}
+
+{taxonomy_guidance}
+
+Guidelines:
+1. Each objective should support one or more MLOs (be a building block toward module goals)
+2. Objectives are very specific and granular - focus on what this particular concept teaches
+3. Use appropriate action verbs from the taxonomy
+4. Start each objective with "Students will be able to..." or use an action verb directly
+5. Be specific and measurable (avoid vague terms like "understand" or "know")
+6. Focus on observable behaviors and concrete skills
+7. Consider the domain ({body.domain}) when crafting objectives
+
+Example structure:
+- "Identify the three key components of [specific concept]"
+- "Apply [specific technique] to solve problems involving [specific topic]"
+- "Analyze the relationship between [A] and [B] in the context of [specific scenario]"
+
+Return ONLY a JSON array of exactly 3 learning objectives as strings. No other text or explanation.
+
+Example format:
+```json
+[
+  "Students will be able to identify the key features of...",
+  "Students will be able to apply the concept to...",
+  "Students will be able to analyze relationships between..."
+]
+```"""
+
+    try:
+        # Call Anthropic Claude API
+        response = client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=1024,
+            system=system_prompt,
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Generate exactly 3 learning objectives for the concept '{body.concept_title}' in the module '{body.module_title}'."
+                }
+            ]
+        )
+
+        # Extract JSON from response
+        response_text = response.content[0].text
+        logger.info(f"AI Response: {response_text}")
+
+        # Try to extract JSON from markdown code blocks if present
+        import re
+        json_match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
+        if json_match:
+            content_text = json_match.group(1)
+        else:
+            # Try to find raw JSON array
+            json_match = re.search(r'\[.*\]', response_text, re.DOTALL)
+            if json_match:
+                content_text = json_match.group(0)
+            else:
+                content_text = response_text
+
+        objectives = json.loads(content_text)
+
+        # Ensure we generate exactly 3 objectives
+        MAX_OBJECTIVES = 3
+        if len(objectives) > MAX_OBJECTIVES:
+            logger.warning(f"AI generated {len(objectives)} objectives, truncating to {MAX_OBJECTIVES}")
+            objectives = objectives[:MAX_OBJECTIVES]
+        elif len(objectives) < MAX_OBJECTIVES:
+            logger.warning(f"AI generated only {len(objectives)} objectives, expected {MAX_OBJECTIVES}")
+
+        return {
+            "success": True,
+            "objectives": objectives
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON from AI response: {e}")
+        logger.error(f"Response text: {response_text}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to parse AI response: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Error generating concept learning objectives: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate concept learning objectives: {str(e)}"
+        )
+
+
+# ============================================================================
+# Interactive Simulation Generation Endpoints
+# ============================================================================
+
+class LearningOutcome(BaseModel):
+    code: str
+    text: str
+
+class OutcomeConnection(BaseModel):
+    code: str
+    text: str
+    clos: List[str]
+
+class GenerateLearningOutcomesSimulationRequest(BaseModel):
+    course_format: str  # "cohort" or "self-paced"
+    module_number: int
+    module_title: str
+    module_outcomes: List[LearningOutcome]
+    course_outcomes: List[LearningOutcome]
+
+class GenerateSimulationRequest(BaseModel):
+    simulation_type: str  # "learning-outcomes-map", "quiz", "simulator", etc.
+    course_format: str = "cohort"  # "cohort" or "self-paced"
+    data: dict
+
+def generate_learning_outcomes_simulation_html(
+    course_format: str,
+    module_number: int,
+    module_title: str,
+    module_outcomes: List[dict],
+    course_outcomes: List[dict]
+) -> str:
+    """
+    Generate an interactive learning outcomes mapping simulation.
+
+    Uses standardized design system with Geist typography and neutral color palette.
+    """
+
+    # Determine badge text and outcome codes based on course format
+    if course_format == "self-paced":
+        badge_text = f"MODULE {module_number}"
+        outcome_prefix = "MLO"
+        outcome_label = "module"
+    else:  # cohort
+        badge_text = f"WEEK {module_number}"
+        outcome_prefix = "WLO"
+        outcome_label = "week"
+
+    # Build module outcomes list
+    module_outcomes_js = "[\n"
+    for i, outcome in enumerate(module_outcomes):
+        module_outcomes_js += f"""        {{
+            code: '{outcome_prefix} {module_number}.{i+1}',
+            text: '{outcome["text"].replace("'", "\\'")}',
+            clos: {json.dumps(outcome.get("clos", []))}
+        }},\n"""
+    module_outcomes_js += "    ]"
+
+    # Build course outcomes list
+    course_outcomes_js = "[\n"
+    for outcome in course_outcomes:
+        course_outcomes_js += f"""        {{
+            code: '{outcome["code"]}',
+            text: '{outcome["text"].replace("'", "\\'")}'
+        }},\n"""
+    course_outcomes_js += "    ]"
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Outcomes - {module_title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
+        body {{
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }}
+
+        .outcomes-container {{
+            max-width: 800px;
+            margin: 0 auto;
+        }}
+
+        .header {{
+            margin-bottom: 1.5rem;
+        }}
+
+        .header h3 {{
+            color: var(--color-neutral-900);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }}
+
+        .header p {{
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }}
+
+        .week-outcomes {{
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }}
+
+        .week-outcomes h4 {{
+            color: var(--color-neutral-900);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }}
+
+        .week-badge {{
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }}
+
+        .wlo-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }}
+
+        .wlo-item {{
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }}
+
+        .wlo-item:hover {{
+            border-color: var(--color-neutral-900);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }}
+
+        .wlo-item:focus {{
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }}
+
+        .wlo-item.active {{
+            border-color: var(--color-neutral-900);
+            border-width: 2px;
+            background: var(--color-neutral-50);
+        }}
+
+        .wlo-header {{
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }}
+
+        .wlo-code {{
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }}
+
+        .wlo-text {{
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }}
+
+        .connection-indicator {{
+            color: var(--color-neutral-600);
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            padding-left: calc(0.75rem + 0.5rem + 50px);
+            display: none;
+        }}
+
+        .wlo-item.active .connection-indicator {{
+            display: block;
+        }}
+
+        .course-outcomes {{
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+        }}
+
+        .course-outcomes h4 {{
+            color: var(--color-neutral-900);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }}
+
+        .clo-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }}
+
+        .clo-item {{
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }}
+
+        .clo-item.highlighted {{
+            opacity: 1;
+            border-color: var(--color-neutral-900);
+            border-width: 2px;
+            background: var(--color-neutral-100);
+        }}
+
+        .clo-header {{
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }}
+
+        .clo-code {{
+            background: var(--color-neutral-600);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }}
+
+        .clo-item.highlighted .clo-code {{
+            background: var(--color-neutral-900);
+        }}
+
+        .clo-text {{
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }}
+
+        .help-text {{
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-900);
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            border-radius: var(--border-radius-sm);
+        }}
+
+        .help-text p {{
+            color: var(--color-neutral-900);
+            font-size: 0.85rem;
+        }}
+
+        .sr-only {{
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }}
+
+        .complete-button {{
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto 0;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }}
+
+        .complete-button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }}
+
+        .complete-button:active {{
+            transform: translateY(0);
+        }}
+
+        @media (max-width: 640px) {{
+            body {{
+                padding: 16px;
+            }}
+            .wlo-header, .clo-header {{
+                flex-direction: column;
+                gap: 0.5rem;
+            }}
+            .week-outcomes, .course-outcomes {{
+                padding: 1rem;
+            }}
+            .connection-indicator {{
+                padding-left: 0;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="outcomes-container">
+        <div class="header">
+            <h3>Learning Outcomes</h3>
+            <p>Click any {outcome_label} outcome below to see how it connects to course-level goals</p>
+        </div>
+
+        <div class="week-outcomes">
+            <h4>
+                <span class="week-badge">{badge_text}</span>
+                <span>{module_title}</span>
+            </h4>
+            <div class="wlo-list" role="list"></div>
+        </div>
+
+        <div class="course-outcomes">
+            <h4>Course-Level Outcomes</h4>
+            <div class="clo-list" role="list"></div>
+        </div>
+
+        <div class="help-text">
+            <p><strong>How to use:</strong> Each {outcome_label} outcome contributes to broader course-level goals. Click outcomes above to explore the connections.</p>
+        </div>
+
+        <button id="complete-btn" class="complete-button" onclick="markComplete()">
+            I've Reviewed the Outcomes →
+        </button>
+    </div>
+
+    <script>
+        const courseOutcomes = {course_outcomes_js};
+
+        const wlos = {module_outcomes_js};
+
+        const wloList = document.querySelector('.wlo-list');
+        const cloList = document.querySelector('.clo-list');
+
+        // Render WLOs/MLOs
+        wlos.forEach(wlo => {{
+            const div = document.createElement('div');
+            div.className = 'wlo-item';
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('role', 'button');
+            div.innerHTML = `
+                <div class="wlo-header">
+                    <span class="wlo-code">${{wlo.code}}</span>
+                    <span class="wlo-text">${{wlo.text}}</span>
+                </div>
+                <div class="connection-indicator">→ Contributes to: ${{wlo.clos.join(', ')}}</div>
+            `;
+            div.onclick = () => highlight(wlo.clos, div);
+            div.onkeydown = (e) => {{
+                if (e.key === 'Enter' || e.key === ' ') {{
+                    e.preventDefault();
+                    highlight(wlo.clos, div);
+                }}
+            }};
+            wloList.appendChild(div);
+        }});
+
+        // Render CLOs
+        courseOutcomes.forEach(clo => {{
+            const div = document.createElement('div');
+            div.className = 'clo-item';
+            div.dataset.code = clo.code;
+            div.innerHTML = `
+                <div class="clo-header">
+                    <span class="clo-code">${{clo.code}}</span>
+                    <span class="clo-text">${{clo.text}}</span>
+                </div>
+            `;
+            cloList.appendChild(div);
+        }});
+
+        const startTime = Date.now();
+        let interactionCount = 0;
+        const interactedOutcomes = new Set();
+
+        function highlight(cloCodes, wloEl) {{
+            const wasActive = wloEl.classList.contains('active');
+            // Clear all highlights
+            document.querySelectorAll('.wlo-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.clo-item').forEach(el => el.classList.remove('highlighted'));
+            // If wasn't active, activate and highlight connected CLOs
+            if (!wasActive) {{
+                wloEl.classList.add('active');
+                cloCodes.forEach(code => {{
+                    const cloEl = document.querySelector(`[data-code="${{code}}"]`);
+                    if (cloEl) cloEl.classList.add('highlighted');
+                }});
+
+                // Track interaction
+                interactionCount++;
+                const wloCode = wloEl.querySelector('.wlo-code').textContent;
+                interactedOutcomes.add(wloCode);
+            }}
+        }}
+
+        function markComplete() {{
+            const duration = Date.now() - startTime;
+
+            // Send completion data to parent window
+            window.parent.postMessage({{
+                type: 'simulation-complete',
+                simulationType: 'learning-outcomes-map',
+                data: {{
+                    duration: duration,
+                    completedAt: new Date().toISOString(),
+                    interactionCount: interactionCount,
+                    interactedOutcomes: Array.from(interactedOutcomes),
+                    totalOutcomes: wlos.length
+                }}
+            }}, '*');
+
+            // Visual feedback
+            const btn = document.getElementById('complete-btn');
+            btn.textContent = 'Review Complete! ✓';
+            btn.style.background = '#10b981';
+            btn.disabled = true;
+        }}
+    </script>
+</body>
+</html>"""
+
+    return html_content
+
+
+def generate_pre_assessment_quiz_html(
+    module_title: str,
+    questions: List[dict]
+) -> str:
+    """
+    Generate a pre-assessment quiz simulation.
+
+    Questions format: [{"question": "...", "options": ["A", "B", "C"], "info": "..."}]
+    """
+
+    questions_js = "[\n"
+    for q in questions:
+        questions_js += f"""        {{
+            question: '{q["question"].replace("'", "\\'")}',
+            options: {json.dumps(q.get("options", []))},
+            info: '{q.get("info", "").replace("'", "\\'")}'
+        }},\n"""
+    questions_js += "    ]"
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Assessment: {module_title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
+        body {{
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }}
+
+        .quiz-container {{
+            max-width: 700px;
+            margin: 0 auto;
+        }}
+
+        .header {{
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }}
+
+        .header h2 {{
+            color: var(--color-neutral-900);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }}
+
+        .header p {{
+            color: var(--color-neutral-600);
+            font-size: 0.95rem;
+        }}
+
+        .question-card {{
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }}
+
+        .question-number {{
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }}
+
+        .question-text {{
+            color: var(--color-neutral-900);
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }}
+
+        .options {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }}
+
+        .option {{
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }}
+
+        .option:hover {{
+            border-color: var(--color-neutral-900);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }}
+
+        .option:focus {{
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }}
+
+        .option.selected {{
+            background: var(--color-neutral-900);
+            border-color: var(--color-neutral-900);
+            color: white;
+        }}
+
+        .option-label {{
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--color-neutral-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }}
+
+        .option.selected .option-label {{
+            background: white;
+            color: var(--color-neutral-900);
+            border-color: white;
+        }}
+
+        .option-text {{
+            flex-grow: 1;
+        }}
+
+        .info-box {{
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-900);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            display: none;
+        }}
+
+        .info-box.visible {{
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }}
+
+        @keyframes slideIn {{
+            from {{
+                opacity: 0;
+                transform: translateY(-10px);
+            }}
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+
+        .info-box p {{
+            color: var(--color-neutral-900);
+            font-size: 0.9rem;
+            margin: 0;
+        }}
+
+        .footer {{
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--color-neutral-200);
+        }}
+
+        .footer p {{
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }}
+
+        @media (max-width: 640px) {{
+            body {{
+                padding: 16px;
+            }}
+            .question-card {{
+                padding: 1rem;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <h2>Pre-Assessment: {module_title}</h2>
+            <p>Gauge your current understanding (no right or wrong answers)</p>
+        </div>
+
+        <div id="questions-container"></div>
+
+        <div class="footer">
+            <p><strong>Self-reflection:</strong> Use your responses to identify areas for focused learning</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = {questions_js};
+        const responses = new Array(questions.length).fill(null);
+        let startTime = Date.now();
+
+        const container = document.getElementById('questions-container');
+
+        questions.forEach((q, index) => {{
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.setAttribute('data-question-index', index);
+
+            const questionNumber = document.createElement('div');
+            questionNumber.className = 'question-number';
+            questionNumber.textContent = `Question ${{index + 1}} of ${{questions.length}}`;
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = q.question;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            q.options.forEach((opt, optIndex) => {{
+                const option = document.createElement('div');
+                option.className = 'option';
+                option.setAttribute('tabindex', '0');
+                option.setAttribute('role', 'button');
+                option.setAttribute('data-option-index', optIndex);
+                option.setAttribute('data-option-value', opt);
+
+                const label = document.createElement('div');
+                label.className = 'option-label';
+                label.textContent = String.fromCharCode(65 + optIndex); // A, B, C, D
+
+                const text = document.createElement('div');
+                text.className = 'option-text';
+                text.textContent = opt;
+
+                option.appendChild(label);
+                option.appendChild(text);
+
+                option.onclick = () => selectOption(card, option, index, optIndex, opt);
+                option.onkeydown = (e) => {{
+                    if (e.key === 'Enter' || e.key === ' ') {{
+                        e.preventDefault();
+                        selectOption(card, option, index, optIndex, opt);
+                    }}
+                }};
+
+                optionsDiv.appendChild(option);
+            }});
+
+            const infoBox = document.createElement('div');
+            infoBox.className = 'info-box';
+            const infoText = document.createElement('p');
+            infoText.textContent = q.info;
+            infoBox.appendChild(infoText);
+
+            card.appendChild(questionNumber);
+            card.appendChild(questionText);
+            card.appendChild(optionsDiv);
+            card.appendChild(infoBox);
+
+            container.appendChild(card);
+        }});
+
+        // Add complete button
+        const completeBtn = document.createElement('button');
+        completeBtn.id = 'complete-btn';
+        completeBtn.textContent = 'Complete Pre-Assessment';
+        completeBtn.style.cssText = `
+            display: block;
+            margin: 2rem auto 0;
+            padding: 14px 32px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        `;
+        completeBtn.onclick = submitAssessment;
+        container.parentElement.insertBefore(completeBtn, container.parentElement.querySelector('.footer'));
+
+        function selectOption(card, selectedOption, questionIndex, optionIndex, optionValue) {{
+            // Remove selected class from all options in this card
+            card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            // Add selected class to clicked option
+            selectedOption.classList.add('selected');
+            // Show info box
+            const infoBox = card.querySelector('.info-box');
+            infoBox.classList.add('visible');
+
+            // Store response
+            responses[questionIndex] = {{
+                question: questions[questionIndex].question,
+                selectedOption: optionValue,
+                selectedIndex: optionIndex,
+                timestamp: Date.now()
+            }};
+
+            // Enable complete button if all questions answered
+            const allAnswered = responses.every(r => r !== null);
+            const btn = document.getElementById('complete-btn');
+            if (allAnswered) {{
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            }}
+        }}
+
+        function submitAssessment() {{
+            const duration = Date.now() - startTime;
+
+            // Send results to parent window via postMessage
+            window.parent.postMessage({{
+                type: 'simulation-complete',
+                simulationType: 'pre-assessment-quiz',
+                data: {{
+                    responses: responses,
+                    duration: duration,
+                    completedAt: new Date().toISOString(),
+                    questionsCount: questions.length
+                }}
+            }}, '*');
+
+            // Visual feedback
+            const btn = document.getElementById('complete-btn');
+            btn.textContent = 'Submitted! ✓';
+            btn.style.background = '#10b981';
+            btn.disabled = true;
+        }}
+    </script>
+</body>
+</html>"""
+
+    return html_content
+
+
+def generate_concept_preview_html(
+    module_title: str,
+    key_points: List[str],
+    learning_objectives: List[str]
+) -> str:
+    """
+    Generate a concept preview/overview simulation.
+    """
+
+    points_html = ""
+    for point in key_points:
+        points_html += f"""
+            <div class="point-item">
+                <div class="point-icon">▸</div>
+                <div class="point-text">{point}</div>
+            </div>"""
+
+    objectives_html = ""
+    for i, obj in enumerate(learning_objectives, 1):
+        objectives_html += f"""
+            <div class="objective-item">
+                <div class="objective-number">{i}</div>
+                <div class="objective-text">{obj}</div>
+            </div>"""
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview: {module_title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
+        body {{
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }}
+
+        .preview-container {{
+            max-width: 800px;
+            margin: 0 auto;
+        }}
+
+        .header {{
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }}
+
+        .header h2 {{
+            color: var(--color-neutral-900);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }}
+
+        .header p {{
+            color: var(--color-neutral-600);
+            font-size: 1.05rem;
+        }}
+
+        .section {{
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }}
+
+        .section h3 {{
+            color: var(--color-neutral-900);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }}
+
+        .point-item {{
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }}
+
+        .point-icon {{
+            color: var(--color-neutral-900);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }}
+
+        .point-text {{
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }}
+
+        .objective-item {{
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }}
+
+        .objective-number {{
+            width: 32px;
+            height: 32px;
+            background: var(--color-neutral-900);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }}
+
+        .objective-text {{
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            padding-top: 0.25rem;
+        }}
+
+        .complete-button {{
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto 0;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }}
+
+        .complete-button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }}
+
+        .complete-button:active {{
+            transform: translateY(0);
+        }}
+
+        @media (max-width: 640px) {{
+            body {{
+                padding: 16px;
+            }}
+            .header h2 {{
+                font-size: 1.5rem;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="header">
+            <h2>{module_title}</h2>
+            <p>What you'll learn in this module</p>
+        </div>
+
+        <div class="section">
+            <h3>Key Concepts</h3>
+            {points_html}
+        </div>
+
+        <div class="section">
+            <h3>Learning Objectives</h3>
+            {objectives_html}
+        </div>
+
+        <button id="complete-btn" class="complete-button" onclick="markComplete()">
+            I've Reviewed This →
+        </button>
+    </div>
+
+    <script>
+        const startTime = Date.now();
+
+        function markComplete() {{
+            const duration = Date.now() - startTime;
+
+            // Send completion data to parent window
+            window.parent.postMessage({{
+                type: 'simulation-complete',
+                simulationType: 'concept-preview',
+                data: {{
+                    duration: duration,
+                    completedAt: new Date().toISOString(),
+                    moduleTitle: '{module_title}'
+                }}
+            }}, '*');
+
+            // Visual feedback
+            const btn = document.getElementById('complete-btn');
+            btn.textContent = 'Review Recorded! ✓';
+            btn.style.background = '#10b981';
+            btn.disabled = true;
+        }}
+    </script>
+</body>
+</html>"""
+
+    return html_content
+
+@app.post("/generate-simulation")
+async def generate_simulation(body: GenerateSimulationRequest):
+    """
+    Generate an interactive educational simulation.
+
+    Args:
+        simulation_type: Type of simulation to generate
+        course_format: "cohort" or "self-paced" (affects terminology)
+        data: Simulation-specific data
+
+    Returns:
+        Generated HTML simulation with metadata
+    """
+    try:
+        if body.simulation_type == "learning-outcomes-map":
+            # Extract data
+            module_number = body.data.get("module_number", 1)
+            module_title = body.data.get("module_title", "Module")
+            module_outcomes = body.data.get("module_outcomes", [])
+            course_outcomes = body.data.get("course_outcomes", [])
+
+            # Generate HTML
+            html = generate_learning_outcomes_simulation_html(
+                course_format=body.course_format,
+                module_number=module_number,
+                module_title=module_title,
+                module_outcomes=module_outcomes,
+                course_outcomes=course_outcomes
+            )
+
+            outcome_type = "MLO" if body.course_format == "self-paced" else "WLO"
+
+            logger.info(f"Generated learning outcomes simulation for {module_title} ({body.course_format} format)")
+
+            return {
+                "success": True,
+                "html": html,
+                "metadata": {
+                    "type": "learning-outcomes-map",
+                    "title": f"{module_title} Learning Outcomes",
+                    "course_format": body.course_format,
+                    "outcome_type": outcome_type,
+                    "accessibility_compliant": True,
+                    "design_system_version": "1.0"
+                }
+            }
+
+        elif body.simulation_type == "pre-assessment-quiz":
+            # Extract data
+            module_title = body.data.get("module_title", "Module")
+            questions = body.data.get("questions", [])
+
+            # Generate HTML
+            html = generate_pre_assessment_quiz_html(
+                module_title=module_title,
+                questions=questions
+            )
+
+            logger.info(f"Generated pre-assessment quiz for {module_title}")
+
+            return {
+                "success": True,
+                "html": html,
+                "metadata": {
+                    "type": "pre-assessment-quiz",
+                    "title": f"{module_title} Pre-Assessment",
+                    "question_count": len(questions),
+                    "accessibility_compliant": True,
+                    "design_system_version": "1.0"
+                }
+            }
+
+        elif body.simulation_type == "concept-preview":
+            # Extract data
+            module_title = body.data.get("module_title", "Module")
+            key_points = body.data.get("key_points", [])
+            learning_objectives = body.data.get("learning_objectives", [])
+
+            # Generate HTML
+            html = generate_concept_preview_html(
+                module_title=module_title,
+                key_points=key_points,
+                learning_objectives=learning_objectives
+            )
+
+            logger.info(f"Generated concept preview for {module_title}")
+
+            return {
+                "success": True,
+                "html": html,
+                "metadata": {
+                    "type": "concept-preview",
+                    "title": f"{module_title} Preview",
+                    "accessibility_compliant": True,
+                    "design_system_version": "1.0"
+                }
+            }
+
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Simulation type '{body.simulation_type}' not yet implemented"
+            )
+
+    except Exception as e:
+        logger.error(f"Error generating simulation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate simulation: {str(e)}"
+        )
+
+
+@app.post("/courses/{course_id}/modules/{module_id}/cache-simulations")
+async def cache_module_simulations(course_id: str, module_id: str):
+    """
+    Generate and cache all three simulations for a module.
+
+    Creates simulations directory structure and saves HTML files:
+    - pre-assessment-quiz.html
+    - concept-preview.html
+    - learning-outcomes-map.html
+    """
+    try:
+        # Get module metadata
+        module_dir = config.RESOURCE_BANK_DIR / "user-courses" / course_id / module_id
+        if not module_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Module {module_id} not found in course {course_id}"
+            )
+
+        metadata_file = module_dir / "metadata.json"
+        with open(metadata_file, 'r', encoding='utf-8') as f:
+            module_data = json.load(f)
+
+        # Get course metadata for course-level outcomes
+        course_metadata_file = config.RESOURCE_BANK_DIR / "user-courses" / course_id / "metadata.json"
+        with open(course_metadata_file, 'r', encoding='utf-8') as f:
+            course_data = json.load(f)
+
+        # Create simulations directory
+        simulations_dir = module_dir / "simulations"
+        simulations_dir.mkdir(exist_ok=True)
+
+        module_outcomes = module_data.get("module_learning_outcomes", [])
+        module_title = module_data.get("title", module_id)
+        course_outcomes = course_data.get("course_learning_outcomes", [])
+        course_format = course_data.get("format", "cohort")  # Default to cohort if not specified
+
+        # Generate each simulation type
+        generated = {}
+
+        # 1. Pre-Assessment Quiz
+        quiz_data = {
+            "module_title": module_title,
+            "questions": [
+                {
+                    "question": f"How familiar are you with: {outcome}?",
+                    "options": ["Not familiar", "Somewhat familiar", "Very familiar", "Expert level"],
+                    "info": "This helps us personalize your learning experience"
+                }
+                for outcome in module_outcomes[:3]  # Use first 3 outcomes
+            ]
+        }
+        quiz_html = generate_pre_assessment_quiz_html(
+            module_title=quiz_data["module_title"],
+            questions=quiz_data["questions"]
+        )
+        quiz_file = simulations_dir / "pre-assessment-quiz.html"
+        quiz_file.write_text(quiz_html, encoding='utf-8')
+        generated["pre-assessment-quiz"] = str(quiz_file.relative_to(config.RESOURCE_BANK_DIR))
+
+        # 2. Concept Preview
+        preview_data = {
+            "module_title": module_title,
+            "key_points": [outcome.replace("Students will be able to ", "").replace("students will be able to ", "")
+                          for outcome in module_outcomes[:4]],
+            "learning_objectives": module_outcomes
+        }
+        preview_html = generate_concept_preview_html(
+            module_title=preview_data["module_title"],
+            key_points=preview_data["key_points"],
+            learning_objectives=preview_data["learning_objectives"]
+        )
+        preview_file = simulations_dir / "concept-preview.html"
+        preview_file.write_text(preview_html, encoding='utf-8')
+        generated["concept-preview"] = str(preview_file.relative_to(config.RESOURCE_BANK_DIR))
+
+        # 3. Learning Outcomes Map
+        map_data = {
+            "module_number": int(module_id.split("-")[1]) if "-" in module_id else 1,
+            "module_title": module_title,
+            "module_outcomes": [
+                {
+                    "text": outcome,
+                    "clos": [f"CLO {i+1}" for i in range(min(2, len(course_outcomes)))]  # Map to first 2 CLOs
+                }
+                for outcome in module_outcomes
+            ],
+            "course_outcomes": [
+                {"code": f"CLO {i+1}", "text": outcome}
+                for i, outcome in enumerate(course_outcomes)
+            ]
+        }
+        map_html = generate_learning_outcomes_simulation_html(
+            course_format=course_format,
+            module_number=map_data["module_number"],
+            module_title=map_data["module_title"],
+            module_outcomes=map_data["module_outcomes"],
+            course_outcomes=map_data["course_outcomes"]
+        )
+        map_file = simulations_dir / "learning-outcomes-map.html"
+        map_file.write_text(map_html, encoding='utf-8')
+        generated["learning-outcomes-map"] = str(map_file.relative_to(config.RESOURCE_BANK_DIR))
+
+        logger.info(f"Cached {len(generated)} simulations for {course_id}/{module_id}")
+
+        return {
+            "success": True,
+            "module_id": module_id,
+            "course_id": course_id,
+            "simulations": generated,
+            "cached_at": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        logger.error(f"Error caching simulations: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to cache simulations: {str(e)}"
+        )
+
+
+@app.get("/courses/{course_id}/modules/{module_id}/simulations/{simulation_type}")
+async def get_cached_simulation(course_id: str, module_id: str, simulation_type: str):
+    """
+    Serve a cached simulation HTML file.
+
+    Args:
+        course_id: Course identifier
+        module_id: Module identifier
+        simulation_type: One of: pre-assessment-quiz, concept-preview, learning-outcomes-map
+    """
+    try:
+        valid_types = ["pre-assessment-quiz", "concept-preview", "learning-outcomes-map"]
+        if simulation_type not in valid_types:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid simulation type. Must be one of: {', '.join(valid_types)}"
+            )
+
+        simulation_file = (
+            config.RESOURCE_BANK_DIR / "user-courses" / course_id / module_id /
+            "simulations" / f"{simulation_type}.html"
+        )
+
+        if not simulation_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Simulation not found. Generate it first using POST /courses/{course_id}/modules/{module_id}/cache-simulations"
+            )
+
+        html_content = simulation_file.read_text(encoding='utf-8')
+
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html_content)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving cached simulation: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to serve simulation: {str(e)}"
+        )
+
+
+@app.post("/simulation-results")
+async def save_simulation_results(request: Request):
+    """
+    Save simulation results to learner model and generate feedback.
+
+    Expected payload:
+    {
+        "learner_id": "string",
+        "course_id": "string",
+        "module_id": "string",
+        "simulation_type": "pre-assessment-quiz" | "concept-preview" | "learning-outcomes-map",
+        "data": {...},
+        "timestamp": "ISO 8601 string"
+    }
+    """
+    try:
+        payload = await request.json()
+        learner_id = payload.get("learner_id")
+        course_id = payload.get("course_id")
+        module_id = payload.get("module_id")
+        simulation_type = payload.get("simulation_type")
+        data = payload.get("data")
+        timestamp = payload.get("timestamp")
+
+        if not all([learner_id, course_id, module_id, simulation_type, data]):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing required fields"
+            )
+
+        # Load learner model
+        learner_model = load_learner_model(learner_id)
+
+        # Initialize simulation_results structure if it doesn't exist
+        if "simulation_results" not in learner_model:
+            learner_model["simulation_results"] = {}
+
+        # Store the simulation results
+        if course_id not in learner_model["simulation_results"]:
+            learner_model["simulation_results"][course_id] = {}
+
+        if module_id not in learner_model["simulation_results"][course_id]:
+            learner_model["simulation_results"][course_id][module_id] = []
+
+        # Add this simulation result
+        learner_model["simulation_results"][course_id][module_id].append({
+            "simulation_type": simulation_type,
+            "data": data,
+            "timestamp": timestamp
+        })
+
+        # Save updated learner model
+        save_learner_model(learner_id, learner_model)
+        logger.info(f"Saved simulation results for {learner_id}: {simulation_type}")
+
+        # Generate feedback based on simulation type and results
+        feedback = generate_simulation_feedback(
+            simulation_type=simulation_type,
+            data=data,
+            learner_model=learner_model,
+            course_id=course_id,
+            module_id=module_id
+        )
+
+        return {
+            "success": True,
+            "message": "Simulation results saved successfully",
+            "feedback": feedback
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving simulation results: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save simulation results: {str(e)}"
+        )
+
+
+def generate_simulation_feedback(
+    simulation_type: str,
+    data: dict,
+    learner_model: dict,
+    course_id: str,
+    module_id: str
+) -> dict:
+    """
+    Generate personalized feedback based on simulation results.
+
+    Args:
+        simulation_type: Type of simulation completed
+        data: Simulation response data
+        learner_model: Current learner model
+        course_id: Course identifier
+        module_id: Module identifier
+
+    Returns:
+        Feedback dictionary with title, message, and insights
+    """
+    try:
+        if simulation_type == "pre-assessment-quiz":
+            # Analyze pre-assessment responses
+            responses = data.get("responses", [])
+            questions_count = data.get("questionsCount", len(responses))
+            duration = data.get("duration", 0)
+
+            # Count responses by option value (if available)
+            confidence_levels = {"high": 0, "medium": 0, "low": 0, "none": 0}
+            for response in responses:
+                option = response.get("selectedOption", "").lower()
+                if "very confident" in option or "mastered" in option:
+                    confidence_levels["high"] += 1
+                elif "somewhat confident" in option or "familiar" in option:
+                    confidence_levels["medium"] += 1
+                elif "not confident" in option or "heard of" in option:
+                    confidence_levels["low"] += 1
+                elif "never heard" in option or "no idea" in option:
+                    confidence_levels["none"] += 1
+
+            # Generate insights based on confidence distribution
+            insights = []
+
+            if confidence_levels["high"] >= questions_count * 0.5:
+                insights.append("You seem to have strong prior knowledge in several areas - we'll move quickly through familiar content.")
+            elif confidence_levels["none"] + confidence_levels["low"] >= questions_count * 0.5:
+                insights.append("We'll take extra time to build foundations in these new concepts.")
+            else:
+                insights.append("You have a mix of familiarity - perfect for adaptive learning!")
+
+            if duration < 30000:  # Less than 30 seconds
+                insights.append("You completed this quickly - we'll ensure the pace matches your needs.")
+
+            insights.append("Your responses will help personalize upcoming lessons and examples.")
+
+            return {
+                "title": "Pre-Assessment Complete!",
+                "message": f"Thank you for completing the pre-assessment. Your responses to {questions_count} questions will help us tailor your learning experience.",
+                "insights": insights
+            }
+
+        elif simulation_type == "concept-preview":
+            return {
+                "title": "Preview Explored!",
+                "message": "Great job exploring the concept preview. This should give you a solid foundation for what's coming next.",
+                "insights": [
+                    "These preview concepts will be revisited in detail during the lesson.",
+                    "Feel free to refer back to this preview anytime."
+                ]
+            }
+
+        elif simulation_type == "learning-outcomes-map":
+            return {
+                "title": "Learning Path Reviewed!",
+                "message": "You've reviewed the learning outcomes map. Keep these goals in mind as you progress.",
+                "insights": [
+                    "Each outcome builds on previous concepts.",
+                    "You can revisit this map anytime to track your progress."
+                ]
+            }
+
+        else:
+            return {
+                "title": "Simulation Complete!",
+                "message": "Thank you for completing this interactive simulation.",
+                "insights": []
+            }
+
+    except Exception as e:
+        logger.error(f"Error generating simulation feedback: {e}")
+        return {
+            "title": "Simulation Complete!",
+            "message": "Thank you for completing this simulation.",
+            "insights": []
+        }
+
+
+# ============================================================================
+# Admin Endpoints
+# ============================================================================
+
+@app.get("/admin/learners")
+async def get_all_learners(course_id: str = None):
+    """
+    Get all learners with their basic progress information.
+
+    Args:
+        course_id: Optional course ID to filter learners by current course
+
+    Returns a list of all learners with basic stats for admin dashboard.
+    """
+    try:
+        learners_data = []
+
+        # Iterate through all learner model files
+        for learner_file in config.LEARNER_MODELS_DIR.glob("*.json"):
+            learner_id = learner_file.stem
+
+            try:
+                learner_model = load_learner_model(learner_id)
+
+                # Filter by course if specified
+                if course_id and learner_model.get("current_course") != course_id:
+                    continue
+
+                # Build learner summary
+                learner_summary = {
+                    "learner_id": learner_id,
+                    "learner_name": learner_model.get("learner_name", learner_id),
+                    "current_course": learner_model.get("current_course"),
+                    "progress": {
+                        "current_concept": learner_model.get("current_concept"),
+                        "completed_concepts": learner_model.get("completed_concepts", []),
+                        "overall_progress": learner_model.get("overall_progress", {})
+                    }
+                }
+
+                learners_data.append(learner_summary)
+
+            except Exception as e:
+                logger.warning(f"Failed to load learner {learner_id}: {e}")
+                continue
+
+        logger.info(f"Retrieved {len(learners_data)} learners{f' for course {course_id}' if course_id else ''}")
+
+        return {
+            "success": True,
+            "learners": learners_data,
+            "total": len(learners_data)
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting all learners: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve learners: {str(e)}"
+        )
+
+
+class UpdateModuleRequest(BaseModel):
+    course_id: str
+    title: str
+    module_learning_outcomes: List[str]
+
+
+@app.put("/admin/modules/{module_id}")
+async def update_module(module_id: str, body: UpdateModuleRequest):
+    """
+    Update module metadata.
+
+    Args:
+        module_id: Module identifier
+        body: Updated module data
+
+    Returns success status and updated module data.
+    """
+    try:
+        module_dir = config.get_module_dir(module_id, body.course_id)
+
+        if not module_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Module {module_id} not found in course {body.course_id}"
+            )
+
+        metadata_file = module_dir / "metadata.json"
+
+        # Load existing metadata
+        if metadata_file.exists():
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+        else:
+            metadata = {"id": module_id}
+
+        # Update fields
+        metadata["title"] = body.title
+        metadata["module_learning_outcomes"] = body.module_learning_outcomes
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Updated module {module_id} in course {body.course_id}")
+
+        return {
+            "success": True,
+            "module_id": module_id,
+            "title": body.title,
+            "module_learning_outcomes": body.module_learning_outcomes
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating module {module_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update module: {str(e)}"
+        )
+
+
+class UpdateConceptRequest(BaseModel):
+    course_id: str
+    module_id: str
+    title: str
+    learning_objectives: List[str]
+
+
+@app.put("/admin/concepts/{concept_id}")
+async def update_concept(concept_id: str, body: UpdateConceptRequest):
+    """
+    Update concept metadata.
+
+    Args:
+        concept_id: Concept identifier
+        body: Updated concept data
+
+    Returns success status and updated concept data.
+    """
+    try:
+        concept_dir = config.get_concept_dir(concept_id, body.course_id, body.module_id)
+
+        if not concept_dir.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Concept {concept_id} not found"
+            )
+
+        metadata_file = concept_dir / "metadata.json"
+
+        # Load existing metadata
+        if metadata_file.exists():
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+        else:
+            metadata = {"concept_id": concept_id}
+
+        # Update fields
+        metadata["title"] = body.title
+        metadata["learning_objectives"] = body.learning_objectives
+
+        # Save updated metadata
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Updated concept {concept_id} in course {body.course_id}")
+
+        return {
+            "success": True,
+            "concept_id": concept_id,
+            "title": body.title,
+            "learning_objectives": body.learning_objectives
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating concept {concept_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update concept: {str(e)}"
         )
 
 

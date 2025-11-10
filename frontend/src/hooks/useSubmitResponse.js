@@ -25,7 +25,7 @@ export function useSubmitResponse() {
     setError(null)
 
     try {
-      console.log('🚀 Submitting response to API:', { questionType, answer, confidence })
+      console.log('Submitting response to API:', { questionType, answer, confidence })
 
       const result = await api.submitResponse(
         learnerId,
@@ -39,9 +39,9 @@ export function useSubmitResponse() {
         options
       )
 
-      console.log('📥 API Response received:', result)
-      console.log('📦 next_content type:', result.next_content?.type)
-      console.log('📦 next_content has _next_content:', !!result.next_content?._next_content)
+      console.log('API Response received:', result)
+      console.log('next_content type:', result.next_content?.type)
+      console.log('next_content has _next_content:', !!result.next_content?._next_content)
 
       if (result.next_content) {
         // Attach debug info to content for debugging display
@@ -50,7 +50,7 @@ export function useSubmitResponse() {
           debug_context: result.debug_context
         }
 
-        console.log('✨ contentWithDebug prepared:', {
+        console.log('contentWithDebug prepared:', {
           type: contentWithDebug.type,
           hasNextContent: !!contentWithDebug._next_content,
           hasFeedback: !!contentWithDebug.feedback
@@ -58,7 +58,7 @@ export function useSubmitResponse() {
 
         // Call success callback with the content AND mastery data
         if (onSuccess) {
-          console.log('🎯 Calling onSuccess callback')
+          console.log('Calling onSuccess callback')
           onSuccess(contentWithDebug, {
             masteryScore: result.mastery_score,
             masteryThreshold: result.mastery_threshold,
@@ -74,12 +74,12 @@ export function useSubmitResponse() {
           conceptCompleted: result.concept_completed
         }}
       } else {
-        console.error('❌ No next_content in API response')
+        console.error('No next_content in API response')
         setError('Failed to get next content')
         return { success: false, error: 'Failed to get next content' }
       }
     } catch (err) {
-      console.error('❌ API call failed:', err)
+      console.error('API call failed:', err)
       setError('Connection error. Please try again.')
       console.error('Failed to submit response:', err)
       return { success: false, error: err }

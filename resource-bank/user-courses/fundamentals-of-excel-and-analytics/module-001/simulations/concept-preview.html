@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview: Linear Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .preview-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header h2 {
+            color: var(--color-neutral-900);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 1.05rem;
+        }
+
+        .section {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section h3 {
+            color: var(--color-neutral-900);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .point-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .point-icon {
+            color: var(--color-neutral-900);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .point-text {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .objective-number {
+            width: 32px;
+            height: 32px;
+            background: var(--color-neutral-900);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .objective-text {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            padding-top: 0.25rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px;
+            }
+            .header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="header">
+            <h2>Linear Functions</h2>
+            <p>What you'll learn in this module</p>
+        </div>
+
+        <div class="section">
+            <h3>Key Concepts</h3>
+            
+            <div class="point-item">
+                <div class="point-icon">▸</div>
+                <div class="point-text">Define functions and identify input-output relationships</div>
+            </div>
+            <div class="point-item">
+                <div class="point-icon">▸</div>
+                <div class="point-text">Interpret the slope (m) in y = mx + b as variable cost or rate of change in business contexts</div>
+            </div>
+            <div class="point-item">
+                <div class="point-icon">▸</div>
+                <div class="point-text">Interpret the intercept (b) in y = mx + b as fixed cost or baseline value in business contexts</div>
+            </div>
+            <div class="point-item">
+                <div class="point-icon">▸</div>
+                <div class="point-text">Graph linear functions using Excel and identify how changing m and b affects the line</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Learning Objectives</h3>
+            
+            <div class="objective-item">
+                <div class="objective-number">1</div>
+                <div class="objective-text">Define functions and identify input-output relationships</div>
+            </div>
+            <div class="objective-item">
+                <div class="objective-number">2</div>
+                <div class="objective-text">Interpret the slope (m) in y = mx + b as variable cost or rate of change in business contexts</div>
+            </div>
+            <div class="objective-item">
+                <div class="objective-number">3</div>
+                <div class="objective-text">Interpret the intercept (b) in y = mx + b as fixed cost or baseline value in business contexts</div>
+            </div>
+            <div class="objective-item">
+                <div class="objective-number">4</div>
+                <div class="objective-text">Graph linear functions using Excel and identify how changing m and b affects the line</div>
+            </div>
+            <div class="objective-item">
+                <div class="objective-number">5</div>
+                <div class="objective-text">Apply linear functions to model cost, revenue, and break-even scenarios</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

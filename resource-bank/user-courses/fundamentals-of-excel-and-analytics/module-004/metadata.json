@@ -1,0 +1,18 @@
+{
+  "id": "module-004",
+  "title": "Measures of Central Tendency & Dispersion",
+  "module_learning_outcomes": [
+    "Calculate mean, median, and mode using Excel functions (AVERAGE, MEDIAN, MODE.SNGL)",
+    "Interpret measures of central tendency to summarize business datasets",
+    "Calculate variance and standard deviation using Excel functions (VAR.S, STDEV.S)",
+    "Interpret standard deviation to assess risk, volatility, and consistency in business metrics",
+    "Select appropriate measures of central tendency and dispersion based on data characteristics"
+  ],
+  "concepts": [
+    "concept-016",
+    "concept-017",
+    "concept-018",
+    "concept-019",
+    "concept-020"
+  ]
+}

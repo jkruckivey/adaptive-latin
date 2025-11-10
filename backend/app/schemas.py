@@ -9,6 +9,7 @@ class StartRequest(BaseModel):
     learner_id: str = Field(..., description="Unique identifier for the learner")
     learner_name: Optional[str] = Field(None, description="Learner's name")
     profile: Optional[Dict[str, Any]] = Field(None, description="Learner profile from onboarding")
+    course_id: Optional[str] = Field(None, description="Course ID to enroll in")
 
 class ChatRequest(BaseModel):
     learner_id: str = Field(..., description="Unique identifier for the learner")
@@ -34,7 +35,7 @@ class ProgressResponse(BaseModel):
 class ConceptResponse(BaseModel):
     concept_id: str
     title: str
-    difficulty: int
+    difficulty: str  # Can be string like "medium" or "easy"
     prerequisites: List[str]
     learning_objectives: List[str]
     estimated_mastery_time: str

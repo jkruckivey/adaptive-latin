@@ -7,7 +7,7 @@ function ConceptMasteryModal({ conceptId, masteryScore, onContinue }) {
     <div className="mastery-modal-overlay">
       <div className="mastery-modal">
         <div className="mastery-celebration">
-          <div className="mastery-icon">🎉</div>
+          <div className="mastery-icon"></div>
           <h1 className="mastery-title">Concept Mastered!</h1>
           <p className="mastery-subtitle">
             You've demonstrated mastery of Concept {conceptNumber}
@@ -16,7 +16,7 @@ function ConceptMasteryModal({ conceptId, masteryScore, onContinue }) {
 
         <div className="mastery-details">
           <div className="mastery-stat">
-            <div className="stat-icon">⭐</div>
+            <div className="stat-icon"></div>
             <div className="stat-content">
               <div className="stat-label">Final Score</div>
               <div className="stat-value">{Math.round(masteryScore * 100)}%</div>

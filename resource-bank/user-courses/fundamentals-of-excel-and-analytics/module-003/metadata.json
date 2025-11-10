@@ -1,0 +1,18 @@
+{
+  "id": "module-003",
+  "title": "Functions Practice & Assessment",
+  "module_learning_outcomes": [
+    "Distinguish between linear and quadratic business scenarios",
+    "Select the appropriate function type (linear or quadratic) based on problem characteristics",
+    "Build Excel models combining cost, revenue, and profit functions",
+    "Communicate quantitative findings to business stakeholders through written analysis",
+    "Evaluate pricing and production decisions using function-based models"
+  ],
+  "concepts": [
+    "concept-011",
+    "concept-012",
+    "concept-013",
+    "concept-014",
+    "concept-015"
+  ]
+}

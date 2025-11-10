@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import CourseSetup from './CourseSetup'
-import ConceptPlanner from './ConceptPlanner'
+import ModulePlanner from './ModulePlanner'
 import ResourceLibrary from './ResourceLibrary'
 import ConceptEditor from './ConceptEditor'
 import CourseReview from './CourseReview'
@@ -15,8 +15,8 @@ function CourseCreationWizard({ onComplete, onCancel }) {
     description: '',
     targetAudience: '',
 
-    // Concepts
-    concepts: [],
+    // Modules (each module contains concepts)
+    modules: [],
 
     // External sources
     sources: []
@@ -24,7 +24,7 @@ function CourseCreationWizard({ onComplete, onCancel }) {
 
   const steps = [
     { title: 'Course Setup', component: CourseSetup },
-    { title: 'Plan Concepts', component: ConceptPlanner },
+    { title: 'Plan Modules', component: ModulePlanner },
     { title: 'Resource Library', component: ResourceLibrary },
     { title: 'Build Content', component: ConceptEditor },
     { title: 'Review & Publish', component: CourseReview }

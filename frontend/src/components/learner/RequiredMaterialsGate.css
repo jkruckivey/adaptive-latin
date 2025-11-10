@@ -44,7 +44,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4caf50, #66bb6a);
+  background: #10b981;
   transition: width 0.3s ease;
 }
 
@@ -64,8 +64,8 @@
 }
 
 .material-card.completed {
-  border-color: #4caf50;
-  background: #f1f8f4;
+  border-color: #10b981;
+  background: transparent;
 }
 
 .material-card.incomplete {
@@ -109,7 +109,7 @@
 }
 
 .completion-badge {
-  background: #4caf50;
+  background: #10b981;
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -174,8 +174,8 @@
 }
 
 .complete-notice {
-  background: #d4edda;
-  border: 2px solid #4caf50;
+  background: transparent;
+  border: 2px solid #10b981;
   border-radius: 12px;
   padding: 25px;
   text-align: center;
@@ -190,7 +190,7 @@
 
 .proceed-button {
   padding: 15px 40px;
-  background: #4caf50;
+  background: #10b981;
   color: white;
   border: none;
   border-radius: 8px;
@@ -201,9 +201,9 @@
 }
 
 .proceed-button:hover {
-  background: #45a049;
+  background: #059669;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
 /* Material Viewer */
@@ -252,7 +252,7 @@
 .material-link-section {
   margin-bottom: 30px;
   padding: 20px;
-  background: #f8f9fa;
+  background: #e5e7eb;
   border-radius: 8px;
   text-align: center;
 }
@@ -300,7 +300,7 @@
 
 .mark-complete-button {
   padding: 12px 30px;
-  background: #4caf50;
+  background: #10b981;
   color: white;
   border: none;
   border-radius: 8px;
@@ -311,9 +311,9 @@
 }
 
 .mark-complete-button:hover {
-  background: #45a049;
+  background: #059669;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 @media (max-width: 768px) {

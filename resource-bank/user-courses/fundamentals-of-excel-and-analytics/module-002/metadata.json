@@ -1,0 +1,18 @@
+{
+  "id": "module-002",
+  "title": "Quadratic Functions",
+  "module_learning_outcomes": [
+    "Identify quadratic functions in the form y = ax² + bx + c",
+    "Interpret the coefficient 'a' to determine parabola direction (opens up/down) and width (narrow/wide)",
+    "Calculate vertex coordinates to find maximum or minimum values in business optimization problems",
+    "Apply quadratic functions to model profit maximization and revenue optimization scenarios",
+    "Use Excel to graph parabolas and identify optimal business decisions"
+  ],
+  "concepts": [
+    "concept-006",
+    "concept-007",
+    "concept-008",
+    "concept-009",
+    "concept-010"
+  ]
+}

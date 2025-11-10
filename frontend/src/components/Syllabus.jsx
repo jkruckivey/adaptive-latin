@@ -18,8 +18,21 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
       setLoading(true)
       setError(null)
 
-      // Load course metadata (includes CLOs and concept list)
+      // Load course metadata (includes CLOs)
       const course = await api.getCourse(courseId)
+
+      // Try to load modules first (module-based structure)
+      const moduleData = await api.getModules(learnerId, courseId)
+
+      if (moduleData.success && moduleData.modules && moduleData.modules.length > 0) {
+        // Module-based structure - restructure to match expected format
+        course.modules = moduleData.modules
+        course.concepts = [] // Clear flat concepts if using modules
+      } else {
+        // Flat structure - use concepts from course
+        course.modules = []
+      }
+
       setCourseData(course)
 
       // Load learner progress (includes mastery scores and current concept)
@@ -28,12 +41,28 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
 
       // Load detailed metadata for each concept (to get MLOs)
       const details = {}
-      for (const concept of course.concepts || []) {
-        try {
-          const metadata = await api.getConceptMetadata(concept.concept_id)
-          details[concept.concept_id] = metadata
-        } catch (err) {
-          console.warn(`Failed to load details for ${concept.concept_id}:`, err)
+
+      if (course.modules && course.modules.length > 0) {
+        // Load metadata for concepts within modules
+        for (const module of course.modules) {
+          for (const conceptId of module.concepts) {
+            try {
+              const metadata = await api.getConceptMetadata(conceptId, learnerId, courseId)
+              details[conceptId] = metadata
+            } catch (err) {
+              console.warn(`Failed to load details for ${conceptId}:`, err)
+            }
+          }
+        }
+      } else {
+        // Load metadata for flat concept list
+        for (const concept of course.concepts || []) {
+          try {
+            const metadata = await api.getConceptMetadata(concept.concept_id, learnerId, courseId)
+            details[concept.concept_id] = metadata
+          } catch (err) {
+            console.warn(`Failed to load details for ${concept.concept_id}:`, err)
+          }
         }
       }
       setConceptDetails(details)
@@ -81,9 +110,9 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed': return '✓'
-      case 'in-progress': return '⚡'
+      case 'in-progress': return ''
       case 'available': return '○'
-      case 'locked': return '🔒'
+      case 'locked': return ''
       default: return ''
     }
   }
@@ -140,7 +169,7 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
     <div className="syllabus-overlay" onClick={onClose}>
       <div className="syllabus-modal" onClick={(e) => e.stopPropagation()}>
         <div className="syllabus-header">
-          <h1>📚 {courseData?.title || 'Course Syllabus'}</h1>
+          <h1>{courseData?.title || 'Course Syllabus'}</h1>
           <button className="close-button" onClick={onClose}>✕</button>
         </div>
 
@@ -196,9 +225,73 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
 
           {/* Concepts/Modules List */}
           <section className="concepts-section">
-            <h2>Modules</h2>
+            <h2>{courseData?.modules && courseData.modules.length > 0 ? 'Modules' : 'Concepts'}</h2>
             <div className="concepts-list">
-              {courseData?.concepts?.map((concept, index) => {
+              {/* Module-based structure */}
+              {courseData?.modules && courseData.modules.length > 0 ? (
+                courseData.modules.map((module, moduleIndex) => (
+                  <div key={module.id} className="module-group">
+                    <h3 className="module-title-syllabus">
+                      Module {moduleIndex + 1}: {module.title}
+                    </h3>
+                    {module.concepts.map((conceptId, conceptIndex) => {
+                      const status = getConceptStatus(conceptId)
+                      const mastery = getMasteryScore(conceptId)
+                      const detail = conceptDetails[conceptId]
+
+                      return (
+                        <div
+                          key={conceptId}
+                          className={`concept-card concept-${status}`}
+                        >
+                          <div className="concept-header">
+                            <div className="concept-title-row">
+                              <span className="concept-icon">{getStatusIcon(status)}</span>
+                              <h4 className="concept-title">
+                                {moduleIndex + 1}.{conceptIndex + 1}: {detail?.title || conceptId}
+                              </h4>
+                            </div>
+                            <div className="concept-meta">
+                              <span className={`status-badge status-${status}`}>
+                                {getStatusLabel(status)}
+                              </span>
+                              {status !== 'locked' && mastery > 0 && (
+                                <span className="mastery-badge">
+                                  {Math.round(mastery * 100)}% Mastery
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Concept Learning Outcomes */}
+                          {detail?.learning_objectives && detail.learning_objectives.length > 0 && (
+                            <div className="mlo-section">
+                              <h5>Learning Objectives</h5>
+                              <ul className="mlo-list">
+                                {detail.learning_objectives.map((mlo, mloIndex) => (
+                                  <li key={mloIndex} className="mlo-item">
+                                    {mlo}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Prerequisites */}
+                          {detail?.prerequisites && detail.prerequisites.length > 0 && (
+                            <div className="prerequisites">
+                              <strong>Prerequisites:</strong>{' '}
+                              {detail.prerequisites.join(', ')}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))
+              ) : (
+                /* Flat structure fallback */
+                courseData?.concepts?.map((concept, index) => {
                 const status = getConceptStatus(concept.concept_id)
                 const mastery = getMasteryScore(concept.concept_id)
                 const detail = conceptDetails[concept.concept_id]
@@ -260,7 +353,8 @@ function Syllabus({ learnerId, courseId = 'latin-grammar', onClose }) {
                     )}
                   </div>
                 )
-              })}
+              })
+              )}
             </div>
           </section>
         </div>

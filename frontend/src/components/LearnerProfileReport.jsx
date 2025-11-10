@@ -56,9 +56,9 @@ function LearnerProfileReport({ learnerId }) {
     <div className="profile-report">
       <div className="profile-header" onClick={() => setIsExpanded(!isExpanded)}>
         <h3>Learner Profile Report</h3>
-        <button className="expand-toggle">
+        <span className="expand-toggle">
           {isExpanded ? '▼' : '▶'}
-        </button>
+        </span>
       </div>
 
       {isExpanded && (

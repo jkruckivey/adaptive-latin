@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '../../api'
 import ActionVerbHelper from './ActionVerbHelper'
 import { checkOutcomeQuality, domainExamples } from '../../utils/taxonomyData'
 import './LearningOutcomeBuilder.css'
@@ -13,12 +14,19 @@ function LearningOutcomeBuilder({
   maxOutcomes = 5,
   label = "Course Learning Outcomes",
   description = "What will students be able to do after completing this course?",
-  onGenerateSuggestions
+  onGenerateSuggestions,
+  isGenerating = false,
+  courseFormat = "cohort",
+  moduleNumber = 1,
+  moduleTitle = ""
 }) {
   const [showVerbHelper, setShowVerbHelper] = useState(false)
   const [currentEditIndex, setCurrentEditIndex] = useState(null)
   const [showExamples, setShowExamples] = useState(false)
   const [qualityFeedback, setQualityFeedback] = useState({})
+  const [simulationHtml, setSimulationHtml] = useState(null)
+  const [generatingSimulation, setGeneratingSimulation] = useState(false)
+  const [selectedSimulationType, setSelectedSimulationType] = useState('learning-outcomes-map')
 
   // Update quality feedback when outcomes change
   useEffect(() => {
@@ -81,6 +89,63 @@ function LearningOutcomeBuilder({
     setShowExamples(false)
   }
 
+  const handleGenerateSimulation = async () => {
+    const validOutcomes = outcomes.filter(o => o.trim())
+    if (validOutcomes.length === 0) {
+      alert('Please add at least one learning outcome first')
+      return
+    }
+
+    setGeneratingSimulation(true)
+    try {
+      let simulationData
+
+      if (selectedSimulationType === 'learning-outcomes-map') {
+        simulationData = {
+          module_number: moduleNumber,
+          module_title: moduleTitle || courseTitle || 'Preview Module',
+          module_outcomes: validOutcomes.map((text, i) => ({
+            text,
+            clos: ['CLO 1'] // Default connection for preview
+          })),
+          course_outcomes: [
+            { code: 'CLO 1', text: 'Course-level outcome (example)' }
+          ]
+        }
+      } else if (selectedSimulationType === 'pre-assessment-quiz') {
+        simulationData = {
+          module_title: moduleTitle || courseTitle || 'Preview Module',
+          questions: validOutcomes.slice(0, 3).map(outcome => ({
+            question: `How familiar are you with: ${outcome}?`,
+            options: ['Not familiar', 'Somewhat familiar', 'Very familiar', 'Expert level'],
+            info: 'This helps gauge your starting knowledge level'
+          }))
+        }
+      } else if (selectedSimulationType === 'concept-preview') {
+        simulationData = {
+          module_title: moduleTitle || courseTitle || 'Preview Module',
+          key_points: validOutcomes.slice(0, 4).map(o => o.replace(/^Students will be able to /, '')),
+          learning_objectives: validOutcomes
+        }
+      }
+
+      const response = await api.generateSimulation(
+        selectedSimulationType,
+        courseFormat,
+        simulationData
+      )
+
+      if (response.success) {
+        setSimulationHtml(response.html)
+      }
+    } catch (error) {
+      console.error('Error generating simulation:', error)
+      alert(`Failed to generate simulation: ${error.message}`)
+    } finally {
+      setGeneratingSimulation(false)
+    }
+  }
+
   return (
     <div className="learning-outcome-builder">
       <div className="builder-header">
@@ -93,16 +158,41 @@ function LearningOutcomeBuilder({
           <button
             onClick={onGenerateSuggestions}
             className="action-button ai-button"
+            disabled={isGenerating}
           >
-            ✨ Generate Suggestions with AI
+            {isGenerating ? 'Generating...' : 'Generate Suggestions with AI'}
           </button>
         )}
+        <div className="simulation-controls">
+          <select
+            value={selectedSimulationType}
+            onChange={(e) => setSelectedSimulationType(e.target.value)}
+            className="simulation-type-select"
+            disabled={generatingSimulation}
+          >
+            <option value="learning-outcomes-map">Learning Outcomes Map</option>
+            <option value="pre-assessment-quiz">Pre-Assessment Quiz</option>
+            <option value="concept-preview">Concept Preview</option>
+          </select>
+          <button
+            onClick={handleGenerateSimulation}
+            className="action-button secondary"
+            disabled={generatingSimulation || outcomes.filter(o => o.trim()).length === 0}
+            title={
+              generatingSimulation ? 'Generating simulation...' :
+              outcomes.filter(o => o.trim()).length === 0 ? 'Add at least one learning outcome to preview a simulation' :
+              'Generate an interactive preview of your learning outcomes'
+            }
+          >
+            {generatingSimulation ? 'Generating...' : 'Preview Simulation'}
+          </button>
+        </div>
         {examples.length > 0 && (
           <button
             onClick={() => setShowExamples(!showExamples)}
             className="action-button secondary"
           >
-            💡 {showExamples ? 'Hide' : 'Show'} Examples
+            {showExamples ? 'Hide' : 'Show'} Examples
           </button>
         )}
       </div>
@@ -123,6 +213,24 @@ function LearningOutcomeBuilder({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {simulationHtml && (
+        <div className="simulation-preview-panel">
+          <div className="preview-header">
+            <h4>Interactive Simulation Preview</h4>
+            <button
+              onClick={() => setSimulationHtml(null)}
+              className="close-preview-button"
+            >
+              Close Preview
+            </button>
+          </div>
+          <div
+            className="simulation-preview-content"
+            dangerouslySetInnerHTML={{ __html: simulationHtml }}
+          />
         </div>
       )}
 
@@ -154,7 +262,7 @@ function LearningOutcomeBuilder({
                 className="verb-helper-button"
                 title="Open action verb helper"
               >
-                📖 Verbs
+                Verbs
               </button>
             </div>
 
@@ -183,7 +291,7 @@ function LearningOutcomeBuilder({
       )}
 
       <div className="builder-hints">
-        <p><strong>💡 Writing Tips:</strong></p>
+        <p><strong>Writing Tips:</strong></p>
         <ul>
           <li>Start with "Students will be able to..." or similar learner-centered language</li>
           <li>Use measurable action verbs from {taxonomy === 'blooms' ? "Bloom's" : taxonomy === 'finks' ? "Fink's" : "Bloom's or Fink's"} taxonomy</li>

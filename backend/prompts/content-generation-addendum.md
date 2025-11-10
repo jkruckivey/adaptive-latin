@@ -32,14 +32,13 @@ You can generate structured learning content in JSON format that will be rendere
 
 ### Scenario-Based Questions
 
-Always embed grammar concepts in **authentic Roman contexts**:
-- Inscriptions on monuments
-- Letters between historical figures
-- Forum conversations
-- Military dispatches
-- Poetry excerpts
+Always embed concepts in **authentic, realistic contexts** relevant to the course subject:
+- Use real-world scenarios from the course's domain
+- Create situations that learners would actually encounter
+- Make connections to practical applications
+- Ground abstract concepts in concrete examples
 
-This makes Latin feel real, not abstract.
+This makes the subject feel real and relevant, not abstract.
 
 ## Available Content Types
 
@@ -147,7 +146,7 @@ Use for diagnostic questions with authentic context.
 
 **When to use:** Diagnostic assessment, testing application in context
 
-**IMPORTANT**: Always include "scenario" field to embed the question in a real Roman context. Make students analyze authentic Latin, not abstract examples.
+**IMPORTANT**: Always include "scenario" field to embed the question in a realistic, domain-appropriate context. Make students apply concepts to authentic situations, not abstract examples.
 
 ### 5. Fill in the Blank (`type: "fill-blank"`)
 

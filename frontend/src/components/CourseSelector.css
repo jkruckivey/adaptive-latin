@@ -1,0 +1,135 @@
+.course-selector {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.course-selector h2 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.selector-hint {
+  text-align: center;
+  color: #4a5568;
+  margin-bottom: 32px;
+  font-size: 1.05rem;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.course-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.course-card:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.course-card.selected {
+  border-color: #2d3748;
+  background: #f8f9fa;
+}
+
+.course-card h3 {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 1.25rem;
+}
+
+.course-domain {
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.course-description {
+  color: #718096;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.course-type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e2e8f0;
+  color: #4a5568;
+  font-size: 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.selector-actions {
+  text-align: center;
+}
+
+.continue-button {
+  padding: 14px 32px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: #2d3748;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.continue-button:hover:not(:disabled) {
+  background: #1a202c;
+  transform: translateY(-1px);
+}
+
+.continue-button:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2d3748;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.course-selector.single-course {
+  text-align: center;
+}
+
+.course-selector.single-course .course-card {
+  max-width: 500px;
+  margin: 0 auto 24px;
+  cursor: default;
+}
+
+.course-selector.single-course .course-card:hover {
+  transform: none;
+  box-shadow: none;
+}

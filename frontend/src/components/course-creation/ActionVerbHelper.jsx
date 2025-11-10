@@ -54,14 +54,14 @@ function ActionVerbHelper({ taxonomy, onSelectVerb, onClose }) {
 
       {taxonomy === 'blooms' && (
         <div className="taxonomy-note">
-          <strong>📚 Bloom's Taxonomy</strong>
+          <strong>Bloom's Taxonomy</strong>
           <p>Hierarchical: Course-level outcomes typically use higher-order verbs (Analyze, Evaluate, Create). Module-level outcomes can use same or lower-order verbs.</p>
         </div>
       )}
 
       {taxonomy === 'finks' && (
         <div className="taxonomy-note">
-          <strong>🌟 Fink's Taxonomy</strong>
+          <strong>Fink's Taxonomy</strong>
           <p>Non-hierarchical: Choose verbs from different dimensions to create holistic learning outcomes.</p>
         </div>
       )}
@@ -81,7 +81,7 @@ function ActionVerbHelper({ taxonomy, onSelectVerb, onClose }) {
                 <p className="category-description">{category.description}</p>
                 {taxonomy === 'both' && (
                   <span className="taxonomy-badge">
-                    {category.taxonomy === 'blooms' ? '📚 Bloom\'s' : '🌟 Fink\'s'}
+                    {category.taxonomy === 'blooms' ? 'Bloom\'s' : 'Fink\'s'}
                   </span>
                 )}
               </div>

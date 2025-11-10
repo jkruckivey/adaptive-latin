@@ -30,7 +30,7 @@
   height: 50px;
   margin: 0 auto 20px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border-top: 4px solid #2d3748;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -42,7 +42,7 @@
 
 .continue-button, .submit-button {
   padding: 14px 32px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   color: white;
   border: none;
   border-radius: 8px;
@@ -53,8 +53,8 @@
 }
 
 .continue-button:hover, .submit-button:hover:not(:disabled) {
+  background: #1a202c;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .continue-button:disabled, .submit-button:disabled {
@@ -90,8 +90,8 @@
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  border-left: 4px solid #667eea;
+  background: #e5e7eb;
+  border-left: 4px solid #2d3748;
   border-radius: 8px;
   animation: pulse 2s ease-in-out infinite;
 }

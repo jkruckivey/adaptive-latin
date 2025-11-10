@@ -1,0 +1,18 @@
+{
+  "id": "module-005",
+  "title": "Relationships Between Variables",
+  "module_learning_outcomes": [
+    "Calculate correlation coefficients using Excel's CORREL function",
+    "Interpret correlation coefficient strength and direction",
+    "Create and interpret scatter plots to visualize relationships",
+    "Distinguish between correlation and causation",
+    "Evaluate whether correlations suggest actionable business insights"
+  ],
+  "concepts": [
+    "concept-021",
+    "concept-022",
+    "concept-023",
+    "concept-024",
+    "concept-025"
+  ]
+}

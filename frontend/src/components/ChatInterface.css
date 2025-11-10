@@ -37,7 +37,7 @@
 
 .message.user {
   align-self: flex-end;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   color: white;
   margin-left: auto;
 }
@@ -126,7 +126,7 @@
 
 .chat-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #2d3748;
 }
 
 .chat-input:disabled {
@@ -136,18 +136,18 @@
 
 .send-button {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
 }
 
 .send-button:hover:not(:disabled) {
+  background: #1a202c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .send-button:disabled {

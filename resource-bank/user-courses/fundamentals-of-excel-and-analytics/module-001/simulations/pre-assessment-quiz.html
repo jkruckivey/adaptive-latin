@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Assessment: Linear Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .header h2 {
+            color: var(--color-neutral-900);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.95rem;
+        }
+
+        .question-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            color: var(--color-neutral-900);
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-900);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .option:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .option.selected {
+            background: var(--color-neutral-900);
+            border-color: var(--color-neutral-900);
+            color: white;
+        }
+
+        .option-label {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--color-neutral-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: white;
+            color: var(--color-neutral-900);
+            border-color: white;
+        }
+
+        .option-text {
+            flex-grow: 1;
+        }
+
+        .info-box {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-900);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .info-box.visible {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-box p {
+            color: var(--color-neutral-900);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--color-neutral-200);
+        }
+
+        .footer p {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px;
+            }
+            .question-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <h2>Pre-Assessment: Linear Functions</h2>
+            <p>Gauge your current understanding (no right or wrong answers)</p>
+        </div>
+
+        <div id="questions-container"></div>
+
+        <div class="footer">
+            <p><strong>Self-reflection:</strong> Use your responses to identify areas for focused learning</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+        {
+            question: 'How familiar are you with: Define functions and identify input-output relationships?',
+            options: ["Not familiar", "Somewhat familiar", "Very familiar", "Expert level"],
+            info: 'This helps us personalize your learning experience'
+        },
+        {
+            question: 'How familiar are you with: Interpret the slope (m) in y = mx + b as variable cost or rate of change in business contexts?',
+            options: ["Not familiar", "Somewhat familiar", "Very familiar", "Expert level"],
+            info: 'This helps us personalize your learning experience'
+        },
+        {
+            question: 'How familiar are you with: Interpret the intercept (b) in y = mx + b as fixed cost or baseline value in business contexts?',
+            options: ["Not familiar", "Somewhat familiar", "Very familiar", "Expert level"],
+            info: 'This helps us personalize your learning experience'
+        },
+    ];
+
+        const container = document.getElementById('questions-container');
+
+        questions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+
+            const questionNumber = document.createElement('div');
+            questionNumber.className = 'question-number';
+            questionNumber.textContent = `Question ${index + 1} of ${questions.length}`;
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = q.question;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            q.options.forEach((opt, optIndex) => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                option.setAttribute('tabindex', '0');
+                option.setAttribute('role', 'button');
+
+                const label = document.createElement('div');
+                label.className = 'option-label';
+                label.textContent = String.fromCharCode(65 + optIndex); // A, B, C, D
+
+                const text = document.createElement('div');
+                text.className = 'option-text';
+                text.textContent = opt;
+
+                option.appendChild(label);
+                option.appendChild(text);
+
+                option.onclick = () => selectOption(card, option);
+                option.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectOption(card, option);
+                    }
+                };
+
+                optionsDiv.appendChild(option);
+            });
+
+            const infoBox = document.createElement('div');
+            infoBox.className = 'info-box';
+            const infoText = document.createElement('p');
+            infoText.textContent = q.info;
+            infoBox.appendChild(infoText);
+
+            card.appendChild(questionNumber);
+            card.appendChild(questionText);
+            card.appendChild(optionsDiv);
+            card.appendChild(infoBox);
+
+            container.appendChild(card);
+        });
+
+        function selectOption(card, selectedOption) {
+            // Remove selected class from all options in this card
+            card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            // Add selected class to clicked option
+            selectedOption.classList.add('selected');
+            // Show info box
+            const infoBox = card.querySelector('.info-box');
+            infoBox.classList.add('visible');
+        }
+    </script>
+</body>
+</html>

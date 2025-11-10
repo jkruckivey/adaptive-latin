@@ -35,7 +35,7 @@
 }
 
 .ai-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   color: white;
 }
 
@@ -253,15 +253,15 @@
 }
 
 .add-outcome-button:hover {
-  background: #e3f2fd;
+  background: #f8f9fa;
   border-style: solid;
 }
 
 .builder-hints {
   margin-top: 20px;
   padding: 15px;
-  background: #fffbf0;
-  border-left: 4px solid #f39c12;
+  background: #f8f9fa;
+  border-left: 4px solid #2d3748;
   border-radius: 4px;
 }
 
@@ -301,4 +301,87 @@
 .modal-content {
   width: 100%;
   max-width: 800px;
+}
+
+/* Simulation Preview Panel */
+.simulation-preview-panel {
+  margin-top: 1.5rem;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.preview-header h4 {
+  margin: 0;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.close-preview-button {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  color: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-preview-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.simulation-preview-content {
+  padding: 0;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Override simulation internal padding for preview */
+.simulation-preview-content body {
+  padding: 1.5rem !important;
+}
+
+/* Simulation Controls */
+.simulation-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.simulation-type-select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.simulation-type-select:hover:not(:disabled) {
+  border-color: #667eea;
+}
+
+.simulation-type-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.simulation-type-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
