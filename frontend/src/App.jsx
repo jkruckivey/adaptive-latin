@@ -10,6 +10,7 @@ import ConceptMasteryModal from './components/ConceptMasteryModal'
 import CourseCreationWizard from './components/course-creation/CourseCreationWizard'
 import Syllabus from './components/Syllabus'
 import AdminDashboard from './components/AdminDashboard'
+import LandingPage from './components/LandingPage'
 import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
@@ -70,6 +71,9 @@ function App() {
 
   // Admin dashboard state
   const [showAdmin, setShowAdmin] = useState(false)
+
+  // Landing page / name entry state
+  const [showNameEntry, setShowNameEntry] = useState(false)
 
   // Generate or retrieve learner ID
   useEffect(() => {
@@ -171,6 +175,16 @@ function App() {
     }
   }
 
+  const handleStartLearningClick = () => {
+    // Show name entry form
+    setShowNameEntry(true)
+  }
+
+  const handleCreateCourseClick = () => {
+    // Go directly to course creation (no onboarding required)
+    setShowCourseCreation(true)
+  }
+
   const handleStart = async (e) => {
     e.preventDefault()
     if (!learnerName.trim()) {
@@ -180,6 +194,7 @@ function App() {
 
     // Start onboarding
     setIsStarted(true)
+    setShowNameEntry(false)
     setContentError(null)
   }
 
@@ -409,7 +424,7 @@ function App() {
   }
 
   const handleReset = () => {
-    if (confirm('Are you sure you want to reset your progress and choose a new course?')) {
+    if (confirm('Are you sure you want to reset your progress and return to the home page?')) {
       localStorage.removeItem('learnerId')
       localStorage.removeItem('learnerProfile')
       localStorage.removeItem('selectedCourseId')
@@ -420,6 +435,7 @@ function App() {
       setCourseSelected(false)
       setIsStarted(false)
       setOnboardingComplete(false)
+      setShowNameEntry(false)  // Return to landing page, not name entry
       setLearnerName('')
       setLearnerProfile(null)
       setProgress(null)
@@ -429,12 +445,44 @@ function App() {
     }
   }
 
-  if (!isStarted) {
+  // Show landing page
+  if (!isStarted && !showNameEntry) {
+    return (
+      <div className="app">
+        <LandingPage
+          onStartLearning={handleStartLearningClick}
+          onCreateCourse={handleCreateCourseClick}
+        />
+      </div>
+    )
+  }
+
+  // Show name entry form
+  if (!isStarted && showNameEntry) {
     return (
       <div className="app">
         <div className="welcome-container">
-          <h1>Adaptive Learning Platform</h1>
-          <p className="welcome-subtitle">AI-powered personalized instruction</p>
+          <button
+            onClick={() => setShowNameEntry(false)}
+            className="back-button"
+            style={{
+              alignSelf: 'flex-start',
+              marginBottom: '20px',
+              background: 'transparent',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            ← Back
+          </button>
+
+          <h1>Let's get started!</h1>
+          <p className="welcome-subtitle">First, tell us your name</p>
 
           <form onSubmit={handleStart} className="start-form">
             <div className="form-group">
@@ -453,33 +501,9 @@ function App() {
             {error && <div className="error-message">{error}</div>}
 
             <button type="submit" className="start-button">
-              Begin Learning
+              Continue
             </button>
           </form>
-
-          <div className="features">
-            <div className="feature">
-              <span className="feature-icon"></span>
-              <div>
-                <h3>Rich Content</h3>
-                <p>Lessons, tables, examples, and interactive exercises</p>
-              </div>
-            </div>
-            <div className="feature">
-              <span className="feature-icon"></span>
-              <div>
-                <h3>Adaptive Learning</h3>
-                <p>Our trained AI serves exactly what you need, when you need it</p>
-              </div>
-            </div>
-            <div className="feature">
-              <span className="feature-icon"></span>
-              <div>
-                <h3>Varied Formats</h3>
-                <p>Adaptive questions, visual diagrams, and interactive widgets</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     )
@@ -538,12 +562,22 @@ function App() {
 
               alert(`Course "${courseData.title}" created successfully!`)
               setShowCourseCreation(false)
+              // Return to landing page if not in a learning session
+              if (!learnerId) {
+                setShowNameEntry(false)
+              }
             } catch (error) {
               console.error('Error creating course:', error)
               alert(`Failed to create course: ${error.message}`)
             }
           }}
-          onCancel={() => setShowCourseCreation(false)}
+          onCancel={() => {
+            setShowCourseCreation(false)
+            // Return to landing page if not in a learning session
+            if (!learnerId) {
+              setShowNameEntry(false)
+            }
+          }}
         />
       </div>
     )
@@ -558,6 +592,10 @@ function App() {
             setSelectedCourseId(courseId)
             setSelectedCourseTitle(courseTitle)
             setCourseSelected(true)
+          }}
+          onBack={() => {
+            setIsStarted(false)
+            setShowNameEntry(true)
           }}
         />
       </div>
