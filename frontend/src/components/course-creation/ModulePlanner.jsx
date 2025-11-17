@@ -310,7 +310,7 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
                       minOutcomes={2}
                       maxOutcomes={5}
                       label="Module Learning Outcomes (MLOs)"
-                      description="What will students be able to do after completing this module?"
+                      description="Module-level outcomes are more specific than course outcomes. They describe what students will achieve within this particular module and should clearly align with one or more Course Learning Outcomes (CLOs)."
                       onGenerateSuggestions={() => handleGenerateMLOs(module.id)}
                       isGenerating={generatingForModule === module.id}
                     />
@@ -362,7 +362,7 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
                             minOutcomes={3}
                             maxOutcomes={5}
                             label="Concept Learning Objectives"
-                            description="What specific skills or knowledge will students gain from this concept?"
+                            description="Concept-level objectives are the most specific and granular. They describe the discrete skills or knowledge students will master in this individual concept, supporting the module outcomes."
                             onGenerateSuggestions={() => handleGenerateConceptObjectives(module.id, concept.id)}
                             isGenerating={generatingForConcept === `${module.id}-${concept.id}`}
                           />
