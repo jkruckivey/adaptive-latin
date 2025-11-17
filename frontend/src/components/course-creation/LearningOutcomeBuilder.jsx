@@ -24,9 +24,6 @@ function LearningOutcomeBuilder({
   const [currentEditIndex, setCurrentEditIndex] = useState(null)
   const [showExamples, setShowExamples] = useState(false)
   const [qualityFeedback, setQualityFeedback] = useState({})
-  const [simulationHtml, setSimulationHtml] = useState(null)
-  const [generatingSimulation, setGeneratingSimulation] = useState(false)
-  const [selectedSimulationType, setSelectedSimulationType] = useState('learning-outcomes-map')
 
   // Update quality feedback when outcomes change
   useEffect(() => {
@@ -89,63 +86,6 @@ function LearningOutcomeBuilder({
     setShowExamples(false)
   }
 
-  const handleGenerateSimulation = async () => {
-    const validOutcomes = outcomes.filter(o => o.trim())
-    if (validOutcomes.length === 0) {
-      alert('Please add at least one learning outcome first')
-      return
-    }
-
-    setGeneratingSimulation(true)
-    try {
-      let simulationData
-
-      if (selectedSimulationType === 'learning-outcomes-map') {
-        simulationData = {
-          module_number: moduleNumber,
-          module_title: moduleTitle || courseTitle || 'Preview Module',
-          module_outcomes: validOutcomes.map((text, i) => ({
-            text,
-            clos: ['CLO 1'] // Default connection for preview
-          })),
-          course_outcomes: [
-            { code: 'CLO 1', text: 'Course-level outcome (example)' }
-          ]
-        }
-      } else if (selectedSimulationType === 'pre-assessment-quiz') {
-        simulationData = {
-          module_title: moduleTitle || courseTitle || 'Preview Module',
-          questions: validOutcomes.slice(0, 3).map(outcome => ({
-            question: `How familiar are you with: ${outcome}?`,
-            options: ['Not familiar', 'Somewhat familiar', 'Very familiar', 'Expert level'],
-            info: 'This helps gauge your starting knowledge level'
-          }))
-        }
-      } else if (selectedSimulationType === 'concept-preview') {
-        simulationData = {
-          module_title: moduleTitle || courseTitle || 'Preview Module',
-          key_points: validOutcomes.slice(0, 4).map(o => o.replace(/^Students will be able to /, '')),
-          learning_objectives: validOutcomes
-        }
-      }
-
-      const response = await api.generateSimulation(
-        selectedSimulationType,
-        courseFormat,
-        simulationData
-      )
-
-      if (response.success) {
-        setSimulationHtml(response.html)
-      }
-    } catch (error) {
-      console.error('Error generating simulation:', error)
-      alert(`Failed to generate simulation: ${error.message}`)
-    } finally {
-      setGeneratingSimulation(false)
-    }
-  }
-
   return (
     <div className="learning-outcome-builder">
       <div className="builder-header">
@@ -163,30 +103,6 @@ function LearningOutcomeBuilder({
             {isGenerating ? 'Generating...' : 'Generate Suggestions with AI'}
           </button>
         )}
-        <div className="simulation-controls">
-          <select
-            value={selectedSimulationType}
-            onChange={(e) => setSelectedSimulationType(e.target.value)}
-            className="simulation-type-select"
-            disabled={generatingSimulation}
-          >
-            <option value="learning-outcomes-map">Learning Outcomes Map</option>
-            <option value="pre-assessment-quiz">Pre-Assessment Quiz</option>
-            <option value="concept-preview">Concept Preview</option>
-          </select>
-          <button
-            onClick={handleGenerateSimulation}
-            className="action-button secondary"
-            disabled={generatingSimulation || outcomes.filter(o => o.trim()).length === 0}
-            title={
-              generatingSimulation ? 'Generating simulation...' :
-              outcomes.filter(o => o.trim()).length === 0 ? 'Add at least one learning outcome to preview a simulation' :
-              'Generate an interactive preview of your learning outcomes'
-            }
-          >
-            {generatingSimulation ? 'Generating...' : 'Preview Simulation'}
-          </button>
-        </div>
         {examples.length > 0 && (
           <button
             onClick={() => setShowExamples(!showExamples)}
@@ -213,24 +129,6 @@ function LearningOutcomeBuilder({
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {simulationHtml && (
-        <div className="simulation-preview-panel">
-          <div className="preview-header">
-            <h4>Interactive Simulation Preview</h4>
-            <button
-              onClick={() => setSimulationHtml(null)}
-              className="close-preview-button"
-            >
-              Close Preview
-            </button>
-          </div>
-          <div
-            className="simulation-preview-content"
-            dangerouslySetInnerHTML={{ __html: simulationHtml }}
-          />
         </div>
       )}
 
