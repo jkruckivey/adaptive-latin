@@ -20,6 +20,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   }
 
   const handleNext = () => {
+    console.log('[Onboarding] handleNext called, current step:', step, 'going to:', step + 1)
     setStep(step + 1)
     setCurrentAnswer('')
     setSelectedOption('')
@@ -132,7 +133,10 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
         question: `Tell me about yourself - what brings you to ${courseTitle}?`,
         placeholder: 'Tell me about your background and why you\'re interested in this course...',
         onAnswer: (answer) => {
+          console.log('[Onboarding] Background answer submitted:', answer)
+          console.log('[Onboarding] Current step before update:', step)
           updateProfile('background', answer)
+          console.log('[Onboarding] Calling handleNext()')
           handleNext()
         }
       })
@@ -264,8 +268,11 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
       )
     })
 
+    console.log('[Onboarding] Building steps array, total steps:', builtSteps.length)
     return builtSteps
   }, [learnerName, courseTitle, courseDomain, customQuestions, isStarting, profile.priorKnowledge, selectedLearningStyle])
+
+  console.log('[Onboarding] Render - current step index:', step, 'total steps:', steps.length)
 
   const currentStep = steps[step]
 
