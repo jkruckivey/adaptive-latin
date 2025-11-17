@@ -396,24 +396,6 @@ export const api = {
   // AI Generation APIs
   // ========================================
 
-  // Generate learning outcomes with AI
-  async generateLearningOutcomes(title, domain, taxonomy = 'blooms') {
-    const response = await fetch(`${API_BASE_URL}/generate-learning-outcomes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title, domain, taxonomy }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || `Failed to generate outcomes: ${response.statusText}`);
-    }
-
-    return response.json();
-  },
-
   // Generate module learning outcomes with AI
   async generateModuleLearningOutcomes(moduleTitle, courseTitle, courseLearningOutcomes, domain, taxonomy = 'blooms') {
     const response = await fetch(`${API_BASE_URL}/generate-module-learning-outcomes`, {
