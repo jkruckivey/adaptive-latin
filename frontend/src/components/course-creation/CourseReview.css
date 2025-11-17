@@ -167,6 +167,14 @@
   background: #fff3cd;
 }
 
+.assessment-breakdown {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
 /* Visibility Options */
 .visibility-options {
   display: flex;

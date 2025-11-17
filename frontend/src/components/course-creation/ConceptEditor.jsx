@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import CurriculumRoadmap from './CurriculumRoadmap'
 import LearningOutcomeBuilder from './LearningOutcomeBuilder'
+import AssessmentBuilder from './AssessmentBuilder'
+import { api } from '../../api'
 import './ConceptEditor.css'
 
 function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
@@ -40,6 +42,7 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
   const [concepts, setConcepts] = useState(flattenConcepts(courseData.modules))
   const [errors, setErrors] = useState({})
   const [showRoadmap, setShowRoadmap] = useState(false)
+  const [generatingAssessments, setGeneratingAssessments] = useState(false)
 
   const currentConcept = concepts[currentConceptIndex] || {}
 
@@ -70,10 +73,38 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
     updateConcept('vocabulary', vocab)
   }
 
+  const handleGenerateAssessments = async () => {
+    if (!currentConcept.title) {
+      alert('Cannot generate assessments without a learning outcome')
+      return
+    }
+
+    setGeneratingAssessments(true)
+    try {
+      const response = await api.generateAssessments(
+        currentConcept.title,
+        taxonomy,
+        courseData.domain
+      )
+
+      if (response.success && response.assessments) {
+        updateConcept('assessments', response.assessments)
+      } else {
+        alert('Failed to generate assessments. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error generating assessments:', error)
+      alert(`Failed to generate assessments: ${error.message}`)
+    } finally {
+      setGeneratingAssessments(false)
+    }
+  }
+
   const validateConcept = () => {
     const newErrors = {}
     const content = currentConcept.teachingContent || ''
     const vocab = currentConcept.vocabulary || []
+    const assessments = currentConcept.assessments || []
 
     if (content.length < 500) {
       newErrors.content = 'Teaching content must be at least 500 characters'
@@ -81,6 +112,10 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
 
     if (vocab.length < 5) {
       newErrors.vocab = 'At least 5 vocabulary terms required'
+    }
+
+    if (assessments.length < 2) {
+      newErrors.assessments = 'At least 2 assessments required (recommended: mix of types)'
     }
 
     setErrors(newErrors)
@@ -199,7 +234,18 @@ function ConceptEditor({ courseData, onNext, onBack, onSaveDraft }) {
         {errors.vocab && <div className="validation-error">{errors.vocab}</div>}
       </div>
 
-      {/* TODO: Assessments section - can be added in next iteration */}
+      {/* Assessments */}
+      <div className="editor-section">
+        <AssessmentBuilder
+          assessments={currentConcept.assessments || []}
+          onChange={(assessments) => updateConcept('assessments', assessments)}
+          taxonomy={taxonomy}
+          learningOutcome={currentConcept.title}
+          onGenerateAssessments={handleGenerateAssessments}
+          isGenerating={generatingAssessments}
+        />
+        {errors.assessments && <div className="validation-error">{errors.assessments}</div>}
+      </div>
 
       <div className="wizard-actions">
         <div className="left-actions">
