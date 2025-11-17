@@ -1,0 +1,35 @@
+{
+  "concept_id": "concept-002",
+  "title": "Use cell references effectively in formulas to create dynamic calculations",
+  "learning_objectives": [
+    "Use cell references effectively in formulas to create dynamic calculations"
+  ],
+  "prerequisites": ["concept-001"],
+  "estimated_mastery_time": "45-60 minutes",
+  "vocabulary": [
+    {
+      "term": "Cell reference",
+      "definition": "The address of a cell in a formula, combining column letter and row number (e.g., B5)"
+    },
+    {
+      "term": "Relative reference",
+      "definition": "A cell reference that changes when copied to another cell (e.g., A1 becomes A2 when copied down)"
+    },
+    {
+      "term": "Absolute reference",
+      "definition": "A cell reference that stays fixed when copied, marked with dollar signs (e.g., $A$1)"
+    },
+    {
+      "term": "Mixed reference",
+      "definition": "A cell reference with one fixed component, like $A1 (fixed column) or A$1 (fixed row)"
+    },
+    {
+      "term": "Dynamic formula",
+      "definition": "A formula that automatically updates when the source data changes"
+    },
+    {
+      "term": "Formula auditing",
+      "definition": "The process of checking which cells a formula references and ensuring correctness"
+    }
+  ]
+}

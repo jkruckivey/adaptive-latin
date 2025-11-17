@@ -1,0 +1,105 @@
+[
+  {
+    "id": "dialogue-001-1",
+    "type": "dialogue",
+    "difficulty": "intermediate",
+    "prompt": "Explain when you would use COUNT versus SUM in a real-world spreadsheet. Give me a specific example where using the wrong function would lead to incorrect results.",
+    "rubric": {
+      "excellent": {
+        "threshold": 0.90,
+        "description": "Clearly explains the fundamental difference (COUNT counts cells, SUM adds values). Provides a concrete, relevant example where confusion would cause errors (e.g., counting entries vs totaling sales). Demonstrates understanding of when each is appropriate."
+      },
+      "good": {
+        "threshold": 0.75,
+        "description": "Correctly identifies that COUNT counts and SUM adds. Provides an example, though it may lack specificity or real-world relevance. Shows basic understanding but may not fully explain the consequences of using the wrong function."
+      },
+      "developing": {
+        "threshold": 0.60,
+        "description": "Partially correct understanding (e.g., knows both are functions but unclear on exact differences). Example is vague or not fully relevant. May confuse the functions' purposes."
+      },
+      "insufficient": {
+        "threshold": 0.00,
+        "description": "Incorrect explanation of function purposes. No relevant example provided, or example shows fundamental misunderstanding of how the functions work."
+      }
+    },
+    "followUp": "Good! Now, what would happen if you used AVERAGE on a range that had some empty cells? How would Excel handle that?"
+  },
+  {
+    "id": "applied-001-1",
+    "type": "applied",
+    "difficulty": "basic",
+    "taskType": "problem_solving",
+    "prompt": "You have a spreadsheet tracking daily website visitors. The data is in cells B2 through B31 (30 days). Write the formulas you would use to answer these questions:\n\n1. What is the total number of visitors for the month?\n2. What is the average number of visitors per day?\n3. How many days have visitor data recorded?\n\nProvide the exact formula for each (including the = sign).",
+    "rubric": {
+      "scoring": "Each correct formula is worth 0.33 points (3 questions × 0.33 ≈ 1.00)",
+      "correctAnswers": [
+        {
+          "form": "Question 1: Total visitors",
+          "answer": "=SUM(B2:B31)",
+          "explanation": "SUM adds all values in the range B2:B31. This gives the total monthly visitors."
+        },
+        {
+          "form": "Question 2: Average visitors per day",
+          "answer": "=AVERAGE(B2:B31)",
+          "explanation": "AVERAGE calculates the mean of all values in B2:B31. This gives average daily visitors."
+        },
+        {
+          "form": "Question 3: Days with data",
+          "answer": "=COUNT(B2:B31)",
+          "explanation": "COUNT counts how many cells in B2:B31 contain numeric values. This verifies data entry completeness."
+        }
+      ],
+      "partialCredit": "Award 0.25/0.33 if the correct function is used but range is slightly wrong (e.g., B2:B30 instead of B2:B31). Award 0.15/0.33 if the function choice is correct but syntax has minor errors (missing =, incorrect range format). Award 0.00 if wrong function is selected."
+    },
+    "estimatedTime": "10-15 minutes"
+  },
+  {
+    "id": "applied-001-2",
+    "type": "applied",
+    "difficulty": "intermediate",
+    "taskType": "problem_solving",
+    "prompt": "Look at this scenario and identify what's wrong:\n\nSarah created a formula =SUM(A1:A100) to count how many students submitted their homework. The result shows 4,250. She's confused because there are only 100 students in the class.\n\nWhat mistake did Sarah make, and what formula should she have used instead?",
+    "rubric": {
+      "scoring": "Full credit (1.0) requires both identifying the mistake AND providing the correct formula. Partial credit available.",
+      "correctAnswers": [
+        {
+          "form": "Mistake identified",
+          "answer": "Sarah used SUM instead of COUNT. SUM added up the values in the cells rather than counting how many cells contain data.",
+          "explanation": "The key insight is understanding that SUM adds values (producing 4,250) while COUNT counts cells with numeric data (which would produce a number ≤ 100)."
+        },
+        {
+          "form": "Correct formula",
+          "answer": "=COUNT(A1:A100) or =COUNTA(A1:A100)",
+          "explanation": "COUNT counts numeric values, COUNTA counts all non-empty cells. Either would work depending on how the data is formatted. COUNT is more appropriate if homework submission is marked with numbers (like 1 for submitted), COUNTA if it's marked with any value."
+        }
+      ],
+      "partialCredit": "Award 0.60/1.00 for correctly identifying the mistake but not providing the correct formula. Award 0.40/1.00 for providing the correct formula but not clearly explaining the mistake. Award 0.00 if neither component is correct."
+    },
+    "estimatedTime": "8-10 minutes"
+  },
+  {
+    "id": "dialogue-001-2",
+    "type": "dialogue",
+    "difficulty": "advanced",
+    "prompt": "A colleague tells you they're using AVERAGE to calculate the average grade in a class, but some students haven't submitted their work yet (those cells are empty). They're worried this might give an incorrect average. Are they right to be concerned? Why or why not?",
+    "rubric": {
+      "excellent": {
+        "threshold": 0.90,
+        "description": "Correctly explains that AVERAGE ignores empty cells (only averages cells with values), so it calculates the average of submitted work only. Recognizes this could be either appropriate or problematic depending on the instructor's intent (average of submitted work vs. average including zeros for missing work). May suggest using AVERAGEA or manually entering zeros as alternatives."
+      },
+      "good": {
+        "threshold": 0.75,
+        "description": "Correctly states that AVERAGE ignores empty cells. May not fully explore the implications or alternative approaches. Shows understanding of the function's behavior even if not discussing the decision-making context."
+      },
+      "developing": {
+        "threshold": 0.60,
+        "description": "Partially correct—may know that empty cells are handled somehow but unclear on exact behavior. May incorrectly state that empty cells are treated as zeros. Shows some awareness of the issue but incomplete understanding."
+      },
+      "insufficient": {
+        "threshold": 0.00,
+        "description": "Incorrect explanation of how AVERAGE handles empty cells. Does not recognize the difference between empty cells and cells containing zero."
+      }
+    },
+    "followUp": "Excellent reasoning! If they wanted to treat missing submissions as zeros, what would they need to do differently in their spreadsheet?"
+  }
+]

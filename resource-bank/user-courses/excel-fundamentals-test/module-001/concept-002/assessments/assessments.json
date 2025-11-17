@@ -1,0 +1,101 @@
+[
+  {
+    "id": "applied-002-1",
+    "type": "applied",
+    "difficulty": "intermediate",
+    "taskType": "problem_solving",
+    "prompt": "You're creating a price list with tax. Cell E1 contains the tax rate (1.08 for 8% tax). Prices are in column B starting at row 2. You need a formula in C2 that multiplies the price by the tax rate, and you'll copy this formula down to rows 3-10.\n\nWrite the formula for cell C2 that will work correctly when copied down.",
+    "rubric": {
+      "scoring": "Full credit (1.0) for correct formula. Partial credit for close attempts.",
+      "correctAnswers": [
+        {
+          "form": "Formula for C2",
+          "answer": "=B2*$E$1",
+          "explanation": "B2 is relative (will change to B3, B4, etc. when copied). $E$1 is absolute (will stay fixed on E1). This allows each row to multiply its own price by the same tax rate."
+        }
+      ],
+      "partialCredit": "Award 0.70/1.00 for =B2*E1 (correct structure but missing $ signs—will break when copied). Award 0.40/1.00 for =$B$2*$E$1 (over-use of absolute references—will not update B2). Award 0.20/1.00 for showing understanding of formula structure but significant errors. Award 0.00 for completely incorrect approach."
+    },
+    "estimatedTime": "10 minutes"
+  },
+  {
+    "id": "dialogue-002-1",
+    "type": "dialogue",
+    "difficulty": "basic",
+    "prompt": "In your own words, explain the difference between typing =10*5 versus =A1*B1 in a formula. Which approach is better and why?",
+    "rubric": {
+      "excellent": {
+        "threshold": 0.90,
+        "description": "Clearly explains that =10*5 is hardcoded (fixed values) while =A1*B1 uses cell references. Correctly identifies that cell references are better because they update automatically when data changes, making spreadsheets dynamic and easier to maintain. May mention that hardcoding makes formulas inflexible."
+      },
+      "good": {
+        "threshold": 0.75,
+        "description": "Correctly distinguishes between hardcoded values and cell references. States that cell references are generally better. May lack detail on why or may not fully explain the automatic update benefit."
+      },
+      "developing": {
+        "threshold": 0.60,
+        "description": "Shows some understanding that the two approaches are different. May correctly identify one advantage of cell references but explanation is incomplete or partially incorrect."
+      },
+      "insufficient": {
+        "threshold": 0.00,
+        "description": "Does not correctly distinguish between the approaches, or incorrectly claims hardcoding is better, or shows fundamental misunderstanding of how references work."
+      }
+    },
+    "followUp": "Great! Can you think of a situation where you might actually want to hardcode a value instead of using a cell reference?"
+  },
+  {
+    "id": "written-002-1",
+    "type": "written",
+    "difficulty": "advanced",
+    "taskType": "analysis",
+    "prompt": "Imagine you're training a new employee on Excel best practices. Write a brief explanation (150-250 words) of when to use relative references versus absolute references. Include at least one concrete example of each type in a business context.",
+    "wordCountRange": {
+      "min": 150,
+      "max": 250
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "name": "Accuracy",
+          "weight": 0.40,
+          "description": "Correctly defines relative and absolute references. Accurately explains when each type is appropriate. No technical errors or misconceptions."
+        },
+        {
+          "name": "Clarity",
+          "weight": 0.30,
+          "description": "Explanation is clear and easy to understand for a beginner. Avoids jargon or defines terms when used. Logical flow of information."
+        },
+        {
+          "name": "Examples",
+          "weight": 0.30,
+          "description": "Provides concrete business examples for both reference types. Examples are relevant, realistic, and clearly illustrate the concept. Examples show practical understanding."
+        }
+      ]
+    },
+    "estimatedTime": "15-20 minutes"
+  },
+  {
+    "id": "applied-002-2",
+    "type": "applied",
+    "difficulty": "advanced",
+    "taskType": "problem_solving",
+    "prompt": "Debug this scenario:\n\nMike created a formula in cell D2: =B2*C2 (quantity times price). He copied it down to D3:D10. Everything worked perfectly.\n\nThen he inserted a new row at the top for headers, pushing all data down one row. Now all his formulas show #REF! errors.\n\nWhat happened, and how could Mike have designed his spreadsheet differently to avoid this problem?",
+    "rubric": {
+      "scoring": "Full credit requires identifying the problem AND suggesting a solution. Partial credit available.",
+      "correctAnswers": [
+        {
+          "form": "Problem identification",
+          "answer": "When Mike inserted a row, his formulas broke because Excel couldn't track where the referenced cells moved. The relative references in his formulas became invalid references.",
+          "explanation": "Excel tries to adjust formulas when rows/columns are inserted or deleted, but in some cases (especially with copied formulas or complex scenarios), this can cause #REF! errors when references become invalid."
+        },
+        {
+          "form": "Solution/Prevention",
+          "answer": "Mike should have: (1) Left room for headers from the start, (2) Used a Table (Insert > Table) which handles structural changes better, or (3) Used named ranges instead of cell references",
+          "explanation": "Multiple valid approaches exist. The key insight is planning spreadsheet structure ahead of time or using Excel features designed to handle structural changes gracefully."
+        }
+      ],
+      "partialCredit": "Award 0.60/1.00 for correctly identifying the problem but not suggesting a solution. Award 0.40/1.00 for suggesting a solution but not clearly explaining the root cause. Award 0.00 for incorrect diagnosis of the problem."
+    },
+    "estimatedTime": "12-15 minutes"
+  }
+]

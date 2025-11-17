@@ -1,0 +1,35 @@
+{
+  "concept_id": "concept-001",
+  "title": "Apply basic arithmetic formulas (SUM, AVERAGE, COUNT) to analyze numeric data",
+  "learning_objectives": [
+    "Apply basic arithmetic formulas (SUM, AVERAGE, COUNT) to analyze numeric data"
+  ],
+  "prerequisites": [],
+  "estimated_mastery_time": "45-60 minutes",
+  "vocabulary": [
+    {
+      "term": "Formula",
+      "definition": "An expression that calculates a value, always starting with an equals sign (=)"
+    },
+    {
+      "term": "SUM function",
+      "definition": "Adds all numbers in a range of cells (e.g., =SUM(A1:A10))"
+    },
+    {
+      "term": "AVERAGE function",
+      "definition": "Calculates the arithmetic mean of a range of numbers"
+    },
+    {
+      "term": "COUNT function",
+      "definition": "Counts how many cells contain numeric values in a range"
+    },
+    {
+      "term": "Cell range",
+      "definition": "A group of cells defined by the first and last cell separated by a colon (e.g., A1:A10)"
+    },
+    {
+      "term": "Function argument",
+      "definition": "The input values or cell references provided to a function in parentheses"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "concept_id": "concept-003",
+  "title": "Evaluate when to use relative vs absolute cell references in spreadsheet design",
+  "learning_objectives": [
+    "Evaluate when to use relative vs absolute cell references in spreadsheet design"
+  ],
+  "prerequisites": ["concept-001", "concept-002"],
+  "estimated_mastery_time": "60-75 minutes",
+  "vocabulary": [
+    {
+      "term": "Spreadsheet design",
+      "definition": "The process of planning and structuring a spreadsheet for clarity, efficiency, and maintainability"
+    },
+    {
+      "term": "Formula consistency",
+      "definition": "Ensuring formulas behave predictably and correctly when copied across cells"
+    },
+    {
+      "term": "Reference strategy",
+      "definition": "The deliberate choice of reference types based on the intended formula behavior"
+    },
+    {
+      "term": "Cell dependency",
+      "definition": "When one cell's value relies on another cell's value through a formula"
+    },
+    {
+      "term": "Formula scalability",
+      "definition": "The ability to extend formulas to additional rows/columns without modification"
+    },
+    {
+      "term": "Best practices",
+      "definition": "Proven methods and conventions that lead to reliable, maintainable spreadsheets"
+    }
+  ]
+}
