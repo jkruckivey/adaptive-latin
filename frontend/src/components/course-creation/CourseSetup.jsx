@@ -163,7 +163,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
           minOutcomes={3}
           maxOutcomes={5}
           label="Course Learning Outcomes (CLOs)"
-          description="What will students be able to do after completing this entire course? Write 3-5 broad, measurable outcomes."
+          description="Course-level outcomes describe what students will be able to do upon completing the entire course. These are broad, overarching goals that encompass the full scope of learning. Module outcomes will align with and support these CLOs."
           onGenerateSuggestions={handleGenerateSuggestions}
           isGenerating={false}
         />

@@ -308,6 +308,29 @@ export const api = {
     return response.json();
   },
 
+  // Generate assessments with AI based on learning outcome
+  async generateAssessments(learningOutcome, taxonomy = 'blooms', domain = 'general', numAssessments = 3) {
+    const response = await fetch(`${API_BASE_URL}/generate-assessments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        learning_outcome: learningOutcome,
+        taxonomy,
+        domain,
+        num_assessments: numAssessments
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate assessments: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   // Import Common Cartridge (.imscc) file
   async importCartridge(file) {
     const formData = new FormData();
@@ -395,24 +418,6 @@ export const api = {
   // ========================================
   // AI Generation APIs
   // ========================================
-
-  // Generate learning outcomes with AI
-  async generateLearningOutcomes(title, domain, taxonomy = 'blooms') {
-    const response = await fetch(`${API_BASE_URL}/generate-learning-outcomes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title, domain, taxonomy }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || `Failed to generate outcomes: ${response.statusText}`);
-    }
-
-    return response.json();
-  },
 
   // Generate module learning outcomes with AI
   async generateModuleLearningOutcomes(moduleTitle, courseTitle, courseLearningOutcomes, domain, taxonomy = 'blooms') {

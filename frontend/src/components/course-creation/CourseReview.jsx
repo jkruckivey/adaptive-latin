@@ -78,12 +78,28 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
   }
 
   const getConceptStats = (concept) => {
-    // Support both old learningObjectives and new moduleLearningOutcomes
-    const outcomes = (concept.moduleLearningOutcomes || concept.learningObjectives || []).filter(o => o.trim()).length
     const vocab = (concept.vocabulary || []).filter(v => v.term && v.definition).length
     const contentLength = (concept.teachingContent || '').length
+    const assessments = (concept.assessments || []).length
+    const assessmentsByType = {
+      dialogue: (concept.assessments || []).filter(a => a.type === 'dialogue').length,
+      written: (concept.assessments || []).filter(a => a.type === 'written').length,
+      applied: (concept.assessments || []).filter(a => a.type === 'applied').length
+    }
 
-    return { outcomes, vocab, contentLength }
+    return { vocab, contentLength, assessments, assessmentsByType }
+  }
+
+  // Flatten concepts from modules with module context
+  const getAllConcepts = () => {
+    return (courseData.modules || []).flatMap((module, moduleIndex) =>
+      (module.concepts || []).map((concept, conceptIndex) => ({
+        ...concept,
+        moduleTitle: module.title,
+        moduleIndex: moduleIndex + 1,
+        conceptIndex: conceptIndex + 1
+      }))
+    )
   }
 
   return (
@@ -154,7 +170,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
                     <div className="material-url">{source.url}</div>
                     {source.scope !== 'course' && (
                       <div className="material-scope">
-                        Attached to: {courseData.concepts && courseData.concepts[parseInt(source.scope.replace('concept-', ''))]?.title || source.scope}
+                        Scoped to: {source.scope}
                       </div>
                     )}
                   </div>
@@ -175,38 +191,54 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
         </div>
       )}
 
-      {/* Concepts Summary */}
+      {/* Modules & Concepts Summary */}
       <div className="review-section">
-        <h3>Concepts ({(courseData.concepts || []).length})</h3>
-        {(courseData.concepts || []).map((concept, index) => {
-          const stats = getConceptStats(concept)
-          const isComplete = stats.outcomes >= 3 && stats.vocab >= 5 && stats.contentLength >= 500
-
-          return (
-            <div key={index} className={`concept-summary ${isComplete ? 'complete' : 'incomplete'}`}>
-              <div className="concept-summary-header">
-                <span className="concept-number">Module {index + 1}</span>
-                <span className="concept-title">{concept.title}</span>
-                {isComplete ? (
-                  <span className="status-badge complete">✓ Complete</span>
-                ) : (
-                  <span className="status-badge incomplete">⚠ Incomplete</span>
-                )}
-              </div>
-              <div className="concept-stats">
-                <span className={stats.outcomes >= 3 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.outcomes}/3+ Module Learning Outcomes
-                </span>
-                <span className={stats.vocab >= 5 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.vocab}/5+ Vocabulary Terms
-                </span>
-                <span className={stats.contentLength >= 500 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.contentLength}/500+ chars Teaching Content
-                </span>
-              </div>
+        <h3>Course Structure</h3>
+        {(courseData.modules || []).map((module, moduleIndex) => (
+          <div key={moduleIndex} className="module-summary">
+            <div className="module-header">
+              <h4>Module {moduleIndex + 1}: {module.title}</h4>
+              <span className="concept-count">
+                {(module.concepts || []).length} concept{(module.concepts || []).length !== 1 ? 's' : ''}
+              </span>
             </div>
-          )
-        })}
+
+            {(module.concepts || []).map((concept, conceptIndex) => {
+              const stats = getConceptStats(concept)
+              const isComplete = stats.vocab >= 5 && stats.contentLength >= 500 && stats.assessments >= 2
+
+              return (
+                <div key={conceptIndex} className={`concept-summary ${isComplete ? 'complete' : 'incomplete'}`}>
+                  <div className="concept-summary-header">
+                    <span className="concept-number">{moduleIndex + 1}.{conceptIndex + 1}</span>
+                    <span className="concept-title">{concept.title}</span>
+                    {isComplete ? (
+                      <span className="status-badge complete">✓ Complete</span>
+                    ) : (
+                      <span className="status-badge incomplete">⚠ Incomplete</span>
+                    )}
+                  </div>
+                  <div className="concept-stats">
+                    <span className={stats.vocab >= 5 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.vocab}/5+ Vocabulary Terms
+                    </span>
+                    <span className={stats.contentLength >= 500 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.contentLength}/500+ chars Teaching Content
+                    </span>
+                    <span className={stats.assessments >= 2 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.assessments}/2+ Assessments
+                      {stats.assessments > 0 && (
+                        <span className="assessment-breakdown">
+                          ({stats.assessmentsByType.dialogue}💬 {stats.assessmentsByType.written}✍️ {stats.assessmentsByType.applied}🎯)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ))}
       </div>
 
       {/* Publishing Options */}

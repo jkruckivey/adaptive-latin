@@ -1,0 +1,16 @@
+{
+  "course_id": "excel-fundamentals-test",
+  "title": "Excel Fundamentals",
+  "domain": "spreadsheets",
+  "taxonomy": "blooms",
+  "description": "Learn essential Excel skills for data entry, formulas, and basic analysis. Perfect for beginners who want to become proficient in spreadsheet fundamentals.",
+  "target_audience": "Office workers, students, and anyone new to Excel",
+  "created_at": "2025-01-17T12:00:00Z",
+  "updated_at": "2025-01-17T12:00:00Z",
+  "version": "1.0",
+  "course_learning_outcomes": [
+    "Apply fundamental Excel formulas to solve common business problems",
+    "Analyze data using built-in Excel functions",
+    "Create organized spreadsheets following professional formatting standards"
+  ]
+}

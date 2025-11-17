@@ -3073,121 +3073,6 @@ async def get_cache_statistics(course_id: Optional[str] = None):
 # AI Course Generation Endpoints
 # ============================================================================
 
-class GenerateLearningOutcomesRequest(BaseModel):
-    title: str
-    domain: str
-    taxonomy: str = "blooms"
-
-@app.post("/generate-learning-outcomes")
-async def generate_learning_outcomes(body: GenerateLearningOutcomesRequest):
-    """
-    Generate course learning outcomes using AI based on course title and domain.
-
-    Args:
-        title: Course title
-        domain: Subject area/domain
-        taxonomy: Learning taxonomy (blooms or finks)
-
-    Returns:
-        List of suggested learning outcomes
-    """
-    try:
-        from anthropic import Anthropic
-
-        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
-
-        # Build taxonomy-specific guidance
-        taxonomy_guidance = ""
-        if body.taxonomy == "blooms":
-            taxonomy_guidance = """
-Use Bloom's Taxonomy action verbs at appropriate levels:
-- Remember: define, identify, list, recall, recognize
-- Understand: classify, describe, discuss, explain, summarize
-- Apply: demonstrate, execute, implement, solve, use
-- Analyze: categorize, compare, differentiate, examine, test
-- Evaluate: appraise, critique, defend, judge, justify
-- Create: compose, construct, design, develop, formulate
-"""
-        elif body.taxonomy == "finks":
-            taxonomy_guidance = """
-Use Fink's Taxonomy of Significant Learning dimensions:
-- Foundational Knowledge: understanding and remembering information
-- Application: skills, critical/creative thinking, managing projects
-- Integration: connecting ideas, people, realms of life
-- Human Dimension: learning about oneself and others
-- Caring: developing new feelings, interests, values
-- Learning How to Learn: becoming a better student, inquiring, self-directing
-"""
-
-        system_prompt = f"""You are an expert instructional designer specializing in creating measurable learning outcomes.
-
-Generate exactly 5 high-quality Course Learning Outcomes (CLOs) for the following course:
-
-Title: {body.title}
-Domain: {body.domain}
-Taxonomy: {body.taxonomy}
-
-{taxonomy_guidance}
-
-Guidelines:
-1. Each outcome should be specific, measurable, and achievable
-2. Use appropriate action verbs from the taxonomy
-3. Focus on what learners will be able to DO after completing the course
-4. Cover different cognitive levels
-5. Be concise and clear (one sentence each)
-6. Make them relevant to real-world application in the {body.domain} domain
-
-Return ONLY a JSON array of outcome strings, no other text or explanation:
-["outcome 1", "outcome 2", ...]"""
-
-        response = client.messages.create(
-            model=config.ANTHROPIC_MODEL,
-            max_tokens=1024,
-            temperature=0.7,
-            system=system_prompt,
-            messages=[{
-                "role": "user",
-                "content": f"Generate learning outcomes for: {body.title}"
-            }]
-        )
-
-        # Parse response
-        content_text = response.content[0].text.strip()
-
-        # Try to extract JSON if wrapped in markdown code blocks
-        if content_text.startswith("```"):
-            lines = content_text.split("\n")
-            content_text = "\n".join(lines[1:-1])
-
-        outcomes = json.loads(content_text)
-
-        # Ensure we don't exceed the maximum (5 outcomes for UI validation)
-        MAX_OUTCOMES = 5
-        if len(outcomes) > MAX_OUTCOMES:
-            logger.warning(f"AI generated {len(outcomes)} outcomes, truncating to {MAX_OUTCOMES}")
-            outcomes = outcomes[:MAX_OUTCOMES]
-
-        logger.info(f"Generated {len(outcomes)} learning outcomes for '{body.title}'")
-
-        return {
-            "success": True,
-            "outcomes": outcomes
-        }
-
-    except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse AI response as JSON: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to parse AI response"
-        )
-    except Exception as e:
-        logger.error(f"Error generating learning outcomes: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate learning outcomes: {str(e)}"
-        )
-
-
 class GenerateModuleLearningOutcomesRequest(BaseModel):
     module_title: str
     course_title: str
@@ -3454,6 +3339,252 @@ Example format:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate concept learning objectives: {str(e)}"
+        )
+
+
+# ============================================================================
+# Assessment Generation Endpoints
+# ============================================================================
+
+class GenerateAssessmentsRequest(BaseModel):
+    learning_outcome: str
+    taxonomy: str = "blooms"
+    domain: str
+    num_assessments: int = 3
+
+@app.post("/generate-assessments")
+async def generate_assessments(body: GenerateAssessmentsRequest):
+    """
+    Generate assessments using AI based on the learning outcome's action verb
+    and appropriate taxonomy level. Returns a mix of dialogue, written, and
+    applied assessments matched to the cognitive level.
+    """
+    logger.info(f"Generating assessments for outcome: {body.learning_outcome}")
+
+    # Taxonomy guidance
+    taxonomy_guidance = ""
+    if body.taxonomy == "blooms":
+        taxonomy_guidance = """
+Assessment Types and When to Use Them (Bloom's Taxonomy):
+
+1. **Dialogue** (Socratic Q&A with AI grading):
+   - Best for: Remember, Understand, Apply levels
+   - Format: Conversational questions with rubrics for AI evaluation
+   - Use when: Testing recall, comprehension, or basic application
+
+2. **Written** (Extended response):
+   - Best for: Understand, Analyze, Evaluate levels
+   - Format: Essay or reflection with multi-dimensional rubrics
+   - Use when: Requiring explanation, analysis, or justification
+
+3. **Applied** (Performance tasks):
+   - Best for: Apply, Analyze, Create levels
+   - Format: Practical exercises with clear answer keys
+   - Use when: Testing skill execution or production
+
+Bloom's Levels:
+- Remember: define, recall, list → Use Dialogue
+- Understand: explain, summarize, interpret → Use Dialogue + Written
+- Apply: demonstrate, solve, use → Use Applied + Dialogue
+- Analyze: differentiate, examine, compare → Use Written + Applied
+- Evaluate: critique, judge, justify → Use Written
+- Create: design, construct, develop → Use Applied + Written
+"""
+    elif body.taxonomy == "finks":
+        taxonomy_guidance = """
+Assessment Types and When to Use Them (Fink's Taxonomy):
+
+1. **Dialogue** (Socratic Q&A):
+   - Best for: Foundational Knowledge, Application
+   - Use for check-ins and guided practice
+
+2. **Written** (Extended response):
+   - Best for: Integration, Human Dimension, Caring, Learning How to Learn
+   - Use for reflection and connection-making
+
+3. **Applied** (Performance tasks):
+   - Best for: Application, Integration
+   - Use for "learning by doing"
+
+Fink's Categories:
+- Foundational Knowledge → Dialogue
+- Application → Applied + Dialogue
+- Integration → Written + Applied
+- Human Dimension → Written
+- Caring → Written
+- Learning How to Learn → Written
+"""
+
+    system_prompt = f"""You are an expert instructional designer creating assessments aligned to learning outcomes.
+
+Learning Outcome: "{body.learning_outcome}"
+Domain: {body.domain}
+Taxonomy: {body.taxonomy}
+
+{taxonomy_guidance}
+
+Your Task:
+1. **Identify the action verb** in the learning outcome
+2. **Determine the taxonomy level** (e.g., Remember, Apply, Create for Bloom's)
+3. **Select appropriate assessment types** based on the level
+4. **Generate {body.num_assessments} diverse assessments** that match the cognitive level
+
+Assessment Format Guidelines:
+
+**Dialogue Assessment:**
+```json
+{{
+  "type": "dialogue",
+  "difficulty": "basic|intermediate|advanced",
+  "prompt": "The question to ask the learner",
+  "rubric": {{
+    "excellent": {{
+      "threshold": 0.90,
+      "description": "What makes an excellent response"
+    }},
+    "good": {{
+      "threshold": 0.75,
+      "description": "What makes a good response"
+    }},
+    "developing": {{
+      "threshold": 0.60,
+      "description": "What makes a developing response"
+    }},
+    "insufficient": {{
+      "threshold": 0.00,
+      "description": "What makes an insufficient response"
+    }}
+  }},
+  "followUp": "Optional deeper question if student does well"
+}}
+```
+
+**Written Assessment:**
+```json
+{{
+  "type": "written",
+  "difficulty": "basic|intermediate|advanced",
+  "prompt": "The essay or reflection prompt",
+  "wordCountRange": {{ "min": 150, "max": 300 }},
+  "rubric": {{
+    "dimensions": [
+      {{
+        "name": "Accuracy",
+        "weight": 0.4,
+        "description": "What to look for in accuracy"
+      }},
+      {{
+        "name": "Clarity",
+        "weight": 0.3,
+        "description": "What to look for in clarity"
+      }},
+      {{
+        "name": "Examples",
+        "weight": 0.3,
+        "description": "What to look for in examples"
+      }}
+    ]
+  }},
+  "estimatedTime": "15-20 minutes"
+}}
+```
+
+**Applied Assessment:**
+```json
+{{
+  "type": "applied",
+  "difficulty": "basic|intermediate|advanced",
+  "taskType": "translation|form_identification|problem_solving|case_study",
+  "prompt": "The task instructions with clear expectations",
+  "rubric": {{
+    "scoring": "How the task is scored (e.g., Each question worth 0.2 points)",
+    "correctAnswers": [
+      {{
+        "form": "Question or item identifier",
+        "answer": "The correct answer",
+        "explanation": "Why this is correct / key points"
+      }}
+    ],
+    "partialCredit": "How partial credit is awarded"
+  }},
+  "estimatedTime": "15-20 minutes"
+}}
+```
+
+Requirements:
+- Generate a MIX of assessment types appropriate to the taxonomy level
+- Ensure difficulty matches the cognitive complexity
+- Make prompts specific to the domain ({body.domain})
+- Include detailed rubrics for AI grading
+- Be creative but rigorous
+
+Return ONLY a JSON array of assessment objects. No markdown code blocks, no explanations.
+
+Example output:
+[
+  {{ "type": "dialogue", ... }},
+  {{ "type": "applied", ... }},
+  {{ "type": "written", ... }}
+]
+"""
+
+    try:
+        # Call Anthropic Claude API
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=4096,
+            system=system_prompt,
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Generate {body.num_assessments} assessments for this learning outcome: '{body.learning_outcome}'"
+                }
+            ]
+        )
+
+        # Extract JSON from response
+        response_text = response.content[0].text
+        logger.info(f"AI Response: {response_text[:500]}...")
+
+        # Try to extract JSON from markdown code blocks if present
+        import re
+        json_match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
+        if json_match:
+            content_text = json_match.group(1)
+        else:
+            # Try to find raw JSON array
+            json_match = re.search(r'\[.*\]', response_text, re.DOTALL)
+            if json_match:
+                content_text = json_match.group(0)
+            else:
+                content_text = response_text
+
+        assessments = json.loads(content_text)
+
+        # Validate assessment structure
+        for assessment in assessments:
+            if 'type' not in assessment or assessment['type'] not in ['dialogue', 'written', 'applied']:
+                logger.warning(f"Invalid assessment type: {assessment.get('type')}")
+                continue
+
+        return {
+            "success": True,
+            "assessments": assessments,
+            "count": len(assessments)
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON from AI response: {e}")
+        logger.error(f"Response text: {response_text}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to parse AI response: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Error generating assessments: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate assessments: {str(e)}"
         )
 
 
