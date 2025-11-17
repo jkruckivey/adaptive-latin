@@ -66,7 +66,10 @@
       "Bash(venv/Scripts/python.exe:*)",
       "Bash($null)",
       "Bash(taskkill:*)",
-      "Bash(npx claude-code-templates@latest --skill=development/webapp-testing --yes)"
+      "Bash(npx claude-code-templates@latest --skill=development/webapp-testing --yes)",
+      "Bash(timeout 3 echo:*)",
+      "Bash(powershel \"Remove-Item -Path ''app\\__pycache__'' -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -Path ''__pycache__'' -Recurse -Force -ErrorAction SilentlyContinue\")",
+      "Bash(timeout 5 echo:*)"
     ],
     "deny": [],
     "ask": []

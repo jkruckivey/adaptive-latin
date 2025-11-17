@@ -35,10 +35,10 @@
       "type": "question",
       "question": "Have you studied Latin before?",
       "options": [
-        { "value": "never", "label": "Never studied it", "emoji": "📚" },
-        { "value": "some", "label": "Some basics - a semester or two", "emoji": "📖" },
-        { "value": "intermediate", "label": "Solid foundation - can read simple texts", "emoji": "📜" },
-        { "value": "advanced", "label": "Advanced - comfortable with classical texts", "emoji": "🏛️" }
+        { "value": "never", "label": "Never studied it" },
+        { "value": "some", "label": "Some basics - a semester or two" },
+        { "value": "intermediate", "label": "Solid foundation - can read simple texts" },
+        { "value": "advanced", "label": "Advanced - comfortable with classical texts" }
       ],
       "key": "latinExperience",
       "priorKnowledgeKey": "latinLevel"
@@ -47,10 +47,10 @@
       "type": "question",
       "question": "Do you know any Romance languages (Spanish, French, Italian, Portuguese, Romanian)?",
       "options": [
-        { "value": "none", "label": "No Romance languages", "emoji": "🌍" },
-        { "value": "basic", "label": "Basic level in one", "emoji": "🗣️" },
-        { "value": "fluent", "label": "Fluent in one or more", "emoji": "💬" },
-        { "value": "native", "label": "Native speaker", "emoji": "🏡" }
+        { "value": "none", "label": "No Romance languages" },
+        { "value": "basic", "label": "Basic level in one" },
+        { "value": "fluent", "label": "Fluent in one or more" },
+        { "value": "native", "label": "Native speaker" }
       ],
       "key": "romanceLanguages",
       "priorKnowledgeKey": "hasRomanceLanguage"

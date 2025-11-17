@@ -178,22 +178,13 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
               <p><strong>You've mastered {content.completedConcepts || 1} concept{content.completedConcepts !== 1 ? 's' : ''}!</strong></p>
               <p>This course is currently under development. Additional concepts are being authored and will be available soon.</p>
 
-              <div className="development-status">
-                <h3>Development Status</h3>
-                <ul>
-                  <li>Concept 001: First Declension & Present Tense of "Sum" (Complete)</li>
-                  <li>Concept 002: First Conjugation Verbs - Present System (Complete)</li>
-                  <li>Concepts 003-007: In Development</li>
-                </ul>
-              </div>
-
               <p>Your progress has been saved. When new concepts are added, you'll be able to continue your learning journey right where you left off.</p>
 
               <p className="review-prompt">In the meantime, you can:</p>
               <ul>
                 <li>Review what you've learned by restarting the course</li>
                 <li>Check the progress dashboard to see your mastery scores</li>
-                <li>Use the AI tutor to ask questions about Latin grammar</li>
+                <li>Use the AI tutor to ask questions about the course content</li>
               </ul>
             </div>
 

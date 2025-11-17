@@ -7,9 +7,11 @@ Main application with REST API endpoints for the adaptive learning tutor.
 import os
 import json
 import logging
+import io
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, status, Request, Depends
+from anthropic import Anthropic
+from fastapi import FastAPI, HTTPException, status, Request, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, ValidationError
@@ -321,6 +323,13 @@ class CreateCourseRequest(BaseModel):
     # Support both flat concepts (old) and module-based structure (new)
     concepts: List[dict] = Field(default=[], description="Flat list of course concepts (deprecated - use modules)")
     modules: List[dict] = Field(default=[], description="Module-based course structure (each module contains concepts)")
+
+
+class ImportCourseRequest(BaseModel):
+    """Request to import a course from exported JSON."""
+    export_data: dict = Field(..., description="Exported course JSON data")
+    new_course_id: Optional[str] = Field(default=None, description="Optional new course ID (overrides exported ID)")
+    overwrite: bool = Field(default=False, description="Overwrite existing course if it exists")
 
 
 class CoursesListResponse(BaseModel):
@@ -1877,6 +1886,119 @@ async def get_course(course_id: str):
         )
 
 
+@app.get("/courses/{course_id}/export")
+async def export_course(course_id: str):
+    """
+    Export complete course data as JSON for backup/sharing.
+
+    Returns all course metadata, modules, concepts, and external resources
+    in a single JSON structure that can be imported later.
+
+    Args:
+        course_id: Course identifier
+
+    Returns:
+        Complete course export JSON
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Course {course_id} not found"
+            )
+
+        # Load course metadata
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            course_metadata = json.load(f)
+
+        export_data = {
+            "export_version": "1.0",
+            "exported_at": datetime.now().isoformat(),
+            "course": {
+                "course_id": course_metadata.get("course_id"),
+                "title": course_metadata.get("title"),
+                "domain": course_metadata.get("domain"),
+                "taxonomy": course_metadata.get("taxonomy", "blooms"),
+                "course_learning_outcomes": course_metadata.get("course_learning_outcomes", []),
+                "description": course_metadata.get("description"),
+                "target_audience": course_metadata.get("target_audience"),
+                "created_at": course_metadata.get("created_at"),
+                "updated_at": course_metadata.get("updated_at")
+            },
+            "modules": [],
+            "external_resources": []
+        }
+
+        # Load modules if they exist
+        modules_dir = course_dir / "modules"
+        if modules_dir.exists() and modules_dir.is_dir():
+            module_dirs = sorted([d for d in modules_dir.iterdir() if d.is_dir()])
+
+            for module_dir in module_dirs:
+                module_metadata_file = module_dir / "metadata.json"
+                if module_metadata_file.exists():
+                    with open(module_metadata_file, "r", encoding="utf-8") as f:
+                        module_metadata = json.load(f)
+
+                    module_export = {
+                        "id": module_metadata.get("id"),
+                        "title": module_metadata.get("title"),
+                        "module_learning_outcomes": module_metadata.get("module_learning_outcomes", []),
+                        "concepts": []
+                    }
+
+                    # Load concepts within this module
+                    concept_ids = module_metadata.get("concepts", [])
+                    for concept_id in concept_ids:
+                        concept_dir = module_dir / concept_id
+                        concept_metadata_file = concept_dir / "metadata.json"
+
+                        if concept_metadata_file.exists():
+                            with open(concept_metadata_file, "r", encoding="utf-8") as f:
+                                concept_metadata = json.load(f)
+
+                            module_export["concepts"].append({
+                                "concept_id": concept_metadata.get("concept_id"),
+                                "title": concept_metadata.get("title"),
+                                "learning_objectives": concept_metadata.get("learning_objectives", []),
+                                "prerequisites": concept_metadata.get("prerequisites", [])
+                            })
+
+                    export_data["modules"].append(module_export)
+
+        # Load external resources if they exist
+        external_resources_file = config.RESOURCE_BANK_DIR / "external-resources.json"
+        if external_resources_file.exists():
+            with open(external_resources_file, "r", encoding="utf-8") as f:
+                all_resources = json.load(f)
+
+            # Filter resources relevant to this course's concepts
+            concept_ids = list_all_concepts(course_id)
+            for concept_id in concept_ids:
+                if concept_id in all_resources:
+                    export_data["external_resources"].append({
+                        "concept_id": concept_id,
+                        "resources": all_resources[concept_id].get("resources", [])
+                    })
+
+        return {
+            "success": True,
+            "export": export_data
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error exporting course {course_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to export course: {str(e)}"
+        )
+
+
 @app.post("/courses", status_code=status.HTTP_201_CREATED)
 async def create_course(body: CreateCourseRequest):
     """
@@ -2059,6 +2181,566 @@ async def create_course(body: CreateCourseRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create course: {str(e)}"
+        )
+
+
+@app.post("/courses/import", status_code=status.HTTP_201_CREATED)
+async def import_course(body: ImportCourseRequest):
+    """
+    Import a course from exported JSON.
+
+    Args:
+        body: Import request with export data and optional overrides
+
+    Returns:
+        Success message with imported course ID
+    """
+    try:
+        export_data = body.export_data
+
+        # Validate export data structure
+        if "export" not in export_data:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid export format: missing 'export' key"
+            )
+
+        export_content = export_data["export"]
+        if "course" not in export_content:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid export format: missing 'course' key"
+            )
+
+        course_data = export_content["course"]
+        modules_data = export_content.get("modules", [])
+
+        # Determine course ID (use override or original)
+        course_id = body.new_course_id or course_data.get("course_id")
+        if not course_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Course ID is required"
+            )
+
+        # Check if course already exists
+        course_dir = config.USER_COURSES_DIR / course_id
+        if course_dir.exists() and not body.overwrite:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Course {course_id} already exists. Use overwrite=true to replace."
+            )
+
+        # Create or clean course directory
+        if body.overwrite and course_dir.exists():
+            import shutil
+            shutil.rmtree(course_dir)
+
+        course_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create course metadata
+        course_metadata = {
+            "course_id": course_id,
+            "title": course_data.get("title"),
+            "domain": course_data.get("domain"),
+            "taxonomy": course_data.get("taxonomy", "blooms"),
+            "course_learning_outcomes": course_data.get("course_learning_outcomes", []),
+            "created_at": datetime.now().isoformat(),
+            "updated_at": datetime.now().isoformat(),
+            "type": "user-created",
+            "imported_from": course_data.get("course_id"),
+            "original_created_at": course_data.get("created_at")
+        }
+
+        # Add optional fields
+        if course_data.get("description"):
+            course_metadata["description"] = course_data.get("description")
+        if course_data.get("target_audience"):
+            course_metadata["target_audience"] = course_data.get("target_audience")
+
+        # Save course metadata
+        metadata_file = course_dir / "metadata.json"
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(course_metadata, f, indent=2, ensure_ascii=False)
+
+        # Create modules structure
+        if modules_data:
+            modules_dir = course_dir / "modules"
+            modules_dir.mkdir(exist_ok=True)
+
+            for module_data in modules_data:
+                module_id = module_data.get("id")
+                if not module_id:
+                    continue
+
+                module_dir = modules_dir / module_id
+                module_dir.mkdir(parents=True, exist_ok=True)
+
+                # Create module metadata
+                module_metadata = {
+                    "id": module_id,
+                    "title": module_data.get("title"),
+                    "module_learning_outcomes": module_data.get("module_learning_outcomes", []),
+                    "concepts": []
+                }
+
+                # Create concepts within module
+                concepts_data = module_data.get("concepts", [])
+                for concept_data in concepts_data:
+                    concept_id = concept_data.get("concept_id")
+                    if not concept_id:
+                        continue
+
+                    module_metadata["concepts"].append(concept_id)
+
+                    # Create concept directory
+                    concept_dir = module_dir / concept_id
+                    concept_dir.mkdir(parents=True, exist_ok=True)
+
+                    # Create assessments and resources directories
+                    (concept_dir / "assessments").mkdir(exist_ok=True)
+                    (concept_dir / "resources").mkdir(exist_ok=True)
+
+                    # Create concept metadata
+                    concept_metadata = {
+                        "concept_id": concept_id,
+                        "title": concept_data.get("title"),
+                        "learning_objectives": concept_data.get("learning_objectives", []),
+                        "prerequisites": concept_data.get("prerequisites", [])
+                    }
+
+                    concept_metadata_file = concept_dir / "metadata.json"
+                    with open(concept_metadata_file, "w", encoding="utf-8") as f:
+                        json.dump(concept_metadata, f, indent=2, ensure_ascii=False)
+
+                # Save module metadata
+                module_metadata_file = module_dir / "metadata.json"
+                with open(module_metadata_file, "w", encoding="utf-8") as f:
+                    json.dump(module_metadata, f, indent=2, ensure_ascii=False)
+
+        logger.info(f"Successfully imported course: {course_id}")
+
+        return {
+            "success": True,
+            "message": f"Course '{course_id}' imported successfully",
+            "course_id": course_id,
+            "modules_count": len(modules_data),
+            "total_concepts": sum(len(m.get("concepts", [])) for m in modules_data)
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error importing course: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to import course: {str(e)}"
+        )
+
+
+@app.post("/courses/parse-syllabus")
+async def parse_syllabus(file: UploadFile = File(...), domain: Optional[str] = None, taxonomy: str = "blooms"):
+    """
+    Upload and parse a syllabus document to extract course structure.
+
+    Supports PDF and text files. Uses AI to extract:
+    - Course title
+    - Subject domain
+    - Course learning outcomes
+    - Module/topic structure
+    - Suggested concept breakdowns
+
+    Args:
+        file: Uploaded syllabus file (PDF or text)
+        domain: Optional domain/subject area hint
+        taxonomy: Learning taxonomy to use (blooms, finks, or both)
+
+    Returns:
+        Extracted course structure ready for import
+    """
+    try:
+        # Read file content
+        content = await file.read()
+
+        # Determine file type and extract text
+        file_extension = file.filename.split('.')[-1].lower()
+
+        if file_extension == 'txt':
+            # Plain text file
+            syllabus_text = content.decode('utf-8')
+        elif file_extension == 'pdf':
+            # PDF file - for now, just return an error asking for text
+            # In production, you'd use PyPDF2 or similar
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="PDF parsing not yet implemented. Please upload a .txt file or paste text directly."
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported file type: {file_extension}. Please upload .txt or .pdf files."
+            )
+
+        if len(syllabus_text.strip()) < 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Syllabus content too short. Please provide a complete syllabus document."
+            )
+
+        # Use Claude to extract course structure
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        extraction_prompt = f"""You are an expert instructional designer analyzing a course syllabus. Extract structured course information from the following syllabus.
+
+Syllabus Content:
+{syllabus_text}
+
+Please analyze this syllabus and extract:
+
+1. **Course Title**: The official course name
+2. **Subject Domain**: The academic field (e.g., Mathematics, Computer Science, Business, etc.){f" Hint: {domain}" if domain else ""}
+3. **Course Learning Outcomes (CLOs)**: 3-5 broad, measurable outcomes students should achieve by completing the course. Use {taxonomy} taxonomy action verbs.
+4. **Modules/Topics**: Break down the course into 3-7 logical modules or topic areas
+5. **For each module**:
+   - Module title
+   - 3-5 module learning outcomes (MLOs) using {taxonomy} taxonomy
+   - Suggested concepts to cover (2-5 concepts per module)
+
+Return your response in valid JSON format:
+{{
+  "course_title": "...",
+  "domain": "...",
+  "course_learning_outcomes": ["...", "...", "..."],
+  "modules": [
+    {{
+      "title": "...",
+      "module_learning_outcomes": ["...", "...", "..."],
+      "concepts": [
+        {{
+          "title": "...",
+          "learning_objectives": ["...", "..."]
+        }}
+      ]
+    }}
+  ]
+}}
+
+Important:
+- Extract outcomes that are measurable and use appropriate action verbs from {taxonomy} taxonomy
+- Infer module structure even if not explicitly stated in the syllabus
+- Keep concept titles concise (3-8 words)
+- Ensure learning objectives are specific and measurable"""
+
+        logger.info(f"Using model for syllabus parsing: {config.ANTHROPIC_MODEL}")
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=4000,
+            temperature=0.3,
+            messages=[{
+                "role": "user",
+                "content": extraction_prompt
+            }]
+        )
+
+        # Extract JSON from response
+        response_text = response.content[0].text
+
+        # Try to find JSON in the response
+        import re
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if not json_match:
+            raise ValueError("Could not extract JSON from AI response")
+
+        extracted_data = json.loads(json_match.group())
+
+        # Validate required fields
+        if not all(key in extracted_data for key in ['course_title', 'domain', 'modules']):
+            raise ValueError("Incomplete extraction - missing required fields")
+
+        # Transform to wizard format with auto-generated IDs
+        modules_with_ids = []
+        for i, module in enumerate(extracted_data.get('modules', [])):
+            module_id = f"module-{str(i+1).zfill(3)}"
+            concepts_with_ids = []
+
+            for j, concept in enumerate(module.get('concepts', [])):
+                concept_id = f"concept-{str(j+1).zfill(3)}"
+                concepts_with_ids.append({
+                    "conceptId": concept_id,
+                    "title": concept.get('title', f'Concept {j+1}'),
+                    "learningObjectives": concept.get('learning_objectives', []),
+                    "prerequisites": [],
+                    "teachingContent": "",
+                    "vocabulary": []
+                })
+
+            modules_with_ids.append({
+                "moduleId": module_id,
+                "title": module.get('title', f'Module {i+1}'),
+                "moduleLearningOutcomes": module.get('module_learning_outcomes', []),
+                "concepts": concepts_with_ids
+            })
+
+        result = {
+            "success": True,
+            "extracted_data": {
+                "title": extracted_data.get('course_title', 'Untitled Course'),
+                "domain": extracted_data.get('domain', domain or 'Unknown'),
+                "taxonomy": taxonomy,
+                "courseLearningOutcomes": extracted_data.get('course_learning_outcomes', []),
+                "modules": modules_with_ids
+            },
+            "raw_extraction": extracted_data
+        }
+
+        logger.info(f"Successfully parsed syllabus: {file.filename}")
+        return result
+
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parsing error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to parse AI response as JSON: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Error parsing syllabus: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to parse syllabus: {str(e)}"
+        )
+
+
+class GenerateLearningOutcomesRequest(BaseModel):
+    """Request body for generating learning outcomes."""
+    description: str = Field(..., description="Description of the course, module, or concept")
+    taxonomy: str = Field(default="blooms", description="Learning taxonomy framework (blooms or finks)")
+    level: str = Field(..., description="Level of outcomes: course, module, or concept")
+    count: Optional[int] = Field(default=5, description="Number of outcomes to generate")
+    existing_outcomes: Optional[List[str]] = Field(default=None, description="Existing outcomes to consider")
+
+
+class GenerateLearningOutcomesResponse(BaseModel):
+    """Response with generated learning outcomes."""
+    success: bool
+    outcomes: List[str]
+    taxonomy: str
+    level: str
+
+
+@app.post("/generate-learning-outcomes", response_model=GenerateLearningOutcomesResponse)
+async def generate_learning_outcomes(body: GenerateLearningOutcomesRequest):
+    """
+    Generate learning outcomes using AI based on description and taxonomy.
+
+    Args:
+        body: Request with description, taxonomy, level, and count
+
+    Returns:
+        List of generated learning outcomes
+    """
+    try:
+        logger.info(f"Generating {body.count} {body.level}-level outcomes using {body.taxonomy} taxonomy")
+        logger.info(f"Description length: {len(body.description)} characters")
+
+        # Build taxonomy-specific guidance
+        taxonomy_guidance = ""
+        if body.taxonomy == "blooms":
+            taxonomy_guidance = """
+Use Bloom's Taxonomy (revised) with these cognitive levels:
+- Remember: Recall facts and basic concepts
+- Understand: Explain ideas or concepts
+- Apply: Use information in new situations
+- Analyze: Draw connections among ideas
+- Evaluate: Justify a stand or decision
+- Create: Produce new or original work
+
+Start each outcome with an appropriate action verb for the cognitive level.
+Examples: "Define", "Explain", "Apply", "Analyze", "Evaluate", "Create"
+"""
+        elif body.taxonomy == "finks":
+            taxonomy_guidance = """
+Use Fink's Taxonomy of Significant Learning with these dimensions:
+- Foundational Knowledge: Understanding and remembering information
+- Application: Skills, thinking, managing projects
+- Integration: Connecting ideas, people, realms of life
+- Human Dimension: Learning about oneself and others
+- Caring: Developing new feelings, interests, values
+- Learning How to Learn: Becoming a better student, inquiring, self-directing
+
+Each outcome should address one or more dimensions of significant learning.
+"""
+
+        # Build level-specific guidance
+        level_guidance = ""
+        if body.level == "course":
+            level_guidance = "These are COURSE Learning Outcomes (CLOs) - broad, overarching goals for the entire course."
+        elif body.level == "module":
+            level_guidance = "These are MODULE Learning Outcomes (MLOs) - specific goals for this module that contribute to course outcomes."
+        elif body.level == "concept":
+            level_guidance = "These are CONCEPT Learning Objectives - granular, measurable objectives for a single concept or topic."
+
+        # Build the prompt
+        prompt = f"""You are an expert instructional designer creating learning outcomes.
+
+{level_guidance}
+
+{taxonomy_guidance}
+
+DESCRIPTION:
+{body.description}
+
+REQUIREMENTS:
+- Generate exactly {body.count} learning outcomes
+- Each outcome must be:
+  * Measurable and specific
+  * Use appropriate action verbs for {body.taxonomy} taxonomy
+  * Clear and concise (1-2 sentences maximum)
+  * Focus on what learners will be able to do
+"""
+
+        if body.existing_outcomes:
+            prompt += f"""
+EXISTING OUTCOMES TO AVOID DUPLICATING:
+{chr(10).join(f"- {outcome}" for outcome in body.existing_outcomes)}
+
+Generate NEW outcomes that complement but don't duplicate the existing ones.
+"""
+
+        prompt += """
+Respond with ONLY a JSON object in this exact format:
+{
+  "outcomes": [
+    "First learning outcome here",
+    "Second learning outcome here",
+    "Third learning outcome here"
+  ]
+}
+
+Do not include any explanation or additional text - ONLY the JSON object.
+"""
+
+        # Call Claude API
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+        logger.info(f"Using model for outcome generation: {config.ANTHROPIC_MODEL}")
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=2000,
+            temperature=0.7,  # Slightly creative for varied suggestions
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
+        )
+
+        # Extract the text response
+        response_text = response.content[0].text.strip()
+        logger.info(f"AI response: {response_text[:200]}...")
+
+        # Parse JSON response
+        try:
+            result = json.loads(response_text)
+            outcomes = result.get("outcomes", [])
+
+            if not outcomes:
+                raise ValueError("No outcomes generated in response")
+
+            logger.info(f"Successfully generated {len(outcomes)} outcomes")
+
+            return GenerateLearningOutcomesResponse(
+                success=True,
+                outcomes=outcomes,
+                taxonomy=body.taxonomy,
+                level=body.level
+            )
+
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON parsing error: {e}")
+            logger.error(f"Response text: {response_text}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to parse AI response as JSON: {str(e)}"
+            )
+
+    except Exception as e:
+        logger.error(f"Error generating learning outcomes: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate learning outcomes: {str(e)}"
+        )
+
+
+@app.post("/courses/import-cartridge")
+async def import_common_cartridge(file: UploadFile = File(...)):
+    """
+    Import course from Common Cartridge (.imscc) file.
+
+    Parses IMS Common Cartridge exports from Canvas, Moodle, Blackboard, etc.
+    Extracts course structure, modules, content, and returns data for course wizard.
+
+    Args:
+        file: Common Cartridge file (.imscc or .zip)
+
+    Returns:
+        Extracted course data in wizard format
+    """
+    try:
+        logger.info(f"Importing Common Cartridge: {file.filename}")
+
+        # Validate file type
+        if not file.filename.endswith(('.imscc', '.zip')):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="File must be a .imscc or .zip file"
+            )
+
+        # Read file content
+        content = await file.read()
+        if len(content) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Uploaded file is empty"
+            )
+
+        # Save to temporary file
+        import tempfile
+        from pathlib import Path
+        from .cartridge_parser import parse_common_cartridge
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.imscc') as tmp_file:
+            tmp_file.write(content)
+            tmp_path = Path(tmp_file.name)
+
+        try:
+            # Parse the cartridge
+            logger.info(f"Parsing cartridge file: {tmp_path}")
+            extracted_data = parse_common_cartridge(tmp_path)
+
+            logger.info(f"Successfully parsed cartridge: {extracted_data.get('title', 'Unknown')}")
+            logger.info(f"Extracted {len(extracted_data.get('modules', []))} modules")
+
+            return {
+                "success": True,
+                "extracted_data": extracted_data,
+                "message": f"Successfully imported course: {extracted_data.get('title', 'Unknown')}"
+            }
+
+        finally:
+            # Clean up temporary file
+            if tmp_path.exists():
+                tmp_path.unlink()
+
+    except ValueError as e:
+        logger.error(f"Validation error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(f"Error importing Common Cartridge: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to import Common Cartridge: {str(e)}"
         )
 
 
@@ -2717,7 +3399,7 @@ Example format:
     try:
         # Call Anthropic Claude API
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model=config.ANTHROPIC_MODEL,
             max_tokens=1024,
             system=system_prompt,
             messages=[

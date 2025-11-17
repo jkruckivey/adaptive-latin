@@ -2,17 +2,20 @@ import { useState, useEffect } from 'react'
 import { api } from '../../api'
 import TaxonomySelector from './TaxonomySelector'
 import LearningOutcomeBuilder from './LearningOutcomeBuilder'
+import LearningOutcomeGenerator from './LearningOutcomeGenerator'
 
 function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
   const [formData, setFormData] = useState({
     title: courseData.title || '',
     domain: courseData.domain || '',
+    description: courseData.description || '',
+    targetAudience: courseData.targetAudience || '',
     taxonomy: courseData.taxonomy || 'blooms',
     courseLearningOutcomes: courseData.courseLearningOutcomes || ['', '', '']
   })
 
   const [errors, setErrors] = useState({})
-  const [generatingSuggestions, setGeneratingSuggestions] = useState(false)
+  const [showGenerator, setShowGenerator] = useState(false)
 
   const domains = [
     'Mathematics',
@@ -60,33 +63,21 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleGenerateSuggestions = async () => {
+  const handleGenerateSuggestions = () => {
     if (!formData.title || !formData.domain) {
       alert('Please enter a course title and select a domain first')
       return
     }
 
-    setGeneratingSuggestions(true)
-    try {
-      const response = await api.generateLearningOutcomes(
-        formData.title,
-        formData.domain,
-        formData.taxonomy
-      )
+    setShowGenerator(true)
+  }
 
-      if (response.success && response.outcomes) {
-        // Update the courseLearningOutcomes with the generated suggestions
-        setFormData(prev => ({
-          ...prev,
-          courseLearningOutcomes: response.outcomes
-        }))
-      }
-    } catch (error) {
-      console.error('Error generating suggestions:', error)
-      alert(`Failed to generate suggestions: ${error.message}`)
-    } finally {
-      setGeneratingSuggestions(false)
-    }
+  const handleAcceptOutcomes = (outcomes) => {
+    setFormData(prev => ({
+      ...prev,
+      courseLearningOutcomes: outcomes
+    }))
+    setShowGenerator(false)
   }
 
   const handleNext = () => {
@@ -133,6 +124,28 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
         {errors.domain && <div className="validation-error">{errors.domain}</div>}
       </div>
 
+      <div className="form-group">
+        <label>Course Description</label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          placeholder="Brief description of the course content and objectives..."
+          rows={3}
+        />
+        <div className="hint">Optional: Helps AI generate better learning outcomes</div>
+      </div>
+
+      <div className="form-group">
+        <label>Target Audience</label>
+        <input
+          type="text"
+          value={formData.targetAudience}
+          onChange={(e) => handleChange('targetAudience', e.target.value)}
+          placeholder="e.g., Undergraduate students, Professionals, Beginners"
+        />
+        <div className="hint">Optional: Who is this course designed for?</div>
+      </div>
+
       {/* Taxonomy Selection */}
       <TaxonomySelector
         selectedTaxonomy={formData.taxonomy}
@@ -152,12 +165,28 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
           label="Course Learning Outcomes (CLOs)"
           description="What will students be able to do after completing this entire course? Write 3-5 broad, measurable outcomes."
           onGenerateSuggestions={handleGenerateSuggestions}
-          isGenerating={generatingSuggestions}
+          isGenerating={false}
         />
         {errors.courseLearningOutcomes && (
           <div className="validation-error">{errors.courseLearningOutcomes}</div>
         )}
       </div>
+
+      {/* Generator Modal */}
+      {showGenerator && (
+        <div className="modal-overlay" onClick={() => setShowGenerator(false)}>
+          <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
+            <LearningOutcomeGenerator
+              description={`Course: ${formData.title}\nDomain: ${formData.domain}\n${formData.description ? `Description: ${formData.description}\n` : ''}${formData.targetAudience ? `Target Audience: ${formData.targetAudience}` : ''}`}
+              taxonomy={formData.taxonomy}
+              level="course"
+              existingOutcomes={formData.courseLearningOutcomes.filter(o => o.trim())}
+              onAccept={handleAcceptOutcomes}
+              onCancel={() => setShowGenerator(false)}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="wizard-actions">
         <div className="left-actions">

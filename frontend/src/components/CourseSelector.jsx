@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { api } from '../api'
 import './CourseSelector.css'
 
-function CourseSelector({ onCourseSelected, onSkip }) {
+function CourseSelector({ onCourseSelected, onSkip, onCreateCourse }) {
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedCourse, setSelectedCourse] = useState(null)
@@ -37,8 +37,10 @@ function CourseSelector({ onCourseSelected, onSkip }) {
   if (loading) {
     return (
       <div className="course-selector">
-        <div className="spinner"></div>
-        <p>Loading courses...</p>
+        <div className="selector-container">
+          <div className="spinner"></div>
+          <p>Loading courses...</p>
+        </div>
       </div>
     )
   }
@@ -46,60 +48,61 @@ function CourseSelector({ onCourseSelected, onSkip }) {
   if (courses.length === 0) {
     return (
       <div className="course-selector">
-        <h2>No Courses Available</h2>
-        <p>No courses found. Please create a course first.</p>
-      </div>
-    )
-  }
-
-  if (courses.length === 1) {
-    return (
-      <div className="course-selector single-course">
-        <h2>Ready to Start Learning</h2>
-        <div className="course-card selected">
-          <h3>{courses[0].title}</h3>
-          <p className="course-domain">{courses[0].domain}</p>
-          {courses[0].description && (
-            <p className="course-description">{courses[0].description}</p>
-          )}
+        <div className="selector-container">
+          <h1>No Courses Available</h1>
+          <p className="selector-hint">Get started by creating your first course</p>
+          <div className="create-course-option" onClick={onCreateCourse || onSkip}>
+            <div className="option-icon">+</div>
+            <div className="option-title">Create New Course</div>
+            <div className="option-description">
+              Build a custom course tailored to your learning goals
+            </div>
+          </div>
         </div>
-        <button onClick={handleContinue} className="continue-button">
-          Continue
-        </button>
       </div>
     )
   }
 
   return (
     <div className="course-selector">
-      <h2>Select Your Course</h2>
-      <p className="selector-hint">Choose which course you'd like to study</p>
+      <div className="selector-container">
+        <h1>Select Your Course</h1>
+        <p className="selector-hint">Choose which course you'd like to study</p>
 
-      <div className="courses-grid">
-        {courses.map((course) => (
-          <div
-            key={course.course_id}
-            className={`course-card ${selectedCourse?.course_id === course.course_id ? 'selected' : ''}`}
-            onClick={() => setSelectedCourse(course)}
-          >
-            <h3>{course.title}</h3>
-            <p className="course-domain">{course.domain}</p>
-            {course.description && (
-              <p className="course-description">{course.description}</p>
-            )}
-            <span className="course-type-badge">{course.type}</span>
+        <div className="courses-grid">
+          {courses.map((course) => (
+            <div
+              key={course.course_id}
+              className={`course-card ${selectedCourse?.course_id === course.course_id ? 'selected' : ''}`}
+              onClick={() => setSelectedCourse(course)}
+            >
+              <h3>{course.title}</h3>
+              <p className="course-domain">{course.domain}</p>
+              {course.description && (
+                <p className="course-description">{course.description}</p>
+              )}
+              <span className="course-type-badge">{course.type}</span>
+            </div>
+          ))}
+
+          <div className="create-course-option" onClick={onCreateCourse || onSkip}>
+            <div className="option-icon">+</div>
+            <div className="option-title">Create New Course</div>
+            <div className="option-description">
+              Build a custom course tailored to your learning goals
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className="selector-actions">
-        <button
-          onClick={handleContinue}
-          disabled={!selectedCourse}
-          className="continue-button"
-        >
-          Continue with {selectedCourse?.title || 'Selected Course'}
-        </button>
+        <div className="selector-actions">
+          <button
+            onClick={handleContinue}
+            disabled={!selectedCourse}
+            className="continue-button"
+          >
+            Continue with {selectedCourse?.title || 'Selected Course'}
+          </button>
+        </div>
       </div>
     </div>
   )

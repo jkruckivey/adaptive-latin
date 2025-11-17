@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { api } from '../../api'
 import './CourseReview.css'
 
 function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
   const [visibility, setVisibility] = useState('unlisted')
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   const handlePublish = async () => {
     setIsPublishing(true)
@@ -12,6 +14,66 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
     } catch (error) {
       alert('Failed to publish course. Please try again.')
       setIsPublishing(false)
+    }
+  }
+
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      // Generate a temporary course ID for export
+      const tempCourseId = courseData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+
+      // Create a temporary export structure matching what the backend expects
+      const exportData = {
+        export_version: "1.0",
+        exported_at: new Date().toISOString(),
+        course: {
+          course_id: tempCourseId,
+          title: courseData.title,
+          domain: courseData.domain,
+          taxonomy: courseData.taxonomy || 'blooms',
+          course_learning_outcomes: courseData.courseLearningOutcomes || [],
+          description: courseData.description,
+          target_audience: courseData.targetAudience,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        modules: (courseData.modules || []).map(module => ({
+          id: module.moduleId,
+          title: module.title,
+          module_learning_outcomes: module.moduleLearningOutcomes || [],
+          concepts: (module.concepts || []).map(concept => ({
+            concept_id: concept.conceptId,
+            title: concept.title,
+            learning_objectives: concept.learningObjectives || [],
+            prerequisites: concept.prerequisites || []
+          }))
+        })),
+        external_resources: []
+      }
+
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify({ export: exportData }, null, 2)], {
+        type: 'application/json'
+      })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${tempCourseId}-export-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      alert('Course exported successfully!')
+    } catch (error) {
+      console.error('Export error:', error)
+      alert('Failed to export course. Please try again.')
+    } finally {
+      setIsExporting(false)
     }
   }
 
@@ -208,6 +270,14 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
           </button>
         </div>
         <div className="right-actions">
+          <button
+            onClick={handleExport}
+            className="wizard-button secondary"
+            disabled={isExporting}
+            title="Export course as JSON file for backup or sharing"
+          >
+            {isExporting ? 'Exporting...' : '📥 Export JSON'}
+          </button>
           <button onClick={onSaveDraft} className="wizard-button secondary">
             Save Draft
           </button>

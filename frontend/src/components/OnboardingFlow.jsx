@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import './OnboardingFlow.css'
 
-function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', customQuestions = null }) {
+function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', courseDomain = '', customQuestions = null }) {
   const [step, setStep] = useState(0)
   const [profile, setProfile] = useState({
     name: learnerName,
@@ -12,6 +12,8 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   })
   const [currentAnswer, setCurrentAnswer] = useState('')
   const [isStarting, setIsStarting] = useState(false)
+  const [selectedLearningStyle, setSelectedLearningStyle] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
 
   const updateProfile = (key, value) => {
     setProfile(prev => ({ ...prev, [key]: value }))
@@ -20,6 +22,8 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   const handleNext = () => {
     setStep(step + 1)
     setCurrentAnswer('')
+    setSelectedOption('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleComplete = () => {
@@ -36,6 +40,25 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
     }
     setIsStarting(true)
     onComplete(templateProfile)
+  }
+
+  // Generate smart placeholder based on domain
+  const getRelatedSkillsPlaceholder = (domain) => {
+    const domainLower = domain.toLowerCase()
+
+    if (domainLower.includes('excel') || domainLower.includes('spreadsheet') || domainLower.includes('data')) {
+      return 'e.g., Programming languages, statistics, databases, other spreadsheet tools...'
+    } else if (domainLower.includes('language') || domainLower.includes('latin') || domainLower.includes('spanish')) {
+      return 'e.g., Other languages you speak, linguistics background...'
+    } else if (domainLower.includes('programming') || domainLower.includes('code') || domainLower.includes('software')) {
+      return 'e.g., Other programming languages, mathematics, problem-solving experience...'
+    } else if (domainLower.includes('math') || domainLower.includes('statistics')) {
+      return 'e.g., Programming, physics, analytical coursework...'
+    } else if (domainLower.includes('business') || domainLower.includes('finance')) {
+      return 'e.g., Accounting, economics, data analysis, management experience...'
+    } else {
+      return 'e.g., Related subjects, skills, or experiences you have...'
+    }
   }
 
   // Build steps dynamically from custom questions or use defaults
@@ -61,7 +84,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
       )
     })
 
-    // Add custom questions if provided
+    // Add custom questions if provided, otherwise use generic defaults
     if (customQuestions && customQuestions.length > 0) {
       customQuestions.forEach(q => {
         if (q.options) {
@@ -100,6 +123,63 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
           })
         }
       })
+    } else {
+      // Default generic onboarding questions
+
+      // 1. Background & Motivation
+      builtSteps.push({
+        type: 'question',
+        question: `Tell me about yourself - what brings you to ${courseTitle}?`,
+        placeholder: 'Tell me about your background and why you\'re interested in this course...',
+        onAnswer: (answer) => {
+          updateProfile('background', answer)
+          handleNext()
+        }
+      })
+
+      // 2. Prior Knowledge
+      builtSteps.push({
+        type: 'question',
+        question: `How familiar are you with ${courseDomain || 'this subject'}?`,
+        options: [
+          { value: 'beginner', label: 'Complete beginner - starting from scratch' },
+          { value: 'some', label: 'Some basics - studied or worked with it before' },
+          { value: 'intermediate', label: 'Solid foundation - comfortable with core concepts' },
+          { value: 'advanced', label: 'Advanced - deep understanding and experience' }
+        ],
+        onSelect: (value) => {
+          updateProfile('priorKnowledge', {
+            ...profile.priorKnowledge,
+            level: value
+          })
+          handleNext()
+        }
+      })
+
+      // 3. Related Skills & Knowledge
+      builtSteps.push({
+        type: 'question',
+        question: 'What related skills or subjects do you already know? This helps me connect new concepts to things you\'re familiar with.',
+        placeholder: getRelatedSkillsPlaceholder(courseDomain),
+        onAnswer: (answer) => {
+          updateProfile('priorKnowledge', {
+            ...profile.priorKnowledge,
+            relatedSkills: answer
+          })
+          handleNext()
+        }
+      })
+
+      // 4. Learning Goals
+      builtSteps.push({
+        type: 'question',
+        question: 'What do you hope to achieve by completing this course?',
+        placeholder: 'Your goals, what you want to learn, how you plan to use these skills...',
+        onAnswer: (answer) => {
+          updateProfile('interests', answer)
+          handleNext()
+        }
+      })
     }
 
     // Learning style question (always included)
@@ -113,45 +193,59 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
             If you need extra help with a concept, which would you reach for first?
           </p>
           <div className="option-buttons">
-            <button onClick={() => {
-              updateProfile('learningStyle', 'narrative')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">📖</div>
-                <div className="option-text">
-                  <div className="option-title">Story-based learning</div>
-                  <div className="option-subtitle">Learning through scenarios and conversations</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="narrative"
+                checked={selectedLearningStyle === 'narrative'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Story-based learning</div>
+                <div className="option-subtitle">Learning through scenarios and conversations</div>
               </div>
-            </button>
+            </label>
 
-            <button onClick={() => {
-              updateProfile('learningStyle', 'varied')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">🎨</div>
-                <div className="option-text">
-                  <div className="option-title">Varied content types</div>
-                  <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="varied"
+                checked={selectedLearningStyle === 'varied'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Varied content types</div>
+                <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
               </div>
-            </button>
+            </label>
 
-            <button onClick={() => {
-              updateProfile('learningStyle', 'adaptive')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">🎯</div>
-                <div className="option-text">
-                  <div className="option-title">Adaptive progression</div>
-                  <div className="option-subtitle">Content adjusts based on your performance</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="adaptive"
+                checked={selectedLearningStyle === 'adaptive'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Adaptive progression</div>
+                <div className="option-subtitle">Content adjusts based on your performance</div>
               </div>
-            </button>
+            </label>
           </div>
+          <button
+            onClick={() => {
+              updateProfile('learningStyle', selectedLearningStyle)
+              handleNext()
+            }}
+            className="continue-button"
+            disabled={!selectedLearningStyle}
+            style={{ marginTop: '24px' }}
+          >
+            Continue
+          </button>
         </div>
       )
     })
@@ -161,7 +255,6 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
       type: 'completion',
       content: (
         <div className="onboarding-step completion-step">
-          <div className="completion-icon">✨</div>
           <h2>Perfect! You're all set.</h2>
           <p className="lead">I'm preparing your personalized learning path now...</p>
           <button onClick={handleComplete} className="start-button" disabled={isStarting}>
@@ -172,7 +265,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
     })
 
     return builtSteps
-  }, [learnerName, customQuestions, isStarting, profile.priorKnowledge])
+  }, [learnerName, courseTitle, courseDomain, customQuestions, isStarting, profile.priorKnowledge, selectedLearningStyle])
 
   const currentStep = steps[step]
 
@@ -194,22 +287,37 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
 
       {currentStep.options ? (
         // Multiple choice
-        <div className="option-buttons">
-          {currentStep.options.map((option, index) => (
-            <button
-              key={index}
-              onClick={() => currentStep.onSelect(option.value)}
-              className="assessment-option"
-            >
-              <div className="option-content">
-                {option.emoji && <div className="option-icon">{option.emoji}</div>}
+        <>
+          <div className="option-buttons">
+            {currentStep.options.map((option, index) => (
+              <label
+                key={index}
+                className="assessment-option"
+              >
+                <input
+                  type="radio"
+                  name="question-option"
+                  value={option.value}
+                  checked={selectedOption === option.value}
+                  onChange={(e) => setSelectedOption(e.target.value)}
+                />
                 <div className="option-text">
                   <div className="option-title">{option.label}</div>
                 </div>
-              </div>
-            </button>
-          ))}
-        </div>
+              </label>
+            ))}
+          </div>
+          <button
+            onClick={() => {
+              currentStep.onSelect(selectedOption)
+            }}
+            className="continue-button"
+            disabled={!selectedOption}
+            style={{ marginTop: '24px' }}
+          >
+            Continue
+          </button>
+        </>
       ) : (
         // Text input
         <div className="text-input-container">
@@ -217,8 +325,8 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
             value={currentAnswer}
             onChange={(e) => setCurrentAnswer(e.target.value)}
             placeholder={currentStep.placeholder}
-            className="onboarding-input"
-            rows="4"
+            className="answer-input"
+            rows="6"
           />
           <button
             onClick={() => {

@@ -32,7 +32,7 @@ function App() {
   const [masteryScore, setMasteryScore] = useState(0)
   const [masteryThreshold, setMasteryThreshold] = useState(0.85)
   const [assessmentsCount, setAssessmentsCount] = useState(0)
-  const [currentConceptName, setCurrentConceptName] = useState('First Declension')
+  const [currentConceptName, setCurrentConceptName] = useState('')
 
   // Mastery celebration state
   const [showMasteryModal, setShowMasteryModal] = useState(false)
@@ -559,6 +559,7 @@ function App() {
             setSelectedCourseTitle(courseTitle)
             setCourseSelected(true)
           }}
+          onCreateCourse={() => setShowCourseCreation(true)}
         />
       </div>
     )
@@ -571,6 +572,7 @@ function App() {
         <OnboardingFlow
           learnerName={learnerName}
           courseTitle={selectedCourseTitle}
+          courseDomain={courseMetadata?.domain || ''}
           customQuestions={courseMetadata?.onboarding_questions}
           onComplete={handleOnboardingComplete}
         />
@@ -628,16 +630,6 @@ function App() {
               Reset Progress
             </button>
           </div>
-        </div>
-        {/* Development Status Banner */}
-        <div className="development-banner">
-          <span className="banner-icon"></span>
-          <span className="banner-text">
-            <strong>Early Access:</strong> Concepts 001-002 available. Additional concepts in development.
-          </span>
-          <span className="banner-status">
-            {progress?.overall_progress?.concepts_completed || 0}/{courseMetadata?.concepts?.length || 0} Complete
-          </span>
         </div>
       </header>
 

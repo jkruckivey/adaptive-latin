@@ -233,6 +233,99 @@ export const api = {
     return response.json();
   },
 
+  // Export course to JSON
+  async exportCourse(courseId) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}/export`);
+    if (!response.ok) {
+      throw new Error(`Failed to export course: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  // Import course from JSON
+  async importCourse(exportData, newCourseId = null, overwrite = false) {
+    const response = await fetch(`${API_BASE_URL}/courses/import`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        export_data: exportData,
+        new_course_id: newCourseId,
+        overwrite: overwrite
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to import course: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Parse syllabus document with AI
+  async parseSyllabus(file, domain = null, taxonomy = 'blooms') {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (domain) formData.append('domain', domain);
+    formData.append('taxonomy', taxonomy);
+
+    const response = await fetch(`${API_BASE_URL}/courses/parse-syllabus`, {
+      method: 'POST',
+      body: formData, // Don't set Content-Type, browser will set it with boundary
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to parse syllabus: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Generate learning outcomes with AI
+  async generateLearningOutcomes(description, taxonomy = 'blooms', level = 'course', count = 5, existingOutcomes = null) {
+    const response = await fetch(`${API_BASE_URL}/generate-learning-outcomes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        description,
+        taxonomy,
+        level,
+        count,
+        existing_outcomes: existingOutcomes
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate learning outcomes: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Import Common Cartridge (.imscc) file
+  async importCartridge(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/courses/import-cartridge`, {
+      method: 'POST',
+      body: formData, // Don't set Content-Type, browser will set it with boundary
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to import cartridge: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   // Add source to course
   async addCourseSource(courseId, sourceData) {
     const response = await fetch(`${API_BASE_URL}/courses/${courseId}/sources`, {

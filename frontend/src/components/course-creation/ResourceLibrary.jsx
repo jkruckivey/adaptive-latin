@@ -181,11 +181,13 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
               className="scope-select"
             >
               <option value="course">Entire Course</option>
-              {(courseData.concepts || []).map((concept, index) => (
-                <option key={index} value={index}>
-                  {concept.title || `Concept ${index + 1}`}
-                </option>
-              ))}
+              {(courseData.modules || []).flatMap((module, moduleIndex) =>
+                (module.concepts || []).map((concept, conceptIndex) => (
+                  <option key={`${moduleIndex}-${conceptIndex}`} value={`${moduleIndex}-${conceptIndex}`}>
+                    {module.title} → {concept.title || `Concept ${moduleIndex + 1}.${conceptIndex + 1}`}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
@@ -384,13 +386,15 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
               )}
 
               {/* Concept-specific sources */}
-              {(courseData.concepts || []).map((concept, index) => {
-                const conceptSources = getSourcesByScope(`concept-${index}`)
-                if (conceptSources.length === 0) return null
+              {(courseData.modules || []).flatMap((module, moduleIndex) =>
+                (module.concepts || []).map((concept, conceptIndex) => {
+                  const scopeKey = `concept-${moduleIndex}-${conceptIndex}`
+                  const conceptSources = getSourcesByScope(scopeKey)
+                  if (conceptSources.length === 0) return null
 
-                return (
-                  <div key={index} className="source-group">
-                    <h4>{concept.title || `Concept ${index + 1}`}</h4>
+                  return (
+                    <div key={scopeKey} className="source-group">
+                      <h4>{module.title} → {concept.title || `Concept ${moduleIndex + 1}.${conceptIndex + 1}`}</h4>
                     {conceptSources.map((source) => (
                       <div key={source.id} className={`source-card requirement-${source.requirementLevel || 'optional'}`}>
                         <div className="source-icon">{getSourceIcon(source.type)}</div>
@@ -427,9 +431,10 @@ function ResourceLibrary({ courseData, onNext, onBack }) {
                         </button>
                       </div>
                     ))}
-                  </div>
-                )
-              })}
+                    </div>
+                  )
+                })
+              )}
             </>
           )}
         </div>
