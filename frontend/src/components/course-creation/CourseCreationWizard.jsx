@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { api } from '../../api'
 import CourseSetup from './CourseSetup'
+import OnboardingQuestionBuilder from './OnboardingQuestionBuilder'
 import ModulePlanner from './ModulePlanner'
 import ResourceLibrary from './ResourceLibrary'
 import ConceptEditor from './ConceptEditor'
@@ -32,6 +33,7 @@ function CourseCreationWizard({ onComplete, onCancel }) {
 
   const steps = [
     { title: 'Course Setup', component: CourseSetup },
+    { title: 'Onboarding Questions', component: OnboardingQuestionBuilder },
     { title: 'Plan Modules', component: ModulePlanner },
     { title: 'Resource Library', component: ResourceLibrary },
     { title: 'Build Content', component: ConceptEditor },
