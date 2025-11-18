@@ -53,6 +53,11 @@ from .confidence import (
     get_calibration_pattern_feedback,
     calculate_overall_calibration
 )
+from .pedagogical_tools import (
+    generate_contextualized_example,
+    break_down_concept_application,
+    compare_concepts
+)
 
 logger = logging.getLogger(__name__)
 
@@ -637,6 +642,70 @@ TOOL_DEFINITIONS = [
             },
             "required": ["source_id"]
         }
+    },
+    {
+        "name": "generate_contextualized_example",
+        "description": "Generate an example illustrating a concept, tailored to the learner's interests.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "concept_id": {
+                    "type": "string",
+                    "description": "ID of the concept to illustrate"
+                },
+                "learner_interests": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of learner interests"
+                },
+                "difficulty": {
+                    "type": "string",
+                    "enum": ["easier", "appropriate", "harder"],
+                    "description": "Difficulty level"
+                }
+            },
+            "required": ["concept_id", "learner_interests"]
+        }
+    },
+    {
+        "name": "break_down_concept_application",
+        "description": "Deconstructs a complex application of a concept into steps.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "concept_id": {
+                    "type": "string",
+                    "description": "ID of the concept"
+                },
+                "student_work": {
+                    "type": "string",
+                    "description": "The student's attempt or question (optional)"
+                },
+                "problem_statement": {
+                    "type": "string",
+                    "description": "The problem being solved (optional)"
+                }
+            },
+            "required": ["concept_id"]
+        }
+    },
+    {
+        "name": "compare_concepts",
+        "description": "Creates a comparison matrix between two concepts.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "concept_id_a": {
+                    "type": "string",
+                    "description": "First concept ID"
+                },
+                "concept_id_b": {
+                    "type": "string",
+                    "description": "Second concept ID"
+                }
+            },
+            "required": ["concept_id_a", "concept_id_b"]
+        }
     }
 ]
 
@@ -761,6 +830,32 @@ def execute_tool(tool_name: str, tool_input: Dict[str, Any], learner_id: Optiona
             content_data = load_full_source_content(source["url"], source["type"])
 
             return {"success": True, "data": content_data}
+
+        elif tool_name == "generate_contextualized_example":
+            result = generate_contextualized_example(
+                concept_id=tool_input["concept_id"],
+                learner_interests=tool_input["learner_interests"],
+                difficulty=tool_input.get("difficulty", "appropriate"),
+                course_id=course_id
+            )
+            return {"success": True, "data": result}
+
+        elif tool_name == "break_down_concept_application":
+            result = break_down_concept_application(
+                concept_id=tool_input["concept_id"],
+                student_work=tool_input.get("student_work"),
+                problem_statement=tool_input.get("problem_statement"),
+                course_id=course_id
+            )
+            return {"success": True, "data": result}
+
+        elif tool_name == "compare_concepts":
+            result = compare_concepts(
+                concept_id_a=tool_input["concept_id_a"],
+                concept_id_b=tool_input["concept_id_b"],
+                course_id=course_id
+            )
+            return {"success": True, "data": result}
 
         else:
             return {"success": False, "error": f"Unknown tool: {tool_name}"}
