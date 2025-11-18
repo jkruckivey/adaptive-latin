@@ -366,11 +366,26 @@ Use ONLY in response to user answers, not for generating initial content.
 ### ALWAYS Start with Diagnostic (stage: "start", "practice", or "assess")
 
 **Generate a scenario-based question FIRST**:
-- Use **multiple-choice** with context (easiest to grade)
-- Use **fill-blank** for targeted concept testing
-- Use **dialogue** for conceptual understanding
 
-**Question Structure**:
+**Assessment Type Selection:**
+- Use **teaching-moment** when there's a common misconception to address - this engages students in explaining concepts and defending their understanding
+- Use **multiple-choice** for quick diagnostics and concept testing - efficient and clear
+- Use **fill-blank** for targeted recall of specific terms or forms
+
+**Avoid long-form responses:**
+- Do NOT use **dialogue** type (requires lengthy explanations)
+- Do NOT generate open-ended essay questions
+- Keep interactions focused and efficient
+
+**When to Use Teaching Moment:**
+- Common misconceptions exist (e.g., confusing SUM vs COUNT, mixing up cases)
+- Concept requires explanation, not just recognition
+- Students should practice teaching/correcting others
+- Testing deeper understanding beyond surface recognition
+
+**Question Structure Examples**:
+
+**Multiple Choice (quick diagnostic):**
 ```json
 {
   "type": "multiple-choice",
@@ -378,6 +393,45 @@ Use ONLY in response to user answers, not for generating initial content.
   "question": "What case is EXERCITUS in, and why?",
   "options": [...],
   "correctAnswer": 1
+}
+```
+
+**Teaching Moment (misconception correction):**
+```json
+{
+  "type": "teaching-moment",
+  "scenario": {
+    "character": "Marcus (fellow student)",
+    "situation": "Marcus is struggling with declensions",
+    "misconception": "I think 'puellae' in 'vita puellae' is nominative plural because it ends in -ae!"
+  },
+  "part1": {
+    "prompt": "What do you tell Marcus?",
+    "options": [
+      {"id": "a", "text": "You're right, it's nominative plural.", "quality": "incorrect"},
+      {"id": "b", "text": "It's genitive singular - the ending doesn't tell you everything, context matters.", "quality": "correct"},
+      {"id": "c", "text": "It could be either, you can't tell from the ending.", "quality": "incorrect"}
+    ]
+  },
+  "part2": {
+    "pushbacks": {
+      "a": "Great! So the sentence means 'the girls' life is good'?",
+      "b": "But the chart shows -ae is nominative plural! Why is this different?",
+      "c": "So how do I ever know which case it is?"
+    },
+    "prompt": "How do you respond?",
+    "options": [
+      {"id": "1", "text": "The chart shows all possible meanings of -ae. Context tells you it's possessive here ('of the girl'), so genitive.", "defends": ["b"]},
+      {"id": "2", "text": "You just have to memorize when it's genitive vs nominative.", "defends": []},
+      {"id": "3", "text": "Look at other words in the sentence to determine meaning and case.", "defends": ["b", "c"]}
+    ]
+  },
+  "scoring": {
+    "excellent": {"combinations": ["b1"], "feedback": "Perfect! You identified the misconception AND explained how context determines case."},
+    "good": {"combinations": ["b3", "c3"], "feedback": "Your explanation was on the right track."},
+    "developing": {"combinations": ["b2"], "feedback": "You spotted the issue but couldn't explain it clearly."},
+    "insufficient": {"combinations": ["a*", "*2"], "feedback": "Review how context helps determine case."}
+  }
 }
 ```
 
