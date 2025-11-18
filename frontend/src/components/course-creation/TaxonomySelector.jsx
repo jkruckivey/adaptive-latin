@@ -27,7 +27,7 @@ function TaxonomySelector({ selectedTaxonomy, onSelect }) {
             onChange={(e) => onSelect(e.target.value)}
           />
           <div className="option-content">
-            <div className="option-title">📚 {bloomsTaxonomy.name}</div>
+            <div className="option-title">{bloomsTaxonomy.name}</div>
             <div className="option-description">{bloomsTaxonomy.description}</div>
             {selectedTaxonomy === 'blooms' && showDetails && (
               <div className="taxonomy-details">
@@ -55,7 +55,7 @@ function TaxonomySelector({ selectedTaxonomy, onSelect }) {
             onChange={(e) => onSelect(e.target.value)}
           />
           <div className="option-content">
-            <div className="option-title">🌟 {finksTaxonomy.name}</div>
+            <div className="option-title">{finksTaxonomy.name}</div>
             <div className="option-description">{finksTaxonomy.description}</div>
             {selectedTaxonomy === 'finks' && showDetails && (
               <div className="taxonomy-details">
@@ -83,7 +83,7 @@ function TaxonomySelector({ selectedTaxonomy, onSelect }) {
             onChange={(e) => onSelect(e.target.value)}
           />
           <div className="option-content">
-            <div className="option-title">🎯 Both Frameworks</div>
+            <div className="option-title">Both Frameworks</div>
             <div className="option-description">Use verbs from both taxonomies for comprehensive outcomes</div>
           </div>
         </label>

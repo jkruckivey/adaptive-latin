@@ -1,0 +1,15 @@
+{
+  "course_id": "fundamentals-of-excel-and-analytics",
+  "title": "Fundamentals of Excel and Analytics",
+  "domain": "Business",
+  "taxonomy": "finks",
+  "course_learning_outcomes": [
+    "Analyze business scenarios using linear and quadratic function models",
+    "Interpret descriptive statistics to support data-driven business decisions",
+    "Model business scenarios using Excel formulas and visualizations",
+    "Evaluate relationships between variables using correlation analysis"
+  ],
+  "created_at": "2025-11-08T12:25:29.868414",
+  "updated_at": "2025-11-08T12:25:29.868424",
+  "type": "user-created"
+}

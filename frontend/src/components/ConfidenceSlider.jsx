@@ -5,10 +5,10 @@ function ConfidenceSlider({ onConfidenceSelect }) {
   const [selected, setSelected] = useState(null)
 
   const confidenceLevels = [
-    { value: 1, label: '⭐', description: 'Guessing' },
-    { value: 2, label: '⭐⭐', description: 'Somewhat sure' },
-    { value: 3, label: '⭐⭐⭐', description: 'Pretty confident' },
-    { value: 4, label: '⭐⭐⭐⭐', description: 'Very confident' }
+    { value: 1, label: '', description: 'Guessing' },
+    { value: 2, label: '', description: 'Somewhat sure' },
+    { value: 3, label: '', description: 'Pretty confident' },
+    { value: 4, label: '', description: 'Very confident' }
   ]
 
   const handleSelect = (value) => {

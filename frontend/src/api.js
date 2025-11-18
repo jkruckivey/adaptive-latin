@@ -11,7 +11,7 @@ export const api = {
   },
 
   // Start a new learner
-  async startLearner(learnerId, name, profile = null) {
+  async startLearner(learnerId, name, profile = null, courseId = null) {
     const response = await fetch(`${API_BASE_URL}/start`, {
       method: 'POST',
       headers: {
@@ -20,7 +20,8 @@ export const api = {
       body: JSON.stringify({
         learner_id: learnerId,
         learner_name: name,
-        profile: profile
+        profile: profile,
+        course_id: courseId
       }),
     });
     return response.json();
@@ -45,14 +46,35 @@ export const api = {
   },
 
   // Get available concepts
-  async getConcepts() {
-    const response = await fetch(`${API_BASE_URL}/concepts`);
+  async getConcepts(learnerId = null, courseId = null) {
+    const params = new URLSearchParams();
+    if (learnerId) params.append('learner_id', learnerId);
+    if (courseId) params.append('course_id', courseId);
+
+    const url = `${API_BASE_URL}/concepts${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url);
     return response.json();
   },
 
   // Get individual concept metadata
-  async getConceptMetadata(conceptId) {
-    const response = await fetch(`${API_BASE_URL}/concept/${conceptId}`);
+  async getConceptMetadata(conceptId, learnerId = null, courseId = null) {
+    const params = new URLSearchParams();
+    if (learnerId) params.append('learner_id', learnerId);
+    if (courseId) params.append('course_id', courseId);
+
+    const url = `${API_BASE_URL}/concept/${conceptId}${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url);
+    return response.json();
+  },
+
+  // Get modules with their concepts
+  async getModules(learnerId = null, courseId = null) {
+    const params = new URLSearchParams();
+    if (learnerId) params.append('learner_id', learnerId);
+    if (courseId) params.append('course_id', courseId);
+
+    const url = `${API_BASE_URL}/modules${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url);
     return response.json();
   },
 
@@ -144,7 +166,9 @@ export const api = {
     if (!response.ok) {
       throw new Error(`Failed to get course: ${response.statusText}`);
     }
-    return response.json();
+    const data = await response.json();
+    // Unwrap the course object from {success: true, course: {...}}
+    return data.course || data;
   },
 
   // Create a new course
@@ -155,33 +179,171 @@ export const api = {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
+    const requestBody = {
+      course_id: courseId,
+      title: courseData.title,
+      domain: courseData.domain,
+      taxonomy: courseData.taxonomy || 'blooms',
+      course_learning_outcomes: courseData.courseLearningOutcomes || [],
+      // Backward compatibility
+      description: courseData.description || null,
+      target_audience: courseData.targetAudience || null,
+    };
+
+    // Support both module-based and flat concept structures
+    if (courseData.modules && courseData.modules.length > 0) {
+      // Module-based structure (new)
+      requestBody.modules = courseData.modules.map(module => ({
+        moduleId: module.moduleId,
+        title: module.title,
+        moduleLearningOutcomes: module.moduleLearningOutcomes || [],
+        concepts: (module.concepts || []).map(concept => ({
+          conceptId: concept.conceptId,
+          title: concept.title,
+          learningObjectives: concept.learningObjectives || [],
+          prerequisites: concept.prerequisites || [],
+          teachingContent: concept.teachingContent || '',
+          vocabulary: concept.vocabulary || []
+        }))
+      }));
+    } else {
+      // Flat concept structure (backward compatibility)
+      requestBody.concepts = (courseData.concepts || []).map(concept => ({
+        title: concept.title,
+        moduleLearningOutcomes: concept.moduleLearningOutcomes || concept.learningObjectives || [],
+        prerequisites: concept.prerequisites || [],
+        teachingContent: concept.teachingContent || '',
+        vocabulary: concept.vocabulary || []
+      }));
+    }
+
     const response = await fetch(`${API_BASE_URL}/courses`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        course_id: courseId,
-        title: courseData.title,
-        domain: courseData.domain,
-        taxonomy: courseData.taxonomy || 'blooms',
-        course_learning_outcomes: courseData.courseLearningOutcomes || [],
-        // Backward compatibility
-        description: courseData.description || null,
-        target_audience: courseData.targetAudience || null,
-        concepts: (courseData.concepts || []).map(concept => ({
-          title: concept.title,
-          moduleLearningOutcomes: concept.moduleLearningOutcomes || concept.learningObjectives || [],
-          prerequisites: concept.prerequisites || [],
-          teachingContent: concept.teachingContent || '',
-          vocabulary: concept.vocabulary || []
-        }))
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.detail || `Failed to create course: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Export course to JSON
+  async exportCourse(courseId) {
+    const response = await fetch(`${API_BASE_URL}/courses/${courseId}/export`);
+    if (!response.ok) {
+      throw new Error(`Failed to export course: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  // Import course from JSON
+  async importCourse(exportData, newCourseId = null, overwrite = false) {
+    const response = await fetch(`${API_BASE_URL}/courses/import`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        export_data: exportData,
+        new_course_id: newCourseId,
+        overwrite: overwrite
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to import course: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Parse syllabus document with AI
+  async parseSyllabus(file, domain = null, taxonomy = 'blooms') {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (domain) formData.append('domain', domain);
+    formData.append('taxonomy', taxonomy);
+
+    const response = await fetch(`${API_BASE_URL}/courses/parse-syllabus`, {
+      method: 'POST',
+      body: formData, // Don't set Content-Type, browser will set it with boundary
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to parse syllabus: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Generate learning outcomes with AI
+  async generateLearningOutcomes(description, taxonomy = 'blooms', level = 'course', count = 5, existingOutcomes = null) {
+    const response = await fetch(`${API_BASE_URL}/generate-learning-outcomes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        description,
+        taxonomy,
+        level,
+        count,
+        existing_outcomes: existingOutcomes
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate learning outcomes: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Generate assessments with AI based on learning outcome
+  async generateAssessments(learningOutcome, taxonomy = 'blooms', domain = 'general', numAssessments = 3) {
+    const response = await fetch(`${API_BASE_URL}/generate-assessments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        learning_outcome: learningOutcome,
+        taxonomy,
+        domain,
+        num_assessments: numAssessments
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate assessments: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Import Common Cartridge (.imscc) file
+  async importCartridge(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/courses/import-cartridge`, {
+      method: 'POST',
+      body: formData, // Don't set Content-Type, browser will set it with boundary
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to import cartridge: ${response.statusText}`);
     }
 
     return response.json();
@@ -248,6 +410,81 @@ export const api = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.detail || `Failed to delete source: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // ========================================
+  // AI Generation APIs
+  // ========================================
+
+  // Generate module learning outcomes with AI
+  async generateModuleLearningOutcomes(moduleTitle, courseTitle, courseLearningOutcomes, domain, taxonomy = 'blooms') {
+    const response = await fetch(`${API_BASE_URL}/generate-module-learning-outcomes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        module_title: moduleTitle,
+        course_title: courseTitle,
+        course_learning_outcomes: courseLearningOutcomes,
+        domain,
+        taxonomy
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate module outcomes: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Generate concept learning objectives with AI
+  async generateConceptLearningObjectives(conceptTitle, moduleTitle, moduleLearningOutcomes, courseTitle, domain, taxonomy = 'blooms') {
+    const response = await fetch(`${API_BASE_URL}/generate-concept-learning-objectives`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        concept_title: conceptTitle,
+        module_title: moduleTitle,
+        module_learning_outcomes: moduleLearningOutcomes,
+        course_title: courseTitle,
+        domain,
+        taxonomy
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate concept objectives: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  // Generate interactive simulation
+  async generateSimulation(simulationType, courseFormat, data) {
+    const response = await fetch(`${API_BASE_URL}/generate-simulation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        simulation_type: simulationType,
+        course_format: courseFormat,
+        data: data
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to generate simulation: ${response.statusText}`);
     }
 
     return response.json();

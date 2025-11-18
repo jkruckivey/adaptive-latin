@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import ContentRenderer from './components/ContentRenderer'
 import ProgressDashboard from './components/ProgressDashboard'
 import OnboardingFlow from './components/OnboardingFlow'
+import CourseSelector from './components/CourseSelector'
 import ConfidenceSlider from './components/ConfidenceSlider'
 import FloatingTutorButton from './components/FloatingTutorButton'
 import MasteryProgressBar from './components/MasteryProgressBar'
 import ConceptMasteryModal from './components/ConceptMasteryModal'
 import CourseCreationWizard from './components/course-creation/CourseCreationWizard'
 import Syllabus from './components/Syllabus'
+import AdminDashboard from './components/AdminDashboard'
+import LandingPage from './components/LandingPage'
 import { useSubmitResponse } from './hooks/useSubmitResponse'
 import { api } from './api'
 import './App.css'
@@ -16,6 +19,10 @@ function App() {
   const [learnerId, setLearnerId] = useState(null)
   const [learnerName, setLearnerName] = useState('')
   const [isStarted, setIsStarted] = useState(false)
+  const [courseSelected, setCourseSelected] = useState(false)
+  const [selectedCourseId, setSelectedCourseId] = useState(null)
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState(null)
+  const [courseMetadata, setCourseMetadata] = useState(null)
   const [onboardingComplete, setOnboardingComplete] = useState(false)
   const [learnerProfile, setLearnerProfile] = useState(null)
   const [currentContent, setCurrentContent] = useState(null)
@@ -26,7 +33,7 @@ function App() {
   const [masteryScore, setMasteryScore] = useState(0)
   const [masteryThreshold, setMasteryThreshold] = useState(0.85)
   const [assessmentsCount, setAssessmentsCount] = useState(0)
-  const [currentConceptName, setCurrentConceptName] = useState('First Declension')
+  const [currentConceptName, setCurrentConceptName] = useState('')
 
   // Mastery celebration state
   const [showMasteryModal, setShowMasteryModal] = useState(false)
@@ -62,31 +69,47 @@ function App() {
   // Syllabus state
   const [showSyllabus, setShowSyllabus] = useState(false)
 
+  // Admin dashboard state
+  const [showAdmin, setShowAdmin] = useState(false)
+
+  // Landing page / name entry state
+  const [showNameEntry, setShowNameEntry] = useState(false)
+
   // Generate or retrieve learner ID
   useEffect(() => {
     const storedLearnerId = localStorage.getItem('learnerId')
     const storedProfile = localStorage.getItem('learnerProfile')
+    const storedCourseId = localStorage.getItem('selectedCourseId')
+    const storedCourseTitle = localStorage.getItem('selectedCourseTitle')
 
-    console.log('🔍 Initial load check:', {
+    console.log('Initial load check:', {
       hasLearnerId: !!storedLearnerId,
       hasProfile: !!storedProfile,
+      hasCourseId: !!storedCourseId,
       learnerId: storedLearnerId
     })
 
     if (storedLearnerId && storedProfile) {
       // Both ID and profile exist - skip onboarding
-      console.log('✅ Restoring existing session')
+      console.log('Restoring existing session')
       setLearnerId(storedLearnerId)
       setLearnerProfile(JSON.parse(storedProfile))
+      if (storedCourseId) {
+        setSelectedCourseId(storedCourseId)
+        setSelectedCourseTitle(storedCourseTitle)
+        setCourseSelected(true)
+      }
       setIsStarted(true)
       setOnboardingComplete(true)
       loadProgress(storedLearnerId)
     } else if (storedLearnerId && !storedProfile) {
       // ID exists but no profile - clear stale data and start fresh
-      console.log('🧹 Clearing stale learnerId without profile')
+      console.log('Clearing stale learnerId without profile')
       localStorage.removeItem('learnerId')
+      localStorage.removeItem('selectedCourseId')
+      localStorage.removeItem('selectedCourseTitle')
     } else {
-      console.log('👋 New user - showing welcome screen')
+      console.log('New user - showing welcome screen')
     }
   }, [])
 
@@ -108,6 +131,23 @@ function App() {
       console.error('Failed to load progress:', err)
     }
   }
+
+  // Load course metadata when course is selected
+  useEffect(() => {
+    const loadCourseMetadata = async () => {
+      if (selectedCourseId) {
+        try {
+          const data = await api.getCourse(selectedCourseId)
+          if (data.success) {
+            setCourseMetadata(data.course)
+          }
+        } catch (err) {
+          console.error('Failed to load course metadata:', err)
+        }
+      }
+    }
+    loadCourseMetadata()
+  }, [selectedCourseId])
 
   const loadInitialContent = async () => {
     if (!learnerId) return
@@ -135,6 +175,16 @@ function App() {
     }
   }
 
+  const handleStartLearningClick = () => {
+    // Show name entry form
+    setShowNameEntry(true)
+  }
+
+  const handleCreateCourseClick = () => {
+    // Go directly to course creation (no onboarding required)
+    setShowCourseCreation(true)
+  }
+
   const handleStart = async (e) => {
     e.preventDefault()
     if (!learnerName.trim()) {
@@ -144,6 +194,7 @@ function App() {
 
     // Start onboarding
     setIsStarted(true)
+    setShowNameEntry(false)
     setContentError(null)
   }
 
@@ -151,7 +202,7 @@ function App() {
     setIsLoadingContent(true) // Show loading indicator during scenario generation
     try {
       const id = `learner-${Date.now()}`
-      const response = await api.startLearner(id, learnerName, profile)
+      const response = await api.startLearner(id, learnerName, profile, selectedCourseId)
 
       if (response.success) {
         setLearnerId(id)
@@ -159,6 +210,8 @@ function App() {
         setOnboardingComplete(true)
         localStorage.setItem('learnerId', id)
         localStorage.setItem('learnerProfile', JSON.stringify(profile))
+        localStorage.setItem('selectedCourseId', selectedCourseId)
+        localStorage.setItem('selectedCourseTitle', selectedCourseTitle)
         // Content will be loaded by the useEffect hook watching learnerId and onboardingComplete
       } else {
         setContentError(response.message || 'Failed to start learning session')
@@ -211,18 +264,22 @@ function App() {
     }
   }
 
+  const handleConceptClick = (conceptId) => {
+    alert(`Concept navigation clicked: ${conceptId}\n\nThis feature allows reviewing previous concepts or jumping ahead. Full implementation coming soon!`)
+  }
+
   const handleNext = async () => {
     // Check if current content has pre-loaded next content (from assessment results)
     if (currentContent?._next_content) {
       // Use the adaptive next content that was already prepared based on performance
-      console.log('📦 Using pre-loaded adaptive content:', currentContent._next_content.type)
+      console.log('Using pre-loaded adaptive content:', currentContent._next_content.type)
       setCurrentContent(currentContent._next_content)
       setContentIndex(i => i + 1)
       return
     }
 
     // Otherwise, fetch new content from API
-    console.log('🔄 Fetching new content from API')
+    console.log('Fetching new content from API')
     setIsLoadingContent(true)
     try {
       // Always use 'practice' stage to generate multiple-choice questions
@@ -231,7 +288,7 @@ function App() {
 
       const result = await api.generateContent(learnerId, stage)
       if (result.success) {
-        console.log('✅ Got new content:', result.content.type)
+        console.log('Got new content:', result.content.type)
         setCurrentContent(result.content)
         setContentIndex(i => i + 1)
       } else {
@@ -264,7 +321,7 @@ function App() {
   }
 
   const handleResponse = async (response) => {
-    console.log('📝 User answered question:', response)
+    console.log('User answered question:', response)
 
     // Check if we should show confidence rating for this question
     const shouldShowConfidence = currentContent?.show_confidence !== false
@@ -280,7 +337,7 @@ function App() {
       : (currentContent.correctAnswer || 0) // Multiple-choice has correctAnswer number
 
     if (shouldShowConfidence) {
-      console.log('🤔 Showing confidence slider')
+      console.log('Showing confidence slider')
       // Store the answer and question data, then show confidence slider
       setCurrentAnswer(userAnswer)
       setCurrentQuestionData({
@@ -290,7 +347,7 @@ function App() {
       })
       setWaitingForConfidence(true)
     } else {
-      console.log('⏭️ Skipping confidence, submitting directly')
+      console.log('Skipping confidence, submitting directly')
       // Skip confidence slider - submit directly with null confidence
       await submitResponse({
         learnerId,
@@ -303,7 +360,7 @@ function App() {
         scenario: currentContent.scenario,
         options: currentContent.options || null,
         onSuccess: (contentWithDebug, masteryData) => {
-          console.log('✅ Got response, setting content:', contentWithDebug.type)
+          console.log('Got response, setting content:', contentWithDebug.type)
           setCurrentContent(contentWithDebug)
           setContentIndex(i => i + 1)
 
@@ -315,7 +372,7 @@ function App() {
 
             // Check if concept was just completed
             if (masteryData.conceptCompleted) {
-              console.log('🎉 Concept completed! Showing celebration modal')
+              console.log('Concept completed! Showing celebration modal')
               setCompletedConceptId(progress?.current_concept || 'concept-001')
               setShowMasteryModal(true)
             }
@@ -326,7 +383,7 @@ function App() {
   }
 
   const handleConfidenceSelect = async (confidenceLevel) => {
-    console.log('🎯 Confidence selected:', confidenceLevel)
+    console.log('Confidence selected:', confidenceLevel)
     setWaitingForConfidence(false)
 
     await submitResponse({
@@ -340,8 +397,8 @@ function App() {
       scenario: currentQuestionData.content.scenario,
       options: currentQuestionData.content.options || null,
       onSuccess: (contentWithDebug, masteryData) => {
-        console.log('✅ Got response with confidence, setting content:', contentWithDebug.type)
-        console.log('📦 Next content attached:', !!contentWithDebug._next_content)
+        console.log('Got response with confidence, setting content:', contentWithDebug.type)
+        console.log('Next content attached:', !!contentWithDebug._next_content)
         setCurrentContent(contentWithDebug)
         setContentIndex(i => i + 1)
 
@@ -353,7 +410,7 @@ function App() {
 
           // Check if concept was just completed
           if (masteryData.conceptCompleted) {
-            console.log('🎉 Concept completed! Showing celebration modal')
+            console.log('Concept completed! Showing celebration modal')
             setCompletedConceptId(progress?.current_concept || 'concept-001')
             setShowMasteryModal(true)
           }
@@ -367,12 +424,18 @@ function App() {
   }
 
   const handleReset = () => {
-    if (confirm('Are you sure you want to reset your progress?')) {
+    if (confirm('Are you sure you want to reset your progress and return to the home page?')) {
       localStorage.removeItem('learnerId')
       localStorage.removeItem('learnerProfile')
+      localStorage.removeItem('selectedCourseId')
+      localStorage.removeItem('selectedCourseTitle')
       setLearnerId(null)
+      setSelectedCourseId(null)
+      setSelectedCourseTitle(null)
+      setCourseSelected(false)
       setIsStarted(false)
       setOnboardingComplete(false)
+      setShowNameEntry(false)  // Return to landing page, not name entry
       setLearnerName('')
       setLearnerProfile(null)
       setProgress(null)
@@ -382,63 +445,21 @@ function App() {
     }
   }
 
-  if (!isStarted) {
+  // Show admin dashboard
+  if (showAdmin) {
     return (
-      <div className="app">
-        <div className="welcome-container">
-          <h1>🏛️ Adaptive Latin Learning</h1>
-          <p className="welcome-subtitle">AI-powered personalized Latin grammar instruction</p>
-
-          <form onSubmit={handleStart} className="start-form">
-            <div className="form-group">
-              <label htmlFor="name">What's your name?</label>
-              <input
-                id="name"
-                type="text"
-                value={learnerName}
-                onChange={(e) => setLearnerName(e.target.value)}
-                placeholder="Enter your name"
-                className="name-input"
-                autoFocus
-              />
-            </div>
-
-            {error && <div className="error-message">{error}</div>}
-
-            <button type="submit" className="start-button">
-              Begin Learning
-            </button>
-          </form>
-
-          <div className="features">
-            <div className="feature">
-              <span className="feature-icon">📚</span>
-              <div>
-                <h3>Rich Content</h3>
-                <p>Lessons, tables, examples, and interactive exercises</p>
-              </div>
-            </div>
-            <div className="feature">
-              <span className="feature-icon">🎯</span>
-              <div>
-                <h3>Adaptive Learning</h3>
-                <p>AI serves exactly what you need, when you need it</p>
-              </div>
-            </div>
-            <div className="feature">
-              <span className="feature-icon">⚡</span>
-              <div>
-                <h3>Varied Formats</h3>
-                <p>Adaptive questions, visual diagrams, and interactive widgets</p>
-              </div>
-            </div>
-          </div>
+      <div className="app admin-view">
+        <div className="admin-close-header">
+          <button onClick={() => setShowAdmin(false)} className="close-admin-button">
+            ← Back to Learning
+          </button>
         </div>
+        <AdminDashboard />
       </div>
     )
   }
 
-  // Show course creation wizard
+  // Show course creation wizard (check BEFORE landing page)
   if (showCourseCreation) {
     return (
       <div className="app">
@@ -477,23 +498,120 @@ function App() {
 
               alert(`Course "${courseData.title}" created successfully!`)
               setShowCourseCreation(false)
+              // Return to landing page if not in a learning session
+              if (!learnerId) {
+                setShowNameEntry(false)
+              }
             } catch (error) {
               console.error('Error creating course:', error)
               alert(`Failed to create course: ${error.message}`)
             }
           }}
-          onCancel={() => setShowCourseCreation(false)}
+          onCancel={() => {
+            setShowCourseCreation(false)
+            // Return to landing page if not in a learning session
+            if (!learnerId) {
+              setShowNameEntry(false)
+            }
+          }}
+        />
+      </div>
+    )
+  }
+
+  // Show landing page
+  if (!isStarted && !showNameEntry) {
+    return (
+      <div className="app">
+        <LandingPage
+          onStartLearning={handleStartLearningClick}
+          onCreateCourse={handleCreateCourseClick}
+        />
+      </div>
+    )
+  }
+
+  // Show name entry form
+  if (!isStarted && showNameEntry) {
+    return (
+      <div className="app">
+        <div className="welcome-container">
+          <button
+            onClick={() => setShowNameEntry(false)}
+            className="back-button"
+            style={{
+              alignSelf: 'flex-start',
+              marginBottom: '20px',
+              background: 'transparent',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            ← Back
+          </button>
+
+          <h1>Let's get started!</h1>
+          <p className="welcome-subtitle">First, tell us your name</p>
+
+          <form onSubmit={handleStart} className="start-form">
+            <div className="form-group">
+              <label htmlFor="name">What's your name?</label>
+              <input
+                id="name"
+                type="text"
+                value={learnerName}
+                onChange={(e) => setLearnerName(e.target.value)}
+                placeholder="Enter your name"
+                className="name-input"
+                autoFocus
+              />
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <button type="submit" className="start-button">
+              Continue
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  // Show course selector
+  if (isStarted && !courseSelected) {
+    return (
+      <div className="app">
+        <CourseSelector
+          onCourseSelected={(courseId, courseTitle) => {
+            setSelectedCourseId(courseId)
+            setSelectedCourseTitle(courseTitle)
+            setCourseSelected(true)
+          }}
+          onCreateCourse={() => setShowCourseCreation(true)}
+          onBack={() => {
+            setIsStarted(false)
+            setShowNameEntry(true)
+          }}
         />
       </div>
     )
   }
 
   // Show onboarding flow
-  if (isStarted && !onboardingComplete) {
+  if (isStarted && courseSelected && !onboardingComplete) {
     return (
       <div className="app">
         <OnboardingFlow
           learnerName={learnerName}
+          courseTitle={selectedCourseTitle}
+          courseDomain={courseMetadata?.domain || ''}
+          customQuestions={courseMetadata?.onboarding_questions}
           onComplete={handleOnboardingComplete}
         />
       </div>
@@ -510,16 +628,16 @@ function App() {
             <h2 className="loading-title">Setting up your learning experience</h2>
             <div className="loading-steps">
               <div className="loading-step">
-                <span className="step-icon">🏛️</span>
-                <span className="step-text">Creating your personalized Roman scenario</span>
+                <span className="step-icon"></span>
+                <span className="step-text">Analyzing your learning profile</span>
               </div>
               <div className="loading-step">
-                <span className="step-icon">🎭</span>
-                <span className="step-text">Introducing characters tailored to your interests</span>
+                <span className="step-icon"></span>
+                <span className="step-text">Generating personalized content</span>
               </div>
               <div className="loading-step">
-                <span className="step-icon">📚</span>
-                <span className="step-text">Preparing your first Latin exercise</span>
+                <span className="step-icon"></span>
+                <span className="step-text">Preparing your first lesson</span>
               </div>
             </div>
             <p className="loading-patience">This may take 10-15 seconds...</p>
@@ -533,13 +651,16 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <h1>🏛️ Adaptive Latin</h1>
+          <h1>{selectedCourseTitle || 'Adaptive Learning'}</h1>
           <div className="header-buttons">
             {learnerId && (
               <button onClick={() => setShowSyllabus(true)} className="syllabus-button">
-                📚 View Syllabus
+                View Syllabus
               </button>
             )}
+            <button onClick={() => setShowAdmin(true)} className="admin-button">
+              Admin Dashboard
+            </button>
             <button onClick={() => setShowCourseCreation(true)} className="create-course-button">
               + Create Course
             </button>
@@ -547,16 +668,6 @@ function App() {
               Reset Progress
             </button>
           </div>
-        </div>
-        {/* Development Status Banner */}
-        <div className="development-banner">
-          <span className="banner-icon">🚧</span>
-          <span className="banner-text">
-            <strong>Early Access:</strong> Concepts 001-002 available. Additional concepts in development.
-          </span>
-          <span className="banner-status">
-            {progress?.overall_progress?.concepts_completed || 0}/7 Complete
-          </span>
         </div>
       </header>
 
@@ -571,14 +682,14 @@ function App() {
               </p>
               <div className="preview-buttons">
                 <button onClick={handleShowPreview} className="preview-button show-preview">
-                  <span className="button-icon">📖</span>
+                  <span className="button-icon"></span>
                   <span className="button-text">
                     <strong>Show me a preview first</strong>
                     <small>Quick 30-second introduction</small>
                   </span>
                 </button>
                 <button onClick={handleSkipPreview} className="preview-button skip-preview">
-                  <span className="button-icon">🎯</span>
+                  <span className="button-icon"></span>
                   <span className="button-text">
                     <strong>Jump right in</strong>
                     <small>Start with the diagnostic</small>
@@ -614,6 +725,9 @@ function App() {
           <ProgressDashboard
             learnerId={learnerId}
             progress={progress}
+            courseTitle={selectedCourseTitle}
+            courseId={selectedCourseId}
+            onConceptClick={handleConceptClick}
           />
         </div>
       </div>
@@ -637,7 +751,7 @@ function App() {
       {showSyllabus && learnerId && (
         <Syllabus
           learnerId={learnerId}
-          courseId="latin-grammar"
+          courseId={selectedCourseId}
           onClose={() => setShowSyllabus(false)}
         />
       )}

@@ -23,5 +23,44 @@
     "Each module builds systematically on previous concepts - strict prerequisite enforcement recommended",
     "Spaced repetition and cumulative review are integrated to support long-term retention",
     "Diagnostic assessments adapt to learner confidence and correctness for personalized pathways"
+  ],
+  "onboarding_questions": [
+    {
+      "type": "question",
+      "question": "Tell me about yourself - what brings you to Latin Grammar Fundamentals?",
+      "placeholder": "Tell me about your background and why you're interested in learning Latin...",
+      "key": "background"
+    },
+    {
+      "type": "question",
+      "question": "Have you studied Latin before?",
+      "options": [
+        { "value": "never", "label": "Never studied it" },
+        { "value": "some", "label": "Some basics - a semester or two" },
+        { "value": "intermediate", "label": "Solid foundation - can read simple texts" },
+        { "value": "advanced", "label": "Advanced - comfortable with classical texts" }
+      ],
+      "key": "latinExperience",
+      "priorKnowledgeKey": "latinLevel"
+    },
+    {
+      "type": "question",
+      "question": "Do you know any Romance languages (Spanish, French, Italian, Portuguese, Romanian)?",
+      "options": [
+        { "value": "none", "label": "No Romance languages" },
+        { "value": "basic", "label": "Basic level in one" },
+        { "value": "fluent", "label": "Fluent in one or more" },
+        { "value": "native", "label": "Native speaker" }
+      ],
+      "key": "romanceLanguages",
+      "priorKnowledgeKey": "hasRomanceLanguage"
+    },
+    {
+      "type": "question",
+      "question": "What's your goal with Latin?",
+      "placeholder": "Reading classical texts, understanding etymology, medical/legal terminology, academic requirements...",
+      "key": "goals",
+      "priorKnowledgeKey": "goals"
+    }
   ]
 }

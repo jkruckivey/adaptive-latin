@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { api } from '../../api'
 import './AssessmentResult.css'
 
-function AssessmentResult({ score, feedback, correctAnswer, calibration, onContinue, learnerId, learnerProfile }) {
+function AssessmentResult({ score, feedback, correctAnswer, userAnswer, calibration, onContinue, learnerId, learnerProfile }) {
   const [currentStyle, setCurrentStyle] = useState(learnerProfile?.learningStyle || 'varied')
   const [isChangingStyle, setIsChangingStyle] = useState(false)
   const [showStylePicker, setShowStylePicker] = useState(false)
@@ -15,16 +15,16 @@ function AssessmentResult({ score, feedback, correctAnswer, calibration, onConti
   }
 
   const getScoreEmoji = () => {
-    if (score >= 0.9) return '🎯'
-    if (score >= 0.7) return '👍'
-    if (score >= 0.5) return '📚'
-    return '💪'
+    if (score >= 0.9) return ''
+    if (score >= 0.7) return ''
+    if (score >= 0.5) return ''
+    return ''
   }
 
   const styleLabels = {
-    narrative: '📖 Story-based learning',
-    varied: '🔄 Varied content types',
-    adaptive: '🎯 Adaptive progression'
+    narrative: 'Story-based learning',
+    varied: 'Varied content types',
+    adaptive: 'Adaptive progression'
   }
 
   const handleStyleChange = async (newStyle) => {
@@ -48,25 +48,37 @@ function AssessmentResult({ score, feedback, correctAnswer, calibration, onConti
     }
   }
 
+  const isCorrect = score >= 1.0;
+
   return (
     <div className="assessment-result">
-      <div className="result-feedback">
-        <p>{feedback}</p>
-      </div>
-
-      {correctAnswer && (
-        <div className="result-correct-answer">
-          <h4>Correct Answer:</h4>
-          <div className="correct-answer-text">{correctAnswer}</div>
+      {/* Combined feedback box */}
+      <div className={`result-box ${isCorrect ? 'correct' : 'incorrect'}`}>
+        <div className="result-status">
+          <span className="status-icon">{isCorrect ? '✓' : '✗'}</span>
+          <span className="status-text">{isCorrect ? 'Correct' : 'Incorrect'}</span>
         </div>
-      )}
+
+        <div className="feedback-text">
+          {userAnswer && (
+            <p className="user-choice">
+              <strong>You chose:</strong> {userAnswer}
+            </p>
+          )}
+
+          {!isCorrect && correctAnswer && (
+            <p className="correct-choice">
+              <strong>Correct answer:</strong> {correctAnswer}
+            </p>
+          )}
+
+          {feedback && <p className="feedback-message">{feedback}</p>}
+        </div>
+      </div>
 
       {calibration && (
         <div className={`result-calibration ${calibration.type}`}>
           <div className="calibration-icon">
-            {calibration.type === 'overconfident' && '⬆️'}
-            {calibration.type === 'underconfident' && '⬇️'}
-            {calibration.type === 'calibrated' && '✓'}
           </div>
           <div className="calibration-message">{calibration.message}</div>
         </div>
@@ -75,7 +87,7 @@ function AssessmentResult({ score, feedback, correctAnswer, calibration, onConti
       {learnerId && (
         <div className="learning-style-section">
           <div className="current-style">
-            <span className="style-label">Current learning style: </span>
+            <span className="style-label">Current learning preference: </span>
             <strong>{styleLabels[currentStyle]}</strong>
             <button
               onClick={() => setShowStylePicker(!showStylePicker)}

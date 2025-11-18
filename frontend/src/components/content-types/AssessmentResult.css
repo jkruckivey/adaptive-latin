@@ -1,5 +1,80 @@
 @import '../content-types/content-types.css';
 
+/* Combined Result Box */
+.result-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  border-left: 4px solid;
+}
+
+.result-box.correct {
+  border-left-color: #10b981;
+  background: #f0fdf4;
+}
+
+.result-box.incorrect {
+  border-left-color: #6b7280;
+  background: #f9fafb;
+}
+
+.result-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-icon {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.result-box.correct .status-icon {
+  color: #10b981;
+}
+
+.result-box.incorrect .status-icon {
+  color: #6b7280;
+}
+
+.result-box.correct .status-text {
+  color: #065f46;
+}
+
+.result-box.incorrect .status-text {
+  color: #374151;
+}
+
+.feedback-text {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.feedback-text p {
+  margin: 0 0 12px 0;
+}
+
+.feedback-text p:last-child {
+  margin-bottom: 0;
+}
+
+.user-choice strong,
+.correct-choice strong {
+  color: #1f2937;
+}
+
+.feedback-message {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
 .learning-style-section {
   margin-top: 1.5rem;
   padding: 1rem;
@@ -53,21 +128,24 @@
   margin-bottom: 0.5rem;
   text-align: left;
   background: white;
-  border: 2px solid var(--neutral-300);
+  border: 2px solid #d1d5db;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1rem;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .style-option:hover:not(:disabled) {
-  border-color: var(--primary-color);
-  background: var(--primary-50);
+  border-color: #2d3748;
+  background: #f8f9fa;
 }
 
 .style-option.active {
-  border-color: var(--primary-color);
-  background: var(--primary-100);
+  border-color: #2d3748;
+  background: #e5e7eb;
   font-weight: 600;
 }
 

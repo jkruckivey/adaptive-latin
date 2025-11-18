@@ -165,7 +165,8 @@ def load_concept_metadata(concept_id: str, course_id: Optional[str] = None) -> D
 def create_learner_model(
     learner_id: str,
     learner_name: Optional[str] = None,
-    profile: Optional[Dict[str, Any]] = None
+    profile: Optional[Dict[str, Any]] = None,
+    course_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Create a new learner model with initial state.
@@ -174,6 +175,7 @@ def create_learner_model(
         learner_id: Unique identifier for the learner
         learner_name: Learner's name (optional)
         profile: Learner profile from onboarding (optional)
+        course_id: Course to enroll in (optional, defaults to DEFAULT_COURSE_ID)
 
     Returns:
         New learner model dictionary
@@ -196,7 +198,7 @@ def create_learner_model(
             "profile": profile or {},
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
-            "current_course": config.DEFAULT_COURSE_ID,  # Support for multiple courses
+            "current_course": course_id or config.DEFAULT_COURSE_ID,  # Support for multiple courses
             "current_concept": "concept-001",
             "concepts": {},
             "question_history": [],  # Track recent questions to avoid repetition
@@ -212,7 +214,7 @@ def create_learner_model(
         # Save to disk
         save_learner_model(learner_id, learner_model)
 
-        logger.info(f"Created new learner model for {learner_id}")
+        logger.info(f"Created new learner model for {learner_id} with course {learner_model['current_course']}")
         return learner_model
 
     except Exception as e:
@@ -706,25 +708,109 @@ def get_next_concept(current_concept_id: str, course_id: Optional[str] = None) -
         return None
 
 
-def list_all_concepts() -> List[str]:
+def list_all_concepts(course_id: str = None) -> List[str]:
     """
-    Get a list of all available concepts.
+    Get a list of all available concepts for a course.
+
+    Supports both module-based and flat structures:
+    - Module-based: checks inside module-xxx directories
+    - Flat: checks directly in course directory
+
+    Args:
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
 
     Returns:
-        List of concept IDs
+        List of concept IDs (sorted)
     """
     try:
+        if course_id is None:
+            course_id = config.DEFAULT_COURSE_ID
+
         concepts = []
-        for concept_dir in config.RESOURCE_BANK_DIR.iterdir():
-            if concept_dir.is_dir() and concept_dir.name.startswith("concept-"):
-                concepts.append(concept_dir.name)
+        course_dir = config.get_course_dir(course_id)
+
+        if course_dir.exists():
+            # First check for module-based structure
+            has_modules = False
+            for item in course_dir.iterdir():
+                if item.is_dir() and item.name.startswith("module-"):
+                    has_modules = True
+                    # Look for concepts inside this module
+                    for concept_dir in item.iterdir():
+                        if concept_dir.is_dir() and concept_dir.name.startswith("concept-"):
+                            concepts.append(concept_dir.name)
+
+            # If no modules found, check for flat structure
+            if not has_modules:
+                for concept_dir in course_dir.iterdir():
+                    if concept_dir.is_dir() and concept_dir.name.startswith("concept-"):
+                        concepts.append(concept_dir.name)
 
         concepts.sort()
-        logger.info(f"Found {len(concepts)} concepts")
+        logger.info(f"Found {len(concepts)} concepts in {course_id}")
         return concepts
 
     except Exception as e:
         logger.error(f"Error listing concepts: {e}")
+        return []
+
+
+def list_all_modules(course_id: str = None) -> List[Dict[str, Any]]:
+    """
+    Get a list of all modules in a course with their concepts.
+
+    Args:
+        course_id: Course identifier (defaults to DEFAULT_COURSE_ID)
+
+    Returns:
+        List of module dictionaries with structure:
+        [
+            {
+                "id": "module-001",
+                "title": "Module Title",
+                "module_learning_outcomes": [...],
+                "concepts": ["concept-001", "concept-002"]
+            },
+            ...
+        ]
+    """
+    try:
+        if course_id is None:
+            course_id = config.DEFAULT_COURSE_ID
+
+        modules = []
+        course_dir = config.get_course_dir(course_id)
+
+        if course_dir.exists():
+            module_dirs = sorted([d for d in course_dir.iterdir() if d.is_dir() and d.name.startswith("module-")])
+
+            for module_dir in module_dirs:
+                module_id = module_dir.name
+
+                # Load module metadata
+                metadata_path = module_dir / "metadata.json"
+                if metadata_path.exists():
+                    try:
+                        with open(metadata_path, "r", encoding="utf-8") as f:
+                            module_metadata = json.load(f)
+
+                        # List concepts in this module
+                        concepts = sorted([c.name for c in module_dir.iterdir() if c.is_dir() and c.name.startswith("concept-")])
+
+                        modules.append({
+                            "id": module_id,
+                            "title": module_metadata.get("title", module_id),
+                            "module_learning_outcomes": module_metadata.get("module_learning_outcomes", []),
+                            "concepts": concepts
+                        })
+                    except Exception as e:
+                        logger.warning(f"Could not load metadata for module {module_id}: {e}")
+
+        logger.info(f"Found {len(modules)} modules in {course_id}")
+        return modules
+
+    except Exception as e:
+        logger.error(f"Error listing modules: {e}")
         return []
 
 

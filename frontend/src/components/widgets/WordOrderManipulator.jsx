@@ -115,7 +115,7 @@ function WordOrderManipulator({ sentence, words, explanation, correctOrders }) {
       </div>
 
       <div className="manipulator-hint">
-        <strong>💡 Try this:</strong> Drag words to rearrange them. Latin word order is flexible because
+        <strong>Try this:</strong> Drag words to rearrange them. Latin word order is flexible because
         the case endings tell you each word's function. Try putting the most important word first -
         that's often where Romans put emphasis!
       </div>

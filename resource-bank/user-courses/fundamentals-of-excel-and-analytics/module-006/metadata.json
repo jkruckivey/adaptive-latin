@@ -1,0 +1,18 @@
+{
+  "id": "module-006",
+  "title": "Statistics Assessment",
+  "module_learning_outcomes": [
+    "Apply descriptive statistics to analyze real business datasets",
+    "Calculate and interpret correlation coefficients in business contexts",
+    "Synthesize statistical findings into data-driven business recommendations",
+    "Communicate quantitative analysis to non-technical stakeholders",
+    "Evaluate data quality and limitations when making business decisions"
+  ],
+  "concepts": [
+    "concept-026",
+    "concept-027",
+    "concept-028",
+    "concept-029",
+    "concept-030"
+  ]
+}

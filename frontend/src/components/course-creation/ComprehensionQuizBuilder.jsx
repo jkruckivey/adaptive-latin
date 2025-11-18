@@ -203,7 +203,7 @@ function ComprehensionQuizBuilder({ questions, onChange }) {
 
       {questions.length > 0 && questions.length < 2 && (
         <div className="warning-message">
-          💡 Tip: We recommend 2-5 comprehension questions for required materials
+          Tip: We recommend 2-5 comprehension questions for required materials
         </div>
       )}
     </div>

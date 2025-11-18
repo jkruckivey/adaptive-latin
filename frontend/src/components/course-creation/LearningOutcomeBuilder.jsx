@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '../../api'
 import ActionVerbHelper from './ActionVerbHelper'
 import { checkOutcomeQuality, domainExamples } from '../../utils/taxonomyData'
 import './LearningOutcomeBuilder.css'
@@ -13,7 +14,11 @@ function LearningOutcomeBuilder({
   maxOutcomes = 5,
   label = "Course Learning Outcomes",
   description = "What will students be able to do after completing this course?",
-  onGenerateSuggestions
+  onGenerateSuggestions,
+  isGenerating = false,
+  courseFormat = "cohort",
+  moduleNumber = 1,
+  moduleTitle = ""
 }) {
   const [showVerbHelper, setShowVerbHelper] = useState(false)
   const [currentEditIndex, setCurrentEditIndex] = useState(null)
@@ -93,8 +98,9 @@ function LearningOutcomeBuilder({
           <button
             onClick={onGenerateSuggestions}
             className="action-button ai-button"
+            disabled={isGenerating}
           >
-            ✨ Generate Suggestions with AI
+            {isGenerating ? 'Generating...' : 'Generate Suggestions with AI'}
           </button>
         )}
         {examples.length > 0 && (
@@ -102,7 +108,7 @@ function LearningOutcomeBuilder({
             onClick={() => setShowExamples(!showExamples)}
             className="action-button secondary"
           >
-            💡 {showExamples ? 'Hide' : 'Show'} Examples
+            {showExamples ? 'Hide' : 'Show'} Examples
           </button>
         )}
       </div>
@@ -154,7 +160,7 @@ function LearningOutcomeBuilder({
                 className="verb-helper-button"
                 title="Open action verb helper"
               >
-                📖 Verbs
+                Verbs
               </button>
             </div>
 
@@ -183,7 +189,7 @@ function LearningOutcomeBuilder({
       )}
 
       <div className="builder-hints">
-        <p><strong>💡 Writing Tips:</strong></p>
+        <p><strong>Writing Tips:</strong></p>
         <ul>
           <li>Start with "Students will be able to..." or similar learner-centered language</li>
           <li>Use measurable action verbs from {taxonomy === 'blooms' ? "Bloom's" : taxonomy === 'finks' ? "Fink's" : "Bloom's or Fink's"} taxonomy</li>

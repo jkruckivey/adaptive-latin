@@ -77,14 +77,14 @@ def generate_preview_request(learning_style: str) -> str:
         if preview_type == 'paradigm-table':
             return (
                 f"Generate a brief 'paradigm-table' preview ({PREVIEW_READ_TIME_SECONDS}-second scan) "
-                "showing the key grammatical patterns for this concept. Include a very short explanation "
+                "showing the key patterns for this concept. Include a very short explanation "
                 "(2-3 sentences max). This is a quick preview before assessment. Respond ONLY with the "
                 "JSON object, no other text."
             )
         elif preview_type == 'declension-explorer':
             return (
                 "Generate a 'declension-explorer' interactive widget preview for quick exploration of "
-                "the concept. Show a relevant noun declension with brief explanation. This is a quick "
+                "the concept. Show a relevant example with brief explanation. This is a quick "
                 "interactive preview before assessment. Respond ONLY with the JSON object, no other text."
             )
         elif preview_type == 'example-set':
@@ -141,8 +141,8 @@ def generate_diagnostic_request(
         "appropriate": "",
         "harder": (
             "Use more complex vocabulary and varied forms. "
-            "Require deeper grammatical analysis. Include subtle distractors. "
-            "Challenge the learner with authentic Latin constructions. "
+            "Require deeper analysis. Include subtle distractors. "
+            "Challenge the learner with authentic examples. "
         )
     }
 
@@ -154,14 +154,14 @@ def generate_diagnostic_request(
             f"listed above. The scenario should naturally require applying knowledge from at least "
             f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
             f"{difficulty_instruction}"
-            f"Include a rich Roman context. Mark this as is_cumulative: true in the metadata. "
+            f"Include a rich contextual scenario. Mark this as is_cumulative: true in the metadata. "
             f"Respond ONLY with the JSON object, no other text."
         )
     else:
         return (
             f"Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from "
             f"any shown above). {difficulty_instruction}"
-            f"Include a rich Roman context (inscription, letter, etc.). Respond "
+            f"Include a rich contextual scenario. Respond "
             f"ONLY with the JSON object, no other text."
         )
 
@@ -192,8 +192,8 @@ def generate_practice_request(
         "appropriate": "Increase difficulty slightly. ",
         "harder": (
             "Use more complex vocabulary and varied forms. "
-            "Require deeper grammatical analysis. Include subtle distractors. "
-            "Challenge the learner with authentic Latin constructions. "
+            "Require deeper analysis. Include subtle distractors. "
+            "Challenge the learner with authentic examples. "
             "Significantly increase difficulty. "
         )
     }
@@ -206,15 +206,14 @@ def generate_practice_request(
             f"the list above. Create a scenario that requires applying knowledge from at least "
             f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
             f"{difficulty_instruction}"
-            f"Use a different Roman setting. Mark this as is_cumulative: true in the metadata. "
+            f"Use a different contextual scenario. Mark this as is_cumulative: true in the metadata. "
             f"Respond ONLY with the JSON object, no other text."
         )
     else:
         return (
             f"Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario "
             f"from those listed above. {difficulty_instruction}"
-            f"Vary the context: use different Latin words, different Roman "
-            f"settings (forum, bath, temple, road sign, etc.), different grammatical cases. "
+            f"Vary the context: use different vocabulary, different scenarios, different aspects of the concept. "
             f"Respond ONLY with the JSON object, no other text."
         )
 
@@ -318,10 +317,9 @@ def _select_remediation_content_type(learning_style: str) -> str:
     if learning_style == 'narrative':
         return 'example-set'
     elif learning_style == 'varied':
-        # Vary content type - alternate between different formats including interactive widgets
+        # Vary content type - alternate between different formats
         content_type = random.choice([
-            'paradigm-table', 'example-set', 'lesson',
-            'declension-explorer', 'word-order-manipulator'
+            'paradigm-table', 'example-set', 'lesson'
         ])
         logger.info(f"Varied learning style - selected: {content_type}")
         return content_type
@@ -341,25 +339,26 @@ def _build_full_calibration_request(
 
     if content_type == 'paradigm-table':
         return (
-            f"{base_intro}Generate a 'paradigm-table' that: 1) Shows the complete declension table "
-            f"for the grammar concept they missed, 2) Highlights the specific form they should have chosen, "
+            f"{base_intro}Generate a 'paradigm-table' that: 1) Shows a complete structured table "
+            f"of all variations/forms for the concept they missed, 2) Highlights the specific item they should have chosen, "
             f"3) Includes explanation text that STARTS with: 'You chose [their answer], but looking at the "
-            f"complete paradigm, the correct answer is [correct answer] because...' 4) Uses their interests "
-            f"in the explanation. Respond ONLY with the JSON object, no other text."
+            f"complete table, the correct answer is [correct answer] because...' 4) Uses their interests "
+            f"in the explanation. 5) Use appropriate headers for the subject matter (not Latin-specific terms). "
+            f"Respond ONLY with the JSON object, no other text."
         )
     elif content_type == 'declension-explorer':
         return (
             f"{base_intro}Generate a 'declension-explorer' interactive widget that: 1) Shows all forms "
-            f"for the noun/declension relevant to their mistake, 2) Sets highlightCase to the case they "
-            f"got wrong, 3) Includes explanation text that STARTS with: 'You chose [their answer], but "
-            f"let's explore the full paradigm. The correct answer is [correct answer] because...' "
+            f"relevant to their mistake, 2) Highlights the specific form they got wrong, 3) Includes "
+            f"explanation text that STARTS with: 'You chose [their answer], but let's explore the complete "
+            f"set of variations. The correct answer is [correct answer] because...' "
             f"Respond ONLY with the JSON object, no other text."
         )
     elif content_type == 'example-set':
         return (
             f"{base_intro}Generate an 'example-set' (NOT a lesson, NOT a table) that: 1) Shows 3-4 "
-            f"contextual examples demonstrating the correct grammar concept, 2) Each example includes "
-            f"Latin, translation, and notes explaining why it's correct, 3) Uses their interests from "
+            f"contextual examples demonstrating the correct concept, 2) Each example includes "
+            f"source material, explanation/translation, and notes explaining why it's correct, 3) Uses their interests from "
             f"the Learner Profile in the examples, 4) Addresses their specific misconception. "
             f"CRITICAL: type must be 'example-set'. Respond ONLY with the JSON object, no other text."
         )
@@ -367,7 +366,7 @@ def _build_full_calibration_request(
         return (
             f"{base_intro}Generate a 'lesson' (NOT a table) that: 1) STARTS with: 'You chose [their answer], "
             f"which suggests [what misconception this reveals]. However, the correct answer is [correct answer] "
-            f"because...' 2) Explains the SPECIFIC grammatical concept they misunderstood, 3) Provides 2-3 "
+            f"because...' 2) Explains the SPECIFIC concept they misunderstood, 3) Provides 2-3 "
             f"examples using their interests (see Learner Profile above - ACTUALLY use those topics in your "
             f"examples, not generic ones!), 4) Includes calibration feedback about recognizing when to be "
             f"less certain. CRITICAL: The examples MUST relate to the specific interests mentioned in the "
@@ -385,14 +384,14 @@ def _build_supportive_request(
 
     if content_type == 'paradigm-table':
         return (
-            f"{base_intro}Generate a supportive 'paradigm-table' with: 1) Complete declension table, "
+            f"{base_intro}Generate a supportive 'paradigm-table' with: 1) Complete reference table, "
             f"2) Encouraging explanation that validates their awareness of difficulty, 3) Clear marking "
             f"of the correct answer. Be gentle. Respond ONLY with the JSON object, no other text."
         )
     elif content_type == 'example-set':
         return (
             f"{base_intro}Generate a supportive 'example-set' (NOT a table) with: 1) 3-4 encouraging "
-            f"examples using their interests, 2) Each example shows correct usage with Latin, translation, "
+            f"examples using their interests, 2) Each example shows correct usage with source material, explanation, "
             f"and notes, 3) Validates their awareness of difficulty. CRITICAL: type must be 'example-set'. "
             f"Be gentle. Respond ONLY with the JSON object, no other text."
         )
@@ -411,8 +410,8 @@ def _build_default_remediation_request(context: str, content_type: str) -> str:
     if content_type == 'example-set':
         return (
             f"Generate an 'example-set' (NOT a table) to reinforce the concept from the most recent "
-            f"question.{context}Show 3-4 examples using their interests. Each example has Latin, "
-            f"translation, and notes. CRITICAL: type must be 'example-set'. Respond ONLY with the "
+            f"question.{context}Show 3-4 examples using their interests. Each example has source material, "
+            f"explanation, and notes. CRITICAL: type must be 'example-set'. Respond ONLY with the "
             f"JSON object, no other text."
         )
     else:  # lesson or other
@@ -543,7 +542,7 @@ def generate_hint_request(
             f"{question_info}\n\n"
             f"Generate a gentle hint that:\n"
             f"- Points them toward the right concept WITHOUT revealing the answer\n"
-            f"- Asks a guiding question (e.g., 'What case ending do you see here?')\n"
+            f"- Asks a guiding question (e.g., 'What pattern do you notice here?')\n"
             f"- Reminds them of a relevant pattern\n"
             f"- Keeps them thinking actively\n\n"
             f"Return ONLY plain text (not JSON), max 2-3 sentences."
@@ -556,8 +555,8 @@ def generate_hint_request(
             f"The learner is stuck on this question and requested a more direct hint:\n\n"
             f"{question_info}\n\n"
             f"Generate a direct hint that:\n"
-            f"- Narrows down to the specific grammatical feature\n"
-            f"- Explains what to look for (e.g., 'The -ae ending tells you...')\n"
+            f"- Narrows down to the specific feature being tested\n"
+            f"- Explains what to look for (e.g., 'The key indicator here is...')\n"
             f"- Eliminates clearly wrong options if multiple choice\n"
             f"- Still lets them make the final connection\n\n"
             f"Return ONLY plain text (not JSON), max 3-4 sentences."
@@ -576,7 +575,7 @@ def generate_hint_request(
             f"The correct answer is: {correct_text} (Option {correct_answer})\n\n"
             f"Generate a clear explanation (plain text, not JSON) that:\n"
             f"- States why this is the correct answer\n"
-            f"- Explains the grammatical reasoning\n"
+            f"- Explains the reasoning behind it\n"
             f"- Shows how to identify this pattern in future\n"
             f"- Encourages them to try another practice question\n\n"
             f"Return ONLY plain text (not JSON), max 4-5 sentences."

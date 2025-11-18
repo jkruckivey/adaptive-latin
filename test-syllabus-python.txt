@@ -1,0 +1,74 @@
+INTRODUCTION TO PYTHON PROGRAMMING
+CS 1101 - Winter 2025
+Department of Computer Science
+
+COURSE OVERVIEW
+This course introduces students to computer programming using the Python programming language. No prior programming experience is required. Students will learn fundamental programming concepts, problem-solving strategies, and practical coding skills applicable across many domains. The course emphasizes hands-on practice and incremental skill building.
+
+COURSE LEARNING OUTCOMES
+Upon successful completion of this course, students will be able to:
+
+1. Write well-structured Python programs using variables, data types, and operators
+2. Apply control structures (conditionals and loops) to solve computational problems
+3. Create and use functions to organize code and promote reusability
+4. Implement object-oriented programming principles including classes and inheritance
+5. Manipulate data using Python's built-in data structures (lists, dictionaries, sets, tuples)
+6. Read from and write to files while handling errors appropriately
+7. Debug code systematically using testing and debugging strategies
+
+WEEKLY SCHEDULE
+
+Week 1: Python Basics and First Program
+Introduction to programming, Python installation, IDLE environment, variables, basic data types (int, float, string), arithmetic operators, print statements, user input, first complete program.
+
+Week 2: Making Decisions with Conditionals
+Boolean expressions, comparison operators, if statements, if-else statements, elif chains, nested conditionals, logical operators (and, or, not), common patterns in conditional logic.
+
+Week 3: Repetition with Loops
+While loops, for loops, range function, loop control (break, continue), nested loops, loop patterns (counter, accumulator, sentinel), avoiding infinite loops.
+
+Week 4: Functions - Building Reusable Code
+Function definition and calling, parameters and arguments, return values, scope (local vs global), docstrings, function design principles, testing functions.
+
+Week 5: Strings and Text Processing
+String indexing and slicing, string methods, string formatting, multi-line strings, common string operations, text manipulation patterns, working with user input.
+
+Week 6: Lists - Ordered Collections
+List creation and indexing, list methods (append, insert, remove, sort), list slicing, iterating through lists, list comprehensions, 2D lists, common list algorithms.
+
+Week 7: Dictionaries and Sets
+Dictionary basics (key-value pairs), accessing and modifying dictionaries, dictionary methods, iterating through dictionaries, sets and set operations, choosing appropriate data structures.
+
+Week 8: File Input/Output
+Reading text files, writing to files, with statements and context managers, CSV file handling, JSON data, file paths, exception handling basics.
+
+Week 9: Introduction to Object-Oriented Programming
+Classes and objects, attributes and methods, __init__ method, instance vs class variables, encapsulation, basic OOP design.
+
+Week 10: Inheritance and Advanced OOP
+Inheritance basics, method overriding, super() function, multiple inheritance, polymorphism, composition vs inheritance, when to use OOP.
+
+Week 11: Error Handling and Debugging
+Try-except blocks, common exception types, raising exceptions, finally clause, debugging strategies, using print debugging, Python debugger basics.
+
+Week 12: Libraries and Practical Applications
+Importing modules, exploring standard library (math, random, datetime), installing third-party packages with pip, introduction to numpy and pandas, final project work.
+
+PROGRAMMING ASSIGNMENTS
+Weekly Labs (12 × 2% = 24%)
+Assignment 1: Decision Structures (8%)
+Assignment 2: Functions and Lists (12%)
+Assignment 3: File Processing (12%)
+Midterm Practical Exam (20%)
+Final Project (24%)
+
+REQUIRED TOOLS
+- Python 3.10 or later
+- Code editor (VS Code recommended, or IDLE)
+- GitHub account for version control
+
+COURSE POLICIES
+- Attendance at labs is mandatory
+- All code must be your own work
+- Late submissions lose 10% per day
+- Collaboration on labs is encouraged; assignments must be individual work

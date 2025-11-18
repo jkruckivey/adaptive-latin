@@ -7,6 +7,9 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 2px solid #e2e8f0;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  contain: layout style;
 }
 
 .mastery-progress-container:hover {
@@ -38,7 +41,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  background: #10b981;
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -58,12 +61,14 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .score-text {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: #2d3748;
 }
 
 .assessment-count {
@@ -80,7 +85,7 @@
 .progress-bar-track {
   position: relative;
   height: 32px;
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  background: #f8f9fa;
   border-radius: 16px;
   overflow: visible;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
@@ -96,6 +101,8 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
   position: relative;
   z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .progress-fill-text {
@@ -158,7 +165,7 @@
   gap: 8px;
   margin-top: 12px;
   padding: 12px;
-  background: #f7fafc;
+  background: #e5e7eb;
   border-radius: 8px;
   font-size: 0.85rem;
   color: #4a5568;

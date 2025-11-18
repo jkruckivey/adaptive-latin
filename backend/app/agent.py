@@ -330,18 +330,32 @@ def load_system_prompt() -> str:
         raise
 
 
-def load_content_generation_prompt() -> str:
+def load_content_generation_prompt(course_id: Optional[str] = None) -> str:
     """
     Load the content generation instructions.
+
+    Args:
+        course_id: Optional course ID to load course-specific prompt
 
     Returns:
         Content generation prompt as string
     """
     try:
+        # Try to load course-specific prompt first
+        if course_id:
+            course_dir = config.get_course_dir(course_id)
+            course_prompt_file = course_dir / "content-generation-addendum.md"
+            if course_prompt_file.exists():
+                with open(course_prompt_file, "r", encoding="utf-8") as f:
+                    content_prompt = f.read()
+                logger.info(f"Loaded course-specific content generation prompt for {course_id}")
+                return content_prompt
+
+        # Fall back to default prompt
         with open(config.CONTENT_GENERATION_PROMPT_FILE, "r", encoding="utf-8") as f:
             content_prompt = f.read()
 
-        logger.info("Loaded content generation prompt")
+        logger.info("Loaded default content generation prompt")
         return content_prompt
 
     except Exception as e:
@@ -901,24 +915,80 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         Dictionary containing generated content object
     """
     try:
-        # Load content generation prompt
-        content_prompt = load_content_generation_prompt()
-
-        # Load learner context and question history
-        learner_context = inject_learner_context("", learner_id)
-
-        # Get question history to avoid repetition
+        # Get question history to avoid repetition and load course info
         try:
             from .tools import load_learner_model
             learner_model = load_learner_model(learner_id)
             question_history = learner_model.get("question_history", [])
             concept_id = learner_model.get("current_concept", "concept-001")  # Get current concept for difficulty selection
+            course_id = learner_model.get("current_course", config.DEFAULT_COURSE_ID)  # Get course for content loading
         except Exception:
             question_history = []
             concept_id = "concept-001"  # Default fallback
+            course_id = config.DEFAULT_COURSE_ID
+
+        # Load content generation prompt (course-specific if available)
+        content_prompt = load_content_generation_prompt(course_id)
+
+        # Load course metadata and inject into prompt
+        try:
+            import json
+            course_dir = config.get_course_dir(course_id)
+            course_metadata_path = course_dir / "metadata.json"
+
+            if course_metadata_path.exists():
+                with open(course_metadata_path, "r", encoding="utf-8") as f:
+                    course_metadata = json.load(f)
+
+                course_context = "\n\n## COURSE CONTEXT\n\n"
+                course_context += f"**Course Title**: {course_metadata.get('title', 'Unknown Course')}\n"
+                course_context += f"**Domain**: {course_metadata.get('domain', 'General')}\n"
+
+                # Add taxonomy if present
+                taxonomy = course_metadata.get('taxonomy', 'blooms')
+                taxonomy_guidance = {
+                    'blooms': "Use Bloom's Taxonomy levels (Remember, Understand, Apply, Analyze, Evaluate, Create) when crafting questions and content.",
+                    'solo': "Use SOLO Taxonomy levels (Prestructural, Unistructural, Multistructural, Relational, Extended Abstract) when designing assessments.",
+                    'fink': "Use Fink's Taxonomy of Significant Learning (Foundational Knowledge, Application, Integration, Human Dimension, Caring, Learning How to Learn)."
+                }
+                course_context += f"**Learning Taxonomy**: {taxonomy.title()} - {taxonomy_guidance.get(taxonomy, 'Apply appropriate cognitive levels in content design.')}\n"
+
+                if course_metadata.get('course_learning_outcomes'):
+                    course_context += f"**Course Learning Outcomes**:\n"
+                    for clo in course_metadata['course_learning_outcomes']:
+                        course_context += f"- {clo}\n"
+                course_context += "\n**IMPORTANT**: All content, scenarios, and examples must be relevant to this course's subject matter and learning outcomes.\n"
+            else:
+                course_context = ""
+
+            # Load current concept metadata
+            concept_metadata_path = course_dir / concept_id / "metadata.json"
+            if concept_metadata_path.exists():
+                with open(concept_metadata_path, "r", encoding="utf-8") as f:
+                    concept_metadata = json.load(f)
+
+                course_context += f"\n### Current Concept: {concept_metadata.get('title', concept_id)}\n\n"
+
+                # Add prerequisites if present
+                if concept_metadata.get('prerequisites'):
+                    prereqs = concept_metadata['prerequisites']
+                    if prereqs:
+                        course_context += f"**Prerequisites**: This concept builds on {', '.join(prereqs)}. Learners should already understand those concepts.\n"
+
+                if concept_metadata.get('module_learning_outcomes'):
+                    course_context += f"**Learning Outcomes for This Concept**:\n"
+                    for mlo in concept_metadata['module_learning_outcomes']:
+                        course_context += f"- {mlo}\n"
+                course_context += "\n**CRITICAL**: Generate content ONLY about this specific concept and its learning outcomes. Use scenarios and examples from this domain.\n"
+        except Exception as e:
+            logger.warning(f"Could not load course metadata: {e}")
+            course_context = ""
+
+        # Load learner context and question history
+        learner_context = inject_learner_context("", learner_id)
 
         # Combine prompts
-        system_prompt = f"{content_prompt}\n\n{learner_context}"
+        system_prompt = f"{content_prompt}\n\n{course_context}\n\n{learner_context}"
 
         # Add question history context if available
         if question_history:
@@ -940,7 +1010,7 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     # Load metadata for all selected concepts
                     concepts_metadata = []
                     for concept_id in cumulative_concepts:
-                        metadata = load_concept_metadata(concept_id)
+                        metadata = load_concept_metadata(concept_id, course_id)
                         concepts_metadata.append({
                             "concept_id": concept_id,
                             "title": metadata.get("title", concept_id),

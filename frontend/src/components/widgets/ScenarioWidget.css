@@ -1,5 +1,5 @@
 .scenario-widget {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: #f8f9fa;
   border: 3px solid #dee2e6;
   border-radius: 16px;
   padding: 32px;
@@ -64,7 +64,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+  background: #10b981;
   transition: width 0.4s ease;
   border-radius: 6px;
 }

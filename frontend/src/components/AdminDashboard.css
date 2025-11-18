@@ -1,0 +1,92 @@
+.admin-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-header h1 {
+  color: #1a202c;
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.course-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.course-selector label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.course-selector select {
+  padding: 8px 16px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;
+  background: white;
+  cursor: pointer;
+  min-width: 300px;
+  transition: all 0.2s;
+}
+
+.course-selector select:hover {
+  border-color: #2d3748;
+}
+
+.course-selector select:focus {
+  outline: none;
+  border-color: #1a202c;
+  box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.1);
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.admin-tab:hover {
+  color: #2d3748;
+  background: #f7fafc;
+}
+
+.admin-tab.active {
+  color: #1a202c;
+  border-bottom-color: #1a202c;
+}
+
+.admin-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}

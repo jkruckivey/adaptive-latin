@@ -18,7 +18,7 @@ class Config:
 
     # API Configuration
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-    ANTHROPIC_MODEL: str = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+    ANTHROPIC_MODEL: str = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929")
 
     # Application Settings
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
@@ -104,12 +104,43 @@ class Config:
         return builtin_course_path
 
     @classmethod
-    def get_concept_dir(cls, concept_id: str, course_id: Optional[str] = None) -> Path:
-        """Get the directory path for a specific concept within a course."""
+    def get_module_dir(cls, module_id: str, course_id: Optional[str] = None) -> Path:
+        """Get the directory path for a specific module within a course."""
         if course_id is None:
             course_id = cls.DEFAULT_COURSE_ID
 
         course_dir = cls.get_course_dir(course_id)
+        return course_dir / module_id
+
+    @classmethod
+    def get_concept_dir(cls, concept_id: str, course_id: Optional[str] = None, module_id: Optional[str] = None) -> Path:
+        """
+        Get the directory path for a specific concept within a course.
+
+        Supports both module-based and flat structures:
+        - Module-based: course/module-xxx/concept-xxx/
+        - Flat (legacy): course/concept-xxx/
+
+        If module_id is not provided, will search for concept in modules first,
+        then fall back to flat structure.
+        """
+        if course_id is None:
+            course_id = cls.DEFAULT_COURSE_ID
+
+        course_dir = cls.get_course_dir(course_id)
+
+        # If module_id is provided, use module-based path
+        if module_id:
+            return course_dir / module_id / concept_id
+
+        # Search for concept in modules first
+        for item in course_dir.iterdir():
+            if item.is_dir() and item.name.startswith('module-'):
+                concept_path = item / concept_id
+                if concept_path.exists():
+                    return concept_path
+
+        # Fall back to flat structure
         return course_dir / concept_id
 
     @classmethod

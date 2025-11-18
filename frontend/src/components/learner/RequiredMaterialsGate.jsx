@@ -54,10 +54,10 @@ function RequiredMaterialsGate({
 
   const getMaterialIcon = (type) => {
     switch (type) {
-      case 'pdf': return '📄'
-      case 'video': return '🎥'
-      case 'image': return '🖼️'
-      default: return '🌐'
+      case 'pdf': return ''
+      case 'video': return ''
+      case 'image': return ''
+      default: return ''
     }
   }
 
@@ -150,7 +150,7 @@ function RequiredMaterialsGate({
   return (
     <div className="required-materials-gate">
       <div className="gate-header">
-        <h2>⭐ Required Materials</h2>
+        <h2>Required Materials</h2>
         <p className="gate-subtitle">
           Complete these materials before accessing this module
         </p>
@@ -200,7 +200,7 @@ function RequiredMaterialsGate({
                     onClick={() => openMaterial(material)}
                     className="start-material-button"
                   >
-                    {getVerificationLabel(material.verificationMethod)} →
+                    {getVerificationLabel(material.verificationMethod)}
                   </button>
                 ) : (
                   <button
@@ -219,16 +219,16 @@ function RequiredMaterialsGate({
       <div className="gate-footer">
         {!allComplete ? (
           <div className="incomplete-notice">
-            <p>⚠️ Complete all required materials to proceed</p>
+            <p>Complete all required materials to proceed</p>
           </div>
         ) : (
           <div className="complete-notice">
-            <p>✓ All materials completed! You can now access this module.</p>
+            <p>All materials completed! You can now access this module.</p>
             <button
               onClick={handleProceed}
               className="proceed-button"
             >
-              Proceed to Module →
+              Proceed to Module
             </button>
           </div>
         )}

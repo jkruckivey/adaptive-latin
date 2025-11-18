@@ -109,7 +109,7 @@ function DeclensionExplorer({ noun, forms, explanation, highlightCase }) {
       </div>
 
       <div className="explorer-hint">
-        💡 Click a case or number to explore how the form changes and what it means
+        Click a case or number to explore how the form changes and what it means
       </div>
     </div>
   )

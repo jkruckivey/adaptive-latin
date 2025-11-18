@@ -1,27 +1,33 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import './OnboardingFlow.css'
 
-function OnboardingFlow({ learnerName, onComplete }) {
+function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', courseDomain = '', customQuestions = null }) {
   const [step, setStep] = useState(0)
   const [profile, setProfile] = useState({
     name: learnerName,
     background: '',
-    languages: [],
-    grammarExperience: '',
     learningStyle: '',
     interests: '',
     priorKnowledge: {}
   })
   const [currentAnswer, setCurrentAnswer] = useState('')
   const [isStarting, setIsStarting] = useState(false)
+  const [selectedLearningStyle, setSelectedLearningStyle] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
 
   const updateProfile = (key, value) => {
     setProfile(prev => ({ ...prev, [key]: value }))
   }
 
   const handleNext = () => {
-    setStep(step + 1)
+    console.log('[Onboarding] handleNext called')
+    setStep(prev => {
+      console.log('[Onboarding] Incrementing step from', prev, 'to', prev + 1)
+      return prev + 1
+    })
     setCurrentAnswer('')
+    setSelectedOption('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleComplete = () => {
@@ -30,405 +36,321 @@ function OnboardingFlow({ learnerName, onComplete }) {
   }
 
   const handleQuickStart = () => {
-    // Create a template profile for testing
     const templateProfile = {
       name: 'Tester',
-      background: 'Test user - exploring Latin grammar',
-      languages: 'Spanish',
-      grammarExperience: 'okay',
+      background: 'Test user',
       learningStyle: 'varied',
-      interests: 'mythology, Roman history',
-      priorKnowledge: {
-        hasRomanceLanguage: true,
-        hasInflectedLanguage: false,
-        languageDetails: 'Spanish',
-        understandsSubjectObject: 'partial',
-        subjectObjectConfidence: 'medium'
-      }
+      interests: 'learning new skills'
     }
     setIsStarting(true)
     onComplete(templateProfile)
   }
 
-  // Discovery questions and interactions
-  const steps = [
-    {
+  // Generate smart placeholder based on domain
+  const getRelatedSkillsPlaceholder = (domain) => {
+    const domainLower = domain.toLowerCase()
+
+    if (domainLower.includes('excel') || domainLower.includes('spreadsheet') || domainLower.includes('data')) {
+      return 'e.g., Programming languages, statistics, databases, other spreadsheet tools...'
+    } else if (domainLower.includes('language') || domainLower.includes('latin') || domainLower.includes('spanish')) {
+      return 'e.g., Other languages you speak, linguistics background...'
+    } else if (domainLower.includes('programming') || domainLower.includes('code') || domainLower.includes('software')) {
+      return 'e.g., Other programming languages, mathematics, problem-solving experience...'
+    } else if (domainLower.includes('math') || domainLower.includes('statistics')) {
+      return 'e.g., Programming, physics, analytical coursework...'
+    } else if (domainLower.includes('business') || domainLower.includes('finance')) {
+      return 'e.g., Accounting, economics, data analysis, management experience...'
+    } else {
+      return 'e.g., Related subjects, skills, or experiences you have...'
+    }
+  }
+
+  // Build steps dynamically from custom questions or use defaults
+  const steps = useMemo(() => {
+    const builtSteps = []
+
+    // Welcome step (always first)
+    builtSteps.push({
       type: 'welcome',
       content: (
         <div className="onboarding-step welcome-step">
-          <h1>Welcome, {learnerName}! 🎉</h1>
-          <p className="lead">Before we dive into Latin, I'd love to learn a bit about you. This helps me tailor everything to your background and interests.</p>
+          <h1>Welcome, {learnerName}!</h1>
+          <p className="lead">Before we dive in, I'd love to learn a bit about you. This helps me tailor everything to your background and interests.</p>
           <p className="subtext">No worries - this isn't a test. Just a friendly conversation so I can be a better tutor for you!</p>
           <button onClick={handleNext} className="continue-button">
-            Let's get started →
+            Let's get started
           </button>
           <button onClick={handleQuickStart} className="quick-start-button" disabled={isStarting}>
-            {isStarting ? 'Starting...' : 'Quick Start (Testing) ⚡'}
+            {isStarting ? 'Starting...' : 'Quick Start (Testing)'}
           </button>
           <p className="quick-start-hint">Skip onboarding with preset profile for testing</p>
         </div>
       )
-    },
-    {
-      type: 'question',
-      question: "Tell me about yourself - what brings you to Latin?",
-      placeholder: "I'm studying classics, I love ancient history, working on SAT vocab, just curious...",
-      onAnswer: (answer) => {
-        updateProfile('background', answer)
-        handleNext()
-      }
-    },
-    {
-      type: 'question',
-      question: "Have you studied any other languages before? (Even just a little bit in school counts!)",
-      placeholder: "Spanish, French, German, nothing yet...",
-      onAnswer: (answer) => {
-        const languages = answer.toLowerCase()
-        updateProfile('languages', languages)
-        // Extract useful info
-        const hasSpanish = languages.includes('spanish')
-        const hasFrench = languages.includes('french')
-        const hasGerman = languages.includes('german')
-        updateProfile('priorKnowledge', {
-          ...profile.priorKnowledge,
-          hasRomanceLanguage: hasSpanish || hasFrench,
-          hasInflectedLanguage: hasGerman,
-          languageDetails: answer
-        })
-        handleNext()
-      }
-    },
-    {
-      type: 'question',
-      question: "When you learned grammar in English class, how did it feel?",
-      options: [
-        { value: 'loved', label: '✨ Loved it! Parts of speech, diagrams, all of it', emoji: '🤓' },
-        { value: 'okay', label: '📚 It was okay, I remember the basics', emoji: '👍' },
-        { value: 'confused', label: '😵 Honestly? Pretty confusing', emoji: '🤷' },
-        { value: 'forgotten', label: '🤔 That was a long time ago...', emoji: '⏰' }
-      ],
-      onSelect: (value) => {
-        updateProfile('grammarExperience', value)
-        handleNext()
-      }
-    },
-    {
-      type: 'interactive',
-      prompt: "Let's try something fun. No pressure - just see what you think.",
-      content: (
-        <div className="interactive-assessment">
-          <h3>Look at these English sentences:</h3>
-          <div className="sentence-examples">
-            <div className="sentence">
-              <span className="highlighted">The girl</span> sees the road.
-            </div>
-            <div className="sentence">
-              I see <span className="highlighted">the girl</span>.
-            </div>
-          </div>
+    })
 
-          <p className="question-text">
-            Notice how "the girl" appears in both sentences? What's different about its role?
-          </p>
-
-          <div className="option-buttons">
-            <button onClick={() => {
-              updateProfile('priorKnowledge', {
-                ...profile.priorKnowledge,
-                understandsSubjectObject: true,
-                subjectObjectConfidence: 'high'
-              })
+    // Add custom questions if provided, otherwise use generic defaults
+    if (customQuestions && customQuestions.length > 0) {
+      customQuestions.forEach(q => {
+        if (q.options) {
+          // Multiple choice question
+          builtSteps.push({
+            type: 'question',
+            question: q.question,
+            options: q.options,
+            onSelect: (value) => {
+              if (q.key) updateProfile(q.key, value)
+              if (q.priorKnowledgeKey) {
+                updateProfile('priorKnowledge', {
+                  ...profile.priorKnowledge,
+                  [q.priorKnowledgeKey]: value
+                })
+              }
               handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">💡</div>
-                <div className="option-text">
-                  <div className="option-title">First one is the subject (doing the seeing)</div>
-                  <div className="option-subtitle">Second one is the object (being seen)</div>
-                </div>
-              </div>
-            </button>
-
-            <button onClick={() => {
-              updateProfile('priorKnowledge', {
-                ...profile.priorKnowledge,
-                understandsSubjectObject: 'partial',
-                subjectObjectConfidence: 'medium'
-              })
+            }
+          })
+        } else {
+          // Text input question
+          builtSteps.push({
+            type: 'question',
+            question: q.question,
+            placeholder: q.placeholder,
+            onAnswer: (answer) => {
+              if (q.key) updateProfile(q.key, answer)
+              if (q.priorKnowledgeKey) {
+                updateProfile('priorKnowledge', {
+                  ...profile.priorKnowledge,
+                  [q.priorKnowledgeKey]: answer
+                })
+              }
               handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">🤔</div>
-                <div className="option-text">
-                  <div className="option-title">They feel different but I'm not sure why</div>
-                  <div className="option-subtitle">Something about position maybe?</div>
-                </div>
-              </div>
-            </button>
+            }
+          })
+        }
+      })
+    } else {
+      // Default generic onboarding questions
 
-            <button onClick={() => {
-              updateProfile('priorKnowledge', {
-                ...profile.priorKnowledge,
-                understandsSubjectObject: false,
-                subjectObjectConfidence: 'low'
-              })
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">😊</div>
-                <div className="option-text">
-                  <div className="option-title">Not really sure - they look the same to me!</div>
-                  <div className="option-subtitle">No worries, we'll explore this together</div>
-                </div>
-              </div>
-            </button>
-          </div>
+      // 1. Background & Motivation
+      builtSteps.push({
+        type: 'question',
+        question: `Tell me about yourself - what brings you to ${courseTitle}?`,
+        placeholder: 'Tell me about your background and why you\'re interested in this course...',
+        onAnswer: (answer) => {
+          console.log('[Onboarding] Background answer submitted:', answer)
+          console.log('[Onboarding] Current step before update:', step)
+          updateProfile('background', answer)
+          console.log('[Onboarding] Calling handleNext()')
+          handleNext()
+        }
+      })
 
-          <p className="encouragement">
-            💙 There's no wrong answer here - this just helps me know where to start!
-          </p>
-        </div>
-      )
-    },
-    {
+      // 2. Prior Knowledge
+      builtSteps.push({
+        type: 'question',
+        question: `How familiar are you with ${courseDomain || 'this subject'}?`,
+        options: [
+          { value: 'beginner', label: 'Complete beginner - starting from scratch' },
+          { value: 'some', label: 'Some basics - studied or worked with it before' },
+          { value: 'intermediate', label: 'Solid foundation - comfortable with core concepts' },
+          { value: 'advanced', label: 'Advanced - deep understanding and experience' }
+        ],
+        onSelect: (value) => {
+          updateProfile('priorKnowledge', {
+            ...profile.priorKnowledge,
+            level: value
+          })
+          handleNext()
+        }
+      })
+
+      // 3. Related Skills & Knowledge
+      builtSteps.push({
+        type: 'question',
+        question: 'What related skills or subjects do you already know? This helps me connect new concepts to things you\'re familiar with.',
+        placeholder: getRelatedSkillsPlaceholder(courseDomain),
+        onAnswer: (answer) => {
+          updateProfile('priorKnowledge', {
+            ...profile.priorKnowledge,
+            relatedSkills: answer
+          })
+          handleNext()
+        }
+      })
+
+      // 4. Learning Goals
+      builtSteps.push({
+        type: 'question',
+        question: 'What do you hope to achieve by completing this course?',
+        placeholder: 'Your goals, what you want to learn, how you plan to use these skills...',
+        onAnswer: (answer) => {
+          updateProfile('interests', answer)
+          handleNext()
+        }
+      })
+    }
+
+    // Learning style question (always included)
+    builtSteps.push({
       type: 'interactive',
       prompt: "One more quick thing...",
       content: (
         <div className="interactive-assessment">
           <h3>When learning something new, what format helps you most?</h3>
-
           <p className="question-text">
             If you need extra help with a concept, which would you reach for first?
           </p>
-
           <div className="option-buttons">
-            <button onClick={() => {
-              updateProfile('learningStyle', 'narrative')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">📖</div>
-                <div className="option-text">
-                  <div className="option-title">Story-based learning</div>
-                  <div className="option-subtitle">Learning through scenarios and conversations</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="narrative"
+                checked={selectedLearningStyle === 'narrative'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Story-based learning</div>
+                <div className="option-subtitle">Learning through scenarios and conversations</div>
               </div>
-            </button>
+            </label>
 
-            <button onClick={() => {
-              updateProfile('learningStyle', 'varied')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">🔄</div>
-                <div className="option-text">
-                  <div className="option-title">Varied content types</div>
-                  <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="varied"
+                checked={selectedLearningStyle === 'varied'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Varied content types</div>
+                <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
               </div>
-            </button>
+            </label>
 
-            <button onClick={() => {
-              updateProfile('learningStyle', 'adaptive')
-              handleNext()
-            }} className="assessment-option">
-              <div className="option-content">
-                <div className="option-icon">🎯</div>
-                <div className="option-text">
-                  <div className="option-title">Adaptive progression</div>
-                  <div className="option-subtitle">Content adjusts based on your performance</div>
-                </div>
+            <label className="assessment-option">
+              <input
+                type="radio"
+                name="learningStyle"
+                value="adaptive"
+                checked={selectedLearningStyle === 'adaptive'}
+                onChange={(e) => setSelectedLearningStyle(e.target.value)}
+              />
+              <div className="option-text">
+                <div className="option-title">Adaptive progression</div>
+                <div className="option-subtitle">Content adjusts based on your performance</div>
               </div>
-            </button>
+            </label>
           </div>
-        </div>
-      )
-    },
-    {
-      type: 'question',
-      question: "Last one! What topics interest you? (This helps me choose examples you'll actually care about)",
-      placeholder: "Roman history, mythology, philosophy, medicine, law, sports, anything...",
-      onAnswer: (answer) => {
-        updateProfile('interests', answer)
-        handleNext()
-      }
-    },
-    {
-      type: 'summary',
-      content: (
-        <div className="onboarding-step summary-step">
-          <h2>Perfect! Here's what I learned about you:</h2>
-
-          <div className="profile-summary">
-            <div className="summary-item">
-              <div className="summary-icon">👤</div>
-              <div className="summary-content">
-                <div className="summary-label">Background</div>
-                <div className="summary-value">{profile.background || 'Curious learner'}</div>
-              </div>
-            </div>
-
-            {profile.languages && (
-              <div className="summary-item">
-                <div className="summary-icon">🌍</div>
-                <div className="summary-content">
-                  <div className="summary-label">Language Experience</div>
-                  <div className="summary-value">{profile.priorKnowledge.languageDetails || 'Starting fresh'}</div>
-                </div>
-              </div>
-            )}
-
-            <div className="summary-item">
-              <div className="summary-icon">📚</div>
-              <div className="summary-content">
-                <div className="summary-label">Grammar Comfort</div>
-                <div className="summary-value">
-                  {profile.grammarExperience === 'loved' && 'Grammar enthusiast!'}
-                  {profile.grammarExperience === 'okay' && 'Solid foundation'}
-                  {profile.grammarExperience === 'confused' && "We'll take it step by step"}
-                  {profile.grammarExperience === 'forgotten' && "We'll refresh together"}
-                </div>
-              </div>
-            </div>
-
-            <div className="summary-item">
-              <div className="summary-icon">🎯</div>
-              <div className="summary-content">
-                <div className="summary-label">Learning Preferences</div>
-                <div className="summary-value">
-                  {profile.learningStyle === 'narrative' && 'Story-based learning'}
-                  {profile.learningStyle === 'varied' && 'Varied question types'}
-                  {profile.learningStyle === 'adaptive' && 'Adaptive progression'}
-                </div>
-              </div>
-            </div>
-
-            {profile.interests && (
-              <div className="summary-item">
-                <div className="summary-icon">⭐</div>
-                <div className="summary-content">
-                  <div className="summary-label">Interests</div>
-                  <div className="summary-value">{profile.interests}</div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="personalization-promise">
-            <h3>How I'll use this:</h3>
-            <ul>
-              {profile.priorKnowledge.hasRomanceLanguage && (
-                <li>✓ I'll connect Latin to the Spanish/French you know</li>
-              )}
-              {profile.learningStyle === 'narrative' && (
-                <li>✓ I'll use story-based examples and contextual explanations</li>
-              )}
-              {profile.learningStyle === 'varied' && (
-                <li>✓ I'll mix different formats - tables, stories, and exercises</li>
-              )}
-              {profile.learningStyle === 'adaptive' && (
-                <li>✓ I'll adjust difficulty based on your performance patterns</li>
-              )}
-              {profile.interests && profile.interests.trim() && (
-                <li>✓ Examples will feature {profile.interests.split(',')[0].trim()}</li>
-              )}
-              <li>✓ I'll adapt as we go based on what works for you</li>
-            </ul>
-          </div>
-
-          <button onClick={handleComplete} className="continue-button big" disabled={isStarting}>
-            {isStarting ? 'Starting your journey...' : 'Start Learning! 🚀'}
+          <button
+            onClick={() => {
+              updateProfile('learningStyle', selectedLearningStyle)
+              handleNext()
+            }}
+            className="continue-button"
+            disabled={!selectedLearningStyle}
+            style={{ marginTop: '24px' }}
+          >
+            Continue
           </button>
         </div>
       )
-    }
-  ]
+    })
+
+    // Completion step
+    builtSteps.push({
+      type: 'completion',
+      content: (
+        <div className="onboarding-step completion-step">
+          <h2>Perfect! You're all set.</h2>
+          <p className="lead">I'm preparing your personalized learning path now...</p>
+          <button onClick={handleComplete} className="start-button" disabled={isStarting}>
+            {isStarting ? 'Starting...' : 'Begin Learning'}
+          </button>
+        </div>
+      )
+    })
+
+    console.log('[Onboarding] Building steps array, total steps:', builtSteps.length)
+    return builtSteps
+  }, [learnerName, courseTitle, courseDomain, customQuestions, isStarting, profile.priorKnowledge, selectedLearningStyle])
+
+  console.log('[Onboarding] Render - current step index:', step, 'total steps:', steps.length)
 
   const currentStep = steps[step]
 
-  if (currentStep.type === 'question') {
-    if (currentStep.options) {
-      // Multiple choice question
-      return (
-        <div className="onboarding-container">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${(step / steps.length) * 100}%` }} />
-          </div>
+  if (!currentStep) return null
 
-          <div className="onboarding-step question-step">
-            <h2>{currentStep.question}</h2>
-            <div className="option-buttons">
-              {currentStep.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => currentStep.onSelect(option.value)}
-                  className="assessment-option"
-                >
-                  <div className="option-content">
-                    <div className="option-emoji">{option.emoji}</div>
-                    <div className="option-label">{option.label}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    } else {
-      // Open-ended question
-      return (
-        <div className="onboarding-container">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${(step / steps.length) * 100}%` }} />
-          </div>
-
-          <div className="onboarding-step question-step">
-            <h2>{currentStep.question}</h2>
-            <textarea
-              value={currentAnswer}
-              onChange={(e) => setCurrentAnswer(e.target.value)}
-              placeholder={currentStep.placeholder}
-              className="answer-input"
-              rows={3}
-              autoFocus
-            />
-            <button
-              onClick={() => currentStep.onAnswer(currentAnswer)}
-              disabled={!currentAnswer.trim()}
-              className="continue-button"
-            >
-              Continue →
-            </button>
-          </div>
-        </div>
-      )
-    }
+  // Render based on step type
+  if (currentStep.type === 'welcome' || currentStep.type === 'interactive' || currentStep.type === 'completion') {
+    return currentStep.content
   }
 
-  if (currentStep.type === 'interactive') {
-    return (
-      <div className="onboarding-container">
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${(step / steps.length) * 100}%` }} />
-        </div>
-
-        <div className="onboarding-step interactive-step">
-          <p className="step-prompt">{currentStep.prompt}</p>
-          {currentStep.content}
-        </div>
-      </div>
-    )
-  }
-
-  // Welcome or Summary step
+  // Render question step
   return (
-    <div className="onboarding-container">
-      {step > 0 && step < steps.length - 1 && (
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${(step / steps.length) * 100}%` }} />
+    <div className="onboarding-step question-step">
+      <div className="progress-indicator">
+        Step {step + 1} of {steps.length}
+      </div>
+
+      <h2>{currentStep.question}</h2>
+
+      {currentStep.options ? (
+        // Multiple choice
+        <>
+          <div className="option-buttons">
+            {currentStep.options.map((option, index) => (
+              <label
+                key={index}
+                className="assessment-option"
+              >
+                <input
+                  type="radio"
+                  name="question-option"
+                  value={option.value}
+                  checked={selectedOption === option.value}
+                  onChange={(e) => setSelectedOption(e.target.value)}
+                />
+                <div className="option-text">
+                  <div className="option-title">{option.label}</div>
+                </div>
+              </label>
+            ))}
+          </div>
+          <button
+            onClick={() => {
+              currentStep.onSelect(selectedOption)
+            }}
+            className="continue-button"
+            disabled={!selectedOption}
+            style={{ marginTop: '24px' }}
+          >
+            Continue
+          </button>
+        </>
+      ) : (
+        // Text input
+        <div className="text-input-container">
+          <textarea
+            value={currentAnswer}
+            onChange={(e) => setCurrentAnswer(e.target.value)}
+            placeholder={currentStep.placeholder}
+            className="answer-input"
+            rows="6"
+          />
+          <button
+            onClick={() => {
+              if (currentAnswer.trim()) {
+                currentStep.onAnswer(currentAnswer)
+              }
+            }}
+            className="continue-button"
+            disabled={!currentAnswer.trim()}
+          >
+            Continue
+          </button>
         </div>
       )}
-      {currentStep.content}
     </div>
   )
 }

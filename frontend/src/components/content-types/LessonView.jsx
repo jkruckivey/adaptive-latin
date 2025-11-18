@@ -35,10 +35,6 @@ function LessonView({ title, sections, externalResources, onContinue }) {
             {section.callout && (
               <div className={`section-callout ${section.callout.type || 'info'}`}>
                 <div className="callout-icon">
-                  {section.callout.type === 'tip' && '💡'}
-                  {section.callout.type === 'warning' && '⚠️'}
-                  {section.callout.type === 'key' && '🔑'}
-                  {!section.callout.type && 'ℹ️'}
                 </div>
                 <div className="callout-content">{section.callout.text}</div>
               </div>

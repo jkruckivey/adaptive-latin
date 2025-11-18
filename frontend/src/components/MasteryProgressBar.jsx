@@ -2,27 +2,17 @@ import { useEffect, useState } from 'react'
 import './MasteryProgressBar.css'
 
 function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, assessmentsCount }) {
-  const [displayScore, setDisplayScore] = useState(0)
-  const [previousScore, setPreviousScore] = useState(0)
+  const [displayScore, setDisplayScore] = useState(masteryScore)
 
   // Animate progress bar when mastery score changes
   useEffect(() => {
-    if (masteryScore !== previousScore) {
-      setPreviousScore(masteryScore)
+    // Small delay for animation effect
+    const timer = setTimeout(() => {
+      setDisplayScore(masteryScore)
+    }, 100)
 
-      // Animate to new score
-      const timer = setTimeout(() => {
-        setDisplayScore(masteryScore)
-      }, 100)
-
-      return () => clearTimeout(timer)
-    }
-  }, [masteryScore, previousScore])
-
-  // Initialize display score
-  useEffect(() => {
-    setDisplayScore(masteryScore)
-  }, [])
+    return () => clearTimeout(timer)
+  }, [masteryScore])
 
   const percentage = Math.round(masteryScore * 100)
   const thresholdPercentage = Math.round(masteryThreshold * 100)
@@ -44,10 +34,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
           <span className="concept-name">{conceptName || 'Current Concept'}</span>
           {isComplete && <span className="completion-badge">✓ Mastered</span>}
         </div>
-        <div className="progress-stats">
-          <span className="score-text">{percentage}%</span>
-          <span className="assessment-count">{assessmentsCount} {assessmentsCount === 1 ? 'assessment' : 'assessments'}</span>
-        </div>
+        <span className="assessment-count">{assessmentsCount} {assessmentsCount === 1 ? 'assessment' : 'assessments'}</span>
       </div>
 
       <div className="progress-bar-wrapper">
@@ -71,7 +58,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
               transition: 'all 0.6s ease-out'
             }}
           >
-            {percentage > 10 && (
+            {displayScore > 0.15 && (
               <span className="progress-fill-text">{percentage}%</span>
             )}
           </div>
@@ -81,7 +68,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
         <div className="progress-hint">
           {!isComplete && assessmentsCount < MIN_ASSESSMENTS && (
             <>
-              <span className="hint-icon">📊</span>
+              <span className="hint-icon"></span>
               <span>
                 Complete at least {MIN_ASSESSMENTS} assessments to master this concept ({assessmentsCount}/{MIN_ASSESSMENTS} done)
               </span>
@@ -89,7 +76,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
           )}
           {!isComplete && assessmentsCount >= MIN_ASSESSMENTS && (
             <>
-              <span className="hint-icon">💡</span>
+              <span className="hint-icon"></span>
               <span>
                 Your mastery score can go up or down based on recent performance.
                 Keep practicing to reach {thresholdPercentage}%!
@@ -98,7 +85,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
           )}
           {isComplete && (
             <>
-              <span className="hint-icon">🎉</span>
+              <span className="hint-icon"></span>
               <span>
                 Excellent work! You've mastered this concept. Continue to the next one!
               </span>

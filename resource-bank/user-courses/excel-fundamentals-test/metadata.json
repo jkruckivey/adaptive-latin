@@ -1,0 +1,43 @@
+{
+  "course_id": "excel-fundamentals-test",
+  "title": "Excel Fundamentals",
+  "domain": "spreadsheets",
+  "taxonomy": "blooms",
+  "description": "Learn essential Excel skills for data entry, formulas, and basic analysis. Perfect for beginners who want to become proficient in spreadsheet fundamentals.",
+  "target_audience": "Office workers, students, and anyone new to Excel",
+  "created_at": "2025-01-17T12:00:00Z",
+  "updated_at": "2025-01-17T12:00:00Z",
+  "version": "1.0",
+  "course_learning_outcomes": [
+    "Apply fundamental Excel formulas to solve common business problems",
+    "Analyze data using built-in Excel functions",
+    "Create organized spreadsheets following professional formatting standards"
+  ],
+  "onboarding_questions": [
+    {
+      "type": "question",
+      "question": "Tell me about yourself - what brings you to Excel Fundamentals?",
+      "placeholder": "Your background, current role, and why you want to learn Excel...",
+      "key": "background"
+    },
+    {
+      "type": "question",
+      "question": "How much experience do you have with spreadsheets?",
+      "options": [
+        { "value": "never", "label": "Never used them - complete beginner" },
+        { "value": "basic", "label": "Basic - can enter data and simple formulas" },
+        { "value": "intermediate", "label": "Intermediate - comfortable with common functions" },
+        { "value": "advanced", "label": "Advanced - pivot tables, macros, complex analysis" }
+      ],
+      "key": "spreadsheetExperience",
+      "priorKnowledgeKey": "level"
+    },
+    {
+      "type": "question",
+      "question": "What will you use these skills for?",
+      "placeholder": "e.g., Work projects, personal budgeting, data analysis, school assignments, managing my coffee shop business...",
+      "key": "useCase",
+      "priorKnowledgeKey": "interests"
+    }
+  ]
+}

@@ -25,9 +25,9 @@
   gap: 12px;
   margin-bottom: 40px;
   padding: 20px;
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #2d3748;
 }
 
 .sentence-label {
@@ -42,7 +42,7 @@
   font-family: 'Georgia', serif;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #667eea;
+  color: #2d3748;
   font-style: italic;
   text-align: center;
 }
@@ -169,7 +169,7 @@
 /* Case-Specific Styling (matching ParadigmTable colors) */
 .diagram-word.case-nominative {
   border-color: #3182CE;
-  background: linear-gradient(135deg, white 0%, #EBF8FF 100%);
+  background: transparent;
 }
 
 .diagram-word.case-nominative .case-indicator {
@@ -183,7 +183,7 @@
 
 .diagram-word.case-genitive {
   border-color: #38A169;
-  background: linear-gradient(135deg, white 0%, #F0FFF4 100%);
+  background: transparent;
 }
 
 .diagram-word.case-genitive .case-indicator {
@@ -197,7 +197,7 @@
 
 .diagram-word.case-dative {
   border-color: #D69E2E;
-  background: linear-gradient(135deg, white 0%, #FFFAF0 100%);
+  background: transparent;
 }
 
 .diagram-word.case-dative .case-indicator {
@@ -211,7 +211,7 @@
 
 .diagram-word.case-accusative {
   border-color: #E53E3E;
-  background: linear-gradient(135deg, white 0%, #FFF5F5 100%);
+  background: transparent;
 }
 
 .diagram-word.case-accusative .case-indicator {
@@ -225,7 +225,7 @@
 
 .diagram-word.case-ablative {
   border-color: #805AD5;
-  background: linear-gradient(135deg, white 0%, #FAF5FF 100%);
+  background: transparent;
 }
 
 .diagram-word.case-ablative .case-indicator {
@@ -239,10 +239,10 @@
 
 /* Explanation Section */
 .diagram-explanation {
-  background: #f7fafc;
+  background: #e5e7eb;
   border-radius: 8px;
   padding: 24px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #2d3748;
   margin-bottom: 24px;
 }
 

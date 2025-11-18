@@ -162,7 +162,7 @@
 }
 
 .paradigm-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2d3748;
   color: white;
   font-weight: 700;
 }
@@ -256,8 +256,8 @@
 }
 
 .mc-option.selected {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-color: #2d3748;
+  background: #e5e7eb;
 }
 
 .mc-option:disabled {
@@ -508,22 +508,22 @@
 }
 
 .result-score.excellent {
-  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+  background: #10b981;
   color: white;
 }
 
 .result-score.good {
-  background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
+  background: #2d3748;
   color: white;
 }
 
 .result-score.developing {
-  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+  background: #f59e0b;
   color: white;
 }
 
 .result-score.needs-work {
-  background: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+  background: #ef4444;
   color: white;
 }
 

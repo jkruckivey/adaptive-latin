@@ -57,6 +57,36 @@
   font-size: 0.95rem;
 }
 
+/* Module Summary */
+.module-summary {
+  margin-bottom: 24px;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.module-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.concept-count {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
 /* Concept Summary */
 .concept-summary {
   background: white;
@@ -64,6 +94,7 @@
   border-radius: 6px;
   padding: 16px;
   margin-bottom: 12px;
+  margin-left: 16px;
 }
 
 .concept-summary.incomplete {
@@ -134,6 +165,14 @@
   color: var(--warning-color, #856404);
   border-color: #ffeaa7;
   background: #fff3cd;
+}
+
+.assessment-breakdown {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  font-weight: 500;
 }
 
 /* Visibility Options */

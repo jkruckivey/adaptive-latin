@@ -155,7 +155,7 @@ function ConceptPlanner({ courseData, onNext, onBack, onSaveDraft }) {
       </button>
 
       <div className="planning-tips">
-        <h4>💡 Tips for Planning Concepts</h4>
+        <h4>Tips for Planning Concepts</h4>
         <ul>
           <li>Start with foundational concepts and build progressively</li>
           <li>Each concept should take 30-90 minutes to complete</li>

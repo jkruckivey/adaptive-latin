@@ -7,7 +7,9 @@ import ExampleSet from './content-types/ExampleSet'
 import MultipleChoice from './content-types/MultipleChoice'
 import FillBlank from './content-types/FillBlank'
 import DialogueQuestion from './content-types/DialogueQuestion'
+import TeachingMoment from './content-types/TeachingMoment'
 import AssessmentResult from './content-types/AssessmentResult'
+import SimulationViewer from './content-types/SimulationViewer'
 import DeclensionExplorer from './widgets/DeclensionExplorer'
 import WordOrderManipulator from './widgets/WordOrderManipulator'
 import ScenarioWidget from './widgets/ScenarioWidget'
@@ -38,12 +40,12 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
   }, [content])
 
   const loadingMessages = [
-    { icon: '🎨', text: 'Crafting your personalized question' },
-    { icon: '🏛️', text: 'Building a Roman scenario' },
-    { icon: '📚', text: 'Selecting vocabulary from your interests' },
-    { icon: '🎯', text: 'Adapting to your skill level' },
-    { icon: '✨', text: 'Weaving in narrative context' },
-    { icon: '🧠', text: 'Analyzing your learning patterns' }
+    { icon: '', text: 'Crafting your personalized question' },
+    { icon: '', text: 'Building a Roman scenario' },
+    { icon: '', text: 'Selecting vocabulary from your interests' },
+    { icon: '', text: 'Adapting to your skill level' },
+    { icon: '', text: 'Weaving in narrative context' },
+    { icon: '', text: 'Analyzing your learning patterns' }
   ]
 
   const renderContent = () => {
@@ -63,7 +65,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
       )
     }
 
-    console.log('🎨 ContentRenderer rendering type:', content.type)
+    console.log('ContentRenderer rendering type:', content.type)
 
     switch (content.type) {
       case 'lesson':
@@ -139,12 +141,22 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
           />
         )
 
+      case 'teaching-moment':
+        return (
+          <TeachingMoment
+            content={content}
+            onSubmit={(result) => onResponse({ type: 'teaching-moment', ...result })}
+            onConfidenceChange={(confidence) => {}}
+          />
+        )
+
       case 'assessment-result':
         return (
           <AssessmentResult
             score={content.score}
             feedback={content.feedback}
             correctAnswer={content.correctAnswer}
+            userAnswer={content.userAnswer}
             calibration={content.calibration}
             languageConnection={content.languageConnection}
             learnerId={learnerId}
@@ -170,20 +182,11 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
       case 'course-end':
         return (
           <div className="course-end-message">
-            <div className="end-icon">🎓</div>
+            <div className="end-icon"></div>
             <h2>Congratulations on Completing Available Content!</h2>
             <div className="end-description">
               <p><strong>You've mastered {content.completedConcepts || 1} concept{content.completedConcepts !== 1 ? 's' : ''}!</strong></p>
               <p>This course is currently under development. Additional concepts are being authored and will be available soon.</p>
-
-              <div className="development-status">
-                <h3>Development Status</h3>
-                <ul>
-                  <li>✅ Concept 001: First Declension & Present Tense of "Sum" (Complete)</li>
-                  <li>✅ Concept 002: First Conjugation Verbs - Present System (Complete)</li>
-                  <li>🚧 Concepts 003-007: In Development</li>
-                </ul>
-              </div>
 
               <p>Your progress has been saved. When new concepts are added, you'll be able to continue your learning journey right where you left off.</p>
 
@@ -191,7 +194,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
               <ul>
                 <li>Review what you've learned by restarting the course</li>
                 <li>Check the progress dashboard to see your mastery scores</li>
-                <li>Use the AI tutor to ask questions about Latin grammar</li>
+                <li>Use the AI tutor to ask questions about the course content</li>
               </ul>
             </div>
 
@@ -244,6 +247,17 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
           />
         )
 
+      case 'simulation':
+        return (
+          <SimulationViewer
+            courseId={content.course_id}
+            moduleId={content.module_id}
+            simulationType={content.simulation_type}
+            learnerId={learnerId}
+            onContinue={onNext}
+          />
+        )
+
       default:
         return (
           <div className="error-content">
@@ -260,7 +274,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
   const cumulativeBadge = content?.is_cumulative && (
     <div className="cumulative-badge-container">
       <div className="cumulative-badge">
-        <span className="badge-icon">🔗</span>
+        <span className="badge-icon"></span>
         <div className="badge-content">
           <strong>Cumulative Review</strong>
           <span className="badge-subtitle">
@@ -274,7 +288,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
   // Debug panel
   const debugPanel = content?.debug_context && (
     <details className="debug-panel">
-      <summary className="debug-summary">🔍 Debug: AI Context (Click to expand)</summary>
+      <summary className="debug-summary">Debug: AI Context (Click to expand)</summary>
       <div className="debug-content">
         <h4>Context Sent to AI</h4>
         <div className="debug-section">

@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { api } from '../../api'
 import './CourseReview.css'
 
 function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
   const [visibility, setVisibility] = useState('unlisted')
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   const handlePublish = async () => {
     setIsPublishing(true)
@@ -15,13 +17,89 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
     }
   }
 
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      // Generate a temporary course ID for export
+      const tempCourseId = courseData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+
+      // Create a temporary export structure matching what the backend expects
+      const exportData = {
+        export_version: "1.0",
+        exported_at: new Date().toISOString(),
+        course: {
+          course_id: tempCourseId,
+          title: courseData.title,
+          domain: courseData.domain,
+          taxonomy: courseData.taxonomy || 'blooms',
+          course_learning_outcomes: courseData.courseLearningOutcomes || [],
+          description: courseData.description,
+          target_audience: courseData.targetAudience,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        modules: (courseData.modules || []).map(module => ({
+          id: module.moduleId,
+          title: module.title,
+          module_learning_outcomes: module.moduleLearningOutcomes || [],
+          concepts: (module.concepts || []).map(concept => ({
+            concept_id: concept.conceptId,
+            title: concept.title,
+            learning_objectives: concept.learningObjectives || [],
+            prerequisites: concept.prerequisites || []
+          }))
+        })),
+        external_resources: []
+      }
+
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify({ export: exportData }, null, 2)], {
+        type: 'application/json'
+      })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${tempCourseId}-export-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      alert('Course exported successfully!')
+    } catch (error) {
+      console.error('Export error:', error)
+      alert('Failed to export course. Please try again.')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   const getConceptStats = (concept) => {
-    // Support both old learningObjectives and new moduleLearningOutcomes
-    const outcomes = (concept.moduleLearningOutcomes || concept.learningObjectives || []).filter(o => o.trim()).length
     const vocab = (concept.vocabulary || []).filter(v => v.term && v.definition).length
     const contentLength = (concept.teachingContent || '').length
+    const assessments = (concept.assessments || []).length
+    const assessmentsByType = {
+      dialogue: (concept.assessments || []).filter(a => a.type === 'dialogue').length,
+      written: (concept.assessments || []).filter(a => a.type === 'written').length,
+      applied: (concept.assessments || []).filter(a => a.type === 'applied').length
+    }
 
-    return { outcomes, vocab, contentLength }
+    return { vocab, contentLength, assessments, assessmentsByType }
+  }
+
+  // Flatten concepts from modules with module context
+  const getAllConcepts = () => {
+    return (courseData.modules || []).flatMap((module, moduleIndex) =>
+      (module.concepts || []).map((concept, conceptIndex) => ({
+        ...concept,
+        moduleTitle: module.title,
+        moduleIndex: moduleIndex + 1,
+        conceptIndex: conceptIndex + 1
+      }))
+    )
   }
 
   return (
@@ -80,23 +158,19 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
       {/* Required Materials */}
       {courseData.sources && courseData.sources.filter(s => s.requirementLevel === 'required').length > 0 && (
         <div className="review-section required-materials-section">
-          <h3>⭐ Required Materials ({courseData.sources.filter(s => s.requirementLevel === 'required').length})</h3>
+          <h3>Required Materials ({courseData.sources.filter(s => s.requirementLevel === 'required').length})</h3>
           <p className="section-note">Students must complete these materials before accessing modules</p>
           <div className="required-materials-list">
             {courseData.sources.filter(s => s.requirementLevel === 'required').map((source, i) => (
               <div key={i} className="required-material-card">
                 <div className="material-header">
-                  <span className="material-icon">{
-                    source.type === 'pdf' ? '📄' :
-                    source.type === 'video' ? '🎥' :
-                    source.type === 'image' ? '🖼️' : '🌐'
-                  }</span>
+                  <span className="material-icon"></span>
                   <div className="material-info">
                     <div className="material-title">{source.title}</div>
                     <div className="material-url">{source.url}</div>
                     {source.scope !== 'course' && (
                       <div className="material-scope">
-                        📍 Attached to: {courseData.concepts && courseData.concepts[parseInt(source.scope.replace('concept-', ''))]?.title || source.scope}
+                        Scoped to: {source.scope}
                       </div>
                     )}
                   </div>
@@ -117,38 +191,54 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
         </div>
       )}
 
-      {/* Concepts Summary */}
+      {/* Modules & Concepts Summary */}
       <div className="review-section">
-        <h3>Concepts ({(courseData.concepts || []).length})</h3>
-        {(courseData.concepts || []).map((concept, index) => {
-          const stats = getConceptStats(concept)
-          const isComplete = stats.outcomes >= 3 && stats.vocab >= 5 && stats.contentLength >= 500
-
-          return (
-            <div key={index} className={`concept-summary ${isComplete ? 'complete' : 'incomplete'}`}>
-              <div className="concept-summary-header">
-                <span className="concept-number">Module {index + 1}</span>
-                <span className="concept-title">{concept.title}</span>
-                {isComplete ? (
-                  <span className="status-badge complete">✓ Complete</span>
-                ) : (
-                  <span className="status-badge incomplete">⚠ Incomplete</span>
-                )}
-              </div>
-              <div className="concept-stats">
-                <span className={stats.outcomes >= 3 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.outcomes}/3+ Module Learning Outcomes
-                </span>
-                <span className={stats.vocab >= 5 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.vocab}/5+ Vocabulary Terms
-                </span>
-                <span className={stats.contentLength >= 500 ? 'stat-ok' : 'stat-warning'}>
-                  {stats.contentLength}/500+ chars Teaching Content
-                </span>
-              </div>
+        <h3>Course Structure</h3>
+        {(courseData.modules || []).map((module, moduleIndex) => (
+          <div key={moduleIndex} className="module-summary">
+            <div className="module-header">
+              <h4>Module {moduleIndex + 1}: {module.title}</h4>
+              <span className="concept-count">
+                {(module.concepts || []).length} concept{(module.concepts || []).length !== 1 ? 's' : ''}
+              </span>
             </div>
-          )
-        })}
+
+            {(module.concepts || []).map((concept, conceptIndex) => {
+              const stats = getConceptStats(concept)
+              const isComplete = stats.vocab >= 5 && stats.contentLength >= 500 && stats.assessments >= 2
+
+              return (
+                <div key={conceptIndex} className={`concept-summary ${isComplete ? 'complete' : 'incomplete'}`}>
+                  <div className="concept-summary-header">
+                    <span className="concept-number">{moduleIndex + 1}.{conceptIndex + 1}</span>
+                    <span className="concept-title">{concept.title}</span>
+                    {isComplete ? (
+                      <span className="status-badge complete">✓ Complete</span>
+                    ) : (
+                      <span className="status-badge incomplete">⚠ Incomplete</span>
+                    )}
+                  </div>
+                  <div className="concept-stats">
+                    <span className={stats.vocab >= 5 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.vocab}/5+ Vocabulary Terms
+                    </span>
+                    <span className={stats.contentLength >= 500 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.contentLength}/500+ chars Teaching Content
+                    </span>
+                    <span className={stats.assessments >= 2 ? 'stat-ok' : 'stat-warning'}>
+                      {stats.assessments}/2+ Assessments
+                      {stats.assessments > 0 && (
+                        <span className="assessment-breakdown">
+                          ({stats.assessmentsByType.dialogue}💬 {stats.assessmentsByType.written}✍️ {stats.assessmentsByType.applied}🎯)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ))}
       </div>
 
       {/* Publishing Options */}
@@ -164,7 +254,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               onChange={(e) => setVisibility(e.target.value)}
             />
             <div className="option-content">
-              <div className="option-title">🔒 Private</div>
+              <div className="option-title">Private</div>
               <div className="option-description">Only you can access this course</div>
             </div>
           </label>
@@ -178,7 +268,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               onChange={(e) => setVisibility(e.target.value)}
             />
             <div className="option-content">
-              <div className="option-title">🔗 Unlisted</div>
+              <div className="option-title">Unlisted</div>
               <div className="option-description">Anyone with the link can access</div>
             </div>
           </label>
@@ -193,7 +283,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
               disabled
             />
             <div className="option-content">
-              <div className="option-title">🌍 Public (Coming Soon)</div>
+              <div className="option-title">Public (Coming Soon)</div>
               <div className="option-description">Searchable in course library</div>
             </div>
           </label>
@@ -202,7 +292,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
 
       {/* Preview Note */}
       <div className="preview-note">
-        <p>💡 After publishing, you can preview your course and make edits before sharing with learners.</p>
+        <p>After publishing, you can preview your course and make edits before sharing with learners.</p>
       </div>
 
       <div className="wizard-actions">
@@ -212,6 +302,14 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
           </button>
         </div>
         <div className="right-actions">
+          <button
+            onClick={handleExport}
+            className="wizard-button secondary"
+            disabled={isExporting}
+            title="Export course as JSON file for backup or sharing"
+          >
+            {isExporting ? 'Exporting...' : '📥 Export JSON'}
+          </button>
           <button onClick={onSaveDraft} className="wizard-button secondary">
             Save Draft
           </button>
@@ -220,7 +318,7 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
             className="wizard-button primary"
             disabled={isPublishing}
           >
-            {isPublishing ? 'Publishing...' : 'Publish Course 🚀'}
+            {isPublishing ? 'Publishing...' : 'Publish Course'}
           </button>
         </div>
       </div>

@@ -1,0 +1,10 @@
+{
+  "module_id": "module-001",
+  "title": "Essential Formulas and Functions",
+  "module_learning_outcomes": [
+    "Apply basic arithmetic formulas (SUM, AVERAGE, COUNT) to analyze numeric data",
+    "Use cell references effectively in formulas to create dynamic calculations",
+    "Evaluate when to use relative vs absolute cell references in spreadsheet design"
+  ],
+  "estimated_duration": "2-3 hours"
+}

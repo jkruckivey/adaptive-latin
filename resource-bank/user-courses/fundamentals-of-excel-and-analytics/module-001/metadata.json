@@ -1,0 +1,18 @@
+{
+  "id": "module-001",
+  "title": "Linear Functions",
+  "module_learning_outcomes": [
+    "Define functions and identify input-output relationships",
+    "Interpret the slope (m) in y = mx + b as variable cost or rate of change in business contexts",
+    "Interpret the intercept (b) in y = mx + b as fixed cost or baseline value in business contexts",
+    "Graph linear functions using Excel and identify how changing m and b affects the line",
+    "Apply linear functions to model cost, revenue, and break-even scenarios"
+  ],
+  "concepts": [
+    "concept-001",
+    "concept-002",
+    "concept-003",
+    "concept-004",
+    "concept-005"
+  ]
+}

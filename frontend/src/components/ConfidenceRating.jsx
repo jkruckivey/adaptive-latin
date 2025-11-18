@@ -2,11 +2,11 @@ import './ConfidenceRating.css'
 
 function ConfidenceRating({ onSubmit }) {
   const levels = [
-    { value: 1, label: 'Just guessing', emoji: '🤷' },
-    { value: 2, label: 'Not very confident', emoji: '😕' },
-    { value: 3, label: 'Somewhat confident', emoji: '😐' },
-    { value: 4, label: 'Quite confident', emoji: '😊' },
-    { value: 5, label: 'Very confident', emoji: '🎯' }
+    { value: 1, label: 'Just guessing', emoji: '' },
+    { value: 2, label: 'Not very confident', emoji: '' },
+    { value: 3, label: 'Somewhat confident', emoji: '' },
+    { value: 4, label: 'Quite confident', emoji: '' },
+    { value: 5, label: 'Very confident', emoji: '' }
   ]
 
   return (

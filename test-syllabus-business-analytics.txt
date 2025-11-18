@@ -1,0 +1,104 @@
+BUSINESS ANALYTICS FUNDAMENTALS
+BUS 2050 - Fall 2025
+Ivey Business School
+
+INSTRUCTOR INFORMATION
+Professor: Dr. Sarah Mitchell
+Email: smitchell@ivey.ca
+Office Hours: Tuesdays 2-4 PM
+
+COURSE DESCRIPTION
+This course provides students with foundational skills in business analytics and data-driven decision making. Students will learn to analyze business data, create visualizations, and apply statistical methods to solve real-world business problems. The course emphasizes practical application using Excel and introduces basic statistical concepts essential for modern business practice.
+
+COURSE LEARNING OUTCOMES
+By the end of this course, students will be able to:
+
+1. Analyze business scenarios using quantitative models and data visualization techniques
+2. Apply descriptive statistics to interpret business data and support decision-making
+3. Evaluate relationships between business variables using correlation and regression analysis
+4. Design data-driven solutions to business problems using Excel tools and functions
+5. Communicate analytical findings effectively through charts, dashboards, and written reports
+
+REQUIRED MATERIALS
+- Microsoft Excel (Office 365 or later)
+- Course Pack available through Ivey Publishing
+- Readings posted on Canvas
+
+COURSE SCHEDULE AND TOPICS
+
+Module 1: Excel Foundations and Data Management (Weeks 1-2)
+This module introduces students to Excel as a business analytics tool. Students will learn essential functions, data organization principles, and best practices for working with business data.
+
+Topics:
+- Excel interface and navigation
+- Cell references (absolute vs relative)
+- Essential functions (SUM, AVERAGE, COUNT, IF)
+- Data formatting and validation
+- Sorting and filtering data
+- Creating professional tables
+
+Module 2: Functions and Business Models (Weeks 3-4)
+Building on Excel basics, students will learn to model business scenarios using mathematical functions and logical operators.
+
+Topics:
+- Linear functions and break-even analysis
+- Quadratic functions for cost modeling
+- Logical functions (IF, AND, OR, nested IFs)
+- VLOOKUP and XLOOKUP for data retrieval
+- Financial functions (NPV, IRR, PMT)
+
+Module 3: Data Visualization (Weeks 5-6)
+Students will learn to create effective visualizations that communicate insights and support business decisions.
+
+Topics:
+- Chart types and when to use them
+- Column, bar, and line charts
+- Pie charts and their limitations
+- Scatter plots for relationships
+- Combination charts
+- Dashboard design principles
+- Conditional formatting for visual insights
+
+Module 4: Descriptive Statistics (Weeks 7-8)
+This module covers statistical measures used to summarize and describe business data.
+
+Topics:
+- Measures of central tendency (mean, median, mode)
+- Measures of spread (range, variance, standard deviation)
+- Percentiles and quartiles
+- Distribution shapes and outliers
+- Using Excel for statistical analysis
+- Interpreting statistical summaries
+
+Module 5: Probability and Business Applications (Weeks 9-10)
+Students explore probability concepts and their application in business risk assessment and decision-making.
+
+Topics:
+- Basic probability rules
+- Conditional probability
+- Expected value and decision trees
+- Discrete probability distributions
+- Normal distribution basics
+- Using probability for business decisions
+
+Module 6: Correlation and Regression (Weeks 11-12)
+The final module introduces students to analyzing relationships between variables using correlation and regression analysis.
+
+Topics:
+- Scatter plots and correlation
+- Correlation coefficient (Pearson's r)
+- Interpreting correlation strength
+- Simple linear regression
+- Regression equation and predictions
+- Coefficient of determination (R²)
+- Limitations and assumptions
+
+ASSESSMENT
+Assignment 1: Excel Functions and Modeling - 15%
+Assignment 2: Data Visualization Dashboard - 20%
+Midterm Exam - 25%
+Assignment 3: Statistical Analysis Report - 20%
+Final Exam - 20%
+
+LEARNING APPROACH
+This course combines lectures, hands-on Excel practice, case discussions, and individual assignments. Students are expected to bring laptops to class for in-class exercises and application activities.

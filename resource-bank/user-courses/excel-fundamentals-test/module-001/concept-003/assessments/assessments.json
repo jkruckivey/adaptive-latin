@@ -1,0 +1,111 @@
+[
+  {
+    "id": "written-003-1",
+    "type": "written",
+    "difficulty": "advanced",
+    "prompt": "A colleague shows you this formula: =A2*B2*$C$2*$D$2\n\nThey explain that A2 is quantity, B2 is price, C2 is tax rate, and D2 is a seasonal discount multiplier. They plan to copy this formula down 100 rows.\n\nEvaluate this formula design. Is the reference strategy appropriate? If not, what would you change and why? Write 200-300 words.",
+    "wordCountRange": {
+      "min": 200,
+      "max": 300
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "name": "Analysis Quality",
+          "weight": 0.45,
+          "description": "Correctly identifies that A2 and B2 should be relative (they change per row), but critically evaluates whether C2 and D2 should be absolute. Key insight: if the tax rate and discount are the SAME for all rows, absolute references are correct. If they vary by row (e.g., different regions have different tax rates), they should be relative. Strong responses recognize this depends on the data structure."
+        },
+        {
+          "name": "Justification",
+          "weight": 0.35,
+          "description": "Provides clear reasoning for recommendations. Explains the consequences of choosing wrong reference types. Demonstrates understanding of when constants should use absolute references versus when row-specific data should use relative references."
+        },
+        {
+          "name": "Communication",
+          "weight": 0.20,
+          "description": "Expresses evaluation clearly and professionally. Uses appropriate technical terminology. Response is well-organized and easy to follow."
+        }
+      ]
+    },
+    "estimatedTime": "20-25 minutes"
+  },
+  {
+    "id": "dialogue-003-1",
+    "type": "dialogue",
+    "difficulty": "advanced",
+    "prompt": "You're reviewing a spreadsheet where someone used relative references for everything, including formulas that reference a lookup table. The formulas work fine in their current position but will break if copied elsewhere. How would you explain the problem and the solution to this person?",
+    "rubric": {
+      "excellent": {
+        "threshold": 0.90,
+        "description": "Clearly identifies the problem: relative references to lookup tables will change when formulas are copied, causing incorrect lookups or errors. Recommends absolute references for the lookup table range. May provide a concrete example showing how the reference would shift. Explains this in a constructive, teaching-focused way."
+      },
+      "good": {
+        "threshold": 0.75,
+        "description": "Correctly identifies that the lookup table references need to be absolute. Explains that relative references will cause problems when copied. May lack a concrete example or detailed explanation of consequences."
+      },
+      "developing": {
+        "threshold": 0.60,
+        "description": "Recognizes there's a problem with the reference strategy. May suggest absolute references but explanation of why is incomplete or partially incorrect. Shows some understanding but lacks depth."
+      },
+      "insufficient": {
+        "threshold": 0.00,
+        "description": "Does not correctly identify the issue or suggests an incorrect solution. Misunderstands how reference types affect formula behavior when copied."
+      }
+    },
+    "followUp": "Good explanation! Now, can you think of a situation where you might intentionally want your lookup table reference to shift when you copy the formula?"
+  },
+  {
+    "id": "written-003-2",
+    "type": "written",
+    "difficulty": "intermediate",
+    "prompt": "Design challenge: You're creating a monthly budget spreadsheet. You have 12 columns (one per month) and 20 expense categories (rows). Each cell should calculate: Base Amount × (1 + Inflation Rate).\n\nThe Base Amounts are in column B. The monthly inflation rates are in row 1 (one rate per month, though they're all the same for now). You need a single formula in C2 that can be copied to fill the entire range C2:N21.\n\nWrite the formula for cell C2 and explain your reference strategy (150-250 words).",
+    "wordCountRange": {
+      "min": 150,
+      "max": 250
+    },
+    "rubric": {
+      "dimensions": [
+        {
+          "name": "Correct Formula",
+          "weight": 0.50,
+          "description": "Provides a formula that works correctly when copied both down and across. Correct answer: =$B2*(1+C$1) or similar. $B2 fixes the column (Base Amount column) but allows row to change. C$1 fixes the row (inflation rate row) but allows column to change."
+        },
+        {
+          "name": "Explanation",
+          "weight": 0.35,
+          "description": "Clearly explains why each reference type was chosen. Demonstrates understanding of mixed references and their behavior when copying in two dimensions."
+        },
+        {
+          "name": "Clarity",
+          "weight": 0.15,
+          "description": "Explanation is clear and well-organized. Technical terms are used correctly."
+        }
+      ]
+    },
+    "estimatedTime": "20-25 minutes"
+  },
+  {
+    "id": "applied-003-1",
+    "type": "applied",
+    "difficulty": "advanced",
+    "taskType": "case_study",
+    "prompt": "Case Study: A financial analyst created a quarterly report with formulas that reference the prior quarter's data. She used relative references throughout. When she copied the sheet to create Q2's report from Q1's template, all the formulas broke.\n\nAnalyze what went wrong and propose a better spreadsheet design strategy that would prevent this problem in future quarters. What reference strategies and design patterns would you recommend?",
+    "rubric": {
+      "scoring": "Holistic scoring based on problem analysis (0.40), solution design (0.40), and explanation quality (0.20).",
+      "correctAnswers": [
+        {
+          "form": "Problem Analysis",
+          "answer": "The relative references copied from Q1 sheet now point to cells in the wrong locations on the Q2 sheet. When formulas reference 'prior quarter data,' that data should remain on Q1 sheet even when working in Q2 sheet.",
+          "explanation": "Understanding that the issue is about cross-sheet references and data segregation by time period."
+        },
+        {
+          "form": "Solution",
+          "answer": "Multiple valid approaches: (1) Use absolute references with sheet names (Q1!$A$5), (2) Create a summary/constants area that consolidates prior period values, (3) Use separate sheets for data vs. calculations, (4) Implement a master sheet with all quarters and use structured references/tables.",
+          "explanation": "Strong solutions show understanding of workbook structure, separation of data from calculations, and maintaining links to historical data."
+        }
+      ],
+      "partialCredit": "Award 0.70/1.00 for correctly diagnosing problem but weak solution. Award 0.50/1.00 for partial understanding of issue and partial solution. Award 0.30/1.00 for recognizing it's a reference problem but unclear on solution."
+    },
+    "estimatedTime": "15-20 minutes"
+  }
+]
