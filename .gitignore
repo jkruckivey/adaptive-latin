@@ -31,6 +31,9 @@ backend/content_cache.db-journal
 *.swo
 *~
 
+# Claude Code local settings (user-specific permissions)
+.claude/settings.local.json
+
 # OS
 .DS_Store
 Thumbs.db
