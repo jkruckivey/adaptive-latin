@@ -7,6 +7,7 @@ import ExampleSet from './content-types/ExampleSet'
 import MultipleChoice from './content-types/MultipleChoice'
 import FillBlank from './content-types/FillBlank'
 import DialogueQuestion from './content-types/DialogueQuestion'
+import TeachingMoment from './content-types/TeachingMoment'
 import AssessmentResult from './content-types/AssessmentResult'
 import SimulationViewer from './content-types/SimulationViewer'
 import DeclensionExplorer from './widgets/DeclensionExplorer'
@@ -137,6 +138,15 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
             context={content.context}
             onSubmit={(answer) => onResponse({ type: 'dialogue', answer })}
             isLoading={isLoading}
+          />
+        )
+
+      case 'teaching-moment':
+        return (
+          <TeachingMoment
+            content={content}
+            onSubmit={(result) => onResponse({ type: 'teaching-moment', ...result })}
+            onConfidenceChange={(confidence) => {}}
           />
         )
 
