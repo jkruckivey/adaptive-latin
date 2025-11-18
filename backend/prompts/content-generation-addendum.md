@@ -11,7 +11,7 @@ You can generate structured learning content in JSON format that will be rendere
 - Do NOT include `external_resources` with `type: "video"`
 - Do NOT mention video lectures, tutorials, or explanations
 - Do NOT suggest watching videos
-- Use ONLY written content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`
+- Use ONLY written content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`, `teaching-moment`
 - If you need external resources, use ONLY `type: "article"` for written guides
 
 **This rule overrides any learner preferences or other instructions.**
@@ -179,7 +179,111 @@ Use for open-ended explanations and deeper thinking.
 
 **When to use:** Assessing understanding, requiring explanation, checking for misconceptions
 
-### 7. Declension Explorer (`type: "declension-explorer"`)
+### 7. Teaching Moment (`type: "teaching-moment"`)
+
+Use for engaging two-stage assessments where students correct a misconception and defend their explanation.
+
+**Structure:**
+```json
+{
+  "type": "teaching-moment",
+  "scenario": {
+    "character": "Sarah (your colleague)",
+    "situation": "Sarah is analyzing student homework submissions in Excel",
+    "misconception": "I used =SUM(A1:A100) to count how many students submitted their homework. The result shows 4,250, but there are only 100 students in the class. Excel must be broken!"
+  },
+  "part1": {
+    "prompt": "What do you tell Sarah?",
+    "options": [
+      {
+        "id": "a",
+        "text": "You're right, that's strange. Excel might have a bug.",
+        "quality": "incorrect"
+      },
+      {
+        "id": "b",
+        "text": "SUM adds values together. You need COUNT to count cells.",
+        "quality": "correct"
+      },
+      {
+        "id": "c",
+        "text": "Try using AVERAGE instead.",
+        "quality": "incorrect"
+      },
+      {
+        "id": "d",
+        "text": "The formula looks correct to me.",
+        "quality": "incorrect"
+      }
+    ]
+  },
+  "part2": {
+    "pushbacks": {
+      "a": "Thanks for validating my confusion! Should I report this bug to Microsoft?",
+      "b": "But I want to COUNT students, and SUM gave me a number! Why would it give me 4,250 if it's not counting?",
+      "c": "I tried AVERAGE and now I'm getting 42.5 students. That makes even less sense!",
+      "d": "Really? But 4,250 students is way more than I have. How is that correct?"
+    },
+    "prompt": "How do you respond?",
+    "options": [
+      {
+        "id": "1",
+        "text": "SUM added up all the values in your cells, not counted them. You probably have student IDs or scores in there, and it's adding those numbers together.",
+        "defends": ["b"]
+      },
+      {
+        "id": "2",
+        "text": "It's counting, just in a different way. Both functions work for counting.",
+        "defends": []
+      },
+      {
+        "id": "3",
+        "text": "You need to use a different cell range.",
+        "defends": []
+      },
+      {
+        "id": "4",
+        "text": "Excel is adding the numbers together, giving you their total. COUNT counts how many cells have data, while SUM adds up the values.",
+        "defends": ["b"]
+      }
+    ]
+  },
+  "scoring": {
+    "excellent": {
+      "combinations": ["b1", "b4"],
+      "feedback": "Perfect! You correctly identified the misconception AND explained it clearly when challenged."
+    },
+    "good": {
+      "combinations": ["c1", "c4", "d1", "d4"],
+      "feedback": "Your second explanation was good, but your initial response could have been clearer."
+    },
+    "developing": {
+      "combinations": ["b2", "b3"],
+      "feedback": "You identified the right function, but your explanation when challenged wasn't clear enough."
+    },
+    "insufficient": {
+      "combinations": ["a*", "*2", "*3"],
+      "feedback": "Review the difference between SUM (adds values) and COUNT (counts cells)."
+    }
+  }
+}
+```
+
+**When to use:**
+- Testing ability to explain concepts to others
+- Identifying and correcting common misconceptions
+- Assessing deeper understanding beyond recognition
+- Engaging students in active teaching/explanation
+
+**Design tips:**
+- Character should have a plausible, common misconception
+- Part 1 options range from clearly wrong to clearly right
+- Part 2 pushback should be realistic (what would someone actually say?)
+- Part 2 options should separate those who truly understand from those guessing
+- Use combinations like "b1" and "b4" to show correct Part 1 (b) + valid Part 2 defenses (1 or 4)
+- Wildcard "*" means any (e.g., "a*" = any Part 2 answer when Part 1 was "a")
+
+### 8. Declension Explorer (`type: "declension-explorer"`)
 
 Interactive widget for exploring noun declensions hands-on.
 
@@ -590,5 +694,5 @@ Do NOT include markdown code fences, explanations, or commentary. Just the raw J
 - Do NOT reference video lectures, video explanations, or video tutorials
 - Do NOT suggest watching videos for additional help
 - If the learner profile mentions video preferences, IGNORE IT - use written content instead
-- Use ONLY these content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`, `assessment-result`
+- Use ONLY these content types: `lesson`, `paradigm-table`, `example-set`, `multiple-choice`, `fill-blank`, `dialogue`, `teaching-moment`, `assessment-result`
 - For external resources (if absolutely necessary), ONLY use `type: "article"` with written guides
