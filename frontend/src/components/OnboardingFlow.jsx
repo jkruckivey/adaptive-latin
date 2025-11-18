@@ -20,8 +20,11 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   }
 
   const handleNext = () => {
-    console.log('[Onboarding] handleNext called, current step:', step, 'going to:', step + 1)
-    setStep(step + 1)
+    console.log('[Onboarding] handleNext called')
+    setStep(prev => {
+      console.log('[Onboarding] Incrementing step from', prev, 'to', prev + 1)
+      return prev + 1
+    })
     setCurrentAnswer('')
     setSelectedOption('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
