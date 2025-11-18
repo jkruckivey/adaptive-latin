@@ -14,6 +14,28 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
     return () => clearTimeout(timer)
   }, [masteryScore])
 
+  // Count up animation for text
+  const [displayPercentage, setDisplayPercentage] = useState(0)
+
+  useEffect(() => {
+    const targetPercentage = Math.round(displayScore * 100)
+
+    if (displayPercentage === targetPercentage) return
+
+    const step = targetPercentage > displayPercentage ? 1 : -1
+    const interval = setInterval(() => {
+      setDisplayPercentage(prev => {
+        if (prev === targetPercentage) {
+          clearInterval(interval)
+          return prev
+        }
+        return prev + step
+      })
+    }, 10) // Speed of count up
+
+    return () => clearInterval(interval)
+  }, [displayScore, displayPercentage])
+
   const percentage = Math.round(masteryScore * 100)
   const thresholdPercentage = Math.round(masteryThreshold * 100)
   const MIN_ASSESSMENTS = 3  // Match backend requirement
@@ -59,7 +81,7 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
             }}
           >
             {displayScore > 0.15 && (
-              <span className="progress-fill-text">{percentage}%</span>
+              <span className="progress-fill-text">{displayPercentage}%</span>
             )}
           </div>
         </div>

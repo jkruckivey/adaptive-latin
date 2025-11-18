@@ -13,6 +13,7 @@ import SimulationViewer from './content-types/SimulationViewer'
 import DeclensionExplorer from './widgets/DeclensionExplorer'
 import WordOrderManipulator from './widgets/WordOrderManipulator'
 import ScenarioWidget from './widgets/ScenarioWidget'
+import SkeletonLoader from './SkeletonLoader'
 import './ContentRenderer.css'
 
 function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, learnerProfile, conceptId }) {
@@ -52,8 +53,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
     if (!content) {
       return (
         <div className="content-placeholder" role="status" aria-live="polite">
-          <div className="spinner"></div>
-          <div className="loading-message">
+          <SkeletonLoader type="question" />
+          <div className="loading-message" style={{ marginTop: '2rem' }}>
             <span className="loading-icon">{loadingMessages[loadingMessageIndex].icon}</span>
             <p className="loading-text">
               {loadingMessages[loadingMessageIndex].text}
@@ -146,7 +147,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
           <TeachingMoment
             content={content}
             onSubmit={(result) => onResponse({ type: 'teaching-moment', ...result })}
-            onConfidenceChange={(confidence) => {}}
+            onConfidenceChange={(confidence) => { }}
           />
         )
 
@@ -320,7 +321,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
   )
 
   return (
-    <div className="content-renderer">
+    <div className="content-renderer fade-in" key={content?.id || 'loading'}>
       {cumulativeBadge}
       {renderContent()}
       {debugPanel}

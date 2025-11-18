@@ -1,7 +1,38 @@
+import { useEffect } from 'react'
+import confetti from 'canvas-confetti'
 import './ConceptMasteryModal.css'
 
 function ConceptMasteryModal({ conceptId, masteryScore, onContinue }) {
   const conceptNumber = conceptId?.split('-')[1] || '001'
+
+  useEffect(() => {
+    // Trigger confetti explosion
+    const duration = 3000
+    const end = Date.now() + duration
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#646cff', '#ffffff', '#48bb78']
+      })
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#646cff', '#ffffff', '#48bb78']
+      })
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame)
+      }
+    }
+
+    frame()
+  }, [])
 
   return (
     <div className="mastery-modal-overlay">
