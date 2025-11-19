@@ -580,3 +580,227 @@ def generate_hint_request(
             f"- Encourages them to try another practice question\n\n"
             f"Return ONLY plain text (not JSON), max 4-5 sentences."
         )
+
+
+# AI-Powered Course Creation Functions
+
+def generate_learning_outcomes(topic: str, level: str = "beginner", count: int = 5) -> List[str]:
+    """
+    Use Claude AI to generate learning outcomes for a course.
+
+    Args:
+        topic: The course topic
+        level: Difficulty level (beginner, intermediate, advanced)
+        count: Number of outcomes to generate
+
+    Returns:
+        List of learning outcome strings
+    """
+    try:
+        from anthropic import Anthropic
+        from .config import config
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        prompt = f"""Generate {count} high-quality learning outcomes for a course on "{topic}" at the {level} level.
+
+Learning outcomes should:
+- Use action verbs from Bloom's Taxonomy (e.g., Analyze, Evaluate, Create, Apply)
+- Be specific and measurable
+- Focus on what learners will be able to DO after completing the course
+- Be appropriate for {level} level learners
+
+Return ONLY a JSON array of strings, no other text. Format:
+["outcome 1", "outcome 2", "outcome 3", ...]"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        content = response.content[0].text.strip()
+        outcomes = json.loads(content)
+
+        logger.info(f"Generated {len(outcomes)} learning outcomes for {topic}")
+        return outcomes
+
+    except Exception as e:
+        logger.error(f"Error generating learning outcomes: {e}")
+        # Return fallback outcomes
+        return [
+            f"Understand fundamental concepts of {topic}",
+            f"Apply {topic} principles to solve problems",
+            f"Analyze {topic} scenarios critically"
+        ]
+
+
+def generate_module_learning_outcomes(course_title: str, module_title: str, count: int = 3) -> List[str]:
+    """
+    Use Claude AI to generate learning outcomes for a module.
+
+    Args:
+        course_title: The parent course title
+        module_title: The module title
+        count: Number of outcomes to generate
+
+    Returns:
+        List of module learning outcome strings
+    """
+    try:
+        from anthropic import Anthropic
+        from .config import config
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        prompt = f"""Generate {count} specific learning outcomes for the module "{module_title}" in the course "{course_title}".
+
+Module learning outcomes should:
+- Be more specific than course-level outcomes
+- Use action verbs (Apply, Analyze, Create, Evaluate, etc.)
+- Focus on the specific content of this module
+- Be measurable and achievable within this module
+
+Return ONLY a JSON array of strings, no other text. Format:
+["outcome 1", "outcome 2", "outcome 3"]"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=800,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        content = response.content[0].text.strip()
+        outcomes = json.loads(content)
+
+        logger.info(f"Generated {len(outcomes)} module outcomes for {module_title}")
+        return outcomes
+
+    except Exception as e:
+        logger.error(f"Error generating module outcomes: {e}")
+        return [
+            f"Apply concepts from {module_title}",
+            f"Analyze {module_title} scenarios",
+            f"Evaluate solutions related to {module_title}"
+        ]
+
+
+def generate_concept_learning_objectives(
+    course_title: str,
+    module_title: str,
+    concept_title: str,
+    count: int = 3
+) -> List[str]:
+    """
+    Use Claude AI to generate learning objectives for a concept.
+
+    Args:
+        course_title: The parent course title
+        module_title: The parent module title
+        concept_title: The concept title
+        count: Number of objectives to generate
+
+    Returns:
+        List of concept learning objective strings
+    """
+    try:
+        from anthropic import Anthropic
+        from .config import config
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        prompt = f"""Generate {count} specific learning objectives for the concept "{concept_title}" in module "{module_title}" of the course "{course_title}".
+
+Concept learning objectives should:
+- Be very specific and granular
+- Focus on discrete skills or knowledge points
+- Use precise action verbs (Identify, Define, Calculate, Distinguish, etc.)
+- Be achievable in a single concept/lesson
+
+Return ONLY a JSON array of strings, no other text. Format:
+["objective 1", "objective 2", "objective 3"]"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=800,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        content = response.content[0].text.strip()
+        objectives = json.loads(content)
+
+        logger.info(f"Generated {len(objectives)} objectives for {concept_title}")
+        return objectives
+
+    except Exception as e:
+        logger.error(f"Error generating concept objectives: {e}")
+        return [
+            f"Understand {concept_title}",
+            f"Apply {concept_title} in practice",
+            f"Recognize {concept_title} patterns"
+        ]
+
+
+def generate_simulation_content(concept: str, context: str = "") -> Dict[str, Any]:
+    """
+    Use Claude AI to generate a simulation scenario for a concept.
+
+    Args:
+        concept: The concept to simulate
+        context: Additional context about the simulation
+
+    Returns:
+        Simulation content dictionary
+    """
+    try:
+        from anthropic import Anthropic
+        from .config import config
+
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        prompt = f"""Generate a realistic simulation scenario for teaching "{concept}".
+
+Context: {context if context else "General application"}
+
+The simulation should:
+- Present a realistic, authentic scenario where this concept is used
+- Include specific steps or stages the learner will work through
+- Be engaging and relevant to real-world applications
+- Allow for practice and application of the concept
+
+Return ONLY a JSON object with this structure:
+{{
+  "title": "Simulation title",
+  "description": "Brief description of the scenario",
+  "scenario": "Detailed scenario setup",
+  "steps": [
+    {{"step": 1, "description": "What happens in step 1", "task": "What learner must do"}},
+    {{"step": 2, "description": "What happens in step 2", "task": "What learner must do"}}
+  ],
+  "learning_points": ["Key takeaway 1", "Key takeaway 2"]
+}}"""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=1500,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        content = response.content[0].text.strip()
+        simulation = json.loads(content)
+
+        logger.info(f"Generated simulation for {concept}")
+        return simulation
+
+    except Exception as e:
+        logger.error(f"Error generating simulation: {e}")
+        return {
+            "title": f"{concept} Simulation",
+            "description": f"Practice applying {concept} in a realistic scenario",
+            "scenario": f"You'll work through a scenario that demonstrates {concept}.",
+            "steps": [
+                {"step": 1, "description": f"Introduction to {concept}", "task": "Review the concept"},
+                {"step": 2, "description": "Apply the concept", "task": "Complete the exercise"}
+            ],
+            "learning_points": [f"Understand {concept}", f"Apply {concept}"]
+        }
