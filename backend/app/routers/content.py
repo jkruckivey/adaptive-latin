@@ -20,7 +20,7 @@ from ..tools import (
     detect_struggle,
     detect_celebration_milestones
 )
-from ..agent import generate_content, call_claude_api
+from ..agent import generate_content, call_anthropic_with_retry
 from ..content_generators import generate_hint_request
 from ..constants import (
     HINTS_ENABLED_IN_PRACTICE,
@@ -480,11 +480,14 @@ async def request_hint(request: Request, body: dict):
         hint_prompt = generate_hint_request(question_context, hint_level, concept_id)
 
         # Call Claude API for hint
-        response = call_claude_api(
+        response = call_anthropic_with_retry(
             system_prompt="You are a patient Latin tutor providing hints to a struggling student in practice mode. Be encouraging and educational.",
             user_message=hint_prompt,
-            model=config.CLAUDE_MODEL,
-            max_tokens=500  # Hints should be brief
+            # model=config.CLAUDE_MODEL, # call_anthropic_with_retry uses config.ANTHROPIC_MODEL internally
+            # max_tokens=500  # call_anthropic_with_retry uses fixed max_tokens or we need to update it to accept kwargs if needed.
+            # Checking agent.py definition: def call_anthropic_with_retry(system_prompt: str, user_message: str, max_retries: int = DEFAULT_MAX_RETRIES, timeout: int = DEFAULT_API_TIMEOUT_SECONDS) -> Any:
+            # It does NOT accept model or max_tokens as arguments. It uses config.ANTHROPIC_MODEL and hardcoded 4096.
+            # So I should remove model and max_tokens arguments.
         )
 
         # Extract hint text (response should be plain text, not JSON)
