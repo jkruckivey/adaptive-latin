@@ -23,10 +23,12 @@
   --color-bg: #ffffff;
   --color-surface: #f8f9fa;
   --color-surface-hover: #e9ecef;
+  --color-border: #e0e0e0;
 
   --text-primary: rgba(0, 0, 0, 0.87);
   --text-secondary: rgba(0, 0, 0, 0.6);
   --text-tertiary: rgba(0, 0, 0, 0.38);
+  --color-text: rgba(0, 0, 0, 0.87);
 
   --color-accent: #646cff;
   --color-accent-hover: #535bf2;
