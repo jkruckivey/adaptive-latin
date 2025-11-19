@@ -1,7 +1,7 @@
 # CLAUDE.md - AI Assistant Guide for Adaptive Latin Learning System
 
-**Version:** 1.0.0
-**Last Updated:** 2025-11-17
+**Version:** 1.1.0
+**Last Updated:** 2025-11-19
 **Repository:** adaptive-latin
 
 ---
@@ -39,9 +39,16 @@ Unlike traditional adaptive learning that adjusts difficulty or provides hints, 
 - **Spaced Repetition**: Review scheduling for retention
 
 ### Current Status
-**Version**: 0.3.0
-**Domain**: Latin Grammar (7 concepts)
-**Stage**: Production-ready with course creation features
+**Version**: 0.3.0 (Released 2025-11-01)
+**Domain**: Latin Grammar (7 concepts) + User-generated courses
+**Stage**: Production-ready with advanced course creation and pedagogical features
+
+**Recent Updates**:
+- Modular backend architecture with dedicated routers
+- Teaching Moment assessment type for interactive misconception correction
+- OnboardingQuestionBuilder for course creation wizard
+- Pedagogical tools for contextualized content generation
+- Enhanced assessment builder with AI generation capabilities
 
 ---
 
@@ -49,16 +56,26 @@ Unlike traditional adaptive learning that adjusts difficulty or provides hints, 
 
 ```
 adaptive-latin/
-├── backend/                         # FastAPI Python backend
+├── backend/                         # FastAPI Python backend (~7,500 lines total)
 │   ├── app/
-│   │   ├── main.py                 # FastAPI application and REST endpoints (187k lines)
-│   │   ├── agent.py                # Claude AI integration with tool use (50k lines)
-│   │   ├── tools.py                # Resource loading and learner model management (53k lines)
-│   │   ├── confidence.py           # Confidence tracking and calibration
-│   │   ├── content_generators.py   # Dynamic content generation
-│   │   ├── conversations.py        # Conversation state management
-│   │   ├── cartridge_parser.py     # Common Cartridge import/export
+│   │   ├── main.py                 # FastAPI application setup and middleware
+│   │   ├── agent.py                # Core Claude AI integration with tool use
+│   │   ├── tools.py                # Resource loading and learner model management
+│   │   ├── routers/                # Modular API routers (NEW architecture)
+│   │   │   ├── chat.py            # Chat and conversation endpoints (~6.5k lines)
+│   │   │   ├── concepts.py        # Concept management endpoints (~1.8k lines)
+│   │   │   ├── content.py         # Content generation and retrieval (~22k lines)
+│   │   │   ├── conversations.py   # Conversation history endpoints (~6.7k lines)
+│   │   │   ├── courses.py         # Course management endpoints (~16k lines)
+│   │   │   ├── learner.py         # Individual learner endpoints (~8.9k lines)
+│   │   │   └── learners.py        # Learner collection endpoints (~11.8k lines)
+│   │   ├── pedagogical_tools.py   # Contextualized content generation (NEW)
+│   │   ├── confidence.py          # Confidence tracking and calibration
+│   │   ├── content_generators.py  # Dynamic content generation
+│   │   ├── conversations.py       # Conversation state management
+│   │   ├── cartridge_parser.py    # Common Cartridge import/export
 │   │   ├── config.py              # Configuration management
+│   │   ├── constants.py           # Application constants (NEW)
 │   │   ├── database.py            # Database abstraction layer
 │   │   ├── auth.py                # JWT authentication
 │   │   ├── schemas.py             # Pydantic data models
@@ -68,8 +85,7 @@ adaptive-latin/
 │   │   ├── source_extraction.py   # PDF/external source parsing
 │   │   ├── tutor_agent.py         # Tutor-specific agent logic
 │   │   ├── roman_agent.py         # Roman persona agent
-│   │   ├── stone_inscription.py   # Latin text rendering
-│   │   └── routers/               # Modular API routers
+│   │   └── stone_inscription.py   # Latin text rendering
 │   ├── data/
 │   │   └── learner-models/        # JSON files for learner progress
 │   ├── prompts/                   # AI agent system prompts
@@ -78,17 +94,68 @@ adaptive-latin/
 │   ├── .env.example              # Environment variable template
 │   └── README.md                 # Backend documentation
 │
-├── frontend/                       # React + Vite frontend
+├── frontend/                       # React + Vite frontend (~15k lines total)
 │   ├── src/
-│   │   ├── App.jsx               # Main application component (27k lines)
+│   │   ├── App.jsx               # Main application component (163 lines)
 │   │   ├── api.js                # API client functions
 │   │   ├── components/
 │   │   │   ├── content-types/    # Content display components
+│   │   │   │   ├── AssessmentResult.jsx
+│   │   │   │   ├── DialogueQuestion.jsx
+│   │   │   │   ├── ExampleSet.jsx
+│   │   │   │   ├── FillBlank.jsx
+│   │   │   │   ├── LessonView.jsx
+│   │   │   │   ├── MultipleChoice.jsx
+│   │   │   │   ├── ParadigmTable.jsx
+│   │   │   │   ├── SentenceDiagram.jsx
+│   │   │   │   ├── SimulationViewer.jsx
+│   │   │   │   └── TeachingMoment.jsx  # Interactive misconception correction (NEW)
 │   │   │   ├── course-creation/  # Course creation wizard
-│   │   │   ├── TutorChat.jsx    # Main chat interface
-│   │   │   ├── Syllabus.jsx     # Course syllabus view
-│   │   │   ├── RomanChat.jsx    # Roman persona chat
-│   │   │   └── ...
+│   │   │   │   ├── ActionVerbHelper.jsx
+│   │   │   │   ├── AssessmentBuilder.jsx  # AI-powered assessment generation (NEW)
+│   │   │   │   ├── ComprehensionQuizBuilder.jsx
+│   │   │   │   ├── ConceptEditor.jsx
+│   │   │   │   ├── ConceptPlanner.jsx
+│   │   │   │   ├── CourseCreationWizard.jsx
+│   │   │   │   ├── CourseReview.jsx
+│   │   │   │   ├── CourseSetup.jsx
+│   │   │   │   ├── CurriculumRoadmap.jsx
+│   │   │   │   ├── LearningOutcomeBuilder.jsx
+│   │   │   │   ├── LearningOutcomeGenerator.jsx
+│   │   │   │   ├── ModulePlanner.jsx
+│   │   │   │   ├── OnboardingQuestionBuilder.jsx  # Learner profiling questions (NEW)
+│   │   │   │   ├── ResourceLibrary.jsx
+│   │   │   │   └── TaxonomySelector.jsx
+│   │   │   ├── learner/          # Learner-facing components (NEW)
+│   │   │   │   ├── ComprehensionQuiz.jsx
+│   │   │   │   ├── DiscussionPrompt.jsx
+│   │   │   │   ├── RequiredMaterialsGate.jsx
+│   │   │   │   └── SelfAttestation.jsx
+│   │   │   ├── admin/            # Admin components (NEW)
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── CourseEditor.jsx
+│   │   │   │   └── UserInsights.jsx
+│   │   │   ├── widgets/          # Interactive widgets (NEW)
+│   │   │   │   ├── DeclensionExplorer.jsx
+│   │   │   │   ├── ScenarioWidget.jsx
+│   │   │   │   └── WordOrderManipulator.jsx
+│   │   │   ├── ChatInterface.jsx
+│   │   │   ├── ConceptMasteryModal.jsx
+│   │   │   ├── ConfidenceRating.jsx
+│   │   │   ├── ConfidenceSlider.jsx
+│   │   │   ├── ContentRenderer.jsx
+│   │   │   ├── CourseSelector.jsx
+│   │   │   ├── ExternalResources.jsx
+│   │   │   ├── FloatingTutorButton.jsx
+│   │   │   ├── LandingPage.jsx
+│   │   │   ├── LearnerProfileReport.jsx
+│   │   │   ├── MasteryProgressBar.jsx
+│   │   │   ├── OnboardingFlow.jsx
+│   │   │   ├── ProgressDashboard.jsx
+│   │   │   ├── RomanChat.jsx      # Roman persona chat
+│   │   │   ├── SkeletonLoader.jsx # Loading states (NEW)
+│   │   │   ├── Syllabus.jsx       # Course syllabus view
+│   │   │   └── TutorChat.jsx      # Main chat interface
 │   │   ├── hooks/                # Custom React hooks
 │   │   └── utils/                # Utility functions
 │   ├── package.json              # Node dependencies
@@ -132,24 +199,28 @@ adaptive-latin/
 ## Technology Stack
 
 ### Backend
-- **Framework**: FastAPI 0.109.0 (async, REST API)
+- **Framework**: FastAPI 0.109.0 (async, REST API with modular routers)
 - **AI Model**: Anthropic Claude 3.5 Sonnet (`claude-3-5-sonnet-20241022`)
+- **AI SDK**: anthropic >= 0.71.0
 - **Language**: Python 3.11+
 - **Data Storage**:
   - JSON files (learner models, courses)
   - SQLite (content cache, conversations)
 - **Authentication**: JWT with OAuth2 bearer tokens
-- **Validation**: Pydantic 2.5.3+
-- **CORS**: FastAPI-CORS
-- **Rate Limiting**: SlowAPI
+- **Validation**: Pydantic >= 2.5.3
+- **CORS**: FastAPI-CORS 0.0.6
+- **Rate Limiting**: SlowAPI 0.1.9
 - **PDF Processing**: pdfplumber 0.11.0
-- **Server**: Uvicorn with standard features
+- **HTTP Requests**: requests 2.31.0
+- **Server**: Uvicorn[standard] 0.27.0
 
 ### Frontend
 - **Framework**: React 18.3.1
 - **Build Tool**: Vite 6.0.7
+- **Router**: react-router-dom 7.9.6
 - **Styling**: CSS (component-scoped)
 - **Markdown**: react-markdown 9.0.1
+- **Animations**: canvas-confetti 1.9.4 (celebration effects)
 - **HTTP Client**: Fetch API (wrapped in api.js)
 
 ### Development Tools
@@ -247,9 +318,66 @@ concept-XXX/
 - Minimum 3 assessments completed
 - Consistency across assessment types
 
-### 4. Assessment System
+### 4. Modular Router Architecture (`backend/app/routers/`)
 
-**Three Modalities**:
+**Purpose**: Organized, maintainable API structure with separation of concerns
+
+**Router Files**:
+- `chat.py` - Chat and conversation endpoints
+  - `/chat` - Main tutor conversation
+  - `/tutor/start` - Initialize tutor session
+  - `/tutor/continue` - Continue tutor conversation
+  - `/roman/start` - Roman persona chat
+  - `/scenarios` - List available scenarios
+
+- `concepts.py` - Concept management
+  - `/concepts` - List all concepts
+  - `/concept/{concept_id}` - Get concept details
+
+- `content.py` - Content generation and retrieval
+  - `/generate-question` - AI question generation
+  - `/generate-scenario` - AI scenario generation
+  - Content caching integration
+
+- `conversations.py` - Conversation history
+  - `/conversations/recent` - Get recent conversations
+  - `/conversations/struggle-detection` - Detect struggle patterns
+
+- `courses.py` - Course management
+  - `/courses` - Create/list courses
+  - `/courses/{course_id}` - Get/update course
+  - `/courses/{course_id}/import-cc` - Import Common Cartridge
+
+- `learner.py` - Individual learner operations
+  - `/start` - Initialize learner
+  - `/progress/{learner_id}` - Get progress
+  - `/mastery/{learner_id}/{concept_id}` - Check mastery
+
+- `learners.py` - Learner collection operations
+  - `/learners` - List all learners
+  - `/learners/batch` - Batch operations
+
+**Benefits**:
+- Clear separation of concerns
+- Easier testing and maintenance
+- Better code organization
+- Independent development of features
+
+### 5. Pedagogical Tools (`backend/app/pedagogical_tools.py`)
+
+**Purpose**: Domain-agnostic AI-powered content personalization
+
+**Key Functions**:
+- `generate_contextualized_example()` - Create examples tailored to learner interests
+- `generate_analogy()` - Build conceptual bridges using familiar domains
+- `generate_scaffolded_question()` - Adaptive difficulty questions
+- `detect_misconception()` - Identify common misunderstandings
+
+**Integration**: Used by tutor agent to personalize learning experiences
+
+### 6. Assessment System
+
+**Four Modalities**:
 
 1. **Dialogue** (`dialogue-prompts.json`): Conversational Socratic questions
    - AI grades free-text responses using rubrics
@@ -263,7 +391,12 @@ concept-XXX/
    - Translation, problem-solving, case studies
    - Clear correct/incorrect answers
 
-### 5. Progression Logic
+4. **Teaching Moment** (NEW): Interactive misconception correction
+   - Real-time feedback on specific errors
+   - Guided correction with hints
+   - Prevents reinforcement of incorrect understanding
+
+### 7. Progression Logic
 
 **Decision Rules**:
 ```
@@ -276,23 +409,44 @@ After Each Assessment:
    └─ REGRESS to prerequisite or provide remediation
 ```
 
-### 6. Course Creation System
+### 8. Course Creation System
 
-**Components**:
+**Wizard Components** (`frontend/src/components/course-creation/`):
 - `CourseSetup.jsx` - Step 1: Basic course info
 - `ModulePlanner.jsx` - Step 2: Outline modules
-- `LearningOutcomeBuilder.jsx` - Step 3: Define objectives
-- `ComprehensionQuizBuilder.jsx` - Step 4: Create assessments
+- `ConceptPlanner.jsx` - Plan individual concepts
+- `LearningOutcomeBuilder.jsx` - Step 3: Define learning objectives
+- `OnboardingQuestionBuilder.jsx` - Create learner profiling questions (NEW)
+- `AssessmentBuilder.jsx` - AI-powered assessment generation with Bloom's taxonomy (NEW)
+- `ComprehensionQuizBuilder.jsx` - Step 4: Create comprehension assessments
+- `ResourceLibrary.jsx` - Manage course resources
 - `CurriculumRoadmap.jsx` - Visualization of course structure
+- `CourseReview.jsx` - Final review before publishing
 
-**Backend Endpoints**:
+**Helper Components**:
+- `ActionVerbHelper.jsx` - Bloom's taxonomy action verb suggestions
+- `TaxonomySelector.jsx` - Learning objective taxonomy selection
+- `LearningOutcomeGenerator.jsx` - AI-assisted outcome generation
+- `ConceptEditor.jsx` - Edit concept details
+
+**Backend Endpoints** (`backend/app/routers/courses.py`):
 - `POST /courses` - Create new course
+- `GET /courses` - List all courses
 - `GET /courses/{course_id}` - Get course details
 - `PUT /courses/{course_id}` - Update course
+- `DELETE /courses/{course_id}` - Delete course
 - `POST /courses/{course_id}/modules` - Add module
 - `POST /courses/{course_id}/import-cc` - Import Common Cartridge
+- `GET /courses/{course_id}/export` - Export course
 
-### 7. Content Caching (`backend/app/content_cache.py`)
+**Features**:
+- AI-powered assessment generation
+- Bloom's taxonomy integration
+- Quality Matters standards alignment
+- PDF content extraction for source materials
+- Common Cartridge import/export
+
+### 9. Content Caching (`backend/app/content_cache.py`)
 
 **Purpose**: Reduce AI generation costs by caching generated content
 
@@ -616,10 +770,19 @@ const result = await apiFunction(param);
 
 ### 3. Adding a New API Endpoint
 
-**File**: `backend/app/main.py` or create new router in `backend/app/routers/`
+**Recommended Approach**: Add to appropriate router in `backend/app/routers/`
 
 **Steps**:
-1. Define Pydantic models:
+1. Choose the appropriate router file (or create new one):
+   - `chat.py` - Conversation-related endpoints
+   - `concepts.py` - Concept management
+   - `content.py` - Content generation
+   - `courses.py` - Course management
+   - `learner.py` - Individual learner operations
+   - `learners.py` - Learner collection operations
+   - `conversations.py` - Conversation history
+
+2. Define Pydantic models in `backend/app/schemas.py`:
    ```python
    class RequestModel(BaseModel):
        field1: str
@@ -629,18 +792,33 @@ const result = await apiFunction(param);
        result: str
    ```
 
-2. Create endpoint:
+3. Create endpoint in the router:
    ```python
-   @app.post("/new-endpoint", response_model=ResponseModel)
+   from fastapi import APIRouter, HTTPException
+   from ..schemas import RequestModel, ResponseModel
+
+   router = APIRouter()
+
+   @router.post("/new-endpoint", response_model=ResponseModel)
    async def new_endpoint(request: RequestModel):
        """Endpoint description"""
-       # Process request
-       return ResponseModel(result="success")
+       try:
+           # Process request
+           return ResponseModel(result="success")
+       except Exception as e:
+           logger.error(f"Error in new_endpoint: {e}")
+           raise HTTPException(status_code=500, detail=str(e))
    ```
 
-3. Test in `/docs`
+4. Register router in `backend/app/main.py` (if creating new router):
+   ```python
+   from app.routers import new_router
+   app.include_router(new_router.router, prefix="/api", tags=["new"])
+   ```
 
-4. Update frontend API client (`frontend/src/api.js`)
+5. Test in `/docs`
+
+6. Update frontend API client (`frontend/src/api.js`)
 
 ### 4. Adding a New Frontend Component
 
@@ -736,28 +914,73 @@ SELECT * FROM questions LIMIT 10;
 .quit
 ```
 
+### 9. Implementing a Teaching Moment (NEW)
+
+**Purpose**: Provide immediate, interactive feedback for misconceptions
+
+**Steps**:
+1. Detect misconception in learner response (in tutor agent or assessment grading)
+
+2. Return Teaching Moment content type from backend:
+   ```python
+   {
+       "content_type": "teaching-moment",
+       "misconception": "Using nominative case for direct object",
+       "correct_concept": "Direct objects require accusative case",
+       "hint": "Look at the ending of 'puellam' - does it show accusative?",
+       "example": "Poeta puellam amat (The poet loves the girl)",
+       "explanation": "In Latin, case endings show grammatical function..."
+   }
+   ```
+
+3. Frontend `TeachingMoment.jsx` component will:
+   - Display the misconception clearly
+   - Show progressive hints
+   - Provide worked example
+   - Allow learner to try again with guidance
+
+**Best Practices**:
+- Use for immediate correction (don't let misconceptions persist)
+- Provide scaffolded hints (start general, get specific)
+- Include a correct example for reference
+- Track whether misconception is resolved
+
 ---
 
 ## Key Files Reference
 
 ### Critical Files (Never Modify Without Understanding)
 
-1. **`backend/app/agent.py`** (50k lines)
+1. **`backend/app/agent.py`**
    - Core AI agent orchestration
    - Tool definitions for Claude
    - Conversation handling
 
-2. **`backend/app/main.py`** (187k lines)
-   - FastAPI application setup
-   - All REST endpoints
-   - CORS and middleware configuration
-
-3. **`backend/app/tools.py`** (53k lines)
+2. **`backend/app/tools.py`**
    - Resource loading functions
    - Learner model management
    - Mastery calculation logic
 
-4. **`frontend/src/App.jsx`** (27k lines)
+3. **`backend/app/main.py`**
+   - FastAPI application setup and initialization
+   - Middleware configuration (CORS, rate limiting)
+   - Router registration
+
+4. **`backend/app/routers/`** (NEW - Modular architecture)
+   - `chat.py` - All conversation endpoints (~6.5k lines)
+   - `content.py` - Content generation (~22k lines)
+   - `courses.py` - Course management (~16k lines)
+   - `learner.py` - Learner operations (~8.9k lines)
+   - `learners.py` - Learner collection (~11.8k lines)
+   - `conversations.py` - Conversation history (~6.7k lines)
+   - `concepts.py` - Concept management (~1.8k lines)
+
+5. **`backend/app/pedagogical_tools.py`** (NEW)
+   - AI-powered content personalization
+   - Contextualized example generation
+   - Misconception detection
+
+6. **`frontend/src/App.jsx`** (163 lines)
    - Main application component
    - Route handling
    - State management
@@ -927,6 +1150,21 @@ Deployment:
 ---
 
 ## Version History
+
+**v1.1.0** (2025-11-19) - Major architecture and feature updates
+- Updated to reflect modular router-based backend architecture
+- Added documentation for pedagogical_tools.py and constants.py
+- Documented Teaching Moment assessment type
+- Added comprehensive frontend component list (50+ components)
+- Corrected line counts (previous estimates were inflated)
+- Added new course creation components:
+  - OnboardingQuestionBuilder
+  - AssessmentBuilder with AI generation
+  - Enhanced taxonomy integration
+- Updated dependency versions (anthropic >= 0.71.0, react-router-dom 7.9.6)
+- Added admin components, learner components, and interactive widgets
+- Expanded router endpoint documentation
+- Added information about canvas-confetti for celebration effects
 
 **v1.0.0** (2025-11-17) - Initial CLAUDE.md creation
 - Comprehensive codebase documentation
