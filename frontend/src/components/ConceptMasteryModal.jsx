@@ -35,11 +35,11 @@ function ConceptMasteryModal({ conceptId, masteryScore, onContinue }) {
   }, [])
 
   return (
-    <div className="mastery-modal-overlay">
+    <div className="mastery-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="mastery-title">
       <div className="mastery-modal">
         <div className="mastery-celebration">
-          <div className="mastery-icon"></div>
-          <h1 className="mastery-title">Concept Mastered!</h1>
+          <div className="mastery-icon" aria-hidden="true"></div>
+          <h1 className="mastery-title" id="mastery-title">Concept Mastered!</h1>
           <p className="mastery-subtitle">
             You've demonstrated mastery of Concept {conceptNumber}
           </p>

@@ -55,8 +55,8 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
         <div className="content-placeholder" role="status" aria-live="polite">
           <SkeletonLoader type="question" />
           <div className="loading-message" style={{ marginTop: '2rem' }}>
-            <span className="loading-icon">{loadingMessages[loadingMessageIndex].icon}</span>
-            <p className="loading-text">
+            <span className="loading-icon" aria-hidden="true">{loadingMessages[loadingMessageIndex].icon}</span>
+            <p className="loading-text" aria-live="polite">
               {loadingMessages[loadingMessageIndex].text}
               <span className="loading-dots">{dots}</span>
             </p>
@@ -174,7 +174,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
             <div className="text-body">
               <ReactMarkdown>{content.html || content.text || ''}</ReactMarkdown>
             </div>
-            <button onClick={onNext} className="continue-button">
+            <button onClick={onNext} className="continue-button" aria-label="Continue to next section">
               Continue
             </button>
           </div>
@@ -199,7 +199,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
               </ul>
             </div>
 
-            <button onClick={() => window.location.reload()} className="continue-button">
+            <button onClick={() => window.location.reload()} className="continue-button" aria-label="Return to dashboard">
               Return to Dashboard
             </button>
           </div>
@@ -214,7 +214,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
               explanation={content.explanation}
               highlightCase={content.highlightCase}
             />
-            <button onClick={onNext} className="continue-button">
+            <button onClick={onNext} className="continue-button" aria-label="Continue to next exercise">
               Continue
             </button>
           </div>
@@ -229,7 +229,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
               explanation={content.explanation}
               correctOrders={content.correctOrders}
             />
-            <button onClick={onNext} className="continue-button">
+            <button onClick={onNext} className="continue-button" aria-label="Continue to next exercise">
               Continue
             </button>
           </div>
@@ -263,7 +263,7 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
         return (
           <div className="error-content">
             <p>Unknown content type: {content.type}</p>
-            <button onClick={onNext} className="continue-button">
+            <button onClick={onNext} className="continue-button" aria-label="Skip unknown content">
               Continue
             </button>
           </div>

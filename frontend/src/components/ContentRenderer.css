@@ -303,3 +303,32 @@
 .debug-section em {
   color: #a0aec0;
 }
+
+@media (max-width: 640px) {
+  .content-renderer {
+    padding: var(--space-md);
+    min-height: auto;
+  }
+
+  .content-renderer h2 {
+    font-size: 1.5rem;
+  }
+
+  .continue-button,
+  .submit-button {
+    width: 100%;
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+
+  .cumulative-badge {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .badge-icon {
+    font-size: 1.25rem;
+  }
+}
