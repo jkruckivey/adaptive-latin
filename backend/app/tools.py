@@ -814,6 +814,348 @@ def list_all_modules(course_id: str = None) -> List[Dict[str, Any]]:
         return []
 
 
+def list_all_courses() -> List[Dict[str, Any]]:
+    """
+    Get a list of all available courses from both built-in and user-created courses.
+
+    Returns:
+        List of course metadata dictionaries with structure:
+        [
+            {
+                "course_id": "latin-grammar",
+                "title": "Latin Grammar Fundamentals",
+                "domain": "language",
+                "description": "...",
+                ...
+            },
+            ...
+        ]
+    """
+    try:
+        courses = []
+
+        # Scan built-in courses in RESOURCE_BANK_DIR
+        if config.RESOURCE_BANK_DIR.exists():
+            for item in config.RESOURCE_BANK_DIR.iterdir():
+                if item.is_dir() and item.name != "user-courses":
+                    metadata_file = item / "metadata.json"
+                    if metadata_file.exists():
+                        try:
+                            course_metadata = load_course_metadata(item.name)
+                            if course_metadata:
+                                courses.append(course_metadata)
+                        except Exception as e:
+                            logger.warning(f"Could not load metadata for course {item.name}: {e}")
+
+        # Scan user-created courses in USER_COURSES_DIR
+        if config.USER_COURSES_DIR.exists():
+            for item in config.USER_COURSES_DIR.iterdir():
+                if item.is_dir():
+                    metadata_file = item / "metadata.json"
+                    if metadata_file.exists():
+                        try:
+                            course_metadata = load_course_metadata(item.name)
+                            if course_metadata:
+                                courses.append(course_metadata)
+                        except Exception as e:
+                            logger.warning(f"Could not load metadata for course {item.name}: {e}")
+
+        logger.info(f"Found {len(courses)} total courses")
+        return courses
+
+    except Exception as e:
+        logger.error(f"Error listing courses: {e}")
+        return []
+
+
+def load_course_metadata(course_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Load metadata for a specific course.
+
+    Args:
+        course_id: Course identifier
+
+    Returns:
+        Course metadata dictionary, or None if not found
+
+    Raises:
+        FileNotFoundError: If course metadata doesn't exist
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        metadata_file = course_dir / "metadata.json"
+
+        if not metadata_file.exists():
+            logger.warning(f"Course metadata not found: {metadata_file}")
+            return None
+
+        with open(metadata_file, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        # Ensure course_id is set
+        if "course_id" not in metadata:
+            metadata["course_id"] = course_id
+
+        logger.info(f"Loaded metadata for course: {course_id}")
+        return metadata
+
+    except Exception as e:
+        logger.error(f"Error loading course metadata for {course_id}: {e}")
+        return None
+
+
+def delete_course(course_id: str) -> bool:
+    """
+    Delete a course and all its content.
+
+    Args:
+        course_id: Course identifier
+
+    Returns:
+        True if successful, False if course not found
+    """
+    try:
+        import shutil
+        course_dir = config.get_course_dir(course_id)
+
+        if not course_dir.exists():
+            logger.warning(f"Course not found for deletion: {course_id}")
+            return False
+
+        shutil.rmtree(course_dir)
+        logger.info(f"Deleted course: {course_id}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error deleting course {course_id}: {e}")
+        return False
+
+
+def import_course_data(export_data: Dict[str, Any], new_course_id: Optional[str] = None, overwrite: bool = False) -> str:
+    """
+    Import a course from exported JSON data.
+
+    Args:
+        export_data: Course data dictionary
+        new_course_id: Optional new course ID (uses original if not provided)
+        overwrite: Whether to overwrite existing course
+
+    Returns:
+        The course_id of the imported course
+
+    Raises:
+        ValueError: If course exists and overwrite is False
+    """
+    try:
+        from datetime import datetime
+
+        course_id = new_course_id or export_data.get("course_id")
+        if not course_id:
+            raise ValueError("Course ID must be provided")
+
+        course_dir = config.get_course_dir(course_id)
+
+        # Check if exists
+        if course_dir.exists() and not overwrite:
+            raise ValueError(f"Course '{course_id}' already exists. Use overwrite=True to replace.")
+
+        # Create course directory
+        course_dir.mkdir(parents=True, exist_ok=True)
+
+        # Update timestamps
+        now = datetime.now().isoformat()
+        export_data["imported_at"] = now
+        export_data["updated_at"] = now
+
+        # Save metadata
+        metadata_file = course_dir / "metadata.json"
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(export_data, f, indent=2)
+
+        logger.info(f"Imported course: {course_id}")
+        return course_id
+
+    except Exception as e:
+        logger.error(f"Error importing course: {e}")
+        raise
+
+
+def add_course_source(course_id: str, source_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Add a source to a course.
+
+    Args:
+        course_id: Course identifier
+        source_data: Source information
+
+    Returns:
+        The created source with generated ID
+
+    Raises:
+        FileNotFoundError: If course doesn't exist
+    """
+    try:
+        import uuid
+        course_dir = config.get_course_dir(course_id)
+
+        if not course_dir.exists():
+            raise FileNotFoundError(f"Course not found: {course_id}")
+
+        # Generate source ID if not provided
+        source_id = source_data.get("id") or str(uuid.uuid4())
+        source_data["id"] = source_id
+
+        # Load or create sources file
+        sources_file = course_dir / "sources.json"
+        if sources_file.exists():
+            with open(sources_file, "r", encoding="utf-8") as f:
+                sources = json.load(f)
+        else:
+            sources = []
+
+        # Add new source
+        sources.append(source_data)
+
+        # Save
+        with open(sources_file, "w", encoding="utf-8") as f:
+            json.dump(sources, f, indent=2)
+
+        logger.info(f"Added source {source_id} to course {course_id}")
+        return source_data
+
+    except Exception as e:
+        logger.error(f"Error adding source to course: {e}")
+        raise
+
+
+def add_concept_source(course_id: str, concept_id: str, source_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Add a source to a concept.
+
+    Args:
+        course_id: Course identifier
+        concept_id: Concept identifier
+        source_data: Source information
+
+    Returns:
+        The created source with generated ID
+
+    Raises:
+        FileNotFoundError: If course or concept doesn't exist
+    """
+    try:
+        import uuid
+        concept_dir = config.get_concept_dir(concept_id, course_id)
+
+        if not concept_dir.exists():
+            raise FileNotFoundError(f"Concept not found: {concept_id} in course {course_id}")
+
+        # Generate source ID if not provided
+        source_id = source_data.get("id") or str(uuid.uuid4())
+        source_data["id"] = source_id
+
+        # Load or create sources file
+        sources_file = concept_dir / "sources.json"
+        if sources_file.exists():
+            with open(sources_file, "r", encoding="utf-8") as f:
+                sources = json.load(f)
+        else:
+            sources = []
+
+        # Add new source
+        sources.append(source_data)
+
+        # Save
+        with open(sources_file, "w", encoding="utf-8") as f:
+            json.dump(sources, f, indent=2)
+
+        logger.info(f"Added source {source_id} to concept {concept_id}")
+        return source_data
+
+    except Exception as e:
+        logger.error(f"Error adding source to concept: {e}")
+        raise
+
+
+def delete_source_from_course(course_id: str, source_id: str) -> bool:
+    """
+    Delete a source from a course.
+
+    Args:
+        course_id: Course identifier
+        source_id: Source identifier
+
+    Returns:
+        True if successful, False if source not found
+    """
+    try:
+        course_dir = config.get_course_dir(course_id)
+        sources_file = course_dir / "sources.json"
+
+        if not sources_file.exists():
+            return False
+
+        with open(sources_file, "r", encoding="utf-8") as f:
+            sources = json.load(f)
+
+        # Filter out the source
+        new_sources = [s for s in sources if s.get("id") != source_id]
+
+        if len(new_sources) == len(sources):
+            return False  # Source not found
+
+        # Save
+        with open(sources_file, "w", encoding="utf-8") as f:
+            json.dump(new_sources, f, indent=2)
+
+        logger.info(f"Deleted source {source_id} from course {course_id}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error deleting source from course: {e}")
+        return False
+
+
+def delete_source_from_concept(course_id: str, concept_id: str, source_id: str) -> bool:
+    """
+    Delete a source from a concept.
+
+    Args:
+        course_id: Course identifier
+        concept_id: Concept identifier
+        source_id: Source identifier
+
+    Returns:
+        True if successful, False if source not found
+    """
+    try:
+        concept_dir = config.get_concept_dir(concept_id, course_id)
+        sources_file = concept_dir / "sources.json"
+
+        if not sources_file.exists():
+            return False
+
+        with open(sources_file, "r", encoding="utf-8") as f:
+            sources = json.load(f)
+
+        # Filter out the source
+        new_sources = [s for s in sources if s.get("id") != source_id]
+
+        if len(new_sources) == len(sources):
+            return False  # Source not found
+
+        # Save
+        with open(sources_file, "w", encoding="utf-8") as f:
+            json.dump(new_sources, f, indent=2)
+
+        logger.info(f"Deleted source {source_id} from concept {concept_id}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error deleting source from concept: {e}")
+        return False
+
+
 def load_external_resources(concept_id: str = None, learner_profile: Dict[str, Any] = None) -> List[Dict[str, Any]]:
     """
     Load curated external resources (videos, articles) for a concept.
