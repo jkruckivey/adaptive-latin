@@ -4,6 +4,7 @@ from typing import Optional, List, Dict, Any
 import logging
 import json
 import io
+from anthropic import Anthropic
 
 from .. import config
 from ..schemas import (
@@ -38,6 +39,9 @@ from ..source_extraction import extract_text_from_url, extract_text_from_pdf
 # Initialize router
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+# Initialize Anthropic client for AI generation
+client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
 @router.get("/courses", response_model=CoursesListResponse)
 async def list_courses_endpoint():
@@ -493,4 +497,222 @@ async def generate_sim(request: Request, body: dict):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate simulation: {str(e)}"
+        )
+
+# ========================================
+# Additional AI Generation Endpoints
+# (Added to match frontend API expectations)
+# ========================================
+
+@router.post("/generate-learning-outcomes")
+async def generate_learning_outcomes_endpoint(request: Request, body: dict):
+    """
+    Generate learning outcomes with AI based on description and taxonomy.
+    
+    Expects:
+    - description: Course/module/concept description
+    - taxonomy: Taxonomy to use ('blooms', 'finks', 'qm')
+    - level: Level of outcomes ('course', 'module', 'concept')
+    - count: Number of outcomes to generate
+    - existing_outcomes: Optional list of existing outcomes to avoid duplication
+    """
+    try:
+        description = body.get("description")
+        taxonomy = body.get("taxonomy", "blooms")
+        level = body.get("level", "course")
+        count = body.get("count", 5)
+        existing_outcomes = body.get("existing_outcomes")
+        
+        if not description:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Description is required"
+            )
+        
+        outcomes = generate_learning_outcomes(
+            description=description,
+            taxonomy=taxonomy,
+            level=level,
+            count=count,
+            existing_outcomes=existing_outcomes
+        )
+        
+        return {
+            "success": True,
+            "outcomes": outcomes
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating learning outcomes: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate learning outcomes: {str(e)}"
+        )
+
+
+@router.post("/generate-module-learning-outcomes")
+async def generate_module_outcomes_endpoint(request: Request, body: dict):
+    """
+    Generate module learning outcomes with AI.
+    
+    Expects:
+    - module_title: Title of the module
+    - course_title: Title of the parent course
+    - course_learning_outcomes: List of course-level outcomes
+    - domain: Subject domain
+    - taxonomy: Taxonomy to use (default: 'blooms')
+    """
+    try:
+        module_title = body.get("module_title")
+        course_title = body.get("course_title")
+        course_learning_outcomes = body.get("course_learning_outcomes", [])
+        domain = body.get("domain", "general")
+        taxonomy = body.get("taxonomy", "blooms")
+        
+        if not module_title or not course_title:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="module_title and course_title are required"
+            )
+        
+        outcomes = generate_module_learning_outcomes(
+            module_title=module_title,
+            course_title=course_title,
+            course_learning_outcomes=course_learning_outcomes,
+            domain=domain,
+            taxonomy=taxonomy
+        )
+        
+        return {
+            "success": True,
+            "outcomes": outcomes
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating module learning outcomes: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate module outcomes: {str(e)}"
+        )
+
+
+@router.post("/generate-concept-learning-objectives")
+async def generate_concept_objectives_endpoint(request: Request, body: dict):
+    """
+    Generate concept learning objectives with AI.
+    
+    Expects:
+    - concept_title: Title of the concept
+    - module_title: Title of the parent module
+    - module_learning_outcomes: List of module-level outcomes
+    - course_title: Title of the course
+    - domain: Subject domain
+    - taxonomy: Taxonomy to use (default: 'blooms')
+    """
+    try:
+        concept_title = body.get("concept_title")
+        module_title = body.get("module_title")
+        module_learning_outcomes = body.get("module_learning_outcomes", [])
+        course_title = body.get("course_title")
+        domain = body.get("domain", "general")
+        taxonomy = body.get("taxonomy", "blooms")
+        
+        if not concept_title or not module_title or not course_title:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="concept_title, module_title, and course_title are required"
+            )
+        
+        objectives = generate_concept_learning_objectives(
+            concept_title=concept_title,
+            module_title=module_title,
+            module_learning_outcomes=module_learning_outcomes,
+            course_title=course_title,
+            domain=domain,
+            taxonomy=taxonomy
+        )
+        
+        return {
+            "success": True,
+            "objectives": objectives
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating concept learning objectives: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate concept objectives: {str(e)}"
+        )
+
+
+@router.post("/generate-assessments")
+async def generate_assessments_endpoint(request: Request, body: dict):
+    """
+    Generate assessments based on a learning outcome.
+    
+    Expects:
+    - learning_outcome: The learning outcome to create assessments for
+    - taxonomy: Taxonomy used (default: 'blooms')
+    - domain: Subject domain (default: 'general')
+    - num_assessments: Number of assessments to generate (default: 3)
+    """
+    try:
+        learning_outcome = body.get("learning_outcome")
+        taxonomy = body.get("taxonomy", "blooms")
+        domain = body.get("domain", "general")
+        num_assessments = body.get("num_assessments", 3)
+        
+        if not learning_outcome:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="learning_outcome is required"
+            )
+        
+        # Generate assessments using AI
+        prompt = f"""Generate {num_assessments} assessment questions for this learning outcome:
+
+Learning Outcome: {learning_outcome}
+Domain: {domain}
+Taxonomy: {taxonomy}
+
+Create varied assessment types (multiple choice, short answer, scenario-based) that effectively measure achievement of this outcome.
+
+Return a JSON array where each assessment has:
+- "type": assessment type (e.g., "multiple-choice", "short-answer", "scenario")
+- "question": the question text
+- "options": array of options (for multiple choice)
+- "correct_answer": the correct answer or answer key
+- "explanation": why this assesses the outcome
+
+Return ONLY the JSON array."""
+
+        response = client.messages.create(
+            model=config.ANTHROPIC_MODEL,
+            max_tokens=2000,
+            temperature=0.7,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        response_text = response.content[0].text.strip()
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+        assessments = json.loads(response_text)
+        
+        return {
+            "success": True,
+            "assessments": assessments
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating assessments: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate assessments: {str(e)}"
         )
