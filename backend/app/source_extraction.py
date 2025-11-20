@@ -409,3 +409,96 @@ def load_full_source_content(url: str, source_type: str) -> Dict[str, Any]:
             "error": str(e),
             "content_type": source_type
         }
+
+
+def extract_text_from_url(url: str) -> str:
+    """
+    Extract text content from a URL (website or PDF).
+
+    Args:
+        url: URL to extract text from
+
+    Returns:
+        Extracted text content as string
+
+    Raises:
+        Exception: If extraction fails
+    """
+    try:
+        source_type = detect_source_type(url)
+
+        if source_type == 'pdf':
+            # For PDF URLs, use load_full_source_content
+            result = load_full_source_content(url, 'pdf')
+            if result.get('success'):
+                return result.get('content', '')
+            else:
+                raise Exception(result.get('error', 'Failed to extract PDF content'))
+
+        elif source_type == 'website':
+            # For websites, use load_full_source_content
+            result = load_full_source_content(url, 'website')
+            if result.get('success'):
+                return result.get('content', '')
+            else:
+                raise Exception(result.get('error', 'Failed to extract website content'))
+
+        else:
+            raise Exception(f"Unsupported source type: {source_type}")
+
+    except Exception as e:
+        logger.error(f"Error extracting text from URL {url}: {e}")
+        raise
+
+
+def extract_text_from_pdf(file_path: str) -> str:
+    """
+    Extract text content from a local PDF file.
+
+    Args:
+        file_path: Path to PDF file
+
+    Returns:
+        Extracted text content as string
+
+    Raises:
+        Exception: If extraction fails
+    """
+    try:
+        import pdfplumber
+        from pathlib import Path
+
+        pdf_file = Path(file_path)
+        if not pdf_file.exists():
+            raise FileNotFoundError(f"PDF file not found: {file_path}")
+
+        text_content = []
+        page_count = 0
+
+        with pdfplumber.open(pdf_file) as pdf:
+            page_count = len(pdf.pages)
+
+            # Extract text from each page
+            for page_num, page in enumerate(pdf.pages, 1):
+                page_text = page.extract_text()
+                if page_text:
+                    text_content.append(f"--- Page {page_num} ---\n{page_text}")
+                else:
+                    logger.debug(f"No text extracted from page {page_num}")
+
+                # Limit to first 100 pages to avoid memory issues
+                if page_num >= 100:
+                    text_content.append(f"\n... (PDF has {page_count} total pages, showing first 100)")
+                    break
+
+        full_text = "\n\n".join(text_content)
+
+        if not full_text.strip():
+            raise Exception("Could not extract text from PDF. The PDF might be image-based or protected.")
+
+        logger.info(f"Extracted text from PDF: {page_count} pages, {len(full_text)} characters")
+        return full_text
+
+    except Exception as e:
+        logger.error(f"Error extracting text from PDF {file_path}: {e}")
+        raise

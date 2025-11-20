@@ -893,63 +893,61 @@ Concept objectives should be concrete and specific."""
         return f"Use {taxonomy} taxonomy principles for learning outcome design."
 
 
-def generate_simulation_content(
-    simulation_type: str,
-    course_format: str,
-    data: Dict[str, Any]
-) -> Dict[str, Any]:
+def generate_simulation_content(concept: str, context: str = None) -> Dict[str, Any]:
     """
-    Generate interactive simulation content.
-    
+    Generate interactive simulation content for a concept.
+
     Args:
-        simulation_type: Type of simulation to generate
-        course_format: Format/domain of the course
-        data: Simulation parameters and context
-        
+        concept: The concept to create a simulation for
+        context: Optional additional context
+
     Returns:
-        Simulation content dictionary
+        Simulation content dictionary with title, description, scenario, steps, and learning points
     """
     try:
-        prompt = f"""Generate an interactive {simulation_type} simulation for a {course_format} course.
+        prompt = f"""Generate a realistic simulation scenario for teaching "{concept}".
 
-Context: {json.dumps(data, indent=2)}
+Context: {context if context else "General application"}
 
-Create an engaging simulation that:
-- Presents a realistic scenario
-- Requires learner decision-making
-- Provides meaningful feedback
-- Teaches through doing
+The simulation should:
+- Present a realistic, authentic scenario where this concept is used
+- Include specific steps or stages the learner will work through
+- Be engaging and relevant to real-world applications
+- Allow for practice and application of the concept
 
-Return a JSON object with:
-- "scenario": the scenario description
-- "options": array of choices
-- "feedback": object mapping choices to feedback
-- "learning_point": key takeaway
-
-Return ONLY the JSON object."""
+Return ONLY a JSON object with this structure:
+{{
+  "title": "Simulation title",
+  "description": "Brief description of the scenario",
+  "scenario": "Detailed scenario setup",
+  "steps": [
+    {{"step": 1, "description": "What happens in step 1", "task": "What learner must do"}},
+    {{"step": 2, "description": "What happens in step 2", "task": "What learner must do"}}
+  ],
+  "learning_points": ["Key takeaway 1", "Key takeaway 2"]
+}}"""
 
         response = client.messages.create(
             model=config.ANTHROPIC_MODEL,
-            max_tokens=2000,
-            temperature=0.8,
+            max_tokens=1500,
             messages=[{"role": "user", "content": prompt}]
         )
-        
-        response_text = response.content[0].text.strip()
-        if "```json" in response_text:
-            response_text = response_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in response_text:
-            response_text = response_text.split("```")[1].split("```")[0].strip()
-            
-        simulation = json.loads(response_text)
-        logger.info(f"Generated {simulation_type} simulation")
+
+        content = response.content[0].text.strip()
+        simulation = json.loads(content)
+
+        logger.info(f"Generated simulation for {concept}")
         return simulation
-        
+
     except Exception as e:
         logger.error(f"Error generating simulation: {e}")
         return {
-            "scenario": "Error generating simulation",
-            "options": [],
-            "feedback": {},
-            "learning_point": "Please try again"
+            "title": f"{concept} Simulation",
+            "description": f"Practice applying {concept} in a realistic scenario",
+            "scenario": f"You'll work through a scenario that demonstrates {concept}.",
+            "steps": [
+                {"step": 1, "description": f"Introduction to {concept}", "task": "Review the concept"},
+                {"step": 2, "description": "Apply the concept", "task": "Complete the exercise"}
+            ],
+            "learning_points": [f"Understand {concept}", f"Apply {concept}"]
         }
