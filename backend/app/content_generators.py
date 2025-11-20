@@ -5,9 +5,12 @@ Extracted from agent.py to improve maintainability and testability.
 Each function builds a specific prompt for Claude based on the learning stage.
 """
 
+import json
 import random
 import logging
 from typing import Dict, Any, Optional, List
+from anthropic import Anthropic
+from .config import config
 from .constants import (
     PREVIEW_READ_TIME_SECONDS,
     PREVIEW_CONTENT_TYPES,
@@ -15,6 +18,9 @@ from .constants import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Initialize Anthropic client for AI generation functions
+client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
 
 def sanitize_user_input(text: str, max_length: int = 1000) -> str:
@@ -582,182 +588,323 @@ def generate_hint_request(
         )
 
 
-# AI-Powered Course Creation Functions
+# ========================================
+# AI-Powered Learning Outcome Generation
+# ========================================
 
-def generate_learning_outcomes(topic: str, level: str = "beginner", count: int = 5) -> List[str]:
+def generate_learning_outcomes(
+    description: str,
+    taxonomy: str = 'blooms',
+    level: str = 'course',
+    count: int = 5,
+    existing_outcomes: Optional[List[str]] = None
+) -> List[Dict[str, Any]]:
     """
-    Use Claude AI to generate learning outcomes for a course.
-
+    Generate learning outcomes using AI based on course description.
+    
     Args:
-        topic: The course topic
-        level: Difficulty level (beginner, intermediate, advanced)
+        description: Course/module description or topic
+        taxonomy: Taxonomy to use ('blooms', 'finks', 'qm')
+        level: Level of outcomes ('course', 'module', 'concept')
         count: Number of outcomes to generate
-
+        existing_outcomes: Existing outcomes to avoid duplication
+        
     Returns:
-        List of learning outcome strings
+        List of outcome dictionaries with text and metadata
     """
     try:
-        from anthropic import Anthropic
-        from .config import config
+        # Build prompt based on taxonomy
+        taxonomy_guidance = _get_taxonomy_guidance(taxonomy, level)
+        
+        existing_text = ""
+        if existing_outcomes:
+            existing_text = f"\n\nExisting outcomes (avoid duplication):\n" + "\n".join(f"- {o}" for o in existing_outcomes)
+        
+        prompt = f"""Generate {count} high-quality learning outcomes for a {level}-level course component.
 
-        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+Description: {description}
 
-        prompt = f"""Generate {count} high-quality learning outcomes for a course on "{topic}" at the {level} level.
+{taxonomy_guidance}
 
-Learning outcomes should:
-- Use action verbs from Bloom's Taxonomy (e.g., Analyze, Evaluate, Create, Apply)
-- Be specific and measurable
-- Focus on what learners will be able to DO after completing the course
-- Be appropriate for {level} level learners
+Requirements:
+- Each outcome should be measurable and action-oriented
+- Start with appropriate action verbs for the taxonomy level
+- Be specific and concrete about what learners will achieve
+- Align with {taxonomy.title()} taxonomy principles{existing_text}
 
-Return ONLY a JSON array of strings, no other text. Format:
-["outcome 1", "outcome 2", "outcome 3", ...]"""
+Return a JSON array of outcomes, where each outcome is an object with:
+- "text": the learning outcome statement
+- "action_verb": the primary action verb used
+- "taxonomy_level": the level in the taxonomy (e.g., "analyze", "apply")
+- "domain": cognitive/affective/psychomotor domain
 
+Example format:
+[
+  {{
+    "text": "Analyze complex datasets to identify patterns and trends",
+    "action_verb": "analyze",
+    "taxonomy_level": "analyze",
+    "domain": "cognitive"
+  }}
+]
+
+Return ONLY the JSON array, no other text."""
+
+        # Call Claude API
         response = client.messages.create(
             model=config.ANTHROPIC_MODEL,
-            max_tokens=1000,
-            messages=[{"role": "user", "content": prompt}]
+            max_tokens=2000,
+            temperature=0.7,
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }]
         )
-
-        content = response.content[0].text.strip()
-        outcomes = json.loads(content)
-
-        logger.info(f"Generated {len(outcomes)} learning outcomes for {topic}")
+        
+        # Parse response
+        response_text = response.content[0].text.strip()
+        
+        # Extract JSON if wrapped in code blocks
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+        outcomes = json.loads(response_text)
+        
+        logger.info(f"Generated {len(outcomes)} learning outcomes for {level}")
         return outcomes
-
+        
     except Exception as e:
         logger.error(f"Error generating learning outcomes: {e}")
         # Return fallback outcomes
-        return [
-            f"Understand fundamental concepts of {topic}",
-            f"Apply {topic} principles to solve problems",
-            f"Analyze {topic} scenarios critically"
-        ]
+        return [{
+            "text": f"Complete the learning objectives for this {level}",
+            "action_verb": "complete",
+            "taxonomy_level": "understand",
+            "domain": "cognitive"
+        }]
 
 
-def generate_module_learning_outcomes(course_title: str, module_title: str, count: int = 3) -> List[str]:
+def generate_module_learning_outcomes(
+    module_title: str,
+    course_title: str,
+    course_learning_outcomes: List[str],
+    domain: str,
+    taxonomy: str = 'blooms',
+    count: int = 3
+) -> List[Dict[str, Any]]:
     """
-    Use Claude AI to generate learning outcomes for a module.
-
+    Generate module-specific learning outcomes that ladder up to course outcomes.
+    
     Args:
-        course_title: The parent course title
-        module_title: The module title
+        module_title: Title of the module
+        course_title: Title of the parent course
+        course_learning_outcomes: Course-level outcomes to align with
+        domain: Subject domain (e.g., 'latin-grammar', 'excel')
+        taxonomy: Taxonomy to use
         count: Number of outcomes to generate
-
+        
     Returns:
-        List of module learning outcome strings
+        List of outcome dictionaries
     """
     try:
-        from anthropic import Anthropic
-        from .config import config
+        clo_text = "\n".join(f"- {o}" for o in course_learning_outcomes)
+        taxonomy_guidance = _get_taxonomy_guidance(taxonomy, 'module')
+        
+        prompt = f"""Generate {count} module learning outcomes (MLOs) for this module.
 
-        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+Course: {course_title}
+Module: {module_title}
+Domain: {domain}
 
-        prompt = f"""Generate {count} specific learning outcomes for the module "{module_title}" in the course "{course_title}".
+Course Learning Outcomes (CLOs):
+{clo_text}
 
-Module learning outcomes should:
-- Be more specific than course-level outcomes
-- Use action verbs (Apply, Analyze, Create, Evaluate, etc.)
-- Focus on the specific content of this module
-- Be measurable and achievable within this module
+{taxonomy_guidance}
 
-Return ONLY a JSON array of strings, no other text. Format:
-["outcome 1", "outcome 2", "outcome 3"]"""
+Requirements:
+- Each MLO should contribute to one or more CLOs
+- MLOs should be more specific than CLOs but still substantial
+- Use appropriate {taxonomy.title()} taxonomy action verbs
+- Be measurable and achievable within a module timeframe
+- Consider the domain: {domain}
+
+Return a JSON array where each outcome has:
+- "text": the outcome statement
+- "action_verb": primary action verb
+- "taxonomy_level": level in taxonomy
+- "aligns_with_clo": index(es) of CLO(s) it supports (array of integers)
+
+Return ONLY the JSON array."""
 
         response = client.messages.create(
             model=config.ANTHROPIC_MODEL,
-            max_tokens=800,
+            max_tokens=2000,
+            temperature=0.7,
             messages=[{"role": "user", "content": prompt}]
         )
-
-        content = response.content[0].text.strip()
-        outcomes = json.loads(content)
-
-        logger.info(f"Generated {len(outcomes)} module outcomes for {module_title}")
+        
+        response_text = response.content[0].text.strip()
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+        outcomes = json.loads(response_text)
+        logger.info(f"Generated {len(outcomes)} module outcomes for '{module_title}'")
         return outcomes
-
+        
     except Exception as e:
         logger.error(f"Error generating module outcomes: {e}")
-        return [
-            f"Apply concepts from {module_title}",
-            f"Analyze {module_title} scenarios",
-            f"Evaluate solutions related to {module_title}"
-        ]
+        return [{
+            "text": f"Master the concepts in {module_title}",
+            "action_verb": "master",
+            "taxonomy_level": "apply",
+            "aligns_with_clo": [0]
+        }]
 
 
 def generate_concept_learning_objectives(
-    course_title: str,
-    module_title: str,
     concept_title: str,
+    module_title: str,
+    module_learning_outcomes: List[str],
+    course_title: str,
+    domain: str,
+    taxonomy: str = 'blooms',
     count: int = 3
-) -> List[str]:
+) -> List[Dict[str, Any]]:
     """
-    Use Claude AI to generate learning objectives for a concept.
-
+    Generate concept-specific learning objectives that support module outcomes.
+    
     Args:
-        course_title: The parent course title
-        module_title: The parent module title
-        concept_title: The concept title
+        concept_title: Title of the concept
+        module_title: Title of the parent module
+        module_learning_outcomes: Module-level outcomes to align with
+        course_title: Title of the course
+        domain: Subject domain
+        taxonomy: Taxonomy to use
         count: Number of objectives to generate
-
+        
     Returns:
-        List of concept learning objective strings
+        List of objective dictionaries
     """
     try:
-        from anthropic import Anthropic
-        from .config import config
+        mlo_text = "\n".join(f"- {o}" for o in module_learning_outcomes)
+        taxonomy_guidance = _get_taxonomy_guidance(taxonomy, 'concept')
+        
+        prompt = f"""Generate {count} concept learning objectives for this specific concept.
 
-        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+Course: {course_title}
+Module: {module_title}
+Concept: {concept_title}
+Domain: {domain}
 
-        prompt = f"""Generate {count} specific learning objectives for the concept "{concept_title}" in module "{module_title}" of the course "{course_title}".
+Module Learning Outcomes (MLOs):
+{mlo_text}
 
-Concept learning objectives should:
-- Be very specific and granular
-- Focus on discrete skills or knowledge points
-- Use precise action verbs (Identify, Define, Calculate, Distinguish, etc.)
-- Be achievable in a single concept/lesson
+{taxonomy_guidance}
 
-Return ONLY a JSON array of strings, no other text. Format:
-["objective 1", "objective 2", "objective 3"]"""
+Requirements:
+- Each objective should be very specific and focused
+- Objectives should be achievable in a single lesson/concept
+- Use concrete, measurable action verbs from {taxonomy.title()} taxonomy
+- Should build toward the module outcomes
+- Be appropriate for the domain: {domain}
+
+Return a JSON array where each objective has:
+- "text": the objective statement
+- "action_verb": primary action verb
+- "taxonomy_level": level in taxonomy
+- "supports_mlo": index(es) of MLO(s) it supports (array of integers)
+
+Return ONLY the JSON array."""
 
         response = client.messages.create(
             model=config.ANTHROPIC_MODEL,
-            max_tokens=800,
+            max_tokens=2000,
+            temperature=0.7,
             messages=[{"role": "user", "content": prompt}]
         )
-
-        content = response.content[0].text.strip()
-        objectives = json.loads(content)
-
-        logger.info(f"Generated {len(objectives)} objectives for {concept_title}")
+        
+        response_text = response.content[0].text.strip()
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+            
+        objectives = json.loads(response_text)
+        logger.info(f"Generated {len(objectives)} objectives for concept '{concept_title}'")
         return objectives
-
+        
     except Exception as e:
         logger.error(f"Error generating concept objectives: {e}")
-        return [
-            f"Understand {concept_title}",
-            f"Apply {concept_title} in practice",
-            f"Recognize {concept_title} patterns"
-        ]
+        return [{
+            "text": f"Understand and apply {concept_title}",
+            "action_verb": "apply",
+            "taxonomy_level": "apply",
+            "supports_mlo": [0]
+        }]
 
 
-def generate_simulation_content(concept: str, context: str = "") -> Dict[str, Any]:
+def _get_taxonomy_guidance(taxonomy: str, level: str) -> str:
+    """Get taxonomy-specific guidance for outcome generation."""
+    
+    if taxonomy == 'blooms':
+        if level == 'course':
+            return """Use Bloom's Taxonomy (revised):
+- Higher-order thinking: Create, Evaluate, Analyze
+- Mid-level: Apply, Understand
+- Foundation: Remember
+
+Focus on higher-order outcomes for course level."""
+        elif level == 'module':
+            return """Use Bloom's Taxonomy (revised):
+- Emphasize: Analyze, Apply, Evaluate
+- Support with: Understand
+- Avoid: Remember (too basic for module level)
+
+Module outcomes should involve application and analysis."""
+        else:  # concept
+            return """Use Bloom's Taxonomy (revised):
+- Focus on: Apply, Understand, Analyze
+- Can include: Remember (for foundational concepts)
+- Build toward higher-order thinking
+
+Concept objectives should be concrete and specific."""
+    
+    elif taxonomy == 'finks':
+        return """Use Fink's Taxonomy of Significant Learning:
+- Foundational Knowledge: Understanding and remembering information
+- Application: Skills, thinking, managing projects
+- Integration: Connecting ideas
+- Human Dimension: Learning about oneself and others
+- Caring: Developing new feelings, interests, values
+- Learning How to Learn: Becoming a better student"""
+    
+    elif taxonomy == 'qm':
+        return """Follow Quality Matters standards:
+- Measurable and clear
+- Aligned with course/module activities and assessments
+- Appropriate for the level of the course
+- Focused on what learners will accomplish"""
+    
+    else:
+        return f"Use {taxonomy} taxonomy principles for learning outcome design."
+
+
+def generate_simulation_content(concept: str, context: str = None) -> Dict[str, Any]:
     """
-    Use Claude AI to generate a simulation scenario for a concept.
+    Generate interactive simulation content for a concept.
 
     Args:
-        concept: The concept to simulate
-        context: Additional context about the simulation
+        concept: The concept to create a simulation for
+        context: Optional additional context
 
     Returns:
-        Simulation content dictionary
+        Simulation content dictionary with title, description, scenario, steps, and learning points
     """
     try:
-        from anthropic import Anthropic
-        from .config import config
-
-        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
-
         prompt = f"""Generate a realistic simulation scenario for teaching "{concept}".
 
 Context: {context if context else "General application"}
