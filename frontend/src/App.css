@@ -99,8 +99,31 @@
 
 .start-button {
   width: 100%;
-  padding: 10px 20px;
-  background: var(--text-primary);
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.start-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(100, 108, 255, 0.3);
+}
+
+.start-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Learning Page Container */
+.preview-choice-container {
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: 48px;
   box-shadow: var(--shadow-md);
@@ -326,4 +349,173 @@
   color: var(--text-primary);
   border-color: var(--text-secondary);
   transform: translateX(-2px);
+}
+
+/* Learning Page Header */
+.app-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Header Button Styles */
+.syllabus-button,
+.admin-button,
+.create-course-button,
+.reset-button {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.syllabus-button {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.syllabus-button:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(100, 108, 255, 0.2);
+}
+
+.admin-button {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.admin-button:hover {
+  background: var(--color-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.create-course-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-color: #10b981;
+}
+
+.create-course-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+}
+
+.reset-button {
+  background: transparent;
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.reset-button:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Main Content Layout */
+.main-content {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  gap: 24px;
+  flex: 1;
+}
+
+.chat-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-column {
+  width: 350px;
+  flex-shrink: 0;
+}
+
+/* Responsive Layout */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .progress-column {
+    width: 100%;
+  }
+
+  .header-buttons {
+    gap: 8px;
+  }
+
+  .syllabus-button,
+  .admin-button,
+  .create-course-button,
+  .reset-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    padding: 12px 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .app-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
 }
