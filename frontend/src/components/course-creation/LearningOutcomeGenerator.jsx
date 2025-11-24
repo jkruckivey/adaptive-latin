@@ -36,7 +36,8 @@ function LearningOutcomeGenerator({
 
       if (result.success && result.outcomes) {
         setGeneratedOutcomes(result.outcomes)
-        setEditedOutcomes(result.outcomes.map(o => o)) // Create editable copy
+        // Extract text from outcome objects (backend returns {text, action_verb, taxonomy_level, domain})
+        setEditedOutcomes(result.outcomes.map(o => typeof o === 'string' ? o : o.text))
         setShowResults(true)
       } else {
         setError('No outcomes were generated. Please try again.')
