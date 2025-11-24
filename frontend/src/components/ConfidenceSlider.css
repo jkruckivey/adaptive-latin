@@ -1,101 +1,258 @@
 .confidence-slider {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 24px;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 24px;
+  background: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--space-xl);
 }
 
 .confidence-header {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-lg);
   text-align: center;
 }
 
 .confidence-header h3 {
-  font-size: 18px;
+  font-size: var(--text-xl);
   font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 8px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
 }
 
 .confidence-header p {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
   margin: 0;
 }
 
-.confidence-options {
+/* Confidence Scale - 5-point Likert */
+.confidence-scale {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .confidence-option {
   background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg) var(--space-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base) var(--ease-out);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   text-align: center;
+  min-height: 44px; /* WCAG touch target */
+  position: relative;
 }
 
 .confidence-option:hover {
-  border-color: #cbd5e0;
-  background: #f7fafc;
+  border-color: var(--border-color-hover);
+  background: var(--color-surface);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
-.confidence-option:focus {
-  outline: 2px solid #3182ce;
+.confidence-option:focus-visible {
+  outline: 3px solid var(--border-color-focus);
   outline-offset: 2px;
 }
 
 .confidence-option.selected {
-  border-color: #3182ce;
-  background: #e6f7ff;
-  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.2);
+  border-color: var(--color-primary);
+  background: var(--color-info-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
-.confidence-stars {
-  font-size: 24px;
-  line-height: 1;
+/* Color-coded Confidence Indicator */
+.confidence-indicator {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base);
+}
+
+.confidence-option:hover .confidence-indicator {
+  transform: scale(1.1);
+}
+
+.confidence-option.selected .confidence-indicator {
+  transform: scale(1.15);
+  box-shadow: var(--shadow-lg);
+}
+
+.confidence-percentage {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.confidence-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: var(--space-xs);
 }
 
 .confidence-desc {
-  font-size: 13px;
+  font-size: var(--text-xs);
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.confidence-option.selected .confidence-label {
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .confidence-option.selected .confidence-desc {
-  color: #2d3748;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
-.confidence-hint {
+/* Feedback Section */
+.confidence-feedback {
   text-align: center;
-  padding: 12px;
+  padding: var(--space-md);
   background: white;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #4a5568;
-  border: 1px solid #e2e8f0;
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--space-md);
+  animation: slideIn 0.3s ease-out;
 }
 
-.confidence-hint strong {
-  color: #2d3748;
-  font-weight: 600;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.confidence-feedback strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.feedback-desc {
+  margin-top: var(--space-xs);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Explainer Section */
+.confidence-explainer {
+  text-align: center;
+  margin-top: var(--space-md);
+}
+
+.explainer-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+  padding: var(--space-sm);
+  background: var(--color-info-light);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-info);
+}
+
+.explainer-icon {
+  font-size: var(--text-base);
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .confidence-scale {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 600px;
+  }
+
+  .confidence-option {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .confidence-indicator {
+    width: 40px;
+    height: 40px;
+  }
+
+  .confidence-percentage {
+    font-size: var(--text-xs);
+  }
 }
 
 @media (max-width: 640px) {
-  .confidence-options {
-    grid-template-columns: repeat(2, 1fr);
+  .confidence-scale {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .confidence-option {
+    flex-direction: row;
+    text-align: left;
+    padding: var(--space-md);
+  }
+
+  .confidence-indicator {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+
+  .confidence-label,
+  .confidence-desc {
+    text-align: left;
+  }
+
+  .confidence-header h3 {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .confidence-option {
+    transition: none;
+  }
+
+  .confidence-option:hover {
+    transform: none;
+  }
+
+  .confidence-indicator {
+    transition: none;
+  }
+
+  .confidence-option:hover .confidence-indicator,
+  .confidence-option.selected .confidence-indicator {
+    transform: none;
+  }
+
+  .confidence-feedback {
+    animation: none;
   }
 }

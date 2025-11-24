@@ -1,6 +1,6 @@
 .roman-chat-container {
   background: #faf8f5;
-  border: 2px solid #d4af37;
+  border: 2px solid var(--color-warning);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
@@ -12,7 +12,7 @@
 }
 
 .roman-chat-header {
-  background: #8b4513;
+  background: var(--text-primary);
   color: white;
   padding: 20px 24px;
   display: flex;
@@ -121,7 +121,7 @@
 
 .character-name {
   font-weight: 600;
-  color: #8b4513;
+  color: var(--text-primary);
   font-size: 13px;
   margin-bottom: 4px;
   font-family: 'Georgia', serif;
@@ -137,14 +137,14 @@
 .roman-message.user .message-bubble {
   background: #e8dcc4;
   color: #3e2723;
-  border: 1px solid #d4af37;
+  border: 1px solid var(--color-warning);
   border-bottom-right-radius: 4px;
 }
 
 .roman-message.assistant .message-bubble {
   background: white;
   color: #1a1a1a;
-  border: 1px solid #d4af37;
+  border: 1px solid var(--color-warning);
   border-bottom-left-radius: 4px;
   box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
 }
@@ -165,7 +165,7 @@
   font-size: 13px;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px dashed #d4af37;
+  border-top: 1px dashed var(--color-warning);
 }
 
 .message-bubble .context-note {
@@ -191,12 +191,12 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #8b4513;
+  background: var(--text-primary);
 }
 
 .error-message {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -208,13 +208,13 @@
   gap: 12px;
   padding: 16px 24px;
   background: white;
-  border-top: 2px solid #d4af37;
+  border-top: 2px solid var(--color-warning);
 }
 
 .chat-input-roman {
   flex: 1;
   padding: 12px 16px;
-  border: 1px solid #d4af37;
+  border: 1px solid var(--color-warning);
   border-radius: 8px;
   font-size: 14px;
   font-family: 'Georgia', serif;
@@ -224,13 +224,13 @@
 }
 
 .chat-input-roman:focus {
-  border-color: #8b4513;
+  border-color: var(--text-primary);
   background: white;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
 .chat-input-roman:disabled {
-  background: #f3f4f6;
+  background: var(--brand-sand-light);
   cursor: not-allowed;
 }
 
@@ -238,7 +238,7 @@
   padding: 12px 24px;
   border-radius: 8px;
   border: none;
-  background: #8b4513;
+  background: var(--text-primary);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -266,7 +266,7 @@
   bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
-  background: #8b4513;
+  background: var(--text-primary);
   color: #fff;
   padding: 10px 20px;
   border-radius: 20px;
@@ -274,7 +274,7 @@
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
   animation: badgeSlide 0.4s ease;
-  border: 2px solid #d4af37;
+  border: 2px solid var(--color-warning);
 }
 
 @keyframes badgeSlide {
@@ -332,7 +332,7 @@
 }
 
 .roman-chat-messages::-webkit-scrollbar-thumb {
-  background: #d4af37;
+  background: var(--color-warning);
   border-radius: 4px;
 }
 

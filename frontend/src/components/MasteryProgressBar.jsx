@@ -60,12 +60,20 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
       </div>
 
       <div className="progress-bar-wrapper">
-        <div className="progress-bar-track">
+        <div
+          className="progress-bar-track"
+          role="progressbar"
+          aria-valuenow={displayPercentage}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Mastery progress: ${displayPercentage}% of ${thresholdPercentage}% required`}
+        >
           {/* Threshold marker */}
           <div
             className="threshold-marker"
             style={{ left: `${thresholdPercentage}%` }}
             title={`${thresholdPercentage}% needed to master`}
+            aria-hidden="true"
           >
             <div className="threshold-line"></div>
             <div className="threshold-label">{thresholdPercentage}%</div>
@@ -81,9 +89,19 @@ function MasteryProgressBar({ masteryScore, masteryThreshold, conceptName, asses
             }}
           >
             {displayScore > 0.15 && (
-              <span className="progress-fill-text">{displayPercentage}%</span>
+              <span className="progress-fill-text" aria-hidden="true">{displayPercentage}%</span>
             )}
           </div>
+        </div>
+
+        {/* Screen reader live region for progress updates */}
+        <div
+          className="sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {displayPercentage}% mastery achieved. {isComplete ? 'Concept mastered!' : `${thresholdPercentage - displayPercentage}% more needed.`}
         </div>
 
         {/* Helper text */}

@@ -73,12 +73,12 @@ INTERACTIVE_WIDGET_TYPES = ["declension-explorer", "word-order-manipulator"]
 # Learning Styles
 # ============================================================================
 
-VALID_LEARNING_STYLES = ["narrative", "varied", "adaptive"]
+VALID_LEARNING_STYLES = ["narrative", "varied", "dialogue"]
 
 # Content preferences by learning style
 NARRATIVE_CONTENT_TYPES = ["example-set", "lesson"]
 VARIED_CONTENT_TYPES = ["paradigm-table", "example-set", "lesson", "declension-explorer", "word-order-manipulator"]
-ADAPTIVE_CONTENT_TYPES = ["lesson", "fill-blank", "multiple-choice"]
+DIALOGUE_CONTENT_TYPES = ["lesson", "dialogue"]  # Conversational/Socratic content
 
 # ============================================================================
 # Remediation Types

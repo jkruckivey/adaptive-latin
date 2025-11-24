@@ -15,13 +15,13 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .landing-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 8px;
   letter-spacing: -0.02em;
@@ -29,7 +29,7 @@
 
 .landing-subtitle {
   text-align: center;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 32px;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -47,7 +47,7 @@
   padding: 14px 24px;
   font-size: 1rem;
   font-weight: 500;
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -57,19 +57,19 @@
 }
 
 .landing-button:hover {
-  background: #1a202c;
+  background: var(--text-primary);
   transform: translateY(-1px);
 }
 
 .landing-button.secondary {
   background: white;
-  color: #2d3748;
-  border: 1px solid #e2e8f0;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .landing-button.secondary:hover {
-  background: #f8f9fa;
-  border-color: #cbd5e0;
+  background: var(--brand-sand-light);
+  border-color: var(--border-color);
 }
 
 /* Responsive Design */

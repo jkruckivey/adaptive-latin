@@ -90,7 +90,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
     <div className="wizard-form">
       <h2>Create Your Course</h2>
       <p className="subtitle">
-        Let's start by defining your course and its learning outcomes using Quality Matters standards.
+        Let's start by defining your course and its learning outcomes using best practices for effective course design.
       </p>
 
       <div className="form-group">

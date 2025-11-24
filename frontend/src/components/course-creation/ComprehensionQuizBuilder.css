@@ -1,6 +1,6 @@
 .comprehension-quiz-builder {
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
+  background: var(--brand-sand-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 20px;
   margin-top: 15px;
@@ -8,20 +8,20 @@
 
 .quiz-header h4 {
   margin: 0 0 5px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
 .quiz-description {
   margin: 0 0 20px 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.5;
 }
 
 .question-builder {
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 20px;
   margin-bottom: 15px;
@@ -33,19 +33,19 @@
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--brand-sand-light);
 }
 
 .question-header h5 {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 15px;
 }
 
 .remove-question-btn {
   background: none;
   border: none;
-  color: #e74c3c;
+  color: var(--color-error);
   cursor: pointer;
   font-size: 13px;
   padding: 4px 8px;
@@ -65,7 +65,7 @@
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
@@ -73,7 +73,7 @@
 .explanation-input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
@@ -83,13 +83,13 @@
 .question-input:focus,
 .explanation-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--brand-turquoise);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .type-select {
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
   background: white;
@@ -112,21 +112,21 @@
 .option-input {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
 
 .option-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--brand-turquoise);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .remove-option-btn {
   background: none;
   border: none;
-  color: #999;
+  color: var(--text-tertiary);
   font-size: 24px;
   cursor: pointer;
   padding: 0;
@@ -139,15 +139,15 @@
 }
 
 .remove-option-btn:hover {
-  color: #e74c3c;
+  color: var(--color-error);
 }
 
 .add-option-btn {
   margin-top: 8px;
   padding: 6px 12px;
   background: white;
-  border: 1px dashed #3498db;
-  color: #3498db;
+  border: 1px dashed var(--brand-turquoise);
+  color: var(--brand-turquoise);
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
@@ -155,14 +155,14 @@
 }
 
 .add-option-btn:hover {
-  background: #e3f2fd;
+  background: var(--brand-turquoise-light);
   border-style: solid;
 }
 
 .hint {
   margin-top: 6px;
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -178,14 +178,14 @@
   cursor: pointer;
   padding: 10px 15px;
   background: white;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border-color);
   border-radius: 6px;
   transition: all 0.2s;
 }
 
 .radio-label:hover {
-  border-color: #3498db;
-  background: #f8f9fa;
+  border-color: var(--brand-turquoise);
+  background: var(--brand-sand-light);
 }
 
 .radio-label input[type="radio"] {
@@ -197,15 +197,15 @@
 .radio-label span {
   font-size: 14px;
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .add-question-btn {
   width: 100%;
   padding: 12px;
   background: white;
-  border: 2px dashed #3498db;
-  color: #3498db;
+  border: 2px dashed var(--brand-turquoise);
+  color: var(--brand-turquoise);
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -214,14 +214,14 @@
 }
 
 .add-question-btn:hover {
-  background: #e3f2fd;
+  background: var(--brand-turquoise-light);
   border-style: solid;
 }
 
 .empty-state {
   text-align: center;
   padding: 30px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -229,8 +229,8 @@
   margin-top: 15px;
   padding: 12px 15px;
   background: #fff3cd;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
   border-radius: 4px;
-  color: #856404;
+  color: var(--color-warning-dark);
   font-size: 13px;
 }

@@ -77,7 +77,7 @@
 }
 
 .mastery-details {
-  background: var(--color-background, #f8f9fa);
+  background: var(--color-background, var(--brand-sand-light));
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 32px;
@@ -90,7 +90,7 @@
   gap: 16px;
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  border-bottom: 1px solid var(--color-border, var(--border-color));
 }
 
 .stat-icon {

@@ -59,10 +59,15 @@ async def get_concept_info(concept_id: str, course_id: Optional[str] = None, lea
 
         metadata = load_concept_metadata(concept_id, course_id)
 
+        # Convert difficulty to string if it's an integer
+        difficulty = metadata.get("difficulty", "medium")
+        if isinstance(difficulty, int):
+            difficulty = str(difficulty)
+
         return {
             "concept_id": metadata.get("concept_id", concept_id),
             "title": metadata.get("title", concept_id),
-            "difficulty": metadata.get("difficulty", "medium"),
+            "difficulty": difficulty,
             "prerequisites": metadata.get("prerequisites", []),
             "learning_objectives": metadata.get("learning_objectives", metadata.get("module_learning_outcomes", [])),
             "estimated_mastery_time": metadata.get("estimated_mastery_time", "unknown"),

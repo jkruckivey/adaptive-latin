@@ -33,18 +33,6 @@
     },
     {
       "type": "question",
-      "question": "Have you studied Latin before?",
-      "options": [
-        { "value": "never", "label": "Never studied it" },
-        { "value": "some", "label": "Some basics - a semester or two" },
-        { "value": "intermediate", "label": "Solid foundation - can read simple texts" },
-        { "value": "advanced", "label": "Advanced - comfortable with classical texts" }
-      ],
-      "key": "latinExperience",
-      "priorKnowledgeKey": "latinLevel"
-    },
-    {
-      "type": "question",
       "question": "Do you know any Romance languages (Spanish, French, Italian, Portuguese, Romanian)?",
       "options": [
         { "value": "none", "label": "No Romance languages" },
@@ -57,10 +45,39 @@
     },
     {
       "type": "question",
-      "question": "What's your goal with Latin?",
-      "placeholder": "Reading classical texts, understanding etymology, medical/legal terminology, academic requirements...",
-      "key": "goals",
-      "priorKnowledgeKey": "goals"
+      "question": "Do you know any languages with grammatical cases (German, Russian, Greek, etc.)?",
+      "placeholder": "e.g., German, Russian, Ancient Greek, Finnish, Polish...",
+      "key": "languages",
+      "priorKnowledgeKey": "hasInflectedLanguage"
+    },
+    {
+      "type": "question",
+      "question": "How comfortable are you with grammar concepts like subject/object?",
+      "options": [
+        { "value": "confused", "label": "Not sure what those mean" },
+        { "value": "basic", "label": "I've heard of them but it's fuzzy" },
+        { "value": "comfortable", "label": "Pretty comfortable with grammar terms" },
+        { "value": "expert", "label": "Very confident - I love grammar!" }
+      ],
+      "key": "grammarExperience",
+      "priorKnowledgeKey": "understandsSubjectObject"
+    },
+    {
+      "type": "question",
+      "question": "How do you learn best?",
+      "options": [
+        { "value": "visual", "label": "Visual aids - tables, charts, diagrams" },
+        { "value": "examples", "label": "Lots of examples and practice" },
+        { "value": "explanation", "label": "Clear explanations of concepts" },
+        { "value": "practice", "label": "Hands-on practice and doing" }
+      ],
+      "key": "learningStyle"
+    },
+    {
+      "type": "question",
+      "question": "What are you interested in? (This helps me create examples you'll enjoy)",
+      "placeholder": "e.g., History, mythology, philosophy, science, sports, music, literature...",
+      "key": "interests"
     }
   ]
 }

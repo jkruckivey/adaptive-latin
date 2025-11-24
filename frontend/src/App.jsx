@@ -52,9 +52,8 @@ function App() {
       if (selectedCourseId) {
         try {
           const data = await api.getCourse(selectedCourseId)
-          if (data.success) {
-            setCourseMetadata(data.course)
-          }
+          // Backend returns course data directly
+          setCourseMetadata(data)
         } catch (err) {
           console.error('Failed to load course metadata:', err)
         }

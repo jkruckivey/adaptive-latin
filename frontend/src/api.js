@@ -167,8 +167,8 @@ export const api = {
       throw new Error(`Failed to get course: ${response.statusText}`);
     }
     const data = await response.json();
-    // Unwrap the course object from {success: true, course: {...}}
-    return data.course || data;
+    // Backend returns course data directly
+    return data;
   },
 
   // Create a new course

@@ -10,7 +10,7 @@
 
 .resource-library-header h2 {
   font-size: 2rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -29,14 +29,14 @@
 /* Add Source Form */
 .add-source-form {
   background: white;
-  border: 2px solid #e8f5e9;
+  border: 2px solid var(--brand-green-light);
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 .add-source-form h3 {
   font-size: 1.3rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
 }
 
@@ -47,7 +47,7 @@
 .form-group label {
   display: block;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -56,7 +56,7 @@
 .form-group select {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s;
@@ -66,7 +66,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #4caf50;
+  border-color: var(--brand-green);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
@@ -88,7 +88,7 @@
 .add-source-button {
   width: 100%;
   padding: 0.875rem;
-  background: #4caf50;
+  background: var(--brand-green);
   color: white;
   border: none;
   border-radius: 8px;
@@ -113,7 +113,7 @@
 /* Sources List */
 .sources-list {
   background: white;
-  border: 2px solid #e3f2fd;
+  border: 2px solid var(--brand-turquoise-light);
   border-radius: 12px;
   padding: 1.5rem;
   max-height: 600px;
@@ -122,7 +122,7 @@
 
 .sources-list h3 {
   font-size: 1.3rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   position: sticky;
   top: 0;
@@ -166,15 +166,15 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
+  background: var(--brand-sand-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   margin-bottom: 0.75rem;
   transition: all 0.2s;
 }
 
 .source-card:hover {
-  border-color: #4caf50;
+  border-color: var(--brand-green);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -198,7 +198,7 @@
 
 .source-title {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   flex: 1;
 }
 
@@ -222,17 +222,17 @@
 
 .source-description {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-secondary);
   margin-top: 0.5rem;
 }
 
 .quiz-info {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 0.5rem;
   padding: 6px 10px;
-  background: #e3f2fd;
-  border-left: 3px solid #2196f3;
+  background: var(--brand-turquoise-light);
+  border-left: 3px solid var(--brand-turquoise);
   border-radius: 4px;
 }
 
@@ -247,8 +247,8 @@
 
 .badge-required {
   background: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffc107;
+  color: var(--color-warning-dark);
+  border: 1px solid var(--color-warning);
 }
 
 .badge-recommended {
@@ -260,7 +260,7 @@
 .badge-optional {
   background: #e7f5e7;
   color: #2e7d32;
-  border: 1px solid #4caf50;
+  border: 1px solid var(--brand-green);
 }
 
 /* Verification Badge */
@@ -269,15 +269,15 @@
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 12px;
-  background: #e3f2fd;
-  color: #1976d2;
-  border: 1px solid #2196f3;
+  background: var(--brand-turquoise-light);
+  color: var(--brand-turquoise-dark);
+  border: 1px solid var(--brand-turquoise);
   white-space: nowrap;
 }
 
 /* Source card border colors based on requirement level */
 .source-card.requirement-required {
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
 }
 
 .source-card.requirement-recommended {
@@ -285,21 +285,21 @@
 }
 
 .source-card.requirement-optional {
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid var(--brand-green);
 }
 
 /* Verification Section */
 .verification-section {
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   padding: 15px;
   border-radius: 8px;
-  border: 2px solid #e3f2fd;
+  border: 2px solid var(--brand-turquoise-light);
 }
 
 .remove-source-button {
   background: none;
   border: none;
-  color: #e74c3c;
+  color: var(--color-error);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0 0.5rem;
@@ -318,12 +318,12 @@
   display: flex;
   justify-content: space-between;
   padding-top: 2rem;
-  border-top: 2px solid #f0f0f0;
+  border-top: 2px solid var(--brand-sand-light);
 }
 
 .primary-button {
   padding: 0.875rem 2rem;
-  background: #4caf50;
+  background: var(--brand-green);
   color: white;
   border: none;
   border-radius: 8px;
@@ -342,8 +342,8 @@
 .secondary-button {
   padding: 0.875rem 2rem;
   background: white;
-  color: #2c3e50;
-  border: 2px solid #e0e0e0;
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -353,12 +353,12 @@
 
 .secondary-button:hover {
   border-color: #bdc3c7;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
 }
 
 .error-message {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
   padding: 0.75rem;
   border-radius: 6px;
   margin-bottom: 1rem;

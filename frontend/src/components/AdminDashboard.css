@@ -11,11 +11,11 @@
   align-items: center;
   margin-bottom: 32px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .admin-header h1 {
-  color: #1a202c;
+  color: var(--text-primary);
   font-size: 2rem;
   margin: 0;
   font-weight: 700;
@@ -29,12 +29,12 @@
 
 .course-selector label {
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-secondary);
 }
 
 .course-selector select {
   padding: 8px 16px;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   font-family: 'Geist', sans-serif;
@@ -46,12 +46,12 @@
 }
 
 .course-selector select:hover {
-  border-color: #2d3748;
+  border-color: var(--text-primary);
 }
 
 .course-selector select:focus {
   outline: none;
-  border-color: #1a202c;
+  border-color: var(--text-primary);
   box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.1);
 }
 
@@ -59,7 +59,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .admin-tab {
@@ -69,19 +69,19 @@
   border-bottom: 3px solid transparent;
   font-size: 1rem;
   font-weight: 600;
-  color: #718096;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .admin-tab:hover {
-  color: #2d3748;
-  background: #f7fafc;
+  color: var(--text-primary);
+  background: var(--brand-sand-light);
 }
 
 .admin-tab.active {
-  color: #1a202c;
-  border-bottom-color: #1a202c;
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
 }
 
 .admin-content {

@@ -9,14 +9,14 @@
 .clo-reference {
   margin: 20px 0;
   padding: 15px;
-  background: #e3f2fd;
-  border-left: 4px solid #3498db;
+  background: var(--brand-turquoise-light);
+  border-left: 4px solid var(--brand-turquoise);
   border-radius: 4px;
 }
 
 .clo-reference h4 {
   margin: 0 0 10px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 15px;
 }
 
@@ -26,7 +26,7 @@
 }
 
 .clo-reference li {
-  color: #555;
+  color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 8px;
@@ -38,13 +38,13 @@
   flex-wrap: wrap;
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  border-bottom: 1px solid var(--color-border, var(--border-color));
 }
 
 .concept-nav-button {
   padding: 8px 16px;
   background: white;
-  border: 1px solid var(--color-border, #e0e0e0);
+  border: 1px solid var(--color-border, var(--border-color));
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
@@ -64,7 +64,7 @@
 }
 
 .concept-objective-display {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--brand-purple) 0%, var(--brand-purple-dark) 100%);
   padding: 24px;
   border-radius: 12px;
   margin-bottom: 30px;
@@ -97,7 +97,7 @@
 .editor-section {
   margin-bottom: 40px;
   padding-bottom: 40px;
-  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  border-bottom: 1px solid var(--color-border, var(--border-color));
 }
 
 .editor-section:last-of-type {
@@ -113,7 +113,7 @@
 
 .section-description {
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   margin-bottom: 20px;
 }
 
@@ -142,7 +142,7 @@
 .add-button {
   padding: 8px 16px;
   background: white;
-  border: 2px dashed var(--color-border, #e0e0e0);
+  border: 2px dashed var(--color-border, var(--border-color));
   border-radius: 6px;
   color: var(--primary-color, #000);
   font-size: 0.9rem;
@@ -154,14 +154,14 @@
 
 .add-button:hover {
   border-color: var(--primary-color, #000);
-  background: var(--color-background, #f8f9fa);
+  background: var(--color-background, var(--brand-sand-light));
 }
 
 .teaching-content-textarea {
   width: 100%;
   min-height: 300px;
   padding: 14px;
-  border: 1px solid var(--color-border, #e0e0e0);
+  border: 1px solid var(--color-border, var(--border-color));
   border-radius: 6px;
   font-family: 'Monaco', 'Courier New', monospace;
   font-size: 0.9rem;
@@ -177,7 +177,7 @@
 
 .char-count {
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   margin-top: 8px;
   text-align: right;
 }

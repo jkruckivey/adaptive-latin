@@ -12,13 +12,13 @@
 .taxonomy-header h4 {
   margin: 0;
   font-size: 16px;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .info-toggle {
   background: none;
-  border: 1px solid #3498db;
-  color: #3498db;
+  border: 1px solid var(--brand-turquoise);
+  color: var(--brand-turquoise);
   padding: 5px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -27,7 +27,7 @@
 }
 
 .info-toggle:hover {
-  background: #3498db;
+  background: var(--brand-turquoise);
   color: white;
 }
 
@@ -41,7 +41,7 @@
   display: flex;
   align-items: flex-start;
   padding: 15px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -49,13 +49,13 @@
 }
 
 .taxonomy-option:hover {
-  border-color: #3498db;
-  background: #f8f9fa;
+  border-color: var(--brand-turquoise);
+  background: var(--brand-sand-light);
 }
 
 .taxonomy-option.selected {
-  border-color: #3498db;
-  background: #e3f2fd;
+  border-color: var(--brand-turquoise);
+  background: var(--brand-turquoise-light);
 }
 
 .taxonomy-option input[type="radio"] {
@@ -70,13 +70,13 @@
 
 .option-title {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 15px;
   margin-bottom: 5px;
 }
 
 .option-description {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -84,11 +84,11 @@
 .taxonomy-details {
   margin-top: 15px;
   padding-top: 15px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-color);
 }
 
 .detail-note {
-  color: #555;
+  color: var(--text-secondary);
   font-size: 13px;
   margin-bottom: 10px;
   line-height: 1.5;
@@ -103,13 +103,13 @@
 .level-item {
   padding: 8px 12px;
   background: white;
-  border-left: 3px solid #3498db;
+  border-left: 3px solid var(--brand-turquoise);
   border-radius: 4px;
   font-size: 13px;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .level-item strong {
-  color: #2c3e50;
+  color: var(--text-primary);
 }

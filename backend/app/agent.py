@@ -1134,16 +1134,20 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         elif stage == STAGE_START:
             # DIAGNOSTIC-FIRST: Always start with a question
             # Use adaptive difficulty based on recent performance
+            learner_model = load_learner_model(learner_id)
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'varied')
             difficulty = select_question_difficulty(learner_id, concept_id)
-            logger.info(f"Selected difficulty for START stage: {difficulty}")
-            request = generate_diagnostic_request(is_cumulative, cumulative_concepts, difficulty)
+            logger.info(f"Selected difficulty for START stage: {difficulty}, learning style: {learning_style}")
+            request = generate_diagnostic_request(is_cumulative, cumulative_concepts, difficulty, learning_style)
 
         elif stage == STAGE_PRACTICE:
             # Generate next diagnostic question
             # Use adaptive difficulty based on recent performance
+            learner_model = load_learner_model(learner_id)
+            learning_style = learner_model.get('profile', {}).get('learningStyle', 'varied')
             difficulty = select_question_difficulty(learner_id, concept_id)
-            logger.info(f"Selected difficulty for PRACTICE stage: {difficulty}")
-            request = generate_practice_request(is_cumulative, cumulative_concepts, difficulty)
+            logger.info(f"Selected difficulty for PRACTICE stage: {difficulty}, learning style: {learning_style}")
+            request = generate_practice_request(is_cumulative, cumulative_concepts, difficulty, learning_style)
 
         elif stage == STAGE_ASSESS:
             # Dialogue questions disabled - generate multiple-choice instead

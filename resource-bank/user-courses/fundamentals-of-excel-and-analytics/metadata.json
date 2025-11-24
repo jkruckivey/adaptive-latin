@@ -10,6 +10,61 @@
     "Evaluate relationships between variables using correlation analysis"
   ],
   "created_at": "2025-11-08T12:25:29.868414",
-  "updated_at": "2025-11-08T12:25:29.868424",
-  "type": "user-created"
+  "updated_at": "2025-11-23T00:00:00.000000",
+  "type": "user-created",
+  "onboarding_questions": [
+    {
+      "type": "question",
+      "question": "Tell me about yourself - what brings you to Fundamentals of Excel and Analytics?",
+      "placeholder": "Your background, current role, and why you want to learn Excel analytics...",
+      "key": "background"
+    },
+    {
+      "type": "question",
+      "question": "How comfortable are you with Excel?",
+      "options": [
+        { "value": "beginner", "label": "Beginner - just basic data entry" },
+        { "value": "basic", "label": "Basic - can use simple formulas like SUM and AVERAGE" },
+        { "value": "intermediate", "label": "Intermediate - comfortable with VLOOKUP, pivot tables" },
+        { "value": "advanced", "label": "Advanced - complex functions, data modeling" }
+      ],
+      "key": "excelExperience",
+      "priorKnowledgeKey": "excelLevel"
+    },
+    {
+      "type": "question",
+      "question": "How familiar are you with statistics and data analysis?",
+      "options": [
+        { "value": "none", "label": "No background - completely new to me" },
+        { "value": "basic", "label": "Basic - understand mean, median, graphs" },
+        { "value": "intermediate", "label": "Intermediate - correlation, regression basics" },
+        { "value": "advanced", "label": "Advanced - statistical modeling experience" }
+      ],
+      "key": "statsExperience",
+      "priorKnowledgeKey": "statsLevel"
+    },
+    {
+      "type": "question",
+      "question": "How do you learn best?",
+      "options": [
+        { "value": "visual", "label": "Visual aids - charts, graphs, diagrams" },
+        { "value": "examples", "label": "Real-world examples and case studies" },
+        { "value": "explanation", "label": "Clear explanations of concepts and methods" },
+        { "value": "practice", "label": "Hands-on practice with datasets" }
+      ],
+      "key": "learningStyle"
+    },
+    {
+      "type": "question",
+      "question": "What are you interested in? (This helps me create examples you'll find relevant and engaging)",
+      "placeholder": "e.g., Business analytics, financial modeling, marketing data, sales forecasting, operations management, sports analytics, healthcare data, retail analysis...",
+      "key": "interests"
+    },
+    {
+      "type": "question",
+      "question": "What will you use these analytics skills for?",
+      "placeholder": "e.g., Business reporting, academic research, career advancement, personal projects, data-driven decision making...",
+      "key": "useCase"
+    }
+  ]
 }

@@ -1,0 +1,14 @@
+{
+  "learner_id": "test_walkthrough_001",
+  "message": "In English, the word order tells you who is doing what - like 'the girl sees the road' vs 'the road sees the girl'. But in Latin, the endings on the words tell you their function, so you can move the words around and it still means the same thing. The ending shows if it's the subject or object.",
+  "conversation_history": [
+    {
+      "role": "user",
+      "content": "Hi! I am ready to start learning Latin. Can you teach me the first concept?"
+    },
+    {
+      "role": "assistant",
+      "content": "Perfect! Let me introduce you to **Concept 001: First Declension Nouns + Sum, esse (present tense)**... [Teaching content delivered]... **Can you tell me in your own words: What's the main difference between how English and Latin show which word is the subject vs. the object in a sentence?**"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 .assessment-builder {
   margin-bottom: 40px;
   padding-bottom: 40px;
-  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  border-bottom: 1px solid var(--color-border, var(--border-color));
 }
 
 .assessment-builder-header h3 {
@@ -13,13 +13,13 @@
 
 .section-description {
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   margin-bottom: 20px;
 }
 
 /* AI Generation Section */
 .ai-generation-section {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--brand-sand-light);
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 24px;
@@ -35,13 +35,13 @@
 }
 
 .outcome-context strong {
-  color: #667eea;
+  color: var(--text-primary);
 }
 
 .generate-button {
   width: 100%;
   padding: 14px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--text-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -52,8 +52,9 @@
 }
 
 .generate-button:hover:not(:disabled) {
+  background: var(--text-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .generate-button:disabled {
@@ -64,13 +65,13 @@
 .help-text {
   margin-top: 8px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   text-align: center;
 }
 
 /* Assessment Type Selector */
 .assessment-type-selector {
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -93,7 +94,7 @@
 .type-button {
   padding: 16px;
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -106,14 +107,14 @@
 }
 
 .type-button:hover {
-  border-color: #667eea;
+  border-color: var(--text-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .type-button.selected {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: var(--text-primary);
+  background: var(--text-primary);
   color: white;
 }
 
@@ -127,7 +128,7 @@
   width: 100%;
   padding: 12px 20px;
   background: white;
-  border: 2px dashed var(--color-border, #e0e0e0);
+  border: 2px dashed var(--color-border, var(--border-color));
   border-radius: 6px;
   color: var(--primary-color, #000);
   font-size: 0.95rem;
@@ -138,7 +139,7 @@
 
 .add-assessment-button:hover {
   border-color: var(--primary-color, #000);
-  background: var(--color-background, #f8f9fa);
+  background: var(--color-background, var(--brand-sand-light));
 }
 
 /* Assessments List */
@@ -151,15 +152,15 @@
 .no-assessments {
   text-align: center;
   padding: 60px 20px;
-  color: var(--color-text-secondary, #666);
-  background: #f8f9fa;
+  color: var(--color-text-secondary, var(--text-secondary));
+  background: var(--brand-sand-light);
   border-radius: 8px;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border-color);
 }
 
 .assessment-card {
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
   transition: box-shadow 0.2s;
@@ -174,7 +175,7 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   cursor: pointer;
 }
 
@@ -193,7 +194,7 @@
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
 }
 
 .difficulty-badge {
@@ -216,7 +217,7 @@
 
 .assessment-details {
   padding: 24px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
   background: white;
 }
 
@@ -238,7 +239,7 @@
 .form-group select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.9rem;
   font-family: inherit;
@@ -249,8 +250,8 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
 }
 
 .word-count-inputs {
@@ -264,13 +265,13 @@
 }
 
 .word-count-inputs span {
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   font-size: 0.9rem;
 }
 
 /* Rubric Section */
 .rubric-section {
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -333,9 +334,9 @@
 .add-button {
   padding: 8px 16px;
   background: white;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border-color);
   border-radius: 6px;
-  color: #667eea;
+  color: var(--text-primary);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -343,16 +344,16 @@
 }
 
 .add-button:hover {
-  border-color: #667eea;
-  background: #f8f9fa;
+  border-color: var(--text-primary);
+  background: var(--brand-sand-light);
 }
 
 .remove-button {
   padding: 4px 12px;
-  background: #ffebee;
-  border: 1px solid #ef5350;
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error);
   border-radius: 4px;
-  color: #c62828;
+  color: var(--color-error-dark);
   font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
@@ -360,26 +361,26 @@
 }
 
 .remove-button:hover {
-  background: #ef5350;
+  background: var(--color-error);
   color: white;
 }
 
 .assessment-summary {
   margin-top: 24px;
   padding: 16px;
-  background: #e3f2fd;
-  border-left: 4px solid #2196F3;
+  background: var(--brand-turquoise-light);
+  border-left: 4px solid var(--brand-turquoise);
   border-radius: 4px;
   font-size: 0.9rem;
   color: var(--color-text, #000);
 }
 
 .assessment-summary strong {
-  color: #1565C0;
+  color: var(--brand-turquoise-dark);
 }
 
 .required {
-  color: #ef5350;
+  color: var(--color-error);
 }
 
 /* Responsive Design */

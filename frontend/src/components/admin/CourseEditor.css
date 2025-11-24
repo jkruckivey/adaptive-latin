@@ -12,7 +12,7 @@
 }
 
 .editor-header h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -24,15 +24,15 @@
 }
 
 .save-status.success {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #6ee7b7;
+  background: var(--brand-green-light);
+  color: var(--brand-green-dark);
+  border: 1px solid var(--brand-green);
 }
 
 .save-status.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+  border: 1px solid var(--color-error);
 }
 
 @keyframes slideIn {
@@ -54,14 +54,14 @@
 
 .module-editor-card {
   background: white;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
   transition: all 0.3s;
 }
 
 .module-editor-card:hover {
-  border-color: #cbd5e0;
+  border-color: var(--border-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -71,23 +71,23 @@
   align-items: flex-start;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .module-editor-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   margin: 0 0 4px 0;
 }
 
 .module-id {
   font-size: 0.85rem;
-  color: #718096;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .btn-edit {
   padding: 8px 16px;
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -97,7 +97,7 @@
 }
 
 .btn-edit:hover {
-  background: #1a202c;
+  background: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -106,7 +106,7 @@
 }
 
 .mlos-section h4 {
-  color: #4a5568;
+  color: var(--text-secondary);
   margin-bottom: 12px;
   font-size: 0.95rem;
 }
@@ -122,15 +122,15 @@
 
 .mlos-list li {
   padding: 8px 12px;
-  background: #f7fafc;
-  border-left: 3px solid #667eea;
+  background: var(--brand-sand-light);
+  border-left: 3px solid var(--brand-purple);
   border-radius: 4px;
   font-size: 0.9rem;
-  color: #2d3748;
+  color: var(--text-primary);
 }
 
 .concepts-section h4 {
-  color: #4a5568;
+  color: var(--text-secondary);
   margin-bottom: 12px;
   font-size: 0.95rem;
 }
@@ -142,8 +142,8 @@
 }
 
 .concept-editor-card {
-  background: #f7fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--brand-sand-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 12px;
   transition: all 0.2s;
@@ -151,7 +151,7 @@
 
 .concept-editor-card:hover {
   background: white;
-  border-color: #cbd5e0;
+  border-color: var(--border-color);
 }
 
 .concept-header {
@@ -162,7 +162,7 @@
 }
 
 .concept-id-badge {
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -173,8 +173,8 @@
 
 .btn-edit-small {
   padding: 4px 12px;
-  background: #e5e7eb;
-  color: #2d3748;
+  background: var(--border-color);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -184,12 +184,12 @@
 }
 
 .btn-edit-small:hover {
-  background: #cbd5e0;
+  background: var(--border-color);
 }
 
 .concept-title {
   font-size: 0.9rem;
-  color: #4a5568;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
 }
@@ -241,11 +241,11 @@
 }
 
 .modal-content h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   margin-top: 0;
   margin-bottom: 24px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .form-group {
@@ -255,7 +255,7 @@
 .form-group label {
   display: block;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-secondary);
   margin-bottom: 8px;
   font-size: 0.9rem;
 }
@@ -263,7 +263,7 @@
 .form-group input[type="text"] {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.95rem;
   transition: all 0.2s;
@@ -271,13 +271,13 @@
 
 .form-group input[type="text"]:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-group input[type="text"]:disabled {
-  background: #f7fafc;
-  color: #718096;
+  background: var(--brand-sand-light);
+  color: var(--text-secondary);
 }
 
 .mlo-input-group {
@@ -292,9 +292,9 @@
 
 .btn-remove {
   padding: 8px 12px;
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+  border: 1px solid var(--color-error);
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -303,13 +303,13 @@
 }
 
 .btn-remove:hover {
-  background: #fecaca;
+  background: var(--color-error-light);
 }
 
 .btn-add {
   padding: 8px 16px;
-  background: #e5e7eb;
-  color: #2d3748;
+  background: var(--border-color);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -320,7 +320,7 @@
 }
 
 .btn-add:hover {
-  background: #cbd5e0;
+  background: var(--border-color);
 }
 
 .modal-actions {
@@ -329,13 +329,13 @@
   justify-content: flex-end;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color);
 }
 
 .btn-cancel {
   padding: 10px 20px;
-  background: #e5e7eb;
-  color: #2d3748;
+  background: var(--border-color);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -344,12 +344,12 @@
 }
 
 .btn-cancel:hover {
-  background: #cbd5e0;
+  background: var(--border-color);
 }
 
 .btn-save {
   padding: 10px 20px;
-  background: #1a202c;
+  background: var(--text-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -367,6 +367,6 @@
 .loading {
   text-align: center;
   padding: 40px;
-  color: #718096;
+  color: var(--text-secondary);
   font-style: italic;
 }

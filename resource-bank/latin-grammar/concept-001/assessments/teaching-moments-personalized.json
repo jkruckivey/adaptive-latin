@@ -1,0 +1,212 @@
+{
+  "assessment_type": "teaching-moment",
+  "concept_id": "concept-001",
+  "confidence_tracking_enabled": true,
+  "personalization_enabled": true,
+  "teaching_moments": [
+    {
+      "id": "teaching-moment-001-1",
+      "difficulty": "intermediate",
+      "learning_objective": "Understand that case endings, not word order, determine grammatical function in Latin",
+
+      "scenario_templates": {
+        "history": {
+          "character": "Alex (fellow history teacher)",
+          "situation": "You and Alex are examining a Roman inscription together. The inscription reads: 'GALLIAM CAESAR VICIT' (Caesar conquered Gaul).",
+          "misconception": "This must mean 'Gaul conquered Caesar' because GALLIAM comes first, right? In English, the first noun is always the subject."
+        },
+        "archaeology": {
+          "character": "Sam (archaeology colleague)",
+          "situation": "You're cataloging artifacts with Sam. You find a tablet reading: 'URBEM ROMANI AEDIFICAVERUNT' (The Romans built the city).",
+          "misconception": "Since URBEM (the city) comes first, doesn't that mean the city built the Romans? That doesn't make sense, but that's what the word order shows."
+        },
+        "mythology": {
+          "character": "Jordan (mythology enthusiast)",
+          "situation": "You and Jordan are translating a myth about the gods. The text says: 'Minervam Iuppiter amat' (Jupiter loves Minerva).",
+          "misconception": "Wait, Minerva must be the one doing the loving because her name comes first. So this means 'Minerva loves Jupiter', right?"
+        },
+        "literature": {
+          "character": "Taylor (Latin poetry student)",
+          "situation": "You're reading Catullus together. A line reads: 'Rosam puella portat' (The girl carries the rose).",
+          "misconception": "The rose must be carrying the girl because 'rosam' appears before 'puella'. Poets do weird things for meter, but that seems backwards."
+        },
+        "default": {
+          "character": "A fellow Latin student",
+          "situation": "You're studying together and encounter the sentence: 'Viam puella videt' (The girl sees the road).",
+          "misconception": "The road must be seeing the girl because 'viam' comes first. Isn't the first word always the subject?"
+        }
+      },
+
+      "part1": {
+        "prompt": "How would you respond to help them understand?",
+        "options": [
+          {
+            "id": "a",
+            "text": "You're right that it seems backwards, but in Latin word order doesn't matter. You just have to memorize which word is the subject."
+          },
+          {
+            "id": "b",
+            "text": "Actually, in Latin the endings tell you each word's job, not the position. Look at the endings: -am shows it's accusative (object), while the nominative ending shows the subject."
+          },
+          {
+            "id": "c",
+            "text": "Latin puts the object first for emphasis sometimes. English can't do this, but Latin can move words around because the endings show function."
+          },
+          {
+            "id": "d",
+            "text": "No, you're reading it wrong. In Latin you always read from right to left when determining subject and object."
+          }
+        ]
+      },
+
+      "part2": {
+        "prompt": "Based on their response, how do you clarify further?",
+        "pushbacks": {
+          "a": "But that seems impossible! How am I supposed to memorize the subject and object for every sentence? There must be some system to it.",
+          "b": "Okay, so the endings matter... but what if both words have the same ending? How would you tell them apart then?",
+          "c": "That makes sense for emphasis, but even in normal sentences without emphasis, the word order can vary. Is it always about emphasis?",
+          "d": "Right to left? That seems strange. But then why do my textbook translations read left to right?"
+        },
+        "options": [
+          {
+            "id": "1",
+            "text": "The case endings create a system - nominative endings (-a, -ae for 1st decl.) mark subjects, while accusative endings (-am, -as) mark direct objects. Learn the endings, not word order."
+          },
+          {
+            "id": "2",
+            "text": "If both words have the same ending, then you DO use word order to tell them apart. That's when English rules apply."
+          },
+          {
+            "id": "3",
+            "text": "You're right, it's not always about emphasis. Latin word order is flexible for style, clarity, or meter in poetry. The endings always show function regardless of position."
+          },
+          {
+            "id": "4",
+            "text": "Actually, I was wrong about right-to-left. The order doesn't matter at all - you identify function purely by looking at the case endings, regardless of position."
+          }
+        ]
+      },
+
+      "scoring": {
+        "excellent": {
+          "combinations": ["b1", "b3", "c1", "c3"],
+          "feedback": "Excellent! You correctly explained that Latin uses case endings (not word order) to show grammatical function. You clarified that this system is consistent - endings ALWAYS indicate function, whether the sentence emphasizes something special or uses flexible word order for style. This understanding is fundamental to reading Latin correctly."
+        },
+        "good": {
+          "combinations": ["b2", "c2"],
+          "feedback": "Good start! You correctly identified that endings matter, but your second response wasn't quite right. Even when words could theoretically have the same case ending, the sentence context (verb type, meaning) helps determine function. Word order is flexible precisely BECAUSE endings reliably show function - you never fall back on word order rules."
+        },
+        "developing": {
+          "combinations": ["a*", "d4"],
+          "feedback": "Your response shows partial understanding. You're right that word order doesn't determine function in Latin, but the system isn't arbitrary or based on memorization. Latin uses a consistent case system - specific endings always indicate specific grammatical functions (nominative = subject, accusative = direct object, etc.). Study the case endings to unlock this system."
+        },
+        "insufficient": {
+          "combinations": ["d1", "d2", "d3"],
+          "feedback": "This response shows some confusion. Latin doesn't use right-to-left reading. Instead, it uses case endings (like -am for accusative, -a for nominative in first declension) to show each word's grammatical function. This allows flexible word order while maintaining clear meaning. Focus on learning the case endings and their functions."
+        }
+      }
+    },
+    {
+      "id": "teaching-moment-001-2",
+      "difficulty": "basic",
+      "learning_objective": "Identify first declension nouns by their characteristic nominative (-a) and genitive (-ae) endings",
+
+      "scenario_templates": {
+        "history": {
+          "character": "Morgan (museum intern)",
+          "situation": "You're helping Morgan catalog Roman inscriptions. They're trying to identify which nouns follow the first declension pattern.",
+          "misconception": "I think 'TERRA' is first declension because it ends in 'A'. But 'MARCUS' also has an 'A' hidden in it (M-A-R-C-U-S), so that's first declension too, right?"
+        },
+        "archaeology": {
+          "character": "Casey (archaeology student)",
+          "situation": "You're analyzing pottery fragments with Latin inscriptions. Casey is learning to classify the nouns by declension.",
+          "misconception": "This fragment says 'ROSA'. That's definitely first declension because it ends in -A. And this one says 'DIANA' - also ends in -A, so also first declension. Wait, does EVERY word ending in -A belong to first declension?"
+        },
+        "mythology": {
+          "character": "Avery (mythology researcher)",
+          "situation": "Avery is making flashcards of deity names and wants to group them by declension.",
+          "misconception": "FORTUNA ends in -A, so it's first declension. MINERVA ends in -A, so it's first declension. I'm seeing a pattern - any goddess name ending in -A must be first declension because they're all feminine!"
+        },
+        "literature": {
+          "character": "Riley (classics major)",
+          "situation": "Riley is parsing vocabulary from Catullus's poems to identify first declension nouns.",
+          "misconception": "PUELLA ends in -A in the nominative, so it's first declension. That means POETA (poet) must NOT be first declension because it describes a man, right? First declension is for feminine words only."
+        },
+        "default": {
+          "character": "Pat (study partner)",
+          "situation": "You're reviewing vocabulary together and trying to identify which nouns are first declension.",
+          "misconception": "If a word ends in -A, it's first declension. If it ends in anything else, it's not. That's the rule, isn't it?"
+        }
+      },
+
+      "part1": {
+        "prompt": "What's the key issue with this reasoning?",
+        "options": [
+          {
+            "id": "a",
+            "text": "You're partially right - nominative singular -a is an indicator, but you need to check the genitive singular too. First declension has genitive singular -ae."
+          },
+          {
+            "id": "b",
+            "text": "Actually, the -A ending is just a coincidence. First declension is determined by the noun's meaning, not its ending."
+          },
+          {
+            "id": "c",
+            "text": "Close! But gender isn't the key. First declension is mostly feminine, but there are masculine exceptions like 'nauta' (sailor) and 'poeta' (poet)."
+          },
+          {
+            "id": "d",
+            "text": "You're overthinking it. If the dictionary lists a word as first declension, just memorize that. There's no pattern to identify it yourself."
+          }
+        ]
+      },
+
+      "part2": {
+        "prompt": "They respond - how do you help them solidify their understanding?",
+        "pushbacks": {
+          "a": "Okay, so I check TWO endings - nominative AND genitive. But why -ae specifically? What if I see a word with nominative -a but genitive -i instead?",
+          "b": "So the ending doesn't matter? Then how do I actually identify which declension a noun belongs to without just memorizing a list?",
+          "c": "Got it - gender doesn't determine declension. But then what DOES make a noun first declension? Is there a reliable way to identify it?",
+          "d": "So there's no pattern? I just have to memorize 'puella is first, amicus is second' for every single noun I encounter?"
+        },
+        "options": [
+          {
+            "id": "1",
+            "text": "If you see genitive -i instead of -ae, that's a different declension (second). The combination of nominative -a + genitive -ae is the hallmark of first declension."
+          },
+          {
+            "id": "2",
+            "text": "Actually, the endings DO matter! Look at both the nominative (-a) and genitive (-ae) forms. Those two endings together identify first declension reliably."
+          },
+          {
+            "id": "3",
+            "text": "The reliable identifier is the ending pattern: nominative singular -a AND genitive singular -ae. Both endings together define first declension, regardless of the noun's gender."
+          },
+          {
+            "id": "4",
+            "text": "There IS a pattern! First declension nouns have nominative -a and genitive -ae. Learn those two endings and you can identify any first declension noun."
+          }
+        ]
+      },
+
+      "scoring": {
+        "excellent": {
+          "combinations": ["a1", "a3", "c3"],
+          "feedback": "Perfect! You correctly identified that first declension is defined by TWO characteristic endings: nominative singular -a AND genitive singular -ae. You also understood that gender is not the determining factor - most first declension nouns are feminine, but there are masculine exceptions. Checking both forms (nominative and genitive) is the reliable way to identify any first declension noun."
+        },
+        "good": {
+          "combinations": ["a2", "a4", "c1", "c4"],
+          "feedback": "Good! You recognized that the endings are what matter, and you mentioned the key forms. Your response shows solid understanding of the pattern. To be even clearer: always check BOTH nominative singular (-a) AND genitive singular (-ae). Both endings together define first declension."
+        },
+        "developing": {
+          "combinations": ["c2", "b2", "b4"],
+          "feedback": "You're on the right track recognizing that there's a pattern to identify. Focus on this: first declension nouns have nominative singular ending -a AND genitive singular ending -ae. Both endings matter! This pattern is consistent regardless of whether the noun is masculine or feminine."
+        },
+        "insufficient": {
+          "combinations": ["b1", "b3", "d*"],
+          "feedback": "First declension CAN be identified by a pattern - you don't need to memorize each noun individually. The pattern is: nominative singular -a + genitive singular -ae. Learn to recognize those two endings and you can identify first declension nouns systematically. The dictionary always shows both forms (e.g., 'puella, puellae') specifically to help you identify the declension."
+        }
+      }
+    }
+  ]
+}

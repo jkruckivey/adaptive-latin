@@ -18,7 +18,7 @@
 }
 
 .message {
-  max-width: 80%;
+  max-width: 90%;
   padding: 12px 16px;
   border-radius: 12px;
   animation: slideIn 0.3s ease-out;
@@ -37,22 +37,22 @@
 
 .message.user {
   align-self: flex-end;
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   margin-left: auto;
 }
 
 .message.assistant {
   align-self: flex-start;
-  background: #f5f5f5;
-  color: #333;
+  background: var(--brand-sand-light);
+  color: var(--text-primary);
 }
 
 .message.error {
   align-self: center;
-  background: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
 }
 
 .message-content p {
@@ -85,7 +85,7 @@
 .typing-indicator span {
   width: 8px;
   height: 8px;
-  background: #999;
+  background: var(--text-tertiary);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out both;
 }
@@ -111,14 +111,14 @@
   display: flex;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #eee;
-  background: #fafafa;
+  border-top: 1px solid var(--border-color);
+  background: var(--brand-sand-light);
 }
 
 .chat-input {
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
@@ -126,17 +126,17 @@
 
 .chat-input:focus {
   outline: none;
-  border-color: #2d3748;
+  border-color: var(--text-primary);
 }
 
 .chat-input:disabled {
-  background: #f5f5f5;
+  background: var(--brand-sand-light);
   cursor: not-allowed;
 }
 
 .send-button {
   padding: 12px 24px;
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -146,7 +146,7 @@
 }
 
 .send-button:hover:not(:disabled) {
-  background: #1a202c;
+  background: var(--text-primary);
   transform: translateY(-2px);
 }
 

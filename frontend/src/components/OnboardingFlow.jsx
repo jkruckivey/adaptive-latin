@@ -232,13 +232,13 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
               <input
                 type="radio"
                 name="learningStyle"
-                value="adaptive"
-                checked={selectedLearningStyle === 'adaptive'}
+                value="dialogue"
+                checked={selectedLearningStyle === 'dialogue'}
                 onChange={(e) => setSelectedLearningStyle(e.target.value)}
               />
               <div className="option-text">
-                <div className="option-title">Adaptive progression</div>
-                <div className="option-subtitle">Content adjusts based on your performance</div>
+                <div className="option-title">Interactive dialogue</div>
+                <div className="option-subtitle">Learn through back-and-forth conversation with an AI tutor</div>
               </div>
             </label>
           </div>

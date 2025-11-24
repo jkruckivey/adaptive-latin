@@ -35,6 +35,7 @@ from ..content_generators import (
 )
 from ..cartridge_parser import parse_common_cartridge
 from ..source_extraction import extract_text_from_url, extract_text_from_pdf
+from ..dependency_analyzer import analyze_course_dependencies
 
 # Initialize router
 router = APIRouter()
@@ -122,10 +123,70 @@ async def create_course(request: CreateCourseRequest):
             detail=f"Failed to create course: {str(e)}"
         )
 
-@router.get("/courses/{course_id}", response_model=CourseMetadata)
+@router.get("/courses/{course_id}/analyze-dependencies")
+async def analyze_dependencies_endpoint(course_id: str):
+    """
+    Analyze concept dependency structure for a course.
+
+    Detects: circular dependencies, orphaned concepts, suggests optimal ordering,
+    identifies bottleneck concepts, finds parallel learning paths, calculates complexity metrics
+    """
+    try:
+        from pathlib import Path
+        course = load_course_metadata(course_id)
+        concepts = []
+
+        # Try loading concepts from modules first (user-created courses)
+        modules_data = list_all_modules(course_id)
+        if isinstance(modules_data, dict) and modules_data.get('success') and modules_data.get('modules'):
+            for module in modules_data['modules']:
+                for concept_id in module.get('concepts', []):
+                    try:
+                        concept_path = Path(config.get_concept_dir(concept_id, course_id)) / "metadata.json"
+                        if concept_path.exists():
+                            with open(concept_path, 'r', encoding='utf-8') as f:
+                                concept_data = json.load(f)
+                                concepts.append(concept_data)
+                    except Exception as e:
+                        logger.warning(f"Failed to load concept {concept_id}: {e}")
+
+        # If no modules, scan course directory for concept folders (built-in courses like latin-grammar)
+        if not concepts:
+            course_dir = Path(config.RESOURCE_BANK_DIR) / course_id
+            if course_dir.exists():
+                for concept_dir in sorted(course_dir.iterdir()):
+                    if concept_dir.is_dir() and concept_dir.name.startswith('concept-'):
+                        metadata_file = concept_dir / "metadata.json"
+                        if metadata_file.exists():
+                            try:
+                                with open(metadata_file, 'r', encoding='utf-8') as f:
+                                    concept_data = json.load(f)
+                                    concepts.append(concept_data)
+                            except Exception as e:
+                                logger.warning(f"Failed to load {concept_dir.name}: {e}")
+
+        if not concepts:
+            return {"success": False, "error": "No concepts found for this course"}
+
+        analysis = analyze_course_dependencies(course_id, concepts)
+
+        return {
+            "success": True,
+            "course_id": course_id,
+            "course_title": course.get('title', course_id),
+            "analysis": analysis
+        }
+    except FileNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Course not found: {course_id}")
+    except Exception as e:
+        logger.error(f"Error analyzing dependencies for {course_id}: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to analyze dependencies: {str(e)}")
+
+@router.get("/courses/{course_id}")
 async def get_course(course_id: str):
     """
     Get metadata for a specific course.
+    Returns raw course metadata including onboarding_questions.
     """
     try:
         metadata = load_course_metadata(course_id)

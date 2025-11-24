@@ -10,19 +10,19 @@
 
 .prompt-header h3 {
   margin: 0 0 10px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 1.5rem;
 }
 
 .prompt-instruction {
   margin: 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
 .prompt-box {
-  background: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  background: var(--brand-turquoise-light);
+  border-left: 4px solid var(--brand-turquoise);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 30px;
@@ -30,7 +30,7 @@
 
 .prompt-text {
   margin: 0;
-  color: #1976d2;
+  color: var(--brand-turquoise-dark);
   font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.6;
@@ -44,7 +44,7 @@
 .response-section label {
   display: block;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 10px;
   font-size: 1.1rem;
 }
@@ -52,7 +52,7 @@
 .response-textarea {
   width: 100%;
   padding: 15px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -63,7 +63,7 @@
 
 .response-textarea:focus {
   outline: none;
-  border-color: #2196f3;
+  border-color: var(--brand-turquoise);
   box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }
 
@@ -71,16 +71,16 @@
   text-align: right;
   margin-top: 8px;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .char-counter .valid {
-  color: #4caf50;
+  color: var(--brand-green);
   font-weight: 600;
 }
 
 .char-counter .invalid {
-  color: #f44336;
+  color: var(--color-error);
   font-weight: 600;
 }
 
@@ -92,7 +92,7 @@
 
 .submit-response-button {
   padding: 12px 30px;
-  background: #2196f3;
+  background: var(--brand-turquoise);
   color: white;
   border: none;
   border-radius: 8px;
@@ -103,7 +103,7 @@
 }
 
 .submit-response-button:hover:not(:disabled) {
-  background: #1976d2;
+  background: var(--brand-turquoise-dark);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
 }
@@ -115,14 +115,14 @@
 
 .prompt-hints {
   background: #fffbf0;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
   padding: 20px;
   border-radius: 8px;
 }
 
 .prompt-hints p {
   margin: 0 0 10px 0;
-  color: #856404;
+  color: var(--color-warning-dark);
   font-weight: 600;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .prompt-hints li {
-  color: #856404;
+  color: var(--color-warning-dark);
   margin-bottom: 8px;
   line-height: 1.5;
 }
@@ -146,7 +146,7 @@
 .success-icon {
   width: 80px;
   height: 80px;
-  background: #4caf50;
+  background: var(--brand-green);
   color: white;
   font-size: 3rem;
   border-radius: 50%;
@@ -167,20 +167,20 @@
 }
 
 .discussion-submitted h3 {
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 15px;
   font-size: 1.8rem;
 }
 
 .discussion-submitted > p {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: 30px;
 }
 
 .submitted-response {
-  background: #f8f9fa;
-  border: 2px solid #e0e0e0;
+  background: var(--brand-sand-light);
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 25px;
   margin-top: 30px;
@@ -189,13 +189,13 @@
 
 .submitted-response h4 {
   margin: 0 0 15px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 1.2rem;
 }
 
 .submitted-response p {
   margin: 0;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
   white-space: pre-wrap;
 }

@@ -23,8 +23,8 @@
 }
 
 .concept-card {
-  background: var(--color-background, #f8f9fa);
-  border: 1px solid var(--color-border, #e0e0e0);
+  background: var(--color-background, var(--brand-sand-light));
+  border: 1px solid var(--color-border, var(--border-color));
   border-radius: 8px;
   padding: 20px;
 }
@@ -48,7 +48,7 @@
   height: 28px;
   border-radius: 50%;
   border: none;
-  background: var(--error-color, #dc3545);
+  background: var(--error-color, var(--color-error));
   color: white;
   font-size: 1.5rem;
   line-height: 1;
@@ -71,7 +71,7 @@
   padding: 12px;
   background: white;
   border-radius: 6px;
-  border: 1px solid var(--color-border, #e0e0e0);
+  border: 1px solid var(--color-border, var(--border-color));
 }
 
 .checkbox-option {
@@ -96,7 +96,7 @@
   width: 100%;
   padding: 12px;
   background: white;
-  border: 2px dashed var(--color-border, #e0e0e0);
+  border: 2px dashed var(--color-border, var(--border-color));
   border-radius: 8px;
   color: var(--color-text, #000);
   font-size: 0.95rem;
@@ -108,7 +108,7 @@
 
 .add-concept-button:hover {
   border-color: var(--primary-color, #000);
-  background: var(--color-background, #f8f9fa);
+  background: var(--color-background, var(--brand-sand-light));
 }
 
 .planning-tips {
@@ -150,7 +150,7 @@
 /* Module-specific styles */
 .module-card {
   background: #ffffff;
-  border: 2px solid #667eea;
+  border: 2px solid var(--brand-purple);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -172,9 +172,9 @@
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: 1px solid #667eea;
+  border: 1px solid var(--brand-purple);
   background: white;
-  color: #667eea;
+  color: var(--brand-purple);
   font-size: 1.2rem;
   line-height: 1;
   cursor: pointer;
@@ -185,7 +185,7 @@
 }
 
 .toggle-button:hover {
-  background: #667eea;
+  background: var(--brand-purple);
   color: white;
 }
 
@@ -194,25 +194,25 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--brand-purple);
 }
 
 .concepts-section {
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color);
 }
 
 .concepts-section h4 {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 16px;
 }
 
 .concept-item-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--brand-sand-light);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 12px;
@@ -228,7 +228,7 @@
 .concept-item-header h5 {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -244,9 +244,9 @@
   width: 100%;
   padding: 12px;
   background: white;
-  border: 2px dashed #667eea;
+  border: 2px dashed var(--brand-purple);
   border-radius: 8px;
-  color: #667eea;
+  color: var(--brand-purple);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -256,7 +256,7 @@
 
 .add-button:hover {
   border-color: #5568d3;
-  background: #f9fafb;
+  background: var(--brand-sand-light);
   color: #5568d3;
 }
 
@@ -267,7 +267,7 @@
   padding: 12px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   max-height: 200px;
   overflow-y: auto;
 }
@@ -283,7 +283,7 @@
 }
 
 .prerequisite-option:hover {
-  background: #f9fafb;
+  background: var(--brand-sand-light);
 }
 
 .prerequisite-option.disabled {
@@ -299,7 +299,7 @@
 
 .prerequisite-option span {
   font-size: 0.9rem;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {

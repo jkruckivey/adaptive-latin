@@ -140,17 +140,20 @@ class ScenariosListResponse(BaseModel):
 
 class CourseMetadata(BaseModel):
     """Course metadata structure."""
+    model_config = {"extra": "allow", "validate_default": False}
+
     course_id: str
     title: str
     domain: str
     taxonomy: Optional[str] = "blooms"
-    course_learning_outcomes: List[str] = []
+    course_learning_outcomes: List[str] = Field(default_factory=list)
+    onboarding_questions: Optional[List[dict]] = Field(default_factory=list)
     # Keep these for backward compatibility with old courses
     description: Optional[str] = None
     target_audience: Optional[str] = None
     created_at: str
     updated_at: str
-    concepts: List[dict] = []
+    concepts: List[dict] = Field(default_factory=list)
 
 class CreateCourseRequest(BaseModel):
     """Request to create a new course."""

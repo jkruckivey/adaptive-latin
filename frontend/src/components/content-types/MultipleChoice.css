@@ -1,16 +1,16 @@
 /* Quiz Section - Diagnostic-First Design */
 .quiz-section {
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   border-radius: 12px;
   padding: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .question-container {
   background: white;
   border-radius: 8px;
   padding: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .question-header {
@@ -23,7 +23,7 @@
 .question-icon {
   width: 24px;
   height: 24px;
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -36,21 +36,21 @@
 .question-title {
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .question-scenario {
   margin-bottom: 20px;
   padding: 16px;
-  background: #f7fafc;
-  border-left: 4px solid #10b981;
+  background: var(--brand-sand-light);
+  border-left: 4px solid var(--brand-green);
   border-radius: 6px;
 }
 
 .question-scenario p {
   font-size: 15px;
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
   font-style: italic;
@@ -62,7 +62,7 @@
 
 .question-text p {
   font-size: 16px;
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
 }
@@ -82,16 +82,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
 }
 
 .answer-option:hover {
-  background: #f7fafc;
-  border-color: #cbd5e0;
+  background: var(--brand-sand-light);
+  border-color: var(--border-color);
 }
 
 .answer-option:focus-within {
-  outline: 2px solid #3182ce;
+  outline: 2px solid var(--brand-turquoise);
   outline-offset: 2px;
 }
 
@@ -110,7 +110,7 @@
 .radio-custom {
   width: 18px;
   height: 18px;
-  border: 2px solid #cbd5e0;
+  border: 2px solid var(--border-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -120,8 +120,8 @@
 }
 
 .answer-option input[type="radio"]:checked + .radio-custom {
-  border-color: #3182ce;
-  background: #3182ce;
+  border-color: var(--brand-turquoise);
+  background: var(--brand-turquoise);
 }
 
 .answer-option input[type="radio"]:checked + .radio-custom::after {
@@ -134,7 +134,7 @@
 
 .answer-text {
   font-size: 14px;
-  color: #2d3748;
+  color: var(--text-primary);
   line-height: 1.4;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .submit-btn {
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -158,16 +158,16 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #4a5568;
+  background: var(--text-secondary);
 }
 
 .submit-btn:focus {
-  outline: 2px solid #3182ce;
+  outline: 2px solid var(--brand-turquoise);
   outline-offset: 2px;
 }
 
 .submit-btn:active:not(:disabled) {
-  background: #1a202c;
+  background: var(--text-primary);
 }
 
 .submit-btn:disabled {

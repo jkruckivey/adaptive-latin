@@ -8,6 +8,7 @@ function ProgressDashboard({ learnerId, progress, courseTitle = 'Course', course
   const [concepts, setConcepts] = useState([])
   const [conceptMetadata, setConceptMetadata] = useState({})
   const [expandedModules, setExpandedModules] = useState({})
+  const [conceptsExpanded, setConceptsExpanded] = useState(false)
 
   useEffect(() => {
     loadModulesAndConcepts()
@@ -95,11 +96,29 @@ function ProgressDashboard({ learnerId, progress, courseTitle = 'Course', course
       )}
 
       <div className="concepts-list">
-        <h3>{courseTitle} {modules.length > 0 ? 'Modules' : 'Concepts'}</h3>
+        <div
+          className="concepts-header"
+          onClick={() => setConceptsExpanded(!conceptsExpanded)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setConceptsExpanded(!conceptsExpanded)
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-expanded={conceptsExpanded}
+          aria-label={`${conceptsExpanded ? 'Collapse' : 'Expand'} ${courseTitle} ${modules.length > 0 ? 'modules' : 'concepts'} list`}
+        >
+          <span className="toggle-icon" aria-hidden="true">{conceptsExpanded ? '▼' : '▶'}</span>
+          <h3>{courseTitle} {modules.length > 0 ? 'Modules' : 'Concepts'}</h3>
+        </div>
 
-        {/* Module-based structure */}
-        {modules.length > 0 ? (
-          <div className="modules-container">
+        {conceptsExpanded && (
+          <>
+            {/* Module-based structure */}
+            {modules.length > 0 ? (
+              <div className="modules-container">
             {modules.map((module, moduleIndex) => {
               const isExpanded = expandedModules[module.id]
               const moduleConceptCount = module.concepts.length
@@ -112,13 +131,23 @@ function ProgressDashboard({ learnerId, progress, courseTitle = 'Course', course
                   <div
                     className="module-header"
                     onClick={() => toggleModule(module.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        toggleModule(module.id)
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-expanded={isExpanded}
+                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${module.title}, ${completedInModule} of ${moduleConceptCount} concepts completed`}
                   >
-                    <span className="module-toggle">{isExpanded ? '▼' : '▶'}</span>
+                    <span className="module-toggle" aria-hidden="true">{isExpanded ? '▼' : '▶'}</span>
                     <div className="module-info">
                       <span className="module-number">Module {moduleIndex + 1}</span>
                       <span className="module-title">{module.title}</span>
                     </div>
-                    <span className="module-progress">
+                    <span className="module-progress" aria-label={`${completedInModule} of ${moduleConceptCount} concepts completed`}>
                       {completedInModule}/{moduleConceptCount}
                     </span>
                   </div>
@@ -175,6 +204,8 @@ function ProgressDashboard({ learnerId, progress, courseTitle = 'Course', course
           ) : (
             <p className="loading-text">Loading course structure...</p>
           )
+        )}
+          </>
         )}
       </div>
 

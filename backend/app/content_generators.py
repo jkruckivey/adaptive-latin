@@ -106,11 +106,12 @@ def generate_preview_request(learning_style: str) -> str:
                 "Respond ONLY with the JSON object, no other text."
             )
 
-    elif learning_style == 'adaptive':
+    elif learning_style == 'dialogue':
         return (
-            f"Generate a brief 'lesson' preview ({PREVIEW_READ_TIME_SECONDS}-second read) explaining "
-            "the core concept and key patterns. Keep it short - this is just a conceptual foundation "
-            "before assessment. Respond ONLY with the JSON object, no other text."
+            f"Generate a brief Socratic-style 'lesson' preview ({PREVIEW_READ_TIME_SECONDS}-second read) "
+            "that poses questions to guide discovery of the concept. Use a conversational tone. "
+            "Keep it short - this is just an engaging preview before assessment. "
+            "Respond ONLY with the JSON object, no other text."
         )
 
     else:
@@ -124,19 +125,23 @@ def generate_preview_request(learning_style: str) -> str:
 def generate_diagnostic_request(
     is_cumulative: bool,
     cumulative_concepts: List[str] = None,
-    difficulty: str = "appropriate"
+    difficulty: str = "appropriate",
+    learning_style: str = "varied"
 ) -> str:
     """
-    Generate request for diagnostic multiple-choice question.
+    Generate request for diagnostic question based on learner's learning style.
 
     Args:
         is_cumulative: Whether this is a cumulative review question
         cumulative_concepts: List of concept IDs to integrate (for cumulative review)
         difficulty: Question difficulty level ('easier', 'appropriate', 'harder')
+        learning_style: Learner's preferred learning style ('dialogue', 'narrative', 'varied')
 
     Returns:
         Prompt string for Claude
     """
+    import random
+
     # Build difficulty instruction
     difficulty_instructions = {
         "easier": (
@@ -154,28 +159,82 @@ def generate_diagnostic_request(
 
     difficulty_instruction = difficulty_instructions.get(difficulty, "")
 
-    if is_cumulative and cumulative_concepts:
-        return (
-            f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates the concepts "
-            f"listed above. The scenario should naturally require applying knowledge from at least "
-            f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
-            f"{difficulty_instruction}"
-            f"Include a rich contextual scenario. Mark this as is_cumulative: true in the metadata. "
-            f"Respond ONLY with the JSON object, no other text."
-        )
-    else:
-        return (
-            f"Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from "
-            f"any shown above). {difficulty_instruction}"
-            f"Include a rich contextual scenario. Respond "
-            f"ONLY with the JSON object, no other text."
-        )
+    # Determine question type based on learning style
+    if learning_style == "dialogue":
+        question_type = "dialogue"
+    elif learning_style == "narrative":
+        question_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    else:  # "varied"
+        question_type = random.choice(["multiple-choice", "fill-blank", "dialogue"])
+
+    # Build prompt based on question type
+    if question_type == "dialogue":
+        # Open-ended Socratic question
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'dialogue' CUMULATIVE REVIEW question that integrates the concepts "
+                f"listed above through Socratic questioning. Ask an open-ended question that requires "
+                f"the learner to explain their understanding by connecting at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
+                f"{difficulty_instruction}"
+                f"Use a conversational, back-and-forth tone. Include a rich contextual scenario. "
+                f"Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'dialogue' diagnostic question with a NEW scenario (different from "
+                f"any shown above). {difficulty_instruction}"
+                f"Ask an open-ended Socratic question that prompts the learner to explain their understanding. "
+                f"Use a conversational, back-and-forth tone. Include a rich contextual scenario. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+
+    elif question_type == "fill-blank":
+        # Fill-in-the-blank for narrative style
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'fill-blank' CUMULATIVE REVIEW question that integrates the concepts "
+                f"listed above. Create a story-based scenario where the learner fills in missing "
+                f"forms/translations that require knowledge from at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
+                f"{difficulty_instruction}"
+                f"Embed the question in a narrative context. Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'fill-blank' diagnostic question with a NEW scenario (different from "
+                f"any shown above). {difficulty_instruction}"
+                f"Embed the question in a narrative context or story. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+
+    else:  # "multiple-choice"
+        # Standard multiple-choice
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates the concepts "
+                f"listed above. The scenario should naturally require applying knowledge from at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts. "
+                f"{difficulty_instruction}"
+                f"Include a rich contextual scenario. Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'multiple-choice' diagnostic question with a NEW scenario (different from "
+                f"any shown above). {difficulty_instruction}"
+                f"Include a rich contextual scenario. Respond "
+                f"ONLY with the JSON object, no other text."
+            )
 
 
 def generate_practice_request(
     is_cumulative: bool,
     cumulative_concepts: List[str] = None,
-    difficulty: str = "appropriate"
+    difficulty: str = "appropriate",
+    learning_style: str = "varied"
 ) -> str:
     """
     Generate request for practice question (next diagnostic after correct answer).
@@ -184,10 +243,13 @@ def generate_practice_request(
         is_cumulative: Whether this is a cumulative review question
         cumulative_concepts: List of concept IDs to integrate (for cumulative review)
         difficulty: Question difficulty level ('easier', 'appropriate', 'harder')
+        learning_style: Learner's preferred learning style ('dialogue', 'narrative', 'varied')
 
     Returns:
         Prompt string for Claude
     """
+    import random
+
     # Build difficulty instruction
     difficulty_instructions = {
         "easier": (
@@ -206,22 +268,77 @@ def generate_practice_request(
 
     difficulty_instruction = difficulty_instructions.get(difficulty, "Increase difficulty slightly. ")
 
-    if is_cumulative and cumulative_concepts:
-        return (
-            f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates concepts from "
-            f"the list above. Create a scenario that requires applying knowledge from at least "
-            f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
-            f"{difficulty_instruction}"
-            f"Use a different contextual scenario. Mark this as is_cumulative: true in the metadata. "
-            f"Respond ONLY with the JSON object, no other text."
-        )
-    else:
-        return (
-            f"Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario "
-            f"from those listed above. {difficulty_instruction}"
-            f"Vary the context: use different vocabulary, different scenarios, different aspects of the concept. "
-            f"Respond ONLY with the JSON object, no other text."
-        )
+    # Determine question type based on learning style
+    if learning_style == "dialogue":
+        question_type = "dialogue"
+    elif learning_style == "narrative":
+        question_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    else:  # "varied"
+        question_type = random.choice(["multiple-choice", "fill-blank", "dialogue"])
+
+    # Build prompt based on question type
+    if question_type == "dialogue":
+        # Open-ended Socratic question
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'dialogue' CUMULATIVE REVIEW question that integrates concepts from "
+                f"the list above through Socratic questioning. Ask an open-ended question that requires "
+                f"the learner to connect at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
+                f"{difficulty_instruction}"
+                f"Use a conversational, back-and-forth tone with a different contextual scenario. "
+                f"Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'dialogue' diagnostic question with a COMPLETELY DIFFERENT scenario "
+                f"from those listed above. {difficulty_instruction}"
+                f"Ask an open-ended Socratic question that prompts the learner to explain their understanding. "
+                f"Vary the context: use different vocabulary, different scenarios, different aspects of the concept. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+
+    elif question_type == "fill-blank":
+        # Fill-in-the-blank for narrative style
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'fill-blank' CUMULATIVE REVIEW question that integrates concepts from "
+                f"the list above. Create a story-based scenario where the learner fills in missing "
+                f"forms/translations that require knowledge from at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
+                f"{difficulty_instruction}"
+                f"Use a different contextual scenario. Embed in narrative context. "
+                f"Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'fill-blank' diagnostic question with a COMPLETELY DIFFERENT scenario "
+                f"from those listed above. {difficulty_instruction}"
+                f"Vary the context: use different vocabulary, different scenarios, different aspects of the concept. "
+                f"Embed the question in a narrative context or story. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+
+    else:  # "multiple-choice"
+        # Standard multiple-choice
+        if is_cumulative and cumulative_concepts:
+            return (
+                f"Generate a 'multiple-choice' CUMULATIVE REVIEW question that integrates concepts from "
+                f"the list above. Create a scenario that requires applying knowledge from at least "
+                f"{len(cumulative_concepts) if len(cumulative_concepts) > 1 else 2} of those concepts together. "
+                f"{difficulty_instruction}"
+                f"Use a different contextual scenario. Mark this as is_cumulative: true in the metadata. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
+        else:
+            return (
+                f"Generate a 'multiple-choice' diagnostic question with a COMPLETELY DIFFERENT scenario "
+                f"from those listed above. {difficulty_instruction}"
+                f"Vary the context: use different vocabulary, different scenarios, different aspects of the concept. "
+                f"Respond ONLY with the JSON object, no other text."
+            )
 
 
 def build_question_context_string(question_context: Optional[Dict[str, Any]]) -> str:
@@ -329,7 +446,8 @@ def _select_remediation_content_type(learning_style: str) -> str:
         ])
         logger.info(f"Varied learning style - selected: {content_type}")
         return content_type
-    elif learning_style == 'adaptive':
+    elif learning_style == 'dialogue':
+        # Interactive dialogue style uses conversational lessons
         return 'lesson'
     else:
         return 'lesson'
@@ -883,7 +1001,7 @@ Concept objectives should be concrete and specific."""
 - Learning How to Learn: Becoming a better student"""
     
     elif taxonomy == 'qm':
-        return """Follow Quality Matters standards:
+        return """Follow best practices for effective learning design:
 - Measurable and clear
 - Aligned with course/module activities and assessments
 - Appropriate for the level of the course

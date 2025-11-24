@@ -1,0 +1,22 @@
+{
+  "learner_id": "test_walkthrough_001",
+  "message": "I'd say 4 - I'm quite confident. It makes sense when I think about Spanish where you can say 'yo veo' or just 'veo' and the verb ending tells you it's 'I'.",
+  "conversation_history": [
+    {
+      "role": "user",
+      "content": "Hi! I am ready to start learning Latin. Can you teach me the first concept?"
+    },
+    {
+      "role": "assistant",
+      "content": "[Teaching content]"
+    },
+    {
+      "role": "user",
+      "content": "In English, the word order tells you who is doing what - like 'the girl sees the road' vs 'the road sees the girl'. But in Latin, the endings on the words tell you their function, so you can move the words around and it still means the same thing. The ending shows if it's the subject or object."
+    },
+    {
+      "role": "assistant",
+      "content": "Excellent explanation!... **Before I give you more feedback, how confident are you in this answer? (1-5)**"
+    }
+  ]
+}

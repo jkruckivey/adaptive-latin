@@ -79,6 +79,19 @@ function TeachingMoment({ content, onSubmit, onConfidenceChange }) {
 
   return (
     <div className="teaching-moment">
+      {/* Teaching Moment Introduction - Sets Expectations */}
+      {stage === 1 && (
+        <div className="teaching-moment-intro">
+          <div className="intro-icon">💡</div>
+          <h3 className="intro-title">Teaching Moment</h3>
+          <p className="intro-description">
+            This is a two-stage learning activity. You'll respond to a common misconception,
+            receive feedback, and then have a chance to refine your understanding.
+            Take your time and think through each step carefully.
+          </p>
+        </div>
+      )}
+
       {/* Scenario Setup */}
       <div className="scenario-card">
         <div className="scenario-header">

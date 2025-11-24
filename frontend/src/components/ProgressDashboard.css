@@ -9,7 +9,7 @@
 }
 
 .progress-dashboard h2 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 20px;
   font-size: 1.5rem;
 }
@@ -22,7 +22,7 @@
 }
 
 .stat-card {
-  background: #e5e7eb;
+  background: var(--border-color);
   padding: 16px;
   border-radius: 12px;
   text-align: center;
@@ -31,22 +31,41 @@
 .stat-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .concepts-list {
   margin-bottom: 24px;
 }
 
+.concepts-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 0;
+  user-select: none;
+}
+
+.concepts-header:hover {
+  opacity: 0.7;
+}
+
+.concepts-header .toggle-icon {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+
 .concepts-list h3 {
-  color: #333;
-  margin-bottom: 12px;
+  color: var(--text-primary);
+  margin: 0;
   font-size: 1.1rem;
 }
 
@@ -62,7 +81,7 @@
 }
 
 .module-section {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
   background: white;
@@ -73,7 +92,7 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
   cursor: pointer;
   transition: all 0.3s;
@@ -81,7 +100,7 @@
 }
 
 .module-header:hover {
-  background: #1a202c;
+  background: var(--text-primary);
 }
 
 .module-toggle {
@@ -122,7 +141,7 @@
 .module-concepts {
   list-style: none;
   padding: 12px;
-  background: #fafafa;
+  background: var(--brand-sand-light);
 }
 
 .module-concepts .concept-item {
@@ -155,8 +174,8 @@
 }
 
 .concept-item.current {
-  background: #e5e7eb;
-  border-left: 4px solid #2d3748;
+  background: var(--border-color);
+  border-left: 4px solid var(--text-primary);
 }
 
 .concept-item.completed {
@@ -166,30 +185,30 @@
 .concept-number {
   width: 24px;
   height: 24px;
-  background: #ddd;
+  background: var(--border-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .concept-item.current .concept-number {
-  background: #667eea;
+  background: var(--brand-purple);
   color: white;
 }
 
 .concept-item.completed .concept-number {
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
 }
 
 .concept-id {
   flex: 1;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .badge {
@@ -200,17 +219,17 @@
 }
 
 .current-badge {
-  background: #2d3748;
+  background: var(--text-primary);
   color: white;
 }
 
 .completed-badge {
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
 }
 
 .loading-text {
-  color: #999;
+  color: var(--text-tertiary);
   text-align: center;
   padding: 20px;
   font-style: italic;
@@ -218,11 +237,11 @@
 
 .info-section {
   padding-top: 20px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 
 .info-section h3 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -233,6 +252,6 @@
 
 .info-list li {
   padding: 8px 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }

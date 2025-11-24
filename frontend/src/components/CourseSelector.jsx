@@ -126,10 +126,22 @@ function CourseSelector({ onCourseSelected, onSkip, onCreateCourse, onBack }) {
               key={course.course_id}
               className={`course-card ${selectedCourse?.course_id === course.course_id ? 'selected' : ''}`}
               onClick={() => setSelectedCourse(course)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setSelectedCourse(course)
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={`Select ${course.title} course`}
+              aria-pressed={selectedCourse?.course_id === course.course_id}
             >
               <div className="course-header">
                 <h3>{course.title}</h3>
-                <span className="course-type-badge">{course.type}</span>
+                <span className={`course-type-badge ${course.type ? course.type.toLowerCase() : 'official'}`}>
+                  {course.type}
+                </span>
               </div>
 
               <p className="course-domain">{course.domain}</p>
@@ -141,14 +153,14 @@ function CourseSelector({ onCourseSelected, onSkip, onCreateCourse, onBack }) {
               <div className="course-meta">
                 {course.concepts_count && (
                   <span className="meta-item">
-                    <span className="meta-icon">📚</span>
-                    {course.concepts_count} concepts
+                    <span className="meta-icon" aria-hidden="true">📚</span>
+                    <span>{course.concepts_count} concepts</span>
                   </span>
                 )}
                 {course.estimated_hours && (
                   <span className="meta-item">
-                    <span className="meta-icon">⏱️</span>
-                    ~{course.estimated_hours} hours
+                    <span className="meta-icon" aria-hidden="true">⏱️</span>
+                    <span>~{course.estimated_hours} hours</span>
                   </span>
                 )}
               </div>
@@ -156,8 +168,20 @@ function CourseSelector({ onCourseSelected, onSkip, onCreateCourse, onBack }) {
           ))}
 
           {onCreateCourse && (
-            <div className="create-course-option" onClick={onCreateCourse}>
-              <div className="option-icon">+</div>
+            <div
+              className="create-course-option"
+              onClick={onCreateCourse}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onCreateCourse()
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label="Create a new course"
+            >
+              <div className="option-icon" aria-hidden="true">+</div>
               <div className="option-title">Create New Course</div>
               <div className="option-description">
                 Build a custom course tailored to your learning goals

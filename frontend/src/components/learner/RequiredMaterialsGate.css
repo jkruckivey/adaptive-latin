@@ -11,12 +11,12 @@
 
 .gate-header h2 {
   font-size: 2rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .gate-subtitle {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
@@ -24,27 +24,27 @@
   background: white;
   padding: 20px;
   border-radius: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   margin-bottom: 30px;
 }
 
 .progress-text {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 10px;
   font-size: 1.1rem;
 }
 
 .progress-bar {
   height: 12px;
-  background: #e0e0e0;
+  background: var(--border-color);
   border-radius: 6px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: #10b981;
+  background: var(--brand-green);
   transition: width 0.3s ease;
 }
 
@@ -57,19 +57,19 @@
 
 .material-card {
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
   transition: all 0.2s;
 }
 
 .material-card.completed {
-  border-color: #10b981;
+  border-color: var(--brand-green);
   background: transparent;
 }
 
 .material-card.incomplete {
-  border-color: #ffc107;
+  border-color: var(--color-warning);
 }
 
 .material-card:hover {
@@ -97,19 +97,19 @@
 
 .material-info h3 {
   margin: 0 0 5px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 1.3rem;
 }
 
 .material-desc {
   margin: 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
 .completion-badge {
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -135,7 +135,7 @@
 }
 
 .start-material-button {
-  background: #ffc107;
+  background: var(--color-warning);
   color: #000;
 }
 
@@ -146,8 +146,8 @@
 }
 
 .review-material-button {
-  background: #e0e0e0;
-  color: #666;
+  background: var(--border-color);
+  color: var(--text-secondary);
 }
 
 .review-material-button:hover {
@@ -160,7 +160,7 @@
 
 .incomplete-notice {
   background: #fff3cd;
-  border: 2px solid #ffc107;
+  border: 2px solid var(--color-warning);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -168,14 +168,14 @@
 
 .incomplete-notice p {
   margin: 0;
-  color: #856404;
+  color: var(--color-warning-dark);
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .complete-notice {
   background: transparent;
-  border: 2px solid #10b981;
+  border: 2px solid var(--brand-green);
   border-radius: 12px;
   padding: 25px;
   text-align: center;
@@ -183,14 +183,14 @@
 
 .complete-notice p {
   margin: 0 0 15px 0;
-  color: #155724;
+  color: var(--brand-green-dark);
   font-size: 1.2rem;
   font-weight: 600;
 }
 
 .proceed-button {
   padding: 15px 40px;
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
   border: none;
   border-radius: 8px;
@@ -219,18 +219,18 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .material-viewer-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 1.8rem;
 }
 
 .close-viewer-button {
   padding: 10px 20px;
-  background: #e0e0e0;
+  background: var(--border-color);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -252,7 +252,7 @@
 .material-link-section {
   margin-bottom: 30px;
   padding: 20px;
-  background: #e5e7eb;
+  background: var(--border-color);
   border-radius: 8px;
   text-align: center;
 }
@@ -260,7 +260,7 @@
 .material-link {
   display: inline-block;
   padding: 15px 30px;
-  background: #2196f3;
+  background: var(--brand-turquoise);
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -271,13 +271,13 @@
 }
 
 .material-link:hover {
-  background: #1976d2;
+  background: var(--brand-turquoise-dark);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
 }
 
 .material-description {
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 10px;
   font-style: italic;
 }
@@ -287,10 +287,10 @@
 }
 
 .verification-interface h3 {
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .no-verification {
@@ -300,7 +300,7 @@
 
 .mark-complete-button {
   padding: 12px 30px;
-  background: #10b981;
+  background: var(--brand-green);
   color: white;
   border: none;
   border-radius: 8px;

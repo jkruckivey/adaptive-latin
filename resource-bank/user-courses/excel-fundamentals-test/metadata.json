@@ -38,6 +38,23 @@
       "placeholder": "e.g., Work projects, personal budgeting, data analysis, school assignments, managing my coffee shop business...",
       "key": "useCase",
       "priorKnowledgeKey": "interests"
+    },
+    {
+      "type": "question",
+      "question": "How do you learn best?",
+      "options": [
+        { "value": "visual", "label": "Visual aids - charts, diagrams, step-by-step screenshots" },
+        { "value": "examples", "label": "Lots of practical examples and exercises" },
+        { "value": "explanation", "label": "Clear explanations of how features work" },
+        { "value": "practice", "label": "Hands-on practice and experimentation" }
+      ],
+      "key": "learningStyle"
+    },
+    {
+      "type": "question",
+      "question": "What are you interested in? (This helps me create examples you'll find relevant and engaging)",
+      "placeholder": "e.g., Finance, sales, marketing, project management, sports statistics, personal budgeting, scientific research, event planning...",
+      "key": "interests"
     }
   ]
 }

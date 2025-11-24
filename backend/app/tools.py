@@ -304,10 +304,14 @@ def update_learner_model(
     """
     try:
         # Load existing model
+        logger.info(f"🔍 update_learner_model called for learner={learner_id}, concept={concept_id}")
+        logger.info(f"📊 Assessment data: type={assessment_data.get('type')}, score={assessment_data.get('score')}, confidence={assessment_data.get('self_confidence')}")
+
         model = load_learner_model(learner_id)
 
         # Initialize concept tracking if not exists
         if concept_id not in model["concepts"]:
+            logger.info(f"🆕 Initializing new concept entry for {concept_id}")
             model["concepts"][concept_id] = {
                 "concept_id": concept_id,
                 "status": "in_progress",
@@ -317,6 +321,8 @@ def update_learner_model(
                 "mastery_score": 0.0,
                 "review_data": initialize_review_data(concept_id)
             }
+        else:
+            logger.info(f"📝 Updating existing concept entry for {concept_id}")
 
         concept_data = model["concepts"][concept_id]
 
@@ -330,6 +336,7 @@ def update_learner_model(
             "prompt_id": assessment_data.get("prompt_id")
         }
         concept_data["assessments"].append(assessment_record)
+        logger.info(f"✅ Added assessment record. Total assessments for {concept_id}: {len(concept_data['assessments'])}")
 
         # Add confidence tracking if present
         if "calibration" in assessment_data:
@@ -367,11 +374,13 @@ def update_learner_model(
         model["overall_progress"]["total_assessments"] = sum(
             len(c["assessments"]) for c in model["concepts"].values()
         )
+        logger.info(f"📈 Updated total_assessments count: {model['overall_progress']['total_assessments']}")
 
         # Save updated model
         save_learner_model(learner_id, model)
 
-        logger.info(f"Updated learner model for {learner_id}, concept {concept_id}")
+        logger.info(f"💾 Saved learner model for {learner_id}, concept {concept_id}")
+        logger.info(f"✨ Summary: {len(model['concepts'])} concepts tracked, {model['overall_progress']['total_assessments']} total assessments")
         return model
 
     except Exception as e:
@@ -404,12 +413,14 @@ def record_assessment_and_check_completion(
     """
 
     try:
+        logger.info(f"🎯 record_assessment_and_check_completion called: learner={learner_id}, concept={concept_id}, correct={is_correct}, confidence={confidence}, type={question_type}, practice={practice_mode}")
+
         # Translate correctness into a mastery score contribution
         score = 1.0 if is_correct else 0.0
 
         # In practice mode, don't record or update mastery
         if practice_mode:
-            logger.info(f"Practice mode: Not recording assessment for {learner_id}, {concept_id}")
+            logger.info(f"⏸️ Practice mode: Not recording assessment for {learner_id}, {concept_id}")
             return {
                 "concept_completed": False,
                 "concepts_completed_total": 0,
@@ -426,6 +437,7 @@ def record_assessment_and_check_completion(
             "score": score,
             "self_confidence": confidence,
         }
+        logger.info(f"📦 Built assessment_data: {assessment_data}")
 
         calibration_data = None
         if confidence is not None:
@@ -897,6 +909,10 @@ def load_course_metadata(course_id: str) -> Optional[Dict[str, Any]]:
             metadata["course_id"] = course_id
 
         logger.info(f"Loaded metadata for course: {course_id}")
+        logger.info(f"Metadata keys: {list(metadata.keys())}")
+        logger.info(f"onboarding_questions present: {'onboarding_questions' in metadata}")
+        if "onboarding_questions" in metadata:
+            logger.info(f"onboarding_questions count: {len(metadata['onboarding_questions'])}")
         return metadata
 
     except Exception as e:
@@ -1750,3 +1766,301 @@ def detect_celebration_milestones(
     except Exception as e:
         logger.error(f"Error detecting celebration for {learner_id}: {e}")
         return None
+
+
+# ============================================================================
+# Assessment Personalization Functions
+# ============================================================================
+
+def personalize_assessment_prompt(
+    prompt_data: Dict[str, Any],
+    learner_profile: Dict[str, Any]
+) -> str:
+    """
+    Personalize an assessment prompt based on learner's interests and background.
+
+    Uses scenario templates to adapt questions to learner's context while preserving
+    the learning objective and assessment validity.
+
+    Args:
+        prompt_data: Assessment prompt dictionary containing:
+            - base_prompt: Default question
+            - scenario_templates: Interest-specific question variations
+            - scenario_examples: Context data for templates
+        learner_profile: Learner profile containing:
+            - interests: String or list of learner interests
+            - background: Background description
+
+    Returns:
+        Personalized prompt string
+
+    Example:
+        >>> prompt = {
+        ...     "base_prompt": "How do you identify first declension?",
+        ...     "scenario_templates": {
+        ...         "history": "You're reading an inscription...",
+        ...         "mythology": "In a myth about gods..."
+        ...     }
+        ... }
+        >>> profile = {"interests": "Roman history, archaeology"}
+        >>> personalize_assessment_prompt(prompt, profile)
+        "You're reading an inscription..."
+    """
+    try:
+        # Get base prompt as fallback
+        base_prompt = prompt_data.get("base_prompt", "")
+
+        # Check if personalization is enabled for this assessment
+        scenario_templates = prompt_data.get("scenario_templates", {})
+        if not scenario_templates:
+            logger.debug("No scenario templates available, using base prompt")
+            return base_prompt
+
+        # Extract learner interests
+        interests = learner_profile.get("interests", "")
+        if isinstance(interests, list):
+            interests = ", ".join(interests)
+        interests = interests.lower()
+
+        logger.debug(f"Learner interests: {interests}")
+        logger.debug(f"Available scenarios: {list(scenario_templates.keys())}")
+
+        # Match interests to scenario categories
+        # Priority order: history, archaeology, mythology, literature, default
+        if any(keyword in interests for keyword in ["history", "historical", "roman history", "ancient history", "inscriptions"]):
+            selected_scenario = "history"
+        elif any(keyword in interests for keyword in ["archaeology", "archaeological", "excavation", "artifacts", "sites"]):
+            selected_scenario = "archaeology"
+        elif any(keyword in interests for keyword in ["mythology", "mythological", "gods", "goddesses", "myths", "legends"]):
+            selected_scenario = "mythology"
+        elif any(keyword in interests for keyword in ["literature", "literary", "poetry", "poems", "reading", "books"]):
+            selected_scenario = "literature"
+        else:
+            selected_scenario = "default"
+
+        # Get the personalized prompt
+        if selected_scenario in scenario_templates:
+            personalized_prompt = scenario_templates[selected_scenario]
+            logger.info(f"Personalized prompt using scenario: {selected_scenario}")
+            return personalized_prompt
+        elif "default" in scenario_templates:
+            logger.info("Using default scenario template")
+            return scenario_templates["default"]
+        else:
+            logger.info("No matching scenario, using base prompt")
+            return base_prompt
+
+    except Exception as e:
+        logger.error(f"Error personalizing prompt: {e}")
+        return prompt_data.get("base_prompt", "")
+
+
+def select_personalized_dialogue_prompt(
+    concept_id: str,
+    learner_id: str,
+    difficulty: Optional[str] = None,
+    course_id: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Select and personalize a dialogue prompt based on learner profile and difficulty.
+
+    Combines prompt selection logic with personalization to deliver interest-aligned
+    questions that assess the same learning objectives.
+
+    Args:
+        concept_id: Concept identifier
+        learner_id: Learner identifier
+        difficulty: Desired difficulty level ("basic", "intermediate", "advanced")
+        course_id: Course identifier (optional)
+
+    Returns:
+        Dictionary containing:
+            - prompt: Personalized question string
+            - prompt_id: Original prompt identifier
+            - difficulty: Difficulty level
+            - rubric: Assessment rubric
+            - follow_up_if_good: List of follow-up questions
+            - follow_up_if_developing: List of scaffolding questions
+
+    Raises:
+        FileNotFoundError: If learner or assessment not found
+    """
+    try:
+        # Load learner model to get profile
+        learner_model = load_learner_model(learner_id)
+        learner_profile = learner_model.get("profile", {})
+
+        # Load assessment data (try personalized version first, fallback to standard)
+        try:
+            concept_dir = config.get_concept_dir(concept_id, course_id)
+            personalized_path = concept_dir / "assessments" / "dialogue-prompts-personalized.json"
+            if personalized_path.exists():
+                with open(personalized_path, "r", encoding="utf-8") as f:
+                    assessment_data = json.load(f)
+                logger.info("Loaded personalized assessment version")
+            else:
+                assessment_data = load_assessment(concept_id, "dialogue", course_id)
+                logger.info("Loaded standard assessment version")
+        except Exception as e:
+            logger.warning(f"Could not load assessment: {e}")
+            assessment_data = load_assessment(concept_id, "dialogue", course_id)
+
+        # Filter prompts by difficulty if specified
+        all_prompts = assessment_data.get("prompts", [])
+        if difficulty:
+            filtered_prompts = [p for p in all_prompts if p.get("difficulty") == difficulty]
+            if not filtered_prompts:
+                logger.warning(f"No prompts found for difficulty {difficulty}, using all prompts")
+                filtered_prompts = all_prompts
+        else:
+            filtered_prompts = all_prompts
+
+        if not filtered_prompts:
+            raise ValueError(f"No dialogue prompts available for {concept_id}")
+
+        # Select a random prompt
+        selected_prompt = random.choice(filtered_prompts)
+
+        # Personalize the prompt
+        personalized_question = personalize_assessment_prompt(selected_prompt, learner_profile)
+
+        # Return complete prompt data with personalized question
+        return {
+            "prompt": personalized_question,
+            "prompt_id": selected_prompt.get("id"),
+            "difficulty": selected_prompt.get("difficulty"),
+            "learning_objective": selected_prompt.get("learning_objective", ""),
+            "rubric": selected_prompt.get("rubric", {}),
+            "follow_up_if_good": selected_prompt.get("follow_up_if_good", []),
+            "follow_up_if_developing": selected_prompt.get("follow_up_if_developing", [])
+        }
+
+    except Exception as e:
+        logger.error(f"Error selecting personalized dialogue prompt: {e}")
+        raise
+
+
+def select_personalized_teaching_moment(
+    concept_id: str,
+    learner_id: str,
+    difficulty: Optional[str] = None,
+    course_id: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Select and personalize a teaching moment assessment based on learner profile.
+
+    Teaching moments are two-stage misconception correction activities where:
+    1. Student responds to a character's misconception (Part 1)
+    2. Character pushes back, student defends/clarifies (Part 2)
+    3. Scoring based on combination of both responses
+
+    Args:
+        concept_id: Concept identifier
+        learner_id: Learner identifier
+        difficulty: Desired difficulty level ("basic", "intermediate", "advanced")
+        course_id: Course identifier (optional)
+
+    Returns:
+        Dictionary containing personalized teaching moment with:
+            - scenario: Character, situation, misconception
+            - part1: Prompt and options
+            - part2: Prompt, options, pushbacks
+            - scoring: Combination-based rubric
+            - teaching_moment_id: Original ID
+            - difficulty: Difficulty level
+
+    Raises:
+        FileNotFoundError: If learner or teaching moments not found
+    """
+    try:
+        # Load learner model to get profile
+        learner_model = load_learner_model(learner_id)
+        learner_profile = learner_model.get("profile", {})
+
+        # Load teaching moment data (try personalized version first)
+        try:
+            concept_dir = config.get_concept_dir(concept_id, course_id)
+            personalized_path = concept_dir / "assessments" / "teaching-moments-personalized.json"
+            if personalized_path.exists():
+                with open(personalized_path, "r", encoding="utf-8") as f:
+                    tm_data = json.load(f)
+                logger.info("Loaded personalized teaching moments")
+            else:
+                # Try standard version
+                standard_path = concept_dir / "assessments" / "teaching-moments.json"
+                if standard_path.exists():
+                    with open(standard_path, "r", encoding="utf-8") as f:
+                        tm_data = json.load(f)
+                    logger.info("Loaded standard teaching moments")
+                else:
+                    raise FileNotFoundError(f"No teaching moments found for {concept_id}")
+        except Exception as e:
+            logger.warning(f"Could not load teaching moments: {e}")
+            raise
+
+        # Filter by difficulty if specified
+        all_moments = tm_data.get("teaching_moments", [])
+        if difficulty:
+            filtered_moments = [m for m in all_moments if m.get("difficulty") == difficulty]
+            if not filtered_moments:
+                logger.warning(f"No teaching moments found for difficulty {difficulty}, using all")
+                filtered_moments = all_moments
+        else:
+            filtered_moments = all_moments
+
+        if not filtered_moments:
+            raise ValueError(f"No teaching moments available for {concept_id}")
+
+        # Select a random teaching moment
+        selected_moment = random.choice(filtered_moments)
+
+        # Personalize the scenario
+        scenario_templates = selected_moment.get("scenario_templates", {})
+        if scenario_templates:
+            # Determine learner's interest category
+            interests = learner_profile.get("interests", "")
+            if isinstance(interests, list):
+                interests = ", ".join(interests)
+            interests = interests.lower()
+
+            # Match interest to scenario
+            if any(kw in interests for kw in ["history", "historical", "roman history", "inscriptions"]):
+                scenario_key = "history"
+            elif any(kw in interests for kw in ["archaeology", "archaeological", "excavation", "artifacts"]):
+                scenario_key = "archaeology"
+            elif any(kw in interests for kw in ["mythology", "mythological", "gods", "goddesses", "myths"]):
+                scenario_key = "mythology"
+            elif any(kw in interests for kw in ["literature", "literary", "poetry", "poems", "reading"]):
+                scenario_key = "literature"
+            else:
+                scenario_key = "default"
+
+            # Get personalized scenario
+            if scenario_key in scenario_templates:
+                selected_scenario = scenario_templates[scenario_key]
+                logger.info(f"Personalized teaching moment using scenario: {scenario_key}")
+            elif "default" in scenario_templates:
+                selected_scenario = scenario_templates["default"]
+                logger.info("Using default scenario template")
+            else:
+                # Fallback: use first available scenario
+                selected_scenario = list(scenario_templates.values())[0]
+                logger.info("Using first available scenario as fallback")
+        else:
+            # No templates, use base scenario
+            selected_scenario = selected_moment.get("scenario", {})
+
+        # Return complete teaching moment data with personalized scenario
+        return {
+            "teaching_moment_id": selected_moment.get("id"),
+            "difficulty": selected_moment.get("difficulty"),
+            "learning_objective": selected_moment.get("learning_objective", ""),
+            "scenario": selected_scenario,
+            "part1": selected_moment.get("part1", {}),
+            "part2": selected_moment.get("part2", {}),
+            "scoring": selected_moment.get("scoring", {})
+        }
+
+    except Exception as e:
+        logger.error(f"Error selecting personalized teaching moment: {e}")
+        raise

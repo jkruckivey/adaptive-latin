@@ -171,6 +171,12 @@
   text-align: left;
 }
 
+.interactive-assessment .continue-button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .interactive-assessment h3 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -353,16 +359,17 @@
 /* Buttons */
 .continue-button,
 .start-button {
-  padding: 8px 20px;
+  padding: 12px 32px;
   background: var(--color-text);
   color: white;
   border: none;
   border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: var(--shadow-sm);
+  display: inline-block;
 }
 
 .continue-button:hover:not(:disabled),
@@ -386,15 +393,16 @@
 
 .quick-start-button {
   margin-top: 24px;
-  padding: 8px 20px;
+  padding: 10px 24px;
   background: transparent;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  display: inline-block;
 }
 
 .quick-start-button:hover:not(:disabled) {

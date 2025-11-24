@@ -12,7 +12,7 @@
 }
 
 .value-card {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--brand-sand-light) 0%, #c3cfe2 100%);
   padding: 24px;
   border-radius: 12px;
   text-align: center;
@@ -33,7 +33,7 @@
 .value-card p {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   line-height: 1.5;
 }
 
@@ -51,14 +51,14 @@
   gap: 16px;
   padding: 24px;
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .choice-option:hover {
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
@@ -68,7 +68,7 @@
 }
 
 .choice-option input[type="radio"]:checked ~ .choice-content {
-  color: #667eea;
+  color: var(--brand-purple);
 }
 
 .choice-content h3 {
@@ -80,14 +80,14 @@
 .choice-content p {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
 }
 
 /* Template Selector */
 .template-selector {
   margin: 30px 0;
   padding: 24px;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   border-radius: 12px;
 }
 
@@ -107,7 +107,7 @@
 .template-button {
   padding: 12px 24px;
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -116,14 +116,14 @@
 }
 
 .template-button:hover {
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .template-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-color: #667eea;
+  background: linear-gradient(135deg, var(--brand-purple) 0%, var(--brand-purple-dark) 100%);
+  border-color: var(--brand-purple);
   color: white;
 }
 
@@ -143,10 +143,10 @@
   margin: 0 0 24px 0;
   padding: 12px 16px;
   background: #fff3cd;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
   border-radius: 4px;
   font-size: 0.9rem;
-  color: #856404;
+  color: var(--color-warning-dark);
 }
 
 .help-text strong {
@@ -156,7 +156,7 @@
 /* Question Card */
 .question-card {
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
@@ -168,21 +168,21 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--brand-sand-light);
 }
 
 .question-number {
   font-size: 1rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--brand-purple);
 }
 
 .remove-question-btn {
   padding: 6px 16px;
-  background: #ffebee;
-  border: 1px solid #ef5350;
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error);
   border-radius: 6px;
-  color: #c62828;
+  color: var(--color-error-dark);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -190,7 +190,7 @@
 }
 
 .remove-question-btn:hover {
-  background: #ef5350;
+  background: var(--color-error);
   color: white;
 }
 
@@ -210,7 +210,7 @@
 .form-group textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.9rem;
   font-family: inherit;
@@ -220,7 +220,7 @@
 .form-group input[type="text"]:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -228,7 +228,7 @@
   display: block;
   margin-top: 6px;
   font-size: 0.8rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary, var(--text-secondary));
   font-style: italic;
 }
 
@@ -236,7 +236,7 @@
 .options-section {
   margin: 20px 0;
   padding: 16px;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   border-radius: 8px;
 }
 
@@ -257,23 +257,23 @@
 
 .option-row input {
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.9rem;
 }
 
 .option-row input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .remove-option-btn {
   padding: 8px 12px;
-  background: #ffebee;
-  border: 1px solid #ef5350;
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error);
   border-radius: 6px;
-  color: #c62828;
+  color: var(--color-error-dark);
   font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
@@ -281,16 +281,16 @@
 }
 
 .remove-option-btn:hover {
-  background: #ef5350;
+  background: var(--color-error);
   color: white;
 }
 
 .add-option-btn {
   padding: 8px 16px;
   background: white;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border-color);
   border-radius: 6px;
-  color: #667eea;
+  color: var(--brand-purple);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -298,8 +298,8 @@
 }
 
 .add-option-btn:hover {
-  border-color: #667eea;
-  background: #f8f9fa;
+  border-color: var(--brand-purple);
+  background: var(--brand-sand-light);
 }
 
 /* Add Question Buttons */
@@ -313,9 +313,9 @@
   flex: 1;
   padding: 14px 20px;
   background: white;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border-color);
   border-radius: 8px;
-  color: #667eea;
+  color: var(--brand-purple);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -323,7 +323,7 @@
 }
 
 .add-question-btn:hover {
-  border-color: #667eea;
+  border-color: var(--brand-purple);
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

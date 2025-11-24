@@ -20,10 +20,16 @@ async def get_concept_info(concept_id: str):
     """
     try:
         metadata = load_concept_metadata(concept_id)
+
+        # Convert difficulty to string if it's an integer
+        difficulty = metadata["difficulty"]
+        if isinstance(difficulty, int):
+            difficulty = str(difficulty)
+
         return {
             "concept_id": metadata["id"],
             "title": metadata["title"],
-            "difficulty": metadata["difficulty"],
+            "difficulty": difficulty,
             "prerequisites": metadata["prerequisites"],
             "learning_objectives": metadata["learning_objectives"],
             "estimated_mastery_time": metadata["estimated_mastery_time"],

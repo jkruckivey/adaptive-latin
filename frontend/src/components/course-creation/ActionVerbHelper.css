@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--border-color);
   position: sticky;
   top: 0;
   background: white;
@@ -23,14 +23,14 @@
 
 .verb-helper-header h3 {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .close-button {
   background: none;
   border: none;
   font-size: 28px;
-  color: #999;
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 0;
   width: 30px;
@@ -42,45 +42,45 @@
 }
 
 .close-button:hover {
-  color: #333;
+  color: var(--text-primary);
 }
 
 .verb-helper-search {
   padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  background: #f8f9fa;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--brand-sand-light);
 }
 
 .search-input {
   width: 100%;
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--brand-turquoise);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .taxonomy-note {
   padding: 15px 20px;
-  background: #e3f2fd;
-  border-left: 4px solid #3498db;
+  background: var(--brand-turquoise-light);
+  border-left: 4px solid var(--brand-turquoise);
   margin: 0;
 }
 
 .taxonomy-note strong {
-  color: #2c3e50;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 5px;
 }
 
 .taxonomy-note p {
   margin: 0;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.5;
 }
@@ -91,14 +91,14 @@
 
 .verb-category {
   margin-bottom: 10px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   overflow: hidden;
 }
 
 .category-header {
   padding: 15px;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   cursor: pointer;
   transition: background 0.2s;
   position: relative;
@@ -109,19 +109,19 @@
 }
 
 .category-header.expanded {
-  background: #e3f2fd;
-  border-bottom: 1px solid #e0e0e0;
+  background: var(--brand-turquoise-light);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .category-header h4 {
   margin: 0 0 5px 0;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 15px;
 }
 
 .category-description {
   margin: 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
@@ -134,7 +134,7 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .category-content {
@@ -152,36 +152,36 @@
 .verb-button {
   padding: 10px 12px;
   background: white;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 14px;
-  color: #2c3e50;
+  color: var(--text-primary);
   font-weight: 500;
   text-align: center;
 }
 
 .verb-button:hover {
-  border-color: #3498db;
-  background: #e3f2fd;
-  color: #2c3e50;
+  border-color: var(--brand-turquoise);
+  background: var(--brand-turquoise-light);
+  color: var(--text-primary);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
 }
 
 .category-examples {
   padding: 15px;
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   border-radius: 6px;
   font-size: 13px;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .category-examples strong {
   display: block;
   margin-bottom: 8px;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .category-examples ul {

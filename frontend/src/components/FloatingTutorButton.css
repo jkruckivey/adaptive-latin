@@ -5,7 +5,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #2d3748;
+  background: var(--text-primary);
   border: none;
   color: white;
   cursor: pointer;
@@ -19,7 +19,7 @@
 }
 
 .floating-tutor-button:hover {
-  background: #1a202c;
+  background: var(--text-primary);
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   width: 140px;

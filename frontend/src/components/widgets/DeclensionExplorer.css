@@ -1,6 +1,6 @@
 .declension-explorer {
-  background: #f8f9fa;
-  border: 2px solid #dee2e6;
+  background: var(--brand-sand-light);
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
   margin: 20px 0;
@@ -11,13 +11,13 @@
 }
 
 .explorer-header h3 {
-  color: #495057;
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
   font-size: 1.4em;
 }
 
 .explorer-explanation {
-  color: #6c757d;
+  color: var(--text-secondary);
   font-size: 0.95em;
   margin: 0;
 }
@@ -37,7 +37,7 @@
 
 .control-group label {
   font-weight: 600;
-  color: #495057;
+  color: var(--text-secondary);
   min-width: 60px;
 }
 
@@ -50,7 +50,7 @@
 .case-button,
 .number-button {
   padding: 8px 16px;
-  border: 2px solid #dee2e6;
+  border: 2px solid var(--border-color);
   background: white;
   border-radius: 6px;
   cursor: pointer;
@@ -61,19 +61,19 @@
 
 .case-button:hover,
 .number-button:hover {
-  border-color: #0066cc;
+  border-color: var(--brand-turquoise-dark);
   background: #f0f7ff;
 }
 
 .case-button.active,
 .number-button.active {
-  background: #0066cc;
+  background: var(--brand-turquoise-dark);
   color: white;
-  border-color: #0066cc;
+  border-color: var(--brand-turquoise-dark);
 }
 
 .case-button.highlight {
-  border-color: #ffc107;
+  border-color: var(--color-warning);
   background: #fff8e1;
 }
 
@@ -85,7 +85,7 @@
   padding: 20px;
   background: white;
   border-radius: 8px;
-  border: 2px solid #dee2e6;
+  border: 2px solid var(--border-color);
 }
 
 .form-display,
@@ -98,7 +98,7 @@
 .form-label,
 .function-label {
   font-size: 0.85em;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -106,14 +106,14 @@
 
 .form-value {
   font-size: 2em;
-  color: #0066cc;
+  color: var(--brand-turquoise-dark);
   font-weight: bold;
   font-family: 'Georgia', serif;
 }
 
 .function-value {
   font-size: 1.1em;
-  color: #495057;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .explorer-table th {
-  background: #495057;
+  background: var(--text-secondary);
   color: white;
   padding: 12px;
   text-align: left;
@@ -141,7 +141,7 @@
 
 .explorer-table td {
   padding: 12px;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .explorer-table tr:last-child td {
@@ -149,37 +149,37 @@
 }
 
 .explorer-table tr:hover {
-  background: #f8f9fa;
+  background: var(--brand-sand-light);
   cursor: pointer;
 }
 
 .explorer-table tr.selected-row {
-  background: #e3f2fd;
+  background: var(--brand-turquoise-light);
 }
 
 .explorer-table td.selected-cell {
   background: #bbdefb;
   font-weight: bold;
-  color: #0066cc;
+  color: var(--brand-turquoise-dark);
 }
 
 .case-name {
   font-weight: 600;
-  color: #495057;
+  color: var(--text-secondary);
   text-transform: capitalize;
 }
 
 .case-function {
-  color: #6c757d;
+  color: var(--text-secondary);
   font-size: 0.9em;
   font-style: italic;
 }
 
 .explorer-hint {
   background: #fff8e1;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
   padding: 12px;
-  color: #856404;
+  color: var(--color-warning-dark);
   font-size: 0.9em;
   border-radius: 4px;
 }
