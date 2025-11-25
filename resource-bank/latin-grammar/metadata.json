@@ -27,28 +27,10 @@
   "onboarding_questions": [
     {
       "type": "question",
-      "question": "Tell me about yourself - what brings you to Latin Grammar Fundamentals?",
-      "placeholder": "Tell me about your background and why you're interested in learning Latin...",
-      "key": "background"
-    },
-    {
-      "type": "question",
-      "question": "Do you know any Romance languages (Spanish, French, Italian, Portuguese, Romanian)?",
-      "options": [
-        { "value": "none", "label": "No Romance languages" },
-        { "value": "basic", "label": "Basic level in one" },
-        { "value": "fluent", "label": "Fluent in one or more" },
-        { "value": "native", "label": "Native speaker" }
-      ],
-      "key": "romanceLanguages",
-      "priorKnowledgeKey": "hasRomanceLanguage"
-    },
-    {
-      "type": "question",
-      "question": "Do you know any languages with grammatical cases (German, Russian, Greek, etc.)?",
-      "placeholder": "e.g., German, Russian, Ancient Greek, Finnish, Polish...",
-      "key": "languages",
-      "priorKnowledgeKey": "hasInflectedLanguage"
+      "question": "What other languages do you speak or have studied?",
+      "placeholder": "e.g., Spanish, French, German, Russian, Ancient Greek, or none...",
+      "key": "languagesKnown",
+      "priorKnowledgeKey": "languageDetails"
     },
     {
       "type": "question",

@@ -19,8 +19,7 @@ def sample_learner_profile():
     return {
         "learningStyle": "narrative",
         "priorKnowledge": {
-            "hasRomanceLanguage": True,
-            "languageDetails": "Spanish - 3 years"
+            "languageDetails": "Spanish - 3 years, some German"
         },
         "grammarExperience": "okay",
         "interests": "Roman history, mythology, architecture"

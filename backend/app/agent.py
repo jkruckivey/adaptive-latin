@@ -402,11 +402,25 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
                 pk = profile["priorKnowledge"]
                 context += f"\n**Prior Knowledge**:\n"
                 if pk.get("languageDetails"):
+                    lang_text = pk['languageDetails'].lower()
                     context += f"- Languages studied: {pk['languageDetails']}\n"
-                if pk.get("hasRomanceLanguage"):
+
+                    # Auto-detect Romance languages
+                    romance_languages = ['spanish', 'french', 'italian', 'portuguese', 'romanian', 'catalan']
+                    has_romance = pk.get("hasRomanceLanguage") or any(lang in lang_text for lang in romance_languages)
+                    if has_romance:
+                        context += f"- Has studied Romance language - use cognates and comparisons!\n"
+
+                    # Auto-detect inflected languages (with grammatical cases)
+                    inflected_languages = ['german', 'russian', 'greek', 'ancient greek', 'polish', 'finnish', 'hungarian', 'czech', 'latin', 'sanskrit', 'icelandic']
+                    has_inflected = pk.get("hasInflectedLanguage") or any(lang in lang_text for lang in inflected_languages)
+                    if has_inflected:
+                        context += f"- Has studied inflected language - familiar with cases!\n"
+                elif pk.get("hasRomanceLanguage"):
                     context += f"- Has studied Romance language (Spanish/French) - use cognates and comparisons!\n"
-                if pk.get("hasInflectedLanguage"):
+                elif pk.get("hasInflectedLanguage"):
                     context += f"- Has studied inflected language (German) - familiar with cases!\n"
+
                 if "understandsSubjectObject" in pk:
                     context += f"- Subject/Object understanding: {pk.get('understandsSubjectObject')}\n"
                     context += f"- Confidence level: {pk.get('subjectObjectConfidence', 'unknown')}\n"
