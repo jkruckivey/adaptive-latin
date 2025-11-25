@@ -4,6 +4,13 @@ import TaxonomySelector from './TaxonomySelector'
 import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 import LearningOutcomeGenerator from './LearningOutcomeGenerator'
 
+// Helper to safely get string from outcome (handles both string and object formats)
+const getOutcomeText = (o) => {
+  if (typeof o === 'string') return o
+  if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+  return ''
+}
+
 function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
   const [formData, setFormData] = useState({
     title: courseData.title || '',
@@ -52,7 +59,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
     }
 
     // Validate Course Learning Outcomes
-    const validOutcomes = formData.courseLearningOutcomes.filter(o => o.trim())
+    const validOutcomes = formData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim())
     if (validOutcomes.length < 3) {
       newErrors.courseLearningOutcomes = 'At least 3 course learning outcomes are required'
     } else if (validOutcomes.length > 5) {
@@ -180,7 +187,7 @@ function CourseSetup({ courseData, onNext, onCancel, onSaveDraft }) {
               description={`Course: ${formData.title}\nDomain: ${formData.domain}\n${formData.description ? `Description: ${formData.description}\n` : ''}${formData.targetAudience ? `Target Audience: ${formData.targetAudience}` : ''}`}
               taxonomy={formData.taxonomy}
               level="course"
-              existingOutcomes={formData.courseLearningOutcomes.filter(o => o.trim())}
+              existingOutcomes={formData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim()).map(o => getOutcomeText(o))}
               onAccept={handleAcceptOutcomes}
               onCancel={() => setShowGenerator(false)}
             />

@@ -4,6 +4,13 @@ import ActionVerbHelper from './ActionVerbHelper'
 import { checkOutcomeQuality, domainExamples } from '../../utils/taxonomyData'
 import './LearningOutcomeBuilder.css'
 
+// Helper to safely get string from outcome (handles both string and object formats)
+const getOutcomeText = (o) => {
+  if (typeof o === 'string') return o
+  if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+  return ''
+}
+
 function LearningOutcomeBuilder({
   outcomes,
   onChange,
@@ -29,8 +36,9 @@ function LearningOutcomeBuilder({
   useEffect(() => {
     const feedback = {}
     outcomes.forEach((outcome, index) => {
-      if (outcome.trim()) {
-        feedback[index] = checkOutcomeQuality(outcome)
+      const text = getOutcomeText(outcome)
+      if (text.trim()) {
+        feedback[index] = checkOutcomeQuality(text)
       }
     })
     setQualityFeedback(feedback)
@@ -55,7 +63,7 @@ function LearningOutcomeBuilder({
 
   const handleVerbSelect = (verb) => {
     if (currentEditIndex !== null) {
-      const current = outcomes[currentEditIndex]
+      const current = getOutcomeText(outcomes[currentEditIndex])
       // Insert verb at cursor or append
       const newValue = current ? `${current.trim()} ${verb.toLowerCase()}` : `Students will be able to ${verb.toLowerCase()}`
       updateOutcome(currentEditIndex, newValue)
@@ -77,7 +85,7 @@ function LearningOutcomeBuilder({
   const examples = getExamples()
 
   const useExample = (example) => {
-    const emptyIndex = outcomes.findIndex(o => !o.trim())
+    const emptyIndex = outcomes.findIndex(o => !getOutcomeText(o).trim())
     if (emptyIndex !== -1) {
       updateOutcome(emptyIndex, example)
     } else if (outcomes.length < maxOutcomes) {

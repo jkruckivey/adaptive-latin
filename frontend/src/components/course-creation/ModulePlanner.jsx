@@ -3,6 +3,13 @@ import { api } from '../../api'
 import LearningOutcomeBuilder from './LearningOutcomeBuilder'
 import './ConceptPlanner.css'
 
+// Helper to safely get string from outcome (handles both string and object formats)
+const getOutcomeText = (o) => {
+  if (typeof o === 'string') return o
+  if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+  return ''
+}
+
 function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
   const [modules, setModules] = useState(
     courseData.modules && courseData.modules.length > 0
@@ -55,7 +62,7 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
       return
     }
 
-    if (!courseData.courseLearningOutcomes || courseData.courseLearningOutcomes.filter(o => o.trim()).length === 0) {
+    if (!courseData.courseLearningOutcomes || courseData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim()).length === 0) {
       alert('Please define Course Learning Outcomes first (go back to Course Setup)')
       return
     }
@@ -65,7 +72,7 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
       const response = await api.generateModuleLearningOutcomes(
         module.title,
         courseData.title,
-        courseData.courseLearningOutcomes.filter(o => o.trim()),
+        courseData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim()).map(o => getOutcomeText(o)),
         courseData.domain,
         courseData.taxonomy
       )
@@ -92,7 +99,7 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
       }
 
       // Validate module learning outcomes (each becomes a concept)
-      const validMLOs = module.moduleLearningOutcomes.filter(o => o.trim())
+      const validMLOs = module.moduleLearningOutcomes.filter(o => getOutcomeText(o).trim())
       if (validMLOs.length < 2) {
         newErrors[`module-${module.id}-mlos`] = `Module ${moduleIndex + 1} must have at least 2 learning outcomes`
       }
@@ -113,12 +120,12 @@ function ModulePlanner({ courseData, onNext, onBack, onSaveDraft }) {
         ...module,
         moduleId: `module-${String(moduleIndex + 1).padStart(3, '0')}`,
         concepts: module.moduleLearningOutcomes
-          .filter(mlo => mlo.trim())
+          .filter(mlo => getOutcomeText(mlo).trim())
           .map((mlo, conceptIndex) => ({
             id: conceptIndex + 1,
             conceptId: `concept-${String(conceptIndex + 1).padStart(3, '0')}`,
-            title: mlo, // Use the MLO as the concept title
-            learningObjectives: [mlo], // MLO becomes the primary learning objective
+            title: getOutcomeText(mlo), // Use the MLO as the concept title
+            learningObjectives: [getOutcomeText(mlo)], // MLO becomes the primary learning objective
             prerequisites: [],
             teachingContent: '',
             vocabulary: [],
