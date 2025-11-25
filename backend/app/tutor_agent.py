@@ -65,9 +65,9 @@ def format_tutor_system_prompt(context: Dict[str, Any]) -> str:
 
         # Learning style descriptions
         learning_style_descriptions = {
-            "visual": "prefers videos, diagrams, charts, and color-coded materials",
-            "connections": "prefers written articles, conceptual explanations, and relating to other knowledge",
-            "practice": "prefers hands-on exercises, drills, and interactive practice"
+            "narrative": "prefers story-based learning through scenarios, conversations, and contextual examples",
+            "varied": "enjoys variety - mix of tables, examples, exercises, and different content types",
+            "dialogue": "prefers interactive back-and-forth conversation and guided discovery"
         }
 
         # Get concept metadata

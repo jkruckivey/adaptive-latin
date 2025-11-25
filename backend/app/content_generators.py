@@ -159,16 +159,49 @@ def generate_diagnostic_request(
 
     difficulty_instruction = difficulty_instructions.get(difficulty, "")
 
-    # Determine question type based on learning style
+    # Determine content type based on learning style
     if learning_style == "dialogue":
-        question_type = "dialogue"
+        content_type = "dialogue"
     elif learning_style == "narrative":
-        question_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
-    else:  # "varied"
-        question_type = random.choice(["multiple-choice", "fill-blank", "dialogue"])
+        content_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    else:  # "varied" - include visual/interactive content, not just questions
+        content_type = random.choice([
+            "multiple-choice",
+            "fill-blank",
+            "dialogue",
+            "paradigm-table",      # Visual table with comprehension check
+            "declension-explorer", # Interactive widget
+            "teaching-moment"      # Pre-authored misconception correction (2-stage)
+        ])
 
-    # Build prompt based on question type
-    if question_type == "dialogue":
+    # Build prompt based on content type
+    if content_type == "teaching-moment":
+        # Special marker - agent will serve pre-authored teaching moment from JSON
+        return "USE_TEACHING_MOMENT"
+
+    elif content_type == "paradigm-table":
+        # Visual paradigm table with embedded question
+        return (
+            f"Generate a 'paradigm-table' content item that shows a visual table of forms "
+            f"for the current concept. {difficulty_instruction}"
+            f"Include a clear, well-organized table showing the paradigm (e.g., noun declensions, "
+            f"verb conjugations). After the table, include ONE comprehension question that asks "
+            f"the learner to identify or use a form from the table. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "declension-explorer":
+        # Interactive widget for exploring declensions
+        return (
+            f"Generate a 'declension-explorer' interactive widget that lets the learner "
+            f"explore noun or verb forms. {difficulty_instruction}"
+            f"Include a base word and show how it changes across different cases/forms. "
+            f"Provide interactive elements where the learner can see patterns. "
+            f"Include a brief task asking them to predict or identify a specific form. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "dialogue":
         # Open-ended Socratic question
         if is_cumulative and cumulative_concepts:
             return (
@@ -190,7 +223,7 @@ def generate_diagnostic_request(
                 f"Respond ONLY with the JSON object, no other text."
             )
 
-    elif question_type == "fill-blank":
+    elif content_type == "fill-blank":
         # Fill-in-the-blank for narrative style
         if is_cumulative and cumulative_concepts:
             return (
@@ -268,16 +301,47 @@ def generate_practice_request(
 
     difficulty_instruction = difficulty_instructions.get(difficulty, "Increase difficulty slightly. ")
 
-    # Determine question type based on learning style
+    # Determine content type based on learning style
     if learning_style == "dialogue":
-        question_type = "dialogue"
+        content_type = "dialogue"
     elif learning_style == "narrative":
-        question_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
-    else:  # "varied"
-        question_type = random.choice(["multiple-choice", "fill-blank", "dialogue"])
+        content_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    else:  # "varied" - include visual/interactive content, not just questions
+        content_type = random.choice([
+            "multiple-choice",
+            "fill-blank",
+            "dialogue",
+            "paradigm-table",      # Visual table with comprehension check
+            "declension-explorer", # Interactive widget
+            "teaching-moment"      # Pre-authored misconception correction (2-stage)
+        ])
 
-    # Build prompt based on question type
-    if question_type == "dialogue":
+    # Build prompt based on content type
+    if content_type == "teaching-moment":
+        # Special marker - agent will serve pre-authored teaching moment from JSON
+        return "USE_TEACHING_MOMENT"
+
+    elif content_type == "paradigm-table":
+        # Visual paradigm table with embedded question
+        return (
+            f"Generate a 'paradigm-table' content item showing a different aspect of the paradigm "
+            f"than what was shown before. {difficulty_instruction}"
+            f"Include a clear table showing forms, then ONE comprehension question that requires "
+            f"applying the pattern to a new example. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "declension-explorer":
+        # Interactive widget for exploring declensions
+        return (
+            f"Generate a 'declension-explorer' interactive widget using a DIFFERENT word "
+            f"than previously shown. {difficulty_instruction}"
+            f"Let the learner explore how this new word changes across cases/forms. "
+            f"Include a task asking them to identify or predict a specific form. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "dialogue":
         # Open-ended Socratic question
         if is_cumulative and cumulative_concepts:
             return (
@@ -299,7 +363,7 @@ def generate_practice_request(
                 f"Respond ONLY with the JSON object, no other text."
             )
 
-    elif question_type == "fill-blank":
+    elif content_type == "fill-blank":
         # Fill-in-the-blank for narrative style
         if is_cumulative and cumulative_concepts:
             return (

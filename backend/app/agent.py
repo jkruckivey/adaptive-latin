@@ -402,11 +402,25 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
                 pk = profile["priorKnowledge"]
                 context += f"\n**Prior Knowledge**:\n"
                 if pk.get("languageDetails"):
+                    lang_text = pk['languageDetails'].lower()
                     context += f"- Languages studied: {pk['languageDetails']}\n"
-                if pk.get("hasRomanceLanguage"):
+
+                    # Auto-detect Romance languages
+                    romance_languages = ['spanish', 'french', 'italian', 'portuguese', 'romanian', 'catalan']
+                    has_romance = pk.get("hasRomanceLanguage") or any(lang in lang_text for lang in romance_languages)
+                    if has_romance:
+                        context += f"- Has studied Romance language - use cognates and comparisons!\n"
+
+                    # Auto-detect inflected languages (with grammatical cases)
+                    inflected_languages = ['german', 'russian', 'greek', 'ancient greek', 'polish', 'finnish', 'hungarian', 'czech', 'latin', 'sanskrit', 'icelandic']
+                    has_inflected = pk.get("hasInflectedLanguage") or any(lang in lang_text for lang in inflected_languages)
+                    if has_inflected:
+                        context += f"- Has studied inflected language - familiar with cases!\n"
+                elif pk.get("hasRomanceLanguage"):
                     context += f"- Has studied Romance language (Spanish/French) - use cognates and comparisons!\n"
-                if pk.get("hasInflectedLanguage"):
+                elif pk.get("hasInflectedLanguage"):
                     context += f"- Has studied inflected language (German) - familiar with cases!\n"
+
                 if "understandsSubjectObject" in pk:
                     context += f"- Subject/Object understanding: {pk.get('understandsSubjectObject')}\n"
                     context += f"- Confidence level: {pk.get('subjectObjectConfidence', 'unknown')}\n"
@@ -1177,6 +1191,29 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+
+        # Handle pre-authored teaching moments (not AI-generated)
+        if request == "USE_TEACHING_MOMENT":
+            from .tools import select_personalized_teaching_moment
+            try:
+                teaching_moment = select_personalized_teaching_moment(
+                    concept_id=concept_id,
+                    learner_id=learner_id,
+                    course_id=course_id
+                )
+                logger.info(f"Serving pre-authored teaching moment: {teaching_moment.get('teaching_moment_id')}")
+                return {
+                    "success": True,
+                    "content": teaching_moment,
+                    "source": "pre-authored"
+                }
+            except FileNotFoundError as e:
+                # No teaching moments for this concept, fall back to multiple-choice
+                logger.warning(f"No teaching moments available for {concept_id}, falling back to multiple-choice")
+                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+            except Exception as e:
+                logger.error(f"Error loading teaching moment: {e}")
+                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
 
         # Make API call with retry logic
         response = call_anthropic_with_retry(
