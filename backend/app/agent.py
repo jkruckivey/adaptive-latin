@@ -1251,6 +1251,28 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         try:
             content_obj = json.loads(content_text)
             content_type = content_obj.get('type', 'unknown')
+
+            # CRITICAL: Ensure content always has a type field
+            if 'type' not in content_obj or not content_obj['type']:
+                logger.warning(f"Content missing type field, inferring from structure...")
+                # Try to infer type from content structure
+                if 'sections' in content_obj:
+                    content_obj['type'] = 'lesson'
+                elif 'forms' in content_obj and 'noun' in content_obj:
+                    content_obj['type'] = 'paradigm-table'
+                elif 'examples' in content_obj:
+                    content_obj['type'] = 'example-set'
+                elif 'options' in content_obj and 'correctAnswer' in content_obj:
+                    content_obj['type'] = 'multiple-choice'
+                elif 'blanks' in content_obj:
+                    content_obj['type'] = 'fill-blank'
+                elif 'scenario' in content_obj and 'part1' in content_obj:
+                    content_obj['type'] = 'teaching-moment'
+                else:
+                    content_obj['type'] = 'lesson'  # Default fallback
+                content_type = content_obj['type']
+                logger.info(f"Inferred content type: {content_type}")
+
             logger.info(f"Successfully generated content type: {content_type}")
 
             # Validate diagnostic question content

@@ -7,6 +7,16 @@ function TeachingMoment({ content, onSubmit, onConfidenceChange }) {
   const [part2Answer, setPart2Answer] = useState(null)
   const [confidence, setConfidence] = useState(null)
 
+  // Safety check for missing content structure
+  if (!content || !content.scenario || !content.part1 || !content.part2 || !content.scoring) {
+    console.error('TeachingMoment: Missing required content fields', content)
+    return (
+      <div className="teaching-moment error">
+        <p>Error: Teaching moment content is incomplete. Please try again.</p>
+      </div>
+    )
+  }
+
   const handlePart1Submit = () => {
     if (part1Answer !== null) {
       setStage(2)

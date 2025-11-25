@@ -2052,6 +2052,7 @@ def select_personalized_teaching_moment(
 
         # Return complete teaching moment data with personalized scenario
         return {
+            "type": "teaching-moment",  # Required for ContentRenderer switch
             "teaching_moment_id": selected_moment.get("id"),
             "difficulty": selected_moment.get("difficulty"),
             "learning_objective": selected_moment.get("learning_objective", ""),
