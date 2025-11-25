@@ -488,5 +488,30 @@ export const api = {
     }
 
     return response.json();
+  },
+
+  // Evaluate dialogue response for multi-turn conversations
+  async evaluateDialogue(learnerId, conceptId, question, context, answer, exchangeCount) {
+    const response = await fetch(`${API_BASE_URL}/evaluate-dialogue`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        learner_id: learnerId,
+        concept_id: conceptId,
+        question: question,
+        context: context || "",
+        answer: answer,
+        exchange_count: exchangeCount
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || `Failed to evaluate dialogue: ${response.statusText}`);
+    }
+
+    return response.json();
   }
 };

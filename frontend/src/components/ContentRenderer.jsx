@@ -14,6 +14,7 @@ import DeclensionExplorer from './widgets/DeclensionExplorer'
 import WordOrderManipulator from './widgets/WordOrderManipulator'
 import ScenarioWidget from './widgets/ScenarioWidget'
 import SkeletonLoader from './SkeletonLoader'
+import { api } from '../api'
 import './ContentRenderer.css'
 
 function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, learnerProfile, conceptId }) {
@@ -133,11 +134,35 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
         )
 
       case 'dialogue':
+        // For conversational dialogue, provide an async onSubmit that evaluates
+        // each exchange and returns feedback + follow-up questions
+        const handleDialogueSubmit = async (answer, dialogueContext) => {
+          const result = await api.evaluateDialogue(
+            learnerId,
+            conceptId,
+            dialogueContext?.questionContext || content.question,
+            content.context || "",
+            answer,
+            dialogueContext?.exchangeCount || 0
+          )
+          return result
+        }
+
+        // When dialogue is complete, treat it like a standard response
+        const handleDialogueComplete = (summary) => {
+          onResponse({
+            type: 'dialogue',
+            answer: summary.messages?.map(m => m.content).join('\n') || '',
+            dialogueSummary: summary
+          })
+        }
+
         return (
           <DialogueQuestion
             question={content.question}
             context={content.context}
-            onSubmit={(answer) => onResponse({ type: 'dialogue', answer })}
+            onSubmit={handleDialogueSubmit}
+            onComplete={handleDialogueComplete}
             isLoading={isLoading}
           />
         )

@@ -177,62 +177,66 @@ def strip_video_content(content_obj: Dict[str, Any]) -> Dict[str, Any]:
     return content_obj
 
 
-def evaluate_dialogue_response(question: str, context: str, student_answer: str, concept_id: str) -> Dict[str, Any]:
+def evaluate_dialogue_response(question: str, context: str, student_answer: str, concept_id: str, exchange_count: int = 0) -> Dict[str, Any]:
     """
     Evaluate an open-ended dialogue response using Claude AI with rubric-based feedback.
+    For multi-turn dialogues, also generates a follow-up question.
 
     Args:
         question: The dialogue question asked
         context: The scenario/context for the question
         student_answer: The student's open-ended response
         concept_id: The concept being assessed
+        exchange_count: Number of previous exchanges (for multi-turn dialogue)
 
     Returns:
         Dict with:
         - is_correct (bool): Whether answer demonstrates understanding
-        - feedback (str): Detailed rubric-based feedback
+        - feedback (str): Brief conversational feedback (1-2 sentences)
         - score (float): Score from 0.0 to 1.0
+        - followUpQuestion (str): Next question to continue the dialogue
+        - dialogueComplete (bool): Whether dialogue should end
     """
     try:
         # Check for empty or very short responses first
         if not student_answer or len(student_answer.strip()) < 5:
             return {
                 "is_correct": False,
-                "feedback": "Your response is too brief. Please provide a more detailed answer that explains your thinking.",
-                "score": 0.1
+                "feedback": "Can you tell me more? Even a brief explanation helps me understand your thinking.",
+                "score": 0.1,
+                "followUpQuestion": question,  # Repeat the question
+                "dialogueComplete": False
             }
 
-        # Build evaluation prompt for Claude
-        evaluation_prompt = f"""You are evaluating a student's response to a Socratic dialogue question about Latin grammar.
+        # Build evaluation prompt for Claude - optimized for quick back-and-forth
+        evaluation_prompt = f"""You are a Socratic tutor having a quick back-and-forth dialogue about Latin grammar.
+This is exchange #{exchange_count + 1} of an ongoing conversation.
 
 QUESTION ASKED:
 {question}
 
-CONTEXT PROVIDED:
-{context if context else "(No additional context)"}
+CONTEXT:
+{context if context else "(General Latin grammar discussion)"}
 
 STUDENT'S RESPONSE:
 {student_answer}
 
-EVALUATION TASK:
-Evaluate this response on a scale of 0.0 to 1.0 based on:
-1. Accuracy of grammatical understanding
-2. Clarity of explanation
-3. Appropriate use of examples or terminology
-4. Depth of reasoning
+YOUR TASK:
+1. Give brief, encouraging feedback (1 sentence max)
+2. Generate a natural follow-up question that builds on their answer
+3. Keep the dialogue flowing conversationally
 
-IMPORTANT GUIDELINES:
-- Be encouraging but honest
-- Focus on what the student got right before addressing gaps
-- Provide specific, actionable feedback
-- Use a conversational, supportive tone
-- If the response shows partial understanding, acknowledge that
+GUIDELINES:
+- Feedback should be SHORT and conversational (like texting, not an essay)
+- If they're right: acknowledge briefly, then dig deeper
+- If they're partially right: gently guide toward the gap
+- If they're wrong: redirect with a hint, don't lecture
+- Follow-up questions should be SPECIFIC and QUICK to answer
 
-Respond with ONLY a JSON object in this exact format (no markdown, no explanation):
-{{"score": 0.75, "is_correct": true, "feedback": "Your explanation shows good understanding of..."}}
+Respond with ONLY a JSON object (no markdown):
+{{"score": 0.75, "is_correct": true, "feedback": "Exactly right!", "followUpQuestion": "Now, what happens to that ending in the plural?"}}
 
-The "is_correct" field should be true if score >= 0.5 (demonstrates at least partial understanding).
-Keep feedback to 2-3 sentences maximum."""
+Score >= 0.5 means partial understanding. Keep everything SHORT and conversational."""
 
         # Use a smaller model for faster evaluation
         from anthropic import Anthropic
@@ -267,14 +271,21 @@ Keep feedback to 2-3 sentences maximum."""
             score = float(result.get("score", 0.5))
             is_correct = result.get("is_correct", score >= 0.5)
             feedback = result.get("feedback", "Thank you for your thoughtful response.")
+            follow_up = result.get("followUpQuestion", "")
 
             # Clamp score to valid range
             score = max(0.0, min(1.0, score))
 
+            # Determine if dialogue should complete
+            # Complete if: high score after 2+ exchanges, or 3 exchanges reached
+            should_complete = (exchange_count >= 2 and score >= 0.85) or exchange_count >= 2
+
             return {
                 "is_correct": is_correct,
                 "feedback": feedback,
-                "score": score
+                "score": score,
+                "followUpQuestion": follow_up if not should_complete else "",
+                "dialogueComplete": should_complete
             }
 
         except json.JSONDecodeError:
@@ -283,7 +294,9 @@ Keep feedback to 2-3 sentences maximum."""
             return {
                 "is_correct": True,
                 "feedback": "Thank you for your explanation. Your response shows you're engaging with the material.",
-                "score": 0.6
+                "score": 0.6,
+                "followUpQuestion": "Can you tell me more about how you arrived at that understanding?",
+                "dialogueComplete": False
             }
 
     except Exception as e:
@@ -292,7 +305,9 @@ Keep feedback to 2-3 sentences maximum."""
         return {
             "is_correct": True,
             "feedback": "Thank you for your response. Let's continue exploring this concept.",
-            "score": 0.6
+            "score": 0.6,
+            "followUpQuestion": "",
+            "dialogueComplete": True  # Complete on error to allow user to move on
         }
 
 
