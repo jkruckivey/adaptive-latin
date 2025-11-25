@@ -48,9 +48,9 @@
       "type": "question",
       "question": "When learning something new, what format helps you most?",
       "options": [
-        { "value": "narrative", "label": "Story-based learning through scenarios and conversations" },
-        { "value": "varied", "label": "Varied content types - mix of questions, visual diagrams, and interactive widgets" },
-        { "value": "dialogue", "label": "Interactive dialogue - learn through back-and-forth conversation with an AI tutor" }
+        { "value": "narrative", "label": "Story-based examples and fill-in-the-blank exercises" },
+        { "value": "varied", "label": "Visual tables, interactive widgets, and mixed question types" },
+        { "value": "dialogue", "label": "Open-ended questions and back-and-forth conversation" }
       ],
       "key": "learningStyle"
     },
