@@ -103,23 +103,34 @@ export const api = {
 
   // Submit learner response with confidence for evaluation
   async submitResponse(learnerId, questionType, userAnswer, correctAnswer, confidence, currentConcept, questionText = null, scenarioText = null, options = null) {
+    const requestBody = {
+      learner_id: learnerId,
+      question_type: questionType,
+      user_answer: userAnswer,
+      correct_answer: correctAnswer,
+      confidence: confidence,
+      current_concept: currentConcept,
+      question_text: questionText,
+      scenario_text: scenarioText,
+      options: options
+    };
+
+    console.log('submitResponse request:', requestBody);
+
     const response = await fetch(`${API_BASE_URL}/submit-response`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        learner_id: learnerId,
-        question_type: questionType,
-        user_answer: userAnswer,
-        correct_answer: correctAnswer,
-        confidence: confidence,
-        current_concept: currentConcept,
-        question_text: questionText,
-        scenario_text: scenarioText,
-        options: options
-      }),
+      body: JSON.stringify(requestBody),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Submit response failed:', error, 'Request was:', requestBody);
+      throw new Error(error.detail || `Failed to submit response: ${response.statusText}`);
+    }
+
     return response.json();
   },
 
