@@ -164,6 +164,14 @@ def generate_diagnostic_request(
         content_type = "dialogue"
     elif learning_style == "narrative":
         content_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    elif learning_style == "interactive":
+        # Hands-on widgets only - no traditional questions
+        content_type = random.choice([
+            "paradigm-table",      # Visual table with comprehension check
+            "declension-explorer", # Interactive exploration widget
+            "word-order-manipulator",  # Drag-and-drop word arrangement
+            "teaching-moment"      # 2-stage interactive misconception correction
+        ])
     else:  # "varied" - include visual/interactive content, not just questions
         content_type = random.choice([
             "multiple-choice",
@@ -198,6 +206,18 @@ def generate_diagnostic_request(
             f"Include a base word and show how it changes across different cases/forms. "
             f"Provide interactive elements where the learner can see patterns. "
             f"Include a brief task asking them to predict or identify a specific form. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "word-order-manipulator":
+        # Drag-and-drop word order widget
+        return (
+            f"Generate a 'word-order-manipulator' interactive widget that lets the learner "
+            f"rearrange Latin words to form valid sentences. {difficulty_instruction}"
+            f"Provide a simple Latin sentence (3-5 words) broken into individual words. "
+            f"For each word, include its case/role (subject, verb, object, etc). "
+            f"Since Latin word order is flexible, include multiple valid arrangements. "
+            f"Add an explanation of how Latin word order works differently from English. "
             f"Respond ONLY with the JSON object, no other text."
         )
 
@@ -306,6 +326,14 @@ def generate_practice_request(
         content_type = "dialogue"
     elif learning_style == "narrative":
         content_type = random.choice(["multiple-choice", "fill-blank"])  # Story-based formats
+    elif learning_style == "interactive":
+        # Hands-on widgets only - no traditional questions
+        content_type = random.choice([
+            "paradigm-table",      # Visual table with comprehension check
+            "declension-explorer", # Interactive exploration widget
+            "word-order-manipulator",  # Drag-and-drop word arrangement
+            "teaching-moment"      # 2-stage interactive misconception correction
+        ])
     else:  # "varied" - include visual/interactive content, not just questions
         content_type = random.choice([
             "multiple-choice",
@@ -338,6 +366,17 @@ def generate_practice_request(
             f"than previously shown. {difficulty_instruction}"
             f"Let the learner explore how this new word changes across cases/forms. "
             f"Include a task asking them to identify or predict a specific form. "
+            f"Respond ONLY with the JSON object, no other text."
+        )
+
+    elif content_type == "word-order-manipulator":
+        # Drag-and-drop word order widget
+        return (
+            f"Generate a 'word-order-manipulator' interactive widget using a DIFFERENT sentence "
+            f"than previously shown. {difficulty_instruction}"
+            f"Break a Latin sentence into individual words with their grammatical roles. "
+            f"Include multiple valid word orders since Latin is flexible. "
+            f"Provide an explanation connecting word order to meaning emphasis. "
             f"Respond ONLY with the JSON object, no other text."
         )
 

@@ -504,8 +504,9 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
             if profile.get("learningStyle"):
                 style_map = {
                     "narrative": "Prefers story-based learning through scenarios, conversations, and contextual examples",
-                    "varied": "Enjoys variety - mix different content types (tables, examples, exercises)",
-                    "adaptive": "Prefers content that explicitly adapts based on performance with clear progression"
+                    "dialogue": "Prefers Socratic discussion - being asked questions and explaining their thinking",
+                    "interactive": "Prefers hands-on exploration - clicking, dragging, and discovering patterns",
+                    "varied": "Enjoys variety - mix different content types (tables, examples, exercises)"
                 }
                 context += f"**Learning Style**: {style_map.get(profile['learningStyle'], profile['learningStyle'])}\n"
 
@@ -513,10 +514,12 @@ def inject_learner_context(base_prompt: str, learner_id: str) -> str:
                 context += f"\n**Content Format Preference**: "
                 if profile['learningStyle'] == "narrative":
                     context += "Generate 'example-set' content with rich contextual examples and stories. Include 'lesson' content with narrative explanations connecting grammar to real usage. Avoid videos.\n"
+                elif profile['learningStyle'] == "dialogue":
+                    context += "Generate 'dialogue' questions that ask the learner to explain their understanding. Use Socratic questioning. Let them articulate concepts in their own words. Avoid videos.\n"
+                elif profile['learningStyle'] == "interactive":
+                    context += "Generate interactive widgets: 'paradigm-table', 'declension-explorer', 'word-order-manipulator'. Let them click, explore, and discover patterns hands-on. Avoid videos.\n"
                 elif profile['learningStyle'] == "varied":
-                    context += "Vary the content types - alternate between paradigm tables, example sets with stories, and fill-blank exercises. Keep it diverse. Avoid videos.\n"
-                elif profile['learningStyle'] == "adaptive":
-                    context += "Focus on exercises ('fill-blank', 'multiple-choice') to gather performance data. Adjust difficulty based on mastery level. Include brief 'lesson' content when needed. Avoid videos.\n"
+                    context += "Vary the content types - alternate between paradigm tables, example sets with stories, dialogue questions, and fill-blank exercises. Keep it diverse. Avoid videos.\n"
                 else:
                     context += "Use written text content with clear examples. Avoid videos.\n"
 
@@ -1275,12 +1278,22 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     "source": "pre-authored"
                 }
             except FileNotFoundError as e:
-                # No teaching moments for this concept, fall back to multiple-choice
-                logger.warning(f"No teaching moments available for {concept_id}, falling back to multiple-choice")
-                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+                # No teaching moments for this concept, fall back to another interactive widget
+                logger.warning(f"No teaching moments available for {concept_id}, falling back to declension-explorer")
+                request = (
+                    "Generate a 'declension-explorer' interactive widget that lets the learner "
+                    "explore noun or verb forms. Include a base word and show how it changes across "
+                    "different cases/forms. Provide interactive elements where the learner can see patterns. "
+                    "Include a brief task asking them to predict or identify a specific form. "
+                    "Respond ONLY with the JSON object, no other text."
+                )
             except Exception as e:
                 logger.error(f"Error loading teaching moment: {e}")
-                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+                request = (
+                    "Generate a 'declension-explorer' interactive widget that lets the learner "
+                    "explore noun or verb forms. Include a base word and show how it changes across "
+                    "different cases/forms. Respond ONLY with the JSON object, no other text."
+                )
 
         # Make API call with retry logic
         response = call_anthropic_with_retry(
