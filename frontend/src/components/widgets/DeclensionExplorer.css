@@ -167,7 +167,7 @@
 .explorer-table td.selected-cell {
   background: #bbdefb;
   font-weight: bold;
-  color: var(--brand-turquoise-dark);
+  color: #0d47a1;
 }
 
 .case-name {
