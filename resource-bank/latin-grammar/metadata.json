@@ -64,12 +64,11 @@
     },
     {
       "type": "question",
-      "question": "How do you learn best?",
+      "question": "When learning something new, what format helps you most?",
       "options": [
-        { "value": "visual", "label": "Visual aids - tables, charts, diagrams" },
-        { "value": "examples", "label": "Lots of examples and practice" },
-        { "value": "explanation", "label": "Clear explanations of concepts" },
-        { "value": "practice", "label": "Hands-on practice and doing" }
+        { "value": "narrative", "label": "Story-based learning through scenarios and conversations" },
+        { "value": "varied", "label": "Varied content types - mix of questions, visual diagrams, and interactive widgets" },
+        { "value": "dialogue", "label": "Interactive dialogue - learn through back-and-forth conversation with an AI tutor" }
       ],
       "key": "learningStyle"
     },
