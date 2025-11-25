@@ -184,6 +184,13 @@ export const api = {
 
   // Create a new course
   async createCourse(courseData) {
+    // Helper to safely get string from outcome (handles both string and object formats)
+    const getOutcomeText = (o) => {
+      if (typeof o === 'string') return o
+      if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+      return ''
+    }
+
     // Generate course ID from title
     const courseId = courseData.title
       .toLowerCase()
@@ -195,7 +202,7 @@ export const api = {
       title: courseData.title,
       domain: courseData.domain,
       taxonomy: courseData.taxonomy || 'blooms',
-      course_learning_outcomes: courseData.courseLearningOutcomes || [],
+      course_learning_outcomes: (courseData.courseLearningOutcomes || []).map(o => getOutcomeText(o)).filter(o => o.trim()),
       // Backward compatibility
       description: courseData.description || null,
       target_audience: courseData.targetAudience || null,
@@ -206,12 +213,12 @@ export const api = {
       // Module-based structure (new)
       requestBody.modules = courseData.modules.map(module => ({
         moduleId: module.moduleId,
-        title: module.title,
-        moduleLearningOutcomes: module.moduleLearningOutcomes || [],
+        title: typeof module.title === 'string' ? module.title : getOutcomeText(module.title),
+        moduleLearningOutcomes: (module.moduleLearningOutcomes || []).map(o => getOutcomeText(o)).filter(o => o.trim()),
         concepts: (module.concepts || []).map(concept => ({
           conceptId: concept.conceptId,
-          title: concept.title,
-          learningObjectives: concept.learningObjectives || [],
+          title: typeof concept.title === 'string' ? concept.title : getOutcomeText(concept.title),
+          learningObjectives: (concept.learningObjectives || []).map(o => getOutcomeText(o)).filter(o => o.trim()),
           prerequisites: concept.prerequisites || [],
           teachingContent: concept.teachingContent || '',
           vocabulary: concept.vocabulary || []
@@ -220,8 +227,8 @@ export const api = {
     } else {
       // Flat concept structure (backward compatibility)
       requestBody.concepts = (courseData.concepts || []).map(concept => ({
-        title: concept.title,
-        moduleLearningOutcomes: concept.moduleLearningOutcomes || concept.learningObjectives || [],
+        title: typeof concept.title === 'string' ? concept.title : getOutcomeText(concept.title),
+        moduleLearningOutcomes: (concept.moduleLearningOutcomes || concept.learningObjectives || []).map(o => getOutcomeText(o)).filter(o => o.trim()),
         prerequisites: concept.prerequisites || [],
         teachingContent: concept.teachingContent || '',
         vocabulary: concept.vocabulary || []
