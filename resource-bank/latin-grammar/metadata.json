@@ -46,16 +46,6 @@
     },
     {
       "type": "question",
-      "question": "When learning something new, what format helps you most?",
-      "options": [
-        { "value": "narrative", "label": "Story-based examples and fill-in-the-blank exercises" },
-        { "value": "varied", "label": "Visual tables, interactive widgets, and mixed question types" },
-        { "value": "dialogue", "label": "Open-ended questions and back-and-forth conversation" }
-      ],
-      "key": "learningStyle"
-    },
-    {
-      "type": "question",
       "question": "What are you interested in? (This helps me create examples you'll enjoy)",
       "placeholder": "e.g., History, mythology, philosophy, science, sports, music, literature...",
       "key": "interests"
