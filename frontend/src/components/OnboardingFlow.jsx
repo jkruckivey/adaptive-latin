@@ -211,7 +211,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   if (!currentStep) return null
 
   // Render based on step type
-  if (currentStep.type === 'welcome' || currentStep.type === 'interactive' || currentStep.type === 'completion') {
+  if (currentStep.type === 'welcome' || currentStep.type === 'completion') {
     return currentStep.content
   }
 
