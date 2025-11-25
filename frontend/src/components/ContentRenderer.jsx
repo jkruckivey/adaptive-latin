@@ -148,13 +148,10 @@ function ContentRenderer({ content, onResponse, onNext, isLoading, learnerId, le
           return result
         }
 
-        // When dialogue is complete, treat it like a standard response
-        const handleDialogueComplete = (summary) => {
-          onResponse({
-            type: 'dialogue',
-            answer: summary.messages?.map(m => m.content).join('\n') || '',
-            dialogueSummary: summary
-          })
+        // When dialogue is complete, skip assessment-result and go directly to next content
+        // (feedback was already given inline during the conversation)
+        const handleDialogueComplete = () => {
+          onNext()
         }
 
         return (
