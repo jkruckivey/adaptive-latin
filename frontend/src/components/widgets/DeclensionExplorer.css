@@ -75,6 +75,13 @@
 .case-button.highlight {
   border-color: var(--color-warning);
   background: #fff8e1;
+  color: var(--color-warning-dark);
+}
+
+.case-button.highlight.active {
+  background: var(--color-warning);
+  color: #1a1a1a;
+  border-color: var(--color-warning);
 }
 
 .explorer-display {
@@ -160,7 +167,7 @@
 .explorer-table td.selected-cell {
   background: #bbdefb;
   font-weight: bold;
-  color: var(--brand-turquoise-dark);
+  color: #0d47a1;
 }
 
 .case-name {

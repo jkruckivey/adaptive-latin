@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import './OnboardingFlow.css'
 
 function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', courseDomain = '', customQuestions = null }) {
@@ -14,13 +14,24 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   const [isStarting, setIsStarting] = useState(false)
   const [selectedOption, setSelectedOption] = useState('')
 
+  // Keep a ref to the latest profile to avoid stale closure issues
+  const profileRef = useRef(profile)
+  useEffect(() => {
+    profileRef.current = profile
+  }, [profile])
+
   const updateProfile = (key, value) => {
     setProfile(prev => {
+      let newProfile
       if (key === 'priorKnowledge' && typeof value === 'object') {
         // Merge with existing priorKnowledge to avoid stale closure issues
-        return { ...prev, priorKnowledge: { ...prev.priorKnowledge, ...value } }
+        newProfile = { ...prev, priorKnowledge: { ...prev.priorKnowledge, ...value } }
+      } else {
+        newProfile = { ...prev, [key]: value }
       }
-      return { ...prev, [key]: value }
+      // Update ref synchronously so handleComplete always has latest
+      profileRef.current = newProfile
+      return newProfile
     })
   }
 
@@ -37,11 +48,8 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
 
   const handleComplete = () => {
     setIsStarting(true)
-    // Use callback to get latest profile state (avoids stale closure issue)
-    setProfile(currentProfile => {
-      onComplete(currentProfile)
-      return currentProfile
-    })
+    // Use ref to get latest profile (avoids stale closure from useMemo)
+    onComplete(profileRef.current)
   }
 
   const handleQuickStart = () => {
