@@ -15,7 +15,13 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   const [selectedOption, setSelectedOption] = useState('')
 
   const updateProfile = (key, value) => {
-    setProfile(prev => ({ ...prev, [key]: value }))
+    setProfile(prev => {
+      if (key === 'priorKnowledge' && typeof value === 'object') {
+        // Merge with existing priorKnowledge to avoid stale closure issues
+        return { ...prev, priorKnowledge: { ...prev.priorKnowledge, ...value } }
+      }
+      return { ...prev, [key]: value }
+    })
   }
 
   const handleNext = () => {
@@ -31,7 +37,11 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
 
   const handleComplete = () => {
     setIsStarting(true)
-    onComplete(profile)
+    // Use callback to get latest profile state (avoids stale closure issue)
+    setProfile(currentProfile => {
+      onComplete(currentProfile)
+      return currentProfile
+    })
   }
 
   const handleQuickStart = () => {
@@ -99,10 +109,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
             onSelect: (value) => {
               if (q.key) updateProfile(q.key, value)
               if (q.priorKnowledgeKey) {
-                updateProfile('priorKnowledge', {
-                  ...profile.priorKnowledge,
-                  [q.priorKnowledgeKey]: value
-                })
+                updateProfile('priorKnowledge', { [q.priorKnowledgeKey]: value })
               }
               handleNext()
             }
@@ -116,10 +123,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
             onAnswer: (answer) => {
               if (q.key) updateProfile(q.key, answer)
               if (q.priorKnowledgeKey) {
-                updateProfile('priorKnowledge', {
-                  ...profile.priorKnowledge,
-                  [q.priorKnowledgeKey]: answer
-                })
+                updateProfile('priorKnowledge', { [q.priorKnowledgeKey]: answer })
               }
               handleNext()
             }
@@ -154,10 +158,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
           { value: 'advanced', label: 'Advanced - deep understanding and experience' }
         ],
         onSelect: (value) => {
-          updateProfile('priorKnowledge', {
-            ...profile.priorKnowledge,
-            level: value
-          })
+          updateProfile('priorKnowledge', { level: value })
           handleNext()
         }
       })
@@ -168,10 +169,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
         question: 'What related skills or subjects do you already know? This helps me connect new concepts to things you\'re familiar with.',
         placeholder: getRelatedSkillsPlaceholder(courseDomain),
         onAnswer: (answer) => {
-          updateProfile('priorKnowledge', {
-            ...profile.priorKnowledge,
-            relatedSkills: answer
-          })
+          updateProfile('priorKnowledge', { relatedSkills: answer })
           handleNext()
         }
       })
