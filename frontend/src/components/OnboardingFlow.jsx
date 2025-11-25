@@ -12,7 +12,6 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   })
   const [currentAnswer, setCurrentAnswer] = useState('')
   const [isStarting, setIsStarting] = useState(false)
-  const [selectedLearningStyle, setSelectedLearningStyle] = useState('')
   const [selectedOption, setSelectedOption] = useState('')
 
   const updateProfile = (key, value) => {
@@ -189,74 +188,6 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
       })
     }
 
-    // Learning style question (always included)
-    builtSteps.push({
-      type: 'interactive',
-      prompt: "One more quick thing...",
-      content: (
-        <div className="interactive-assessment">
-          <h3>When learning something new, what format helps you most?</h3>
-          <p className="question-text">
-            If you need extra help with a concept, which would you reach for first?
-          </p>
-          <div className="option-buttons">
-            <label className="assessment-option">
-              <input
-                type="radio"
-                name="learningStyle"
-                value="narrative"
-                checked={selectedLearningStyle === 'narrative'}
-                onChange={(e) => setSelectedLearningStyle(e.target.value)}
-              />
-              <div className="option-text">
-                <div className="option-title">Story-based learning</div>
-                <div className="option-subtitle">Learning through scenarios and conversations</div>
-              </div>
-            </label>
-
-            <label className="assessment-option">
-              <input
-                type="radio"
-                name="learningStyle"
-                value="varied"
-                checked={selectedLearningStyle === 'varied'}
-                onChange={(e) => setSelectedLearningStyle(e.target.value)}
-              />
-              <div className="option-text">
-                <div className="option-title">Varied content types</div>
-                <div className="option-subtitle">Mix of questions, visual diagrams, and interactive widgets</div>
-              </div>
-            </label>
-
-            <label className="assessment-option">
-              <input
-                type="radio"
-                name="learningStyle"
-                value="dialogue"
-                checked={selectedLearningStyle === 'dialogue'}
-                onChange={(e) => setSelectedLearningStyle(e.target.value)}
-              />
-              <div className="option-text">
-                <div className="option-title">Interactive dialogue</div>
-                <div className="option-subtitle">Learn through back-and-forth conversation with an AI tutor</div>
-              </div>
-            </label>
-          </div>
-          <button
-            onClick={() => {
-              updateProfile('learningStyle', selectedLearningStyle)
-              handleNext()
-            }}
-            className="continue-button"
-            disabled={!selectedLearningStyle}
-            style={{ marginTop: '24px' }}
-          >
-            Continue
-          </button>
-        </div>
-      )
-    })
-
     // Completion step
     builtSteps.push({
       type: 'completion',
@@ -273,7 +204,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
 
     console.log('[Onboarding] Building steps array, total steps:', builtSteps.length)
     return builtSteps
-  }, [learnerName, courseTitle, courseDomain, customQuestions, isStarting, profile.priorKnowledge, selectedLearningStyle])
+  }, [learnerName, courseTitle, courseDomain, customQuestions, isStarting, profile.priorKnowledge])
 
   console.log('[Onboarding] Render - current step index:', step, 'total steps:', steps.length)
 
