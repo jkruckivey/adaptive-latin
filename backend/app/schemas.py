@@ -86,6 +86,26 @@ class EvaluationResponse(BaseModel):
     next_content: dict  # The next piece of content to show
     debug_context: Optional[dict] = None  # Debug info showing what was sent to AI
 
+class DialogueEvaluationRequest(BaseModel):
+    """Request to evaluate a dialogue response (for multi-turn conversations)."""
+    learner_id: str = Field(..., description="Unique identifier for the learner")
+    concept_id: str = Field(..., description="Current concept being assessed")
+    question: str = Field(..., description="The dialogue question asked")
+    context: Optional[str] = Field(None, description="Scenario/context for the question")
+    answer: str = Field(..., description="The learner's answer")
+    exchange_count: int = Field(0, description="Number of previous exchanges in this dialogue")
+
+class DialogueEvaluationResponse(BaseModel):
+    """Response from dialogue evaluation endpoint."""
+    isCorrect: bool = Field(..., alias="is_correct")
+    feedback: str
+    score: float
+    followUpQuestion: str = ""
+    dialogueComplete: bool = False
+
+    class Config:
+        populate_by_name = True
+
 class TutorConversationRequest(BaseModel):
     """Request to start or continue a tutor conversation."""
     learner_id: str = Field(..., description="Unique identifier for the learner")

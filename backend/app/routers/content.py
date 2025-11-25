@@ -8,7 +8,9 @@ from ..schemas import (
     ConceptResponse,
     MasteryResponse,
     SubmitResponseRequest,
-    EvaluationResponse
+    EvaluationResponse,
+    DialogueEvaluationRequest,
+    DialogueEvaluationResponse
 )
 from ..tools import (
     load_concept_metadata,
@@ -441,6 +443,46 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to evaluate response: {str(e)}"
         )
+
+
+@router.post("/evaluate-dialogue", response_model=DialogueEvaluationResponse)
+async def evaluate_dialogue(body: DialogueEvaluationRequest):
+    """
+    Evaluate a dialogue response for multi-turn conversations.
+
+    This is a lightweight endpoint specifically for conversational dialogue
+    that returns feedback and follow-up questions without generating new content.
+    """
+    try:
+        from ..agent import evaluate_dialogue_response
+
+        logger.info(f"Evaluating dialogue for learner {body.learner_id}, exchange #{body.exchange_count + 1}")
+
+        evaluation = evaluate_dialogue_response(
+            question=body.question,
+            context=body.context or "",
+            student_answer=body.answer,
+            concept_id=body.concept_id,
+            exchange_count=body.exchange_count
+        )
+
+        logger.info(f"Dialogue evaluation result: score={evaluation.get('score')}, complete={evaluation.get('dialogueComplete')}")
+
+        return {
+            "isCorrect": evaluation.get("is_correct", False),
+            "feedback": evaluation.get("feedback", "Thank you for your response."),
+            "score": evaluation.get("score", 0.5),
+            "followUpQuestion": evaluation.get("followUpQuestion", ""),
+            "dialogueComplete": evaluation.get("dialogueComplete", False)
+        }
+
+    except Exception as e:
+        logger.error(f"Error evaluating dialogue: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to evaluate dialogue: {str(e)}"
+        )
+
 
 @router.post("/request-hint")
 async def request_hint(request: Request, body: dict):

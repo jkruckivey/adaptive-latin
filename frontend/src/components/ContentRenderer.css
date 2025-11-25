@@ -84,7 +84,7 @@
 .continue-button,
 .submit-button {
   padding: 14px 32px;
-  background: var(--color-text);
+  background: var(--text-primary, #1a1a1a);
   color: white;
   border: none;
   border-radius: var(--radius-md);
