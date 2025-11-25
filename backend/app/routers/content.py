@@ -403,9 +403,12 @@ async def submit_response(request: Request, body: SubmitResponseRequest):
             if 0 <= body.user_answer < len(body.options):
                 user_answer_display = body.options[body.user_answer]
 
+        # For dialogue questions, use the AI-generated score; for others, use binary correct/incorrect
+        result_score = dialogue_score if body.question_type == "dialogue" else (1.0 if is_correct else 0.0)
+
         assessment_result = {
             "type": "assessment-result",
-            "score": 1.0 if is_correct else 0.0,
+            "score": result_score,
             "feedback": feedback_text,
             "correctAnswer": correct_answer_display if body.question_type != "dialogue" else None,
             "userAnswer": user_answer_display,
