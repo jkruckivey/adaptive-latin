@@ -2,6 +2,13 @@ import { useState } from 'react'
 import { api } from '../../api'
 import './LearningOutcomeGenerator.css'
 
+// Helper to safely get string from outcome (handles both string and object formats)
+const getOutcomeText = (o) => {
+  if (typeof o === 'string') return o
+  if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+  return ''
+}
+
 function LearningOutcomeGenerator({
   description,
   taxonomy,
@@ -62,7 +69,7 @@ function LearningOutcomeGenerator({
   }
 
   const handleAccept = () => {
-    const nonEmptyOutcomes = editedOutcomes.filter(o => o.trim().length > 0)
+    const nonEmptyOutcomes = editedOutcomes.filter(o => getOutcomeText(o).trim().length > 0)
     if (nonEmptyOutcomes.length > 0) {
       onAccept(nonEmptyOutcomes)
     }

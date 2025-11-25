@@ -2,6 +2,13 @@ import { useState } from 'react'
 import { api } from '../../api'
 import './CourseReview.css'
 
+// Helper to safely get string from outcome (handles both string and object formats)
+const getOutcomeText = (o) => {
+  if (typeof o === 'string') return o
+  if (o && typeof o === 'object') return o.outcome || o.text || o.description || ''
+  return ''
+}
+
 function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
   const [visibility, setVisibility] = useState('unlisted')
   const [isPublishing, setIsPublishing] = useState(false)
@@ -144,12 +151,12 @@ function CourseReview({ courseData, onBack, onPublish, onSaveDraft }) {
       </div>
 
       {/* Course Learning Outcomes */}
-      {courseData.courseLearningOutcomes && courseData.courseLearningOutcomes.filter(o => o.trim()).length > 0 && (
+      {courseData.courseLearningOutcomes && courseData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim()).length > 0 && (
         <div className="review-section">
           <h3>Course Learning Outcomes (CLOs)</h3>
           <ul className="outcomes-list">
-            {courseData.courseLearningOutcomes.filter(o => o.trim()).map((outcome, i) => (
-              <li key={i} className="outcome-item">{outcome}</li>
+            {courseData.courseLearningOutcomes.filter(o => getOutcomeText(o).trim()).map((outcome, i) => (
+              <li key={i} className="outcome-item">{getOutcomeText(outcome)}</li>
             ))}
           </ul>
         </div>
