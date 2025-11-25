@@ -1278,12 +1278,22 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     "source": "pre-authored"
                 }
             except FileNotFoundError as e:
-                # No teaching moments for this concept, fall back to multiple-choice
-                logger.warning(f"No teaching moments available for {concept_id}, falling back to multiple-choice")
-                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+                # No teaching moments for this concept, fall back to another interactive widget
+                logger.warning(f"No teaching moments available for {concept_id}, falling back to declension-explorer")
+                request = (
+                    "Generate a 'declension-explorer' interactive widget that lets the learner "
+                    "explore noun or verb forms. Include a base word and show how it changes across "
+                    "different cases/forms. Provide interactive elements where the learner can see patterns. "
+                    "Include a brief task asking them to predict or identify a specific form. "
+                    "Respond ONLY with the JSON object, no other text."
+                )
             except Exception as e:
                 logger.error(f"Error loading teaching moment: {e}")
-                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+                request = (
+                    "Generate a 'declension-explorer' interactive widget that lets the learner "
+                    "explore noun or verb forms. Include a base word and show how it changes across "
+                    "different cases/forms. Respond ONLY with the JSON object, no other text."
+                )
 
         # Make API call with retry logic
         response = call_anthropic_with_retry(
