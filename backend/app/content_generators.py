@@ -170,11 +170,16 @@ def generate_diagnostic_request(
             "fill-blank",
             "dialogue",
             "paradigm-table",      # Visual table with comprehension check
-            "declension-explorer"  # Interactive widget
+            "declension-explorer", # Interactive widget
+            "teaching-moment"      # Pre-authored misconception correction (2-stage)
         ])
 
     # Build prompt based on content type
-    if content_type == "paradigm-table":
+    if content_type == "teaching-moment":
+        # Special marker - agent will serve pre-authored teaching moment from JSON
+        return "USE_TEACHING_MOMENT"
+
+    elif content_type == "paradigm-table":
         # Visual paradigm table with embedded question
         return (
             f"Generate a 'paradigm-table' content item that shows a visual table of forms "
@@ -307,11 +312,16 @@ def generate_practice_request(
             "fill-blank",
             "dialogue",
             "paradigm-table",      # Visual table with comprehension check
-            "declension-explorer"  # Interactive widget
+            "declension-explorer", # Interactive widget
+            "teaching-moment"      # Pre-authored misconception correction (2-stage)
         ])
 
     # Build prompt based on content type
-    if content_type == "paradigm-table":
+    if content_type == "teaching-moment":
+        # Special marker - agent will serve pre-authored teaching moment from JSON
+        return "USE_TEACHING_MOMENT"
+
+    elif content_type == "paradigm-table":
         # Visual paradigm table with embedded question
         return (
             f"Generate a 'paradigm-table' content item showing a different aspect of the paradigm "

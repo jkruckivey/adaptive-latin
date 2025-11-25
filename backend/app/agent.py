@@ -1192,6 +1192,29 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
         else:
             request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
 
+        # Handle pre-authored teaching moments (not AI-generated)
+        if request == "USE_TEACHING_MOMENT":
+            from .tools import select_personalized_teaching_moment
+            try:
+                teaching_moment = select_personalized_teaching_moment(
+                    concept_id=concept_id,
+                    learner_id=learner_id,
+                    course_id=course_id
+                )
+                logger.info(f"Serving pre-authored teaching moment: {teaching_moment.get('teaching_moment_id')}")
+                return {
+                    "success": True,
+                    "content": teaching_moment,
+                    "source": "pre-authored"
+                }
+            except FileNotFoundError as e:
+                # No teaching moments for this concept, fall back to multiple-choice
+                logger.warning(f"No teaching moments available for {concept_id}, falling back to multiple-choice")
+                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+            except Exception as e:
+                logger.error(f"Error loading teaching moment: {e}")
+                request = "Generate a 'multiple-choice' diagnostic question with scenario. Respond ONLY with the JSON object, no other text."
+
         # Make API call with retry logic
         response = call_anthropic_with_retry(
             system_prompt=system_prompt,
