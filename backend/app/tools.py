@@ -1208,9 +1208,9 @@ def load_external_resources(concept_id: str = None, learner_profile: Dict[str, A
         if learner_profile:
             learning_preference = learner_profile.get("learningStyle", "")
             preference_mapping = {
-                "visual": ["visual_learners", "video"],
-                "connections": ["conceptual_learners", "article"],
-                "practice": ["kinesthetic_learners", "practice"]
+                "narrative": ["narrative_learners", "stories", "contextual", "article"],
+                "varied": ["visual_learners", "video", "practice", "interactive"],
+                "dialogue": ["interactive", "conversational", "guided"]
             }
 
             # Prioritize resources matching learner's preference
