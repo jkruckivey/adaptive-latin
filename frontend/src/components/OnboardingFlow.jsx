@@ -21,6 +21,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   }, [profile])
 
   const updateProfile = (key, value) => {
+    console.log('[Onboarding] updateProfile called:', key, '=', value)
     setProfile(prev => {
       let newProfile
       if (key === 'priorKnowledge' && typeof value === 'object') {
@@ -31,6 +32,7 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
       }
       // Update ref synchronously so handleComplete always has latest
       profileRef.current = newProfile
+      console.log('[Onboarding] profileRef updated:', JSON.stringify(newProfile))
       return newProfile
     })
   }
@@ -47,6 +49,8 @@ function OnboardingFlow({ learnerName, onComplete, courseTitle = 'this course', 
   }
 
   const handleComplete = () => {
+    console.log('[Onboarding] handleComplete called')
+    console.log('[Onboarding] profileRef.current:', JSON.stringify(profileRef.current))
     setIsStarting(true)
     // Use ref to get latest profile (avoids stale closure from useMemo)
     onComplete(profileRef.current)
