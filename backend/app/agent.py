@@ -179,7 +179,7 @@ def strip_video_content(content_obj: Dict[str, Any]) -> Dict[str, Any]:
 
 def evaluate_dialogue_response(question: str, context: str, student_answer: str, concept_id: str) -> Dict[str, Any]:
     """
-    Evaluate an open-ended dialogue response using AI with rubric-based feedback.
+    Evaluate an open-ended dialogue response using Claude AI with rubric-based feedback.
 
     Args:
         question: The dialogue question asked
@@ -194,29 +194,96 @@ def evaluate_dialogue_response(question: str, context: str, student_answer: str,
         - score (float): Score from 0.0 to 1.0
     """
     try:
-        # Use a simpler, direct evaluation for now
-        # In a full implementation, this would use Claude API with a rubric
-
-        # For now, do a basic length and keyword check
-        answer_length = len(student_answer.strip())
-
-        if answer_length < 10:
+        # Check for empty or very short responses first
+        if not student_answer or len(student_answer.strip()) < 5:
             return {
                 "is_correct": False,
-                "feedback": "Your response is too brief. Please provide a more detailed answer that demonstrates your understanding of the concept.",
-                "score": 0.2
+                "feedback": "Your response is too brief. Please provide a more detailed answer that explains your thinking.",
+                "score": 0.1
             }
-        elif answer_length < 30:
+
+        # Build evaluation prompt for Claude
+        evaluation_prompt = f"""You are evaluating a student's response to a Socratic dialogue question about Latin grammar.
+
+QUESTION ASKED:
+{question}
+
+CONTEXT PROVIDED:
+{context if context else "(No additional context)"}
+
+STUDENT'S RESPONSE:
+{student_answer}
+
+EVALUATION TASK:
+Evaluate this response on a scale of 0.0 to 1.0 based on:
+1. Accuracy of grammatical understanding
+2. Clarity of explanation
+3. Appropriate use of examples or terminology
+4. Depth of reasoning
+
+IMPORTANT GUIDELINES:
+- Be encouraging but honest
+- Focus on what the student got right before addressing gaps
+- Provide specific, actionable feedback
+- Use a conversational, supportive tone
+- If the response shows partial understanding, acknowledge that
+
+Respond with ONLY a JSON object in this exact format (no markdown, no explanation):
+{{"score": 0.75, "is_correct": true, "feedback": "Your explanation shows good understanding of..."}}
+
+The "is_correct" field should be true if score >= 0.5 (demonstrates at least partial understanding).
+Keep feedback to 2-3 sentences maximum."""
+
+        # Use a smaller model for faster evaluation
+        from anthropic import Anthropic
+        client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+
+        response = client.messages.create(
+            model="claude-3-5-haiku-20241022",  # Use Haiku for fast evaluation
+            max_tokens=300,
+            timeout=15,
+            messages=[{
+                "role": "user",
+                "content": evaluation_prompt
+            }]
+        )
+
+        # Parse the response
+        response_text = response.content[0].text.strip()
+        logger.info(f"Dialogue evaluation response: {response_text[:200]}")
+
+        # Try to parse as JSON
+        import json
+        try:
+            # Remove any markdown code fences if present
+            if response_text.startswith("```"):
+                response_text = response_text.split("```")[1]
+                if response_text.startswith("json"):
+                    response_text = response_text[4:]
+                response_text = response_text.strip()
+
+            result = json.loads(response_text)
+
+            score = float(result.get("score", 0.5))
+            is_correct = result.get("is_correct", score >= 0.5)
+            feedback = result.get("feedback", "Thank you for your thoughtful response.")
+
+            # Clamp score to valid range
+            score = max(0.0, min(1.0, score))
+
+            return {
+                "is_correct": is_correct,
+                "feedback": feedback,
+                "score": score
+            }
+
+        except json.JSONDecodeError:
+            # If JSON parsing fails, extract feedback from plain text
+            logger.warning(f"Failed to parse dialogue evaluation as JSON: {response_text[:100]}")
             return {
                 "is_correct": True,
-                "feedback": "Good attempt! Your answer shows basic understanding. Try to elaborate more on the key concepts.",
+                "feedback": "Thank you for your explanation. Your response shows you're engaging with the material.",
                 "score": 0.6
-            }
-        else:
-            return {
-                "is_correct": True,
-                "feedback": "Excellent! Your detailed response demonstrates strong understanding of the concept.",
-                "score": 0.9
             }
 
     except Exception as e:
@@ -224,8 +291,8 @@ def evaluate_dialogue_response(question: str, context: str, student_answer: str,
         # Default to neutral evaluation on error
         return {
             "is_correct": True,
-            "feedback": "Thank you for your response. Let's continue with the next activity.",
-            "score": 0.7
+            "feedback": "Thank you for your response. Let's continue exploring this concept.",
+            "score": 0.6
         }
 
 
@@ -1268,6 +1335,9 @@ def generate_content(learner_id: str, stage: str = "start", correctness: bool = 
                     content_obj['type'] = 'fill-blank'
                 elif 'scenario' in content_obj and 'part1' in content_obj:
                     content_obj['type'] = 'teaching-moment'
+                elif 'question' in content_obj and 'options' not in content_obj:
+                    # Dialogue: has question but no options (open-ended)
+                    content_obj['type'] = 'dialogue'
                 else:
                     content_obj['type'] = 'lesson'  # Default fallback
                 content_type = content_obj['type']
