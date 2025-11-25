@@ -49,6 +49,16 @@
       "question": "What are you interested in? (This helps me create examples you'll enjoy)",
       "placeholder": "e.g., History, mythology, philosophy, science, sports, music, literature...",
       "key": "interests"
+    },
+    {
+      "type": "question",
+      "question": "How do you prefer to learn?",
+      "options": [
+        { "value": "narrative", "label": "Through stories and scenarios - show me concepts in context" },
+        { "value": "dialogue", "label": "Through discussion - ask me questions and let me explain my thinking" },
+        { "value": "varied", "label": "Mix it up - give me a variety of activities and formats" }
+      ],
+      "key": "learningStyle"
     }
   ]
 }
