@@ -56,6 +56,7 @@
       "options": [
         { "value": "narrative", "label": "Through stories and scenarios - show me concepts in context" },
         { "value": "dialogue", "label": "Through discussion - ask me questions and let me explain my thinking" },
+        { "value": "interactive", "label": "Hands-on exploration - let me click, drag, and discover patterns myself" },
         { "value": "varied", "label": "Mix it up - give me a variety of activities and formats" }
       ],
       "key": "learningStyle"
